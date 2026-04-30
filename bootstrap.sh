@@ -37,7 +37,7 @@ print_header "STAGE 2: Installing Orchestration Dependencies"
 pkg update -y > /dev/null 2>&1
 
 echo "-> Installing System Packages..."
-pkg install python wget unzip jq proot-distro caddy git openssl mariadb ansible -y > /dev/null 2>&1
+pkg install python wget unzip jq proot-distro caddy git openssl-tool mariadb ansible -y > /dev/null 2>&1
 echo -e "\e[1;32m✅ Standard dependencies & Ansible installed.\e[0m"
 
 echo "-> Downloading HashiCorp Nomad (Workload Orchestrator)..."
@@ -204,10 +204,15 @@ vault secrets enable -path=secret kv-v2 > /dev/null 2>&1
 
 echo "-> Igniting MariaDB Database Engine..."
 mkdir -p $PREFIX/var/lib/mysql
+mkdir -p $PREFIX/var/run/mysqld # Termux specific PID/Socket directory
+
 if [ ! -d "$PREFIX/var/lib/mysql/mysql" ]; then
     mysql_install_db --datadir=$PREFIX/var/lib/mysql > /dev/null 2>&1
 fi
-nohup mysqld_safe --datadir=$PREFIX/var/lib/mysql > ~/mariadb_boot.log 2>&1 &
+
+# ADAPTIVE BINARY DETECTION FOR TERMUX COMPATIBILITY
+MYSQLD_BIN=$(command -v mariadbd || command -v mysqld)
+nohup $MYSQLD_BIN --datadir=$PREFIX/var/lib/mysql > ~/mariadb_boot.log 2>&1 &
 sleep 5
 
 echo "-> Provisioning Vault Admin DB Role & App Databases..."
@@ -234,9 +239,9 @@ echo -e "\e[1;32m✅ Dynamic MariaDB Engine Active.\e[0m"
 
 echo "-> Generating High-Entropy Credentials for Gitea and PhotoPrism UI..."
 GITEA_USER="pocket_admin"
-GITEA_PASS=$(openssl rand -hex 12)
+GITEA_PASS=$(cat /dev/urandom | tr -dc 'a-f0-9' | fold -w 24 | head -n 1)
 vault kv put secret/gitea username="$GITEA_USER" password="$GITEA_PASS" > /dev/null
-PP_PASS=$(openssl rand -base64 16 | tr -dc 'a-zA-Z0-9' | head -c 16)
+PP_PASS=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)
 vault kv put secret/photoprism username="admin" password="$PP_PASS" > /dev/null
 
 echo "-> Configuring Ansible Semaphore Enterprise..."
@@ -337,6 +342,9 @@ APP_NAME = Pocket Lab GitOps Repository
 RUN_MODE = prod
 RUN_USER = $(whoami)
 
+[security]
+INSTALL_LOCK = true
+
 [server]
 HTTP_PORT = 3030
 DISABLE_SSH = true
@@ -364,6 +372,9 @@ chmod +x act_runner && mv act_runner $PREFIX/bin/act_runner
 
 echo "-> Registering Runner (Host Execution Mode)..."
 RUNNER_TOKEN=$(gitea --config ~/gitea_data/conf/app.ini actions generate-runner-token)
+if [ -z "$RUNNER_TOKEN" ]; then
+    echo -e "\e[1;31mError: Failed to generate Gitea runner token. Check gitea_boot.log\e[0m"
+fi
 act_runner register --no-interactive --instance http://127.0.0.1:3030 --token "$RUNNER_TOKEN" --name termux-edge-runner --labels termux-arm64:host > /dev/null 2>&1
 nohup act_runner daemon > ~/act_runner.log 2>&1 &
 RUNNER_PID=$!
@@ -590,7 +601,7 @@ echo "-> Shutting down temporary boot processes..."
 kill $RUNNER_PID
 kill $GITEA_PID
 kill $VAULT_PID
-pkill mysqld || true
+pkill mysqld || pkill mariadbd || true
 
 echo -e "\e[1;32m✅ Identity, Orchestration Engine, & Catalog Seeded & Ready.\e[0m"
 sleep 2
@@ -643,7 +654,7 @@ pkill caddy || true
 pkill vault || true
 pkill gitea || true
 pkill act_runner || true
-pkill mysqld || true
+pkill mysqld || pkill mariadbd || true
 pkill nomad || true
 pkill semaphore || true
 sleep 2
@@ -652,7 +663,9 @@ sleep 2
 # 1. CORE DATA & IDENTITY ENGINES
 # ==========================================
 echo "  -> Starting MariaDB Database Engine..."
-nohup mysqld_safe --datadir=$PREFIX/var/lib/mysql > ~/pocket_lab_logs/mariadb.log 2>&1 &
+mkdir -p $PREFIX/var/run/mysqld
+MYSQLD_BIN=$(command -v mariadbd || command -v mysqld)
+nohup $MYSQLD_BIN --datadir=$PREFIX/var/lib/mysql > ~/pocket_lab_logs/mariadb.log 2>&1 &
 
 echo "  -> Starting HashiCorp Vault Server..."
 export VAULT_ADDR='http://127.0.0.1:8200'
