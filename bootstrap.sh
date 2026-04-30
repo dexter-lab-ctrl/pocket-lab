@@ -81,6 +81,7 @@ unzip -o vault.zip && mv vault $PREFIX/bin/ && chmod +x $PREFIX/bin/vault && rm 
 
 mkdir -p ~/vault_data
 cat << 'EOF' > ~/vault_config.hcl
+disable_mlock = true
 storage "file" {
   path = "/data/data/com.termux/files/home/vault_data"
 }
@@ -327,8 +328,8 @@ chmod 600 ~/gitops_approle.json
 echo -e "\e[1;32m✅ Principle of Least Privilege Established.\e[0m"
 
 echo "-> Fetching Gitea (ARM64)..."
-wget -qO gitea "https://dl.gitea.com/gitea/1.21.7/gitea-1.21.7-linux-arm64"
-chmod +x gitea && mv gitea $PREFIX/bin/gitea
+# Using Termux-native Gitea to prevent Android seccomp (Signal 31 / SIGSYS) crashes
+pkg install gitea -y > /dev/null 2>&1
 
 mkdir -p ~/gitea_data/conf
 cat << EOF > ~/gitea_data/conf/app.ini
