@@ -12,6 +12,7 @@ export function useDeviceMotion() {
 
     const handleOrientation = (event) => {
       if (event.gamma === null || event.beta === null) return;
+      // Soft limits for a premium, constrained float effect
       let x = Math.max(-45, Math.min(45, event.gamma)) / 45;
       let y = Math.max(0, Math.min(90, event.beta));
       y = (y - 45) / 45;
@@ -19,6 +20,7 @@ export function useDeviceMotion() {
     };
 
     const handleMouseMove = (e) => {
+      // Desktop fallback: track mouse to center of screen
       const x = (e.clientX / window.innerWidth - 0.5) * 2;
       const y = (e.clientY / window.innerHeight - 0.5) * 2;
       setTilt({ x, y });
@@ -26,6 +28,7 @@ export function useDeviceMotion() {
 
     window.addEventListener('deviceorientation', handleOrientation);
     window.addEventListener('mousemove', handleMouseMove);
+    
     return () => {
       window.removeEventListener('deviceorientation', handleOrientation);
       window.removeEventListener('mousemove', handleMouseMove);
@@ -33,10 +36,12 @@ export function useDeviceMotion() {
   }, [motionEnabled]);
 
   const handleEnableMotion = async () => {
+    if (navigator.vibrate) navigator.vibrate(10);
     if (motionEnabled) {
       setMotionEnabled(false);
       return;
     }
+    
     if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
       try {
         const permission = await DeviceOrientationEvent.requestPermission();
@@ -53,7 +58,8 @@ export function useDeviceMotion() {
     if (!motionEnabled) return {};
     return {
       transform: `translate(${tilt.x * depth}px, ${tilt.y * depth}px)`,
-      transition: 'transform 0.15s ease-out'
+      // Custom cubic-bezier creates a weighty, liquid physics feel for the cards
+      transition: 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)'
     };
   };
 

@@ -7,16 +7,39 @@ if [ ! -f ~/api_server.py ]; then
     exit 1
 fi
 
+# Fault Tolerance & Log Rotation
 mkdir -p ~/api ~/pocket_lab_logs ~/pwa_dist
 rm -f ~/pocket_lab_logs/*.log
 
-echo "  -> Purging old processes..."
+echo "  -> Purging old lingering processes..."
 pkill python || true
 pkill python3 || true
-pkill ttyd || true
-pkill bash || true
+pkill caddy || true
+pkill vault || true
+pkill gitea || true
+pkill act_runner || true
+pg_ctl -D $PREFIX/var/lib/postgresql stop > /dev/null 2>&1 || true
 sleep 2
 
+# ==========================================
+# 1. CORE DATA & IDENTITY ENGINES
+# ==========================================
+echo "  -> Starting PostgreSQL Database Engine..."
+pg_ctl -D $PREFIX/var/lib/postgresql start > ~/pocket_lab_logs/postgres_boot.log 2>&1
+
+echo "  -> Starting HashiCorp Vault Server..."
+export VAULT_ADDR='http://127.0.0.1:8200'
+nohup vault server -config=$HOME/vault_config.hcl > ~/pocket_lab_logs/vault.log 2>&1 &
+
+echo "  -> Starting Gitea GitOps Registry..."
+nohup gitea web -c ~/gitea_data/conf/app.ini > ~/pocket_lab_logs/gitea.log 2>&1 &
+
+echo "  -> Starting Gitea Actions Engine (act_runner)..."
+nohup act_runner daemon > ~/pocket_lab_logs/act_runner.log 2>&1 &
+
+# ==========================================
+# 2. TELEMETRY & OBSERVABILITY
+# ==========================================
 # Create the Telemetry Daemon with Pocket Warden Logic
 cat << 'EOF' > ~/telemetry_daemon.sh
 #!/bin/bash
@@ -59,26 +82,27 @@ EOF
 chmod +x ~/telemetry_daemon.sh
 
 # Start Telemetry Daemon
+echo "  -> Starting Hardware Telemetry Daemon..."
 nohup bash ~/telemetry_daemon.sh > ~/pocket_lab_logs/telemetry.log 2>&1 &
 
-# Start PWA Static Server
-echo "  -> Starting PWA Web Server (Port 3000)"
+# ==========================================
+# 3. USER INTERFACES & API BRIDGES
+# ==========================================
+echo "  -> Starting PWA Web Server (Port 3000)..."
 nohup python3 -m http.server 3000 --directory ~/pwa_dist > ~/pocket_lab_logs/pwa_server.log 2>&1 &
 
-# Start Active API Command Bridge
-echo "  -> Starting Active API Command Bridge (Port 8080)"
+echo "  -> Starting Active API Command Bridge (Port 8080)..."
 nohup python3 ~/api_server.py > ~/pocket_lab_logs/api_server.log 2>&1 &
 
-# Start Live Terminal
-echo "  -> Starting Live Terminal Server (Port 8081)"
-nohup ttyd -p 8081 -W bash > ~/pocket_lab_logs/ttyd.log 2>&1 &
+# ==========================================
+# 4. MESH NETWORKING & INGRESS
+# ==========================================
+echo "  -> Starting Caddy Reverse Proxy..."
+nohup caddy run --config ~/Caddyfile > ~/pocket_lab_logs/caddy.log 2>&1 &
+sleep 2
 
-sleep 2 
+# Bind Tailscale directly to Caddy (Single Command)
+echo "  -> Binding Tailscale to Caddy..."
+tailscale-cli serve --bg --https 443 http://127.0.0.1:8443
 
-# Multiplex Ports through Tailscale
-echo "  -> Mapping Tailscale Reverse Proxy..."
-tailscale-cli serve --bg --https 8443 http://127.0.0.1:3000
-tailscale-cli serve --bg --https 8443 --set-path /api http://127.0.0.1:8080
-tailscale-cli serve --bg --https 8443 --set-path /terminal http://127.0.0.1:8081
-
-echo -e "\n=> ✅ Dashboard LIVE!"
+echo -e "\n=> ✅ Pocket Lab Services are LIVE and secured by Caddy!"
