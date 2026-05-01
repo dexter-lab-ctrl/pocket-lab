@@ -204,22 +204,27 @@ vault secrets enable -path=secret kv-v2 > /dev/null 2>&1
 
 echo "-> Igniting MariaDB Database Engine..."
 mkdir -p $PREFIX/var/lib/mysql
-mkdir -p $PREFIX/var/run/mysqld # Termux specific PID/Socket directory
+mkdir -p $PREFIX/var/run/mysqld
 
 if [ ! -d "$PREFIX/var/lib/mysql/mysql" ]; then
-    mysql_install_db --datadir=$PREFIX/var/lib/mysql > /dev/null 2>&1
+    mariadb-install-db --datadir=$PREFIX/var/lib/mysql > /dev/null 2>&1
 fi
 
-# ADAPTIVE BINARY DETECTION FOR TERMUX COMPATIBILITY
-MYSQLD_BIN=$(command -v mariadbd || command -v mysqld)
+# SAFE ABSOLUTE BINARY DETECTION
+if [ -f "$PREFIX/bin/mariadbd" ]; then
+    MYSQLD_BIN="$PREFIX/bin/mariadbd"
+else
+    MYSQLD_BIN="$PREFIX/bin/mysqld"
+fi
+
 nohup $MYSQLD_BIN --datadir=$PREFIX/var/lib/mysql > ~/mariadb_boot.log 2>&1 &
 sleep 5
 
 echo "-> Provisioning Vault Admin DB Role & App Databases..."
-mysql -u $(whoami) -e "CREATE DATABASE IF NOT EXISTS mariadb;" > /dev/null 2>&1
-mysql -u $(whoami) -e "CREATE DATABASE IF NOT EXISTS semaphore;" > /dev/null 2>&1
-mysql -u $(whoami) -e "CREATE USER IF NOT EXISTS 'vault_admin'@'127.0.0.1' IDENTIFIED BY 'vault_admin_secret_99';" > /dev/null 2>&1
-mysql -u $(whoami) -e "GRANT ALL PRIVILEGES ON *.* TO 'vault_admin'@'127.0.0.1' WITH GRANT OPTION;" > /dev/null 2>&1
+mariadb -u $(whoami) -e "CREATE DATABASE IF NOT EXISTS mariadb;" > /dev/null 2>&1
+mariadb -u $(whoami) -e "CREATE DATABASE IF NOT EXISTS semaphore;" > /dev/null 2>&1
+mariadb -u $(whoami) -e "CREATE USER IF NOT EXISTS 'vault_admin'@'127.0.0.1' IDENTIFIED BY 'vault_admin_secret_99';" > /dev/null 2>&1
+mariadb -u $(whoami) -e "GRANT ALL PRIVILEGES ON *.* TO 'vault_admin'@'127.0.0.1' WITH GRANT OPTION;" > /dev/null 2>&1
 
 echo "-> Mounting Vault Dynamic Database Secrets Engine..."
 vault secrets enable database > /dev/null 2>&1
@@ -241,6 +246,7 @@ echo "-> Generating High-Entropy Credentials for Gitea and PhotoPrism UI..."
 GITEA_USER="pocket_admin"
 GITEA_PASS=$(cat /dev/urandom | tr -dc 'a-f0-9' | fold -w 24 | head -n 1)
 vault kv put secret/gitea username="$GITEA_USER" password="$GITEA_PASS" > /dev/null
+
 PP_PASS=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)
 vault kv put secret/photoprism username="admin" password="$PP_PASS" > /dev/null
 
@@ -333,7 +339,6 @@ chmod 600 ~/gitops_approle.json
 echo -e "\e[1;32m✅ Principle of Least Privilege Established.\e[0m"
 
 echo "-> Fetching Gitea (ARM64)..."
-# Using Termux-native Gitea to prevent Android seccomp (Signal 31 / SIGSYS) crashes
 pkg install gitea -y > /dev/null 2>&1
 
 mkdir -p ~/gitea_data/conf
@@ -361,6 +366,19 @@ EOF
 echo "-> Executing Gitea Boot Sequence..."
 nohup gitea web -c ~/gitea_data/conf/app.ini > ~/gitea_boot.log 2>&1 &
 GITEA_PID=$!
+sleep 3
+
+# ENTERPRISE GITEA SELF-HEALING ROUTINE
+if grep -q "Expect user" ~/gitea_boot.log; then
+    echo "   [!] Gitea OS User mismatch detected. Applying self-healing patch..."
+    EXPECTED_USER=$(grep "current user is:" ~/gitea_boot.log | awk -F'current user is: ' '{print $2}' | tr -d '\n' | tr -d "'")
+    if [ ! -z "$EXPECTED_USER" ]; then
+        sed -i "s/RUN_USER = .*/RUN_USER = $EXPECTED_USER/" ~/gitea_data/conf/app.ini
+        nohup gitea web -c ~/gitea_data/conf/app.ini > ~/gitea_boot.log 2>&1 &
+        GITEA_PID=$!
+    fi
+fi
+
 while ! curl -s http://127.0.0.1:3030 > /dev/null; do sleep 2; done
 
 echo "-> Provisioning Admin Account natively via variables..."
@@ -374,7 +392,9 @@ echo "-> Registering Runner (Host Execution Mode)..."
 RUNNER_TOKEN=$(gitea --config ~/gitea_data/conf/app.ini actions generate-runner-token)
 if [ -z "$RUNNER_TOKEN" ]; then
     echo -e "\e[1;31mError: Failed to generate Gitea runner token. Check gitea_boot.log\e[0m"
+    exit 1
 fi
+
 act_runner register --no-interactive --instance http://127.0.0.1:3030 --token "$RUNNER_TOKEN" --name termux-edge-runner --labels termux-arm64:host > /dev/null 2>&1
 nohup act_runner daemon > ~/act_runner.log 2>&1 &
 RUNNER_PID=$!
@@ -664,7 +684,11 @@ sleep 2
 # ==========================================
 echo "  -> Starting MariaDB Database Engine..."
 mkdir -p $PREFIX/var/run/mysqld
-MYSQLD_BIN=$(command -v mariadbd || command -v mysqld)
+if [ -f "$PREFIX/bin/mariadbd" ]; then
+    MYSQLD_BIN="$PREFIX/bin/mariadbd"
+else
+    MYSQLD_BIN="$PREFIX/bin/mysqld"
+fi
 nohup $MYSQLD_BIN --datadir=$PREFIX/var/lib/mysql > ~/pocket_lab_logs/mariadb.log 2>&1 &
 
 echo "  -> Starting HashiCorp Vault Server..."
