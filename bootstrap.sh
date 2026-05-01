@@ -75,7 +75,6 @@ install_ansible_in_proot() {
     fi
 
     log "INFO" "Installing Ansible inside proot Ubuntu"
-    # FIXED: Added ForceIPv4 & gai.conf updates to prevent Errno 110 Launchpad/Tailscale Timeout
     proot-distro login ubuntu -- bash -lc '
         set -e
         export DEBIAN_FRONTEND=noninteractive
@@ -215,7 +214,6 @@ if ! have nomad; then
     rm -f "$STATE_DIR/nomad.zip"
 fi
 
-# FIXED: Nomad configuration generation was missing in original script
 cat << 'EOF' > "$HOME/nomad_config.hcl"
 data_dir  = "/data/data/com.termux/files/home/nomad_data"
 bind_addr = "127.0.0.1"
@@ -419,12 +417,12 @@ if ! pgrep -f "vault server -config=$HOME/vault_config.hcl" >/dev/null 2>&1; the
 fi
 
 echo "-> Waiting for Vault Engine Listener..."
-# FIXED: Wait for TCP instead of HTTP, since HTTP 501 Uninitialized causes curl -f to fail
 wait_for_tcp 127.0.0.1 8200 60 || die "Vault did not become ready on port 8200"
 sleep 3 # Buffer for listener to fully initialize
 
-# FIXED: Check configuration file existence rather than unstable vault status outputs
-if [ ! -f "$HOME/vault_keys.json" ]; then
+# WALKTHROUGH FIX 3: Robustly check Vault init status via API instead of blindly checking file existence
+VAULT_INIT_STATUS=$(curl -s http://127.0.0.1:8200/v1/sys/init | jq -r '.initialized')
+if [ "$VAULT_INIT_STATUS" == "false" ]; then
     echo "-> Initializing Vault (1 Key Share)..."
     vault operator init -key-shares=1 -key-threshold=1 -format=json > "$HOME/vault_keys.json"
     chmod 600 "$HOME/vault_keys.json"
@@ -474,7 +472,6 @@ GITEA_USER="pocket_admin"
 if [[ -f "$STATE_DIR/gitea_admin_password.txt" ]]; then
     GITEA_PASS="$(cat "$STATE_DIR/gitea_admin_password.txt")"
 else
-    # FIXED: Replaced urandom pipes with highly stable openssl generator to prevent bash SIGPIPE crashes
     GITEA_PASS=$(openssl rand -hex 12)
     printf '%s' "$GITEA_PASS" > "$STATE_DIR/gitea_admin_password.txt"
     chmod 600 "$STATE_DIR/gitea_admin_password.txt"
@@ -490,12 +487,14 @@ if command -v mariadb >/dev/null 2>&1; then DB_CLIENT="mariadb"; else DB_CLIENT=
 $DB_CLIENT -u "$(whoami)" -e "CREATE DATABASE IF NOT EXISTS mariadb;" >/dev/null 2>&1 || true
 $DB_CLIENT -u "$(whoami)" -e "CREATE DATABASE IF NOT EXISTS semaphore;" >/dev/null 2>&1 || true
 
-$DB_CLIENT -u "$(whoami)" -e "CREATE DATABASE IF NOT EXISTS gitea;" >/dev/null 2>&1 || true
-$DB_CLIENT -u "$(whoami)" -e "CREATE USER IF NOT EXISTS 'gitea'@'127.0.0.1' IDENTIFIED BY '$GITEA_PASS';" >/dev/null 2>&1 || true
-$DB_CLIENT -u "$(whoami)" -e "GRANT ALL PRIVILEGES ON gitea.* TO 'gitea'@'127.0.0.1';" >/dev/null 2>&1 || true
+# WALKTHROUGH FIX 2: Added explicit utf8mb4 encoding to prevent Unicode errors on commits
+$DB_CLIENT -u "$(whoami)" -e "CREATE DATABASE IF NOT EXISTS gitea DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;" >/dev/null 2>&1 || true
 
-$DB_CLIENT -u "$(whoami)" -e "CREATE USER IF NOT EXISTS 'vault_admin'@'127.0.0.1' IDENTIFIED BY 'vault_admin_secret_99';" >/dev/null 2>&1 || true
-$DB_CLIENT -u "$(whoami)" -e "GRANT ALL PRIVILEGES ON *.* TO 'vault_admin'@'127.0.0.1' WITH GRANT OPTION;" >/dev/null 2>&1 || true
+$DB_CLIENT -u "$(whoami)" -e "CREATE USER IF NOT EXISTS 'gitea'@'%' IDENTIFIED BY '$GITEA_PASS';" >/dev/null 2>&1 || true
+$DB_CLIENT -u "$(whoami)" -e "GRANT ALL PRIVILEGES ON gitea.* TO 'gitea'@'%';" >/dev/null 2>&1 || true
+
+$DB_CLIENT -u "$(whoami)" -e "CREATE USER IF NOT EXISTS 'vault_admin'@'%' IDENTIFIED BY 'vault_admin_secret_99';" >/dev/null 2>&1 || true
+$DB_CLIENT -u "$(whoami)" -e "GRANT ALL PRIVILEGES ON *.* TO 'vault_admin'@'%' WITH GRANT OPTION;" >/dev/null 2>&1 || true
 
 echo "-> Mounting Vault Dynamic Database Secrets Engine..."
 vault write database/config/mariadb \
@@ -507,7 +506,7 @@ vault write database/config/mariadb \
 
 vault write database/roles/mariadb-role \
     db_name="mariadb" \
-    creation_statements="CREATE USER '{{name}}'@'127.0.0.1' IDENTIFIED BY '{{password}}'; GRANT ALL PRIVILEGES ON *.* TO '{{name}}'@'127.0.0.1';" \
+    creation_statements="CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}'; GRANT ALL PRIVILEGES ON *.* TO '{{name}}'@'%';" \
     default_ttl="1h" \
     max_ttl="24h" >/dev/null 2>&1 || true
 echo -e "\e[1;32m✅ Dynamic MariaDB Engine Active.\e[0m"
@@ -641,12 +640,15 @@ if [ -z "$RUNNER_TOKEN" ]; then
     die "Failed to generate Gitea runner token. Check gitea.log"
 fi
 
+# WALKTHROUGH FIX 4: Explicitly cd into the act_runner directory before registering/running to prevent dropping .runner config in the root $HOME directory.
 mkdir -p "$HOME/act_runner"
+cd "$HOME/act_runner"
 if [[ ! -f "$HOME/act_runner/config.yaml" ]]; then
     act_runner register --no-interactive --instance http://127.0.0.1:3030 --token "$RUNNER_TOKEN" --name termux-edge-runner --labels termux-arm64:host --config "$HOME/act_runner/config.yaml" >/dev/null 2>&1 || true
 fi
 nohup act_runner daemon --config "$HOME/act_runner/config.yaml" > "$LOG_DIR/act_runner.log" 2>&1 &
 RUNNER_PID=$!
+cd "$HOME"
 
 echo "-> Creating Private Repositories..."
 curl -s -X POST "http://127.0.0.1:3030/api/v1/user/repos" -u "$GITEA_USER:$GITEA_PASS" -H "Content-Type: application/json" -d '{"name": "iac-catalog", "private": true}' >/dev/null || true
@@ -962,7 +964,13 @@ start_gitea() {
 }
 
 start_runner() {
-    ensure_started "act_runner" "act_runner daemon" act_runner daemon
+    # Run from explicitly inside the directory so it finds `.runner` state file
+    if ! pgrep -f "act_runner daemon" >/dev/null 2>&1; then
+        log "Starting act_runner"
+        cd "$HOME/act_runner" && nohup act_runner daemon --config "$HOME/act_runner/config.yaml" >/dev/null 2>&1 &
+    else
+        log "act_runner already running"
+    fi
 }
 
 start_nomad() {
@@ -973,17 +981,16 @@ start_semaphore() {
     ensure_started "Semaphore" "semaphore server --config=$HOME/semaphore_config.json" semaphore server --config="$HOME/semaphore_config.json"
 }
 
-# FIXED: Actually start the Loki server to capture metrics
 start_loki() {
     ensure_started "Loki" "loki -config.file=$HOME/loki-config.yaml" loki -config.file="$HOME/loki-config.yaml"
 }
 
-# FIXED: Actually start Promtail so it passes metrics to Loki
 start_promtail() {
     ensure_started "Promtail" "promtail -config.file=$HOME/promtail-config.yaml" promtail -config.file="$HOME/promtail-config.yaml"
 }
 
 start_telemetry() {
+# WALKTHROUGH FIX 1: Prevent crash if meminfo is missing or total=0 due to Android permissions
 cat << 'TELEMETRY_EOF' > ~/telemetry_daemon.sh
 #!/bin/bash
 echo "Telemetry Daemon Started at $(date)"
@@ -994,8 +1001,10 @@ RAM_LIMIT=90
 while true; do
     TEMP=$(cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null || echo "35000")
     TEMP_C=$((TEMP / 1000))
-    MEM_FREE=$(grep MemFree /proc/meminfo | awk '{print $2}')
-    MEM_TOTAL=$(grep MemTotal /proc/meminfo | awk '{print $2}')
+    
+    MEM_FREE=$(grep MemFree /proc/meminfo | awk '{print $2}' || echo 0)
+    MEM_TOTAL=$(grep MemTotal /proc/meminfo | awk '{print $2}' || echo 1)
+    if [ -z "$MEM_TOTAL" ] || [ "$MEM_TOTAL" -eq 0 ]; then MEM_TOTAL=1; MEM_FREE=1; fi
     MEM_PCT=$(( 100 - (MEM_FREE * 100 / MEM_TOTAL) ))
 
     STATUS="nominal"
