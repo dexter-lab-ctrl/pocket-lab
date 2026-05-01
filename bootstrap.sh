@@ -46,7 +46,10 @@ ensure_pkg() {
         log "INFO" "Package already installed: $pkg_name"
     else
         log "INFO" "Installing package: $pkg_name"
-        yes "" | pkg install -y "$pkg_name"
+        # Temporarily disable pipefail to prevent SIGPIPE from killing the script
+        set +o pipefail
+        yes "" | pkg install -y "$pkg_name" >/dev/null 2>&1
+        set -o pipefail
     fi
 }
 
@@ -91,15 +94,6 @@ download_if_missing() {
     chmod "$mode" "$dest"
 }
 
-start_bg() {
-    local name="$1"
-    shift
-    local logfile="$LOG_DIR/${name}.log"
-    log "INFO" "Starting $name"
-    nohup "$@" >"$logfile" 2>&1 &
-    echo $!
-}
-
 pause() {
     echo -e "\e[1;33m👉 Press [ENTER] to continue when ready...\e[0m"
     read -r
@@ -136,8 +130,12 @@ pause
 # =============================================================================
 print_header "STAGE 2: Installing Orchestration Dependencies"
 log "INFO" "Refreshing package metadata"
+
+# Disable pipefail to safely pass default configurations
+set +o pipefail
 yes "" | pkg update -y > /dev/null 2>&1
 yes "" | pkg upgrade -y > /dev/null 2>&1
+set -o pipefail
 
 log "INFO" "Installing system packages"
 ensure_pkg python
@@ -401,32 +399,38 @@ fi
 
 wait_for_tcp 127.0.0.1 3306 40 || { tail -n 200 "$LOG_DIR/mariadb_boot.log" || true; die "MariaDB did not become ready"; }
 
-echo "-> Provisioning Vault Admin DB Role & App Databases..."
-if command -v mariadb >/dev/null 2>&1; then DB_CLIENT="mariadb"; else DB_CLIENT="mysql"; fi
-$DB_CLIENT -u "$(whoami)" -e "CREATE DATABASE IF NOT EXISTS mariadb;" >/dev/null 2>&1
-$DB_CLIENT -u "$(whoami)" -e "CREATE DATABASE IF NOT EXISTS semaphore;" >/dev/null 2>&1
-
 echo "-> Generating High-Entropy Credentials for Gitea and PhotoPrism UI..."
 GITEA_USER="pocket_admin"
 if [[ -f "$STATE_DIR/gitea_admin_password.txt" ]]; then
     GITEA_PASS="$(cat "$STATE_DIR/gitea_admin_password.txt")"
 else
+    # Disable pipefail to prevent head from triggering SIGPIPE and killing the script
+    set +o pipefail
     GITEA_PASS=$(tr -dc 'a-f0-9' </dev/urandom | fold -w 24 | head -n 1)
+    set -o pipefail
+    
     printf '%s' "$GITEA_PASS" > "$STATE_DIR/gitea_admin_password.txt"
     chmod 600 "$STATE_DIR/gitea_admin_password.txt"
 fi
 vault kv put secret/gitea username="$GITEA_USER" password="$GITEA_PASS" >/dev/null
 
+set +o pipefail
 PP_PASS=$(tr -dc 'a-zA-Z0-9' </dev/urandom | fold -w 16 | head -n 1)
+set -o pipefail
 vault kv put secret/photoprism username="admin" password="$PP_PASS" >/dev/null
 
-echo "-> Provisioning Gitea & Vault Databases with generated secrets..."
+echo "-> Provisioning Vault Admin DB Role & App Databases..."
+if command -v mariadb >/dev/null 2>&1; then DB_CLIENT="mariadb"; else DB_CLIENT="mysql"; fi
+
+$DB_CLIENT -u "$(whoami)" -e "CREATE DATABASE IF NOT EXISTS mariadb;" >/dev/null 2>&1 || true
+$DB_CLIENT -u "$(whoami)" -e "CREATE DATABASE IF NOT EXISTS semaphore;" >/dev/null 2>&1 || true
+
 $DB_CLIENT -u "$(whoami)" -e "CREATE DATABASE IF NOT EXISTS gitea;" >/dev/null 2>&1 || true
 $DB_CLIENT -u "$(whoami)" -e "CREATE USER IF NOT EXISTS 'gitea'@'127.0.0.1' IDENTIFIED BY '$GITEA_PASS';" >/dev/null 2>&1 || true
 $DB_CLIENT -u "$(whoami)" -e "GRANT ALL PRIVILEGES ON gitea.* TO 'gitea'@'127.0.0.1';" >/dev/null 2>&1 || true
 
-$DB_CLIENT -u "$(whoami)" -e "CREATE USER IF NOT EXISTS 'vault_admin'@'127.0.0.1' IDENTIFIED BY 'vault_admin_secret_99';" >/dev/null 2>&1
-$DB_CLIENT -u "$(whoami)" -e "GRANT ALL PRIVILEGES ON *.* TO 'vault_admin'@'127.0.0.1' WITH GRANT OPTION;" >/dev/null 2>&1
+$DB_CLIENT -u "$(whoami)" -e "CREATE USER IF NOT EXISTS 'vault_admin'@'127.0.0.1' IDENTIFIED BY 'vault_admin_secret_99';" >/dev/null 2>&1 || true
+$DB_CLIENT -u "$(whoami)" -e "GRANT ALL PRIVILEGES ON *.* TO 'vault_admin'@'127.0.0.1' WITH GRANT OPTION;" >/dev/null 2>&1 || true
 
 echo "-> Mounting Vault Dynamic Database Secrets Engine..."
 vault write database/config/mariadb \
