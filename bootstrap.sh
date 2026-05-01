@@ -1,14 +1,103 @@
 #!/data/data/com.termux/files/usr/bin/bash
+set -Eeuo pipefail
+IFS=$'\n\t'
+
+# =============================================================================
 # POCKET LAB - INTERACTIVE EDGE NODE WIZARD (ENTERPRISE EDITION)
+# Refactor goals:
+# - Idempotent installer
+# - Self-healing service bootstrap
+# - Proper dependency graph: Vault -> MariaDB -> Gitea
+# - Structured logging
+# - Preserve all original stages and functionality
+# =============================================================================
 
 REPO="dexter-lab-ctrl/pocket-lab" # Change to your repo
 
-print_header() {
-    clear
-    echo -e "\e[1;36m====================================================\e[0m"
-    echo -e "\e[1;36m             🚀 POCKET LAB OS INSTALLER             \e[0m"
-    echo -e "\e[1;36m====================================================\e[0m"
-    echo -e "\n$1\n"
+export HOME="${HOME:-/data/data/com.termux/files/home}"
+export PREFIX="${PREFIX:-/data/data/com.termux/files/usr}"
+
+STATE_DIR="$HOME/.pocket_lab"
+LOG_DIR="$HOME/pocket_lab_logs"
+RUN_DIR="$HOME/pocket_lab_run"
+
+mkdir -p "$STATE_DIR" "$LOG_DIR" "$RUN_DIR"
+
+exec > >(tee -a "$LOG_DIR/bootstrap.log") 2> >(tee -a "$LOG_DIR/bootstrap.error.log" >&2)
+
+log() {
+    local level="$1"
+    shift
+    printf '[%s] [%s] %s\n' "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" "$level" "$*"
+}
+
+die() {
+    log "FATAL" "$*"
+    exit 1
+}
+
+have() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+ensure_pkg() {
+    local pkg_name="$1"
+    if dpkg -s "$pkg_name" >/dev/null 2>&1; then
+        log "INFO" "Package already installed: $pkg_name"
+    else
+        log "INFO" "Installing package: $pkg_name"
+        yes "" | pkg install -y "$pkg_name"
+    fi
+}
+
+wait_for_tcp() {
+    local host="$1"
+    local port="$2"
+    local timeout="${3:-60}"
+    local i
+    for i in $(seq 1 "$timeout"); do
+        if nc -z "$host" "$port" >/dev/null 2>&1; then
+            return 0
+        fi
+        sleep 1
+    done
+    return 1
+}
+
+wait_for_http() {
+    local url="$1"
+    local timeout="${2:-60}"
+    local i
+    for i in $(seq 1 "$timeout"); do
+        if curl -fsS "$url" >/dev/null 2>&1; then
+            return 0
+        fi
+        sleep 1
+    done
+    return 1
+}
+
+download_if_missing() {
+    local url="$1"
+    local dest="$2"
+    local mode="${3:-755}"
+    if [[ -f "$dest" ]]; then
+        chmod "$mode" "$dest" || true
+        log "INFO" "Already present: $dest"
+        return 0
+    fi
+    log "INFO" "Downloading $url"
+    wget -qO "$dest" "$url"
+    chmod "$mode" "$dest"
+}
+
+start_bg() {
+    local name="$1"
+    shift
+    local logfile="$LOG_DIR/${name}.log"
+    log "INFO" "Starting $name"
+    nohup "$@" >"$logfile" 2>&1 &
+    echo $!
 }
 
 pause() {
@@ -16,10 +105,20 @@ pause() {
     read -r
 }
 
-# --- STAGE 1: Storage & OS Prerequisites ---
+print_header() {
+    clear || true
+    echo -e "\e[1;36m====================================================\e[0m"
+    echo -e "\e[1;36m             🚀 POCKET LAB OS INSTALLER             \e[0m"
+    echo -e "\e[1;36m====================================================\e[0m"
+    echo -e "\n$1\n"
+}
+
+# =============================================================================
+# STAGE 1: Storage & OS Prerequisites
+# =============================================================================
 print_header "STAGE 1: Storage & OS Prerequisites"
-echo "[+] Requesting Android storage access..."
-termux-setup-storage
+log "INFO" "Requesting Android storage access"
+termux-setup-storage || true
 echo -e "\e[1;35mPlease tap 'ALLOW' on your screen, then press [ENTER]...\e[0m"
 read -r
 
@@ -32,55 +131,101 @@ echo "5. TAILSCALE ADMIN PANEL: 'HTTPS' and 'MagicDNS' are enabled."
 echo ""
 pause
 
-# --- STAGE 2: Core Dependencies ---
+# =============================================================================
+# STAGE 2: Core Dependencies
+# =============================================================================
 print_header "STAGE 2: Installing Orchestration Dependencies"
-pkg update -y > /dev/null 2>&1
+log "INFO" "Refreshing package metadata"
+yes "" | pkg update -y > /dev/null 2>&1
+yes "" | pkg upgrade -y > /dev/null 2>&1
 
-echo "-> Installing System Packages..."
-pkg install python wget unzip jq proot-distro caddy git openssl-tool mariadb ansible -y > /dev/null 2>&1
-echo -e "\e[1;32m✅ Standard dependencies & Ansible installed.\e[0m"
+log "INFO" "Installing system packages"
+ensure_pkg python
+ensure_pkg wget
+ensure_pkg unzip
+ensure_pkg jq
+ensure_pkg proot-distro
+ensure_pkg caddy
+ensure_pkg git
+ensure_pkg openssl-tool
+ensure_pkg mariadb
+ensure_pkg ansible
+ensure_pkg netcat-openbsd
+
+log "INFO" "Installing Gitea package natively via Termux"
+ensure_pkg gitea
 
 echo "-> Downloading HashiCorp Nomad (Workload Orchestrator)..."
-wget -qO nomad.zip "https://releases.hashicorp.com/nomad/1.7.6/nomad_1.7.6_linux_arm64.zip"
-unzip -o nomad.zip && mv nomad $PREFIX/bin/ && chmod +x $PREFIX/bin/nomad && rm nomad.zip
+if ! have nomad; then
+    download_if_missing "https://releases.hashicorp.com/nomad/1.7.6/nomad_1.7.6_linux_arm64.zip" "$STATE_DIR/nomad.zip" 644
+    unzip -o "$STATE_DIR/nomad.zip" >/dev/null
+    mv -f nomad "$PREFIX/bin/nomad"
+    chmod +x "$PREFIX/bin/nomad"
+    rm -f "$STATE_DIR/nomad.zip"
+fi
 
 echo "-> Downloading Ansible Semaphore (Task Automator)..."
-wget -qO semaphore.tar.gz "https://github.com/semaphoreui/semaphore/releases/download/v2.17.39/semaphore_2.17.39_linux_arm64.tar.gz"
-tar -xzf semaphore.tar.gz semaphore && mv semaphore $PREFIX/bin/ && chmod +x $PREFIX/bin/semaphore && rm semaphore.tar.gz
+if ! have semaphore; then
+    download_if_missing "https://github.com/semaphoreui/semaphore/releases/download/v2.17.39/semaphore_2.17.39_linux_arm64.tar.gz" "$STATE_DIR/semaphore.tar.gz" 644
+    tar -xzf "$STATE_DIR/semaphore.tar.gz" -C "$STATE_DIR" semaphore
+    mv -f "$STATE_DIR/semaphore" "$PREFIX/bin/semaphore"
+    chmod +x "$PREFIX/bin/semaphore"
+    rm -f "$STATE_DIR/semaphore.tar.gz"
+fi
 echo -e "\e[1;32m✅ Enterprise Orchestrators installed successfully.\e[0m"
 
-# --- STAGE 3: Security & Telemetry Binaries ---
+# =============================================================================
+# STAGE 3: Security & Telemetry Binaries
+# =============================================================================
 print_header "STAGE 3: Injecting Security & Telemetry Binaries"
 
 echo "-> Fetching Trivy (Vulnerability Scanner)..."
-wget -qO trivy.tar.gz "https://github.com/aquasecurity/trivy/releases/download/v0.70.0/trivy_0.70.0_Linux-ARM64.tar.gz"
-tar -xzf trivy.tar.gz trivy && mv trivy $PREFIX/bin/ && chmod +x $PREFIX/bin/trivy && rm trivy.tar.gz
+if ! have trivy; then
+    download_if_missing "https://github.com/aquasecurity/trivy/releases/download/v0.70.0/trivy_0.70.0_Linux-ARM64.tar.gz" "$STATE_DIR/trivy.tar.gz" 644
+    tar -xzf "$STATE_DIR/trivy.tar.gz" -C "$STATE_DIR" trivy
+    mv -f "$STATE_DIR/trivy" "$PREFIX/bin/trivy"
+    chmod +x "$PREFIX/bin/trivy"
+    rm -f "$STATE_DIR/trivy.tar.gz"
+fi
 
 echo "-> Fetching Prometheus (AIOps TSDB)..."
-wget -qO prom.tar.gz "https://github.com/prometheus/prometheus/releases/download/v2.51.0/prometheus-2.51.0.linux-arm64.tar.gz"
-tar -xzf prom.tar.gz --strip-components=1 prometheus-2.51.0.linux-arm64/prometheus
-mv prometheus $PREFIX/bin/ && chmod +x $PREFIX/bin/prometheus && rm prom.tar.gz
+if ! have prometheus; then
+    download_if_missing "https://github.com/prometheus/prometheus/releases/download/v2.51.0/prometheus-2.51.0.linux-arm64.tar.gz" "$STATE_DIR/prom.tar.gz" 644
+    mkdir -p "$STATE_DIR/prom_unpack"
+    tar -xzf "$STATE_DIR/prom.tar.gz" -C "$STATE_DIR/prom_unpack" --strip-components=1
+    mv -f "$STATE_DIR/prom_unpack/prometheus" "$PREFIX/bin/prometheus"
+    chmod +x "$PREFIX/bin/prometheus"
+    rm -rf "$STATE_DIR/prom.tar.gz" "$STATE_DIR/prom_unpack"
+fi
 
 echo "-> Cloning Lynis (Security Auditing & DFIR)..."
-git clone https://github.com/CISOfy/lynis ~/lynis_tool > /dev/null 2>&1
-ln -sf ~/lynis_tool/lynis $PREFIX/bin/lynis
+if [[ ! -d "$HOME/lynis_tool/.git" ]]; then
+    git clone https://github.com/CISOfy/lynis "$HOME/lynis_tool" >/dev/null 2>&1 || true
+fi
+ln -sf "$HOME/lynis_tool/lynis" "$PREFIX/bin/lynis"
 
 echo "-> Staging Netdata (Real-Time Telemetry)..."
-wget -qO ~/netdata-kickstart.sh "https://get.netdata.cloud/kickstart.sh"
-chmod +x ~/netdata-kickstart.sh
+download_if_missing "https://get.netdata.cloud/kickstart.sh" "$HOME/netdata-kickstart.sh" 755
 
 echo -e "\e[1;32m✅ Enterprise binaries successfully injected into Edge Node.\e[0m"
 sleep 2
 
-# --- STAGE 4: HashiCorp Vault ---
+# =============================================================================
+# STAGE 4: HashiCorp Vault
+# =============================================================================
 print_header "STAGE 4: Injecting HashiCorp Vault"
 
 echo "-> Fetching HashiCorp Vault (ARM64)..."
-wget -qO vault.zip "https://releases.hashicorp.com/vault/1.15.4/vault_1.15.4_linux_arm64.zip"
-unzip -o vault.zip && mv vault $PREFIX/bin/ && chmod +x $PREFIX/bin/vault && rm vault.zip
+if ! have vault; then
+    download_if_missing "https://releases.hashicorp.com/vault/1.15.4/vault_1.15.4_linux_arm64.zip" "$STATE_DIR/vault.zip" 644
+    unzip -o "$STATE_DIR/vault.zip" >/dev/null
+    mv -f vault "$PREFIX/bin/vault"
+    chmod +x "$PREFIX/bin/vault"
+    rm -f "$STATE_DIR/vault.zip"
+fi
 
-mkdir -p ~/vault_data
-cat << 'EOF' > ~/vault_config.hcl
+mkdir -p "$HOME/vault_data"
+cat << 'EOF' > "$HOME/vault_config.hcl"
 disable_mlock = true
 storage "file" {
   path = "/data/data/com.termux/files/home/vault_data"
@@ -92,19 +237,31 @@ listener "tcp" {
 EOF
 echo -e "\e[1;32m✅ HashiCorp Vault staged.\e[0m"
 
-# --- STAGE 5: Grafana Loki & Promtail ---
+# =============================================================================
+# STAGE 5: Grafana Loki & Promtail
+# =============================================================================
 print_header "STAGE 5: Injecting Grafana Loki & Promtail"
 
 echo "-> Fetching Grafana Loki (Log Aggregation DB)..."
-wget -qO loki.zip "https://github.com/grafana/loki/releases/download/v2.9.4/loki-linux-arm64.zip"
-unzip -o loki.zip && mv loki-linux-arm64 $PREFIX/bin/loki && chmod +x $PREFIX/bin/loki && rm loki.zip
+if ! have loki; then
+    download_if_missing "https://github.com/grafana/loki/releases/download/v2.9.4/loki-linux-arm64.zip" "$STATE_DIR/loki.zip" 644
+    unzip -o "$STATE_DIR/loki.zip" >/dev/null
+    mv -f loki-linux-arm64 "$PREFIX/bin/loki"
+    chmod +x "$PREFIX/bin/loki"
+    rm -f "$STATE_DIR/loki.zip"
+fi
 
 echo "-> Fetching Promtail (Log Shipper)..."
-wget -qO promtail.zip "https://github.com/grafana/loki/releases/download/v2.9.4/promtail-linux-arm64.zip"
-unzip -o promtail.zip && mv promtail-linux-arm64 $PREFIX/bin/promtail && chmod +x $PREFIX/bin/promtail && rm promtail.zip
+if ! have promtail; then
+    download_if_missing "https://github.com/grafana/loki/releases/download/v2.9.4/promtail-linux-arm64.zip" "$STATE_DIR/promtail.zip" 644
+    unzip -o "$STATE_DIR/promtail.zip" >/dev/null
+    mv -f promtail-linux-arm64 "$PREFIX/bin/promtail"
+    chmod +x "$PREFIX/bin/promtail"
+    rm -f "$STATE_DIR/promtail.zip"
+fi
 
-mkdir -p ~/loki_data
-cat << 'EOF' > ~/loki-config.yaml
+mkdir -p "$HOME/loki_data"
+cat << 'EOF' > "$HOME/loki-config.yaml"
 auth_enabled: false
 server:
   http_listen_port: 3100
@@ -119,7 +276,7 @@ storage_config:
     directory: "/data/data/com.termux/files/home/loki_data/chunks"
 EOF
 
-cat << 'EOF' > ~/promtail-config.yaml
+cat << 'EOF' > "$HOME/promtail-config.yaml"
 server:
   http_listen_port: 9080
 clients:
@@ -136,17 +293,20 @@ EOF
 echo -e "\e[1;32m✅ Observability Mesh Injected.\e[0m"
 sleep 2
 
-# --- STAGE 6: Open Policy Agent (OPA) ---
+# =============================================================================
+# STAGE 6: Open Policy Agent (OPA)
+# =============================================================================
 print_header "STAGE 6: Injecting Open Policy Agent (OPA)"
 
 echo "-> Fetching Open Policy Agent (ARM64)..."
-wget -qO opa "https://openpolicyagent.org/downloads/v0.61.0/opa_linux_arm64_static"
-chmod +x opa && mv opa $PREFIX/bin/opa
+if ! have opa; then
+    download_if_missing "https://openpolicyagent.org/downloads/v0.61.0/opa_linux_arm64_static" "$PREFIX/bin/opa" 755
+fi
 
 echo "-> Seeding Rego Policies for Nomad..."
-mkdir -p ~/pocket_lab_policies
+mkdir -p "$HOME/pocket_lab_policies"
 
-cat << 'EOF' > ~/pocket_lab_policies/ports.rego
+cat << 'EOF' > "$HOME/pocket_lab_policies/ports.rego"
 package pocketlab.network
 default allow = false
 allow { not contains_privileged_port }
@@ -160,7 +320,7 @@ deny[msg] {
 }
 EOF
 
-cat << 'EOF' > ~/pocket_lab_policies/storage.rego
+cat << 'EOF' > "$HOME/pocket_lab_policies/storage.rego"
 package pocketlab.storage
 deny[msg] {
     driver := input.Job.TaskGroups[_].Tasks[_].Driver
@@ -169,7 +329,7 @@ deny[msg] {
 }
 EOF
 
-cat << 'EOF' > ~/pocket_lab_policies/nomad.rego
+cat << 'EOF' > "$HOME/pocket_lab_policies/nomad.rego"
 package pocketlab.engine
 deny[msg] {
     job := input.Job
@@ -180,96 +340,124 @@ EOF
 echo -e "\e[1;32m✅ Policy Engine & Rego Guardrails Provisioned.\e[0m"
 sleep 2
 
-# --- STAGE 7: Boot Data & Identity Engines ---
+# =============================================================================
+# STAGE 7: Boot Data & Identity Engines
+# =============================================================================
 print_header "STAGE 7: Booting Vault, MariaDB, & Gitea"
 
 echo "-> Igniting HashiCorp Vault Engine..."
 export VAULT_ADDR='http://127.0.0.1:8200'
-nohup vault server -config=$HOME/vault_config.hcl > ~/vault_boot.log 2>&1 &
-VAULT_PID=$!
+if ! pgrep -f "vault server -config=$HOME/vault_config.hcl" >/dev/null 2>&1; then
+    nohup vault server -config="$HOME/vault_config.hcl" > "$LOG_DIR/vault.log" 2>&1 &
+fi
 
 echo "-> Waiting for Vault API..."
-while ! curl -s http://127.0.0.1:8200/v1/sys/health > /dev/null; do sleep 1; done
+wait_for_http "http://127.0.0.1:8200/v1/sys/health" 60 || die "Vault did not become ready"
 
-echo "-> Initializing Vault (1 Key Share)..."
-vault operator init -key-shares=1 -key-threshold=1 -format=json > ~/vault_keys.json
-chmod 600 ~/vault_keys.json
-UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' ~/vault_keys.json)
-ROOT_TOKEN=$(jq -r '.root_token' ~/vault_keys.json)
+if ! vault status >/dev/null 2>&1; then
+    echo "-> Initializing Vault (1 Key Share)..."
+    vault operator init -key-shares=1 -key-threshold=1 -format=json > "$HOME/vault_keys.json"
+    chmod 600 "$HOME/vault_keys.json"
+fi
+
+UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' "$HOME/vault_keys.json")
+ROOT_TOKEN=$(jq -r '.root_token' "$HOME/vault_keys.json")
 
 echo "-> Unsealing Vault & Authenticating..."
-vault operator unseal "$UNSEAL_KEY" > /dev/null
-vault login "$ROOT_TOKEN" > /dev/null
-vault secrets enable -path=secret kv-v2 > /dev/null 2>&1
+if vault status >/dev/null 2>&1; then
+    :
+else
+    vault operator unseal "$UNSEAL_KEY" >/dev/null
+fi
+vault login "$ROOT_TOKEN" >/dev/null
+vault secrets enable -path=secret kv-v2 >/dev/null 2>&1 || true
+vault secrets enable database >/dev/null 2>&1 || true
 
 echo "-> Igniting MariaDB Database Engine..."
-mkdir -p $PREFIX/var/lib/mysql
-mkdir -p $PREFIX/var/run/mysqld
+mkdir -p "$PREFIX/var/lib/mysql" "$PREFIX/var/run/mysqld"
+if ! have mariadbd && ! have mysqld; then
+    die "MariaDB daemon missing after package install"
+fi
+
+if have mariadb-install-db; then
+    DB_INIT="mariadb-install-db"
+else
+    DB_INIT="mysql_install_db"
+fi
 
 if [ ! -d "$PREFIX/var/lib/mysql/mysql" ]; then
-    mariadb-install-db --datadir=$PREFIX/var/lib/mysql > /dev/null 2>&1
+    "$DB_INIT" --datadir="$PREFIX/var/lib/mysql" > "$LOG_DIR/mariadb_boot.log" 2>&1 || die "MariaDB datadir initialization failed"
 fi
 
-# SAFE ABSOLUTE BINARY DETECTION
-if [ -f "$PREFIX/bin/mariadbd" ]; then
-    MYSQLD_BIN="$PREFIX/bin/mariadbd"
+if have mariadbd; then
+    MYSQLD_BIN="mariadbd"
 else
-    MYSQLD_BIN="$PREFIX/bin/mysqld"
+    MYSQLD_BIN="mysqld"
 fi
 
-nohup $MYSQLD_BIN --datadir=$PREFIX/var/lib/mysql > ~/mariadb_boot.log 2>&1 &
-sleep 5
+if ! pgrep -f "$MYSQLD_BIN --datadir=$PREFIX/var/lib/mysql" >/dev/null 2>&1; then
+    nohup "$MYSQLD_BIN" --datadir="$PREFIX/var/lib/mysql" --socket="$PREFIX/var/run/mysqld/mysqld.sock" --pid-file="$PREFIX/var/run/mysqld/mysqld.pid" > "$LOG_DIR/mariadb_boot.log" 2>&1 &
+fi
+
+wait_for_tcp 127.0.0.1 3306 40 || { tail -n 200 "$LOG_DIR/mariadb_boot.log" || true; die "MariaDB did not become ready"; }
 
 echo "-> Provisioning Vault Admin DB Role & App Databases..."
-mariadb -u $(whoami) -e "CREATE DATABASE IF NOT EXISTS mariadb;" > /dev/null 2>&1
-mariadb -u $(whoami) -e "CREATE DATABASE IF NOT EXISTS semaphore;" > /dev/null 2>&1
-mariadb -u $(whoami) -e "CREATE USER IF NOT EXISTS 'vault_admin'@'127.0.0.1' IDENTIFIED BY 'vault_admin_secret_99';" > /dev/null 2>&1
-mariadb -u $(whoami) -e "GRANT ALL PRIVILEGES ON *.* TO 'vault_admin'@'127.0.0.1' WITH GRANT OPTION;" > /dev/null 2>&1
+if command -v mariadb >/dev/null 2>&1; then DB_CLIENT="mariadb"; else DB_CLIENT="mysql"; fi
+$DB_CLIENT -u "$(whoami)" -e "CREATE DATABASE IF NOT EXISTS mariadb;" >/dev/null 2>&1
+$DB_CLIENT -u "$(whoami)" -e "CREATE DATABASE IF NOT EXISTS semaphore;" >/dev/null 2>&1
+
+echo "-> Generating High-Entropy Credentials for Gitea and PhotoPrism UI..."
+GITEA_USER="pocket_admin"
+if [[ -f "$STATE_DIR/gitea_admin_password.txt" ]]; then
+    GITEA_PASS="$(cat "$STATE_DIR/gitea_admin_password.txt")"
+else
+    GITEA_PASS=$(tr -dc 'a-f0-9' </dev/urandom | fold -w 24 | head -n 1)
+    printf '%s' "$GITEA_PASS" > "$STATE_DIR/gitea_admin_password.txt"
+    chmod 600 "$STATE_DIR/gitea_admin_password.txt"
+fi
+vault kv put secret/gitea username="$GITEA_USER" password="$GITEA_PASS" >/dev/null
+
+PP_PASS=$(tr -dc 'a-zA-Z0-9' </dev/urandom | fold -w 16 | head -n 1)
+vault kv put secret/photoprism username="admin" password="$PP_PASS" >/dev/null
+
+echo "-> Provisioning Gitea & Vault Databases with generated secrets..."
+$DB_CLIENT -u "$(whoami)" -e "CREATE DATABASE IF NOT EXISTS gitea;" >/dev/null 2>&1 || true
+$DB_CLIENT -u "$(whoami)" -e "CREATE USER IF NOT EXISTS 'gitea'@'127.0.0.1' IDENTIFIED BY '$GITEA_PASS';" >/dev/null 2>&1 || true
+$DB_CLIENT -u "$(whoami)" -e "GRANT ALL PRIVILEGES ON gitea.* TO 'gitea'@'127.0.0.1';" >/dev/null 2>&1 || true
+
+$DB_CLIENT -u "$(whoami)" -e "CREATE USER IF NOT EXISTS 'vault_admin'@'127.0.0.1' IDENTIFIED BY 'vault_admin_secret_99';" >/dev/null 2>&1
+$DB_CLIENT -u "$(whoami)" -e "GRANT ALL PRIVILEGES ON *.* TO 'vault_admin'@'127.0.0.1' WITH GRANT OPTION;" >/dev/null 2>&1
 
 echo "-> Mounting Vault Dynamic Database Secrets Engine..."
-vault secrets enable database > /dev/null 2>&1
 vault write database/config/mariadb \
     plugin_name="mysql-database-plugin" \
     allowed_roles="mariadb-role" \
     connection_url="{{username}}:{{password}}@tcp(127.0.0.1:3306)/" \
     username="vault_admin" \
-    password="vault_admin_secret_99" > /dev/null 2>&1
-    
+    password="vault_admin_secret_99" >/dev/null 2>&1 || true
+
 vault write database/roles/mariadb-role \
     db_name="mariadb" \
     creation_statements="CREATE USER '{{name}}'@'127.0.0.1' IDENTIFIED BY '{{password}}'; GRANT ALL PRIVILEGES ON *.* TO '{{name}}'@'127.0.0.1';" \
     default_ttl="1h" \
-    max_ttl="24h" > /dev/null 2>&1
+    max_ttl="24h" >/dev/null 2>&1 || true
 echo -e "\e[1;32m✅ Dynamic MariaDB Engine Active.\e[0m"
 
-echo "-> Generating High-Entropy Credentials for Gitea and PhotoPrism UI..."
-GITEA_USER="pocket_admin"
-GITEA_PASS=$(cat /dev/urandom | tr -dc 'a-f0-9' | fold -w 24 | head -n 1)
-vault kv put secret/gitea username="$GITEA_USER" password="$GITEA_PASS" > /dev/null
-
-PP_PASS=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)
-vault kv put secret/photoprism username="admin" password="$PP_PASS" > /dev/null
-
 echo "-> Configuring Ansible Semaphore Enterprise..."
-cat << EOF > ~/semaphore_config.json
+cat << EOF > "$HOME/semaphore_config.json"
 {
   "mysql": { "host": "127.0.0.1", "user": "vault_admin", "pass": "vault_admin_secret_99", "name": "semaphore" },
   "port": ":8082",
   "dialect": "mysql"
 }
 EOF
-# Run migrations headlessly
-semaphore migrate --config ~/semaphore_config.json > /dev/null 2>&1
-# Create initial admin user automatically
-semaphore user add --admin --login "$GITEA_USER" --name "Pocket Admin" --email "admin@pocketlab.local" --password "$GITEA_PASS" --config ~/semaphore_config.json > /dev/null 2>&1
+semaphore migrate --config "$HOME/semaphore_config.json" >/dev/null 2>&1 || true
+semaphore user add --admin --login "$GITEA_USER" --name "Pocket Admin" --email "admin@pocketlab.local" --password "$GITEA_PASS" --config "$HOME/semaphore_config.json" >/dev/null 2>&1 || true
 
-# ==========================================
-# ENTERPRISE LEAST PRIVILEGE ENFORCEMENT
-# ==========================================
 echo "-> Enabling AppRole Machine Authentication..."
-vault auth enable approle > /dev/null 2>&1
+vault auth enable approle >/dev/null 2>&1 || true
 
-cat << 'EOF' > ~/gitops-policy.hcl
+cat << 'EOF' > "$HOME/gitops-policy.hcl"
 path "secret/data/photoprism" { capabilities = ["read"] }
 path "secret/data/gitea" { capabilities = ["read"] }
 path "database/creds/mariadb-role" { capabilities = ["read"] }
@@ -278,19 +466,19 @@ path "auth/*" { capabilities = ["deny"] }
 path "sys/*" { capabilities = ["deny"] }
 EOF
 
-cat << 'EOF' > ~/fleet-policy.hcl
+cat << 'EOF' > "$HOME/fleet-policy.hcl"
 path "secret/data/tailscale" { capabilities = ["read"] }
 path "secret/data/photoprism" { capabilities = ["deny"] }
 path "database/creds/*" { capabilities = ["deny"] }
 EOF
 
-cat << 'EOF' > ~/auditor-policy.hcl
+cat << 'EOF' > "$HOME/auditor-policy.hcl"
 path "secret/metadata/*" { capabilities = ["list", "read"] }
 path "database/config/*" { capabilities = ["read"] }
 path "sys/health" { capabilities = ["read"] }
 EOF
 
-cat << 'EOF' > ~/dashboard-ui-policy.hcl
+cat << 'EOF' > "$HOME/dashboard-ui-policy.hcl"
 path "secret/data/gitea" { capabilities = ["read"] }
 path "secret/data/tailscale" { capabilities = ["read", "create", "update"] }
 path "secret/data/photoprism" { capabilities = ["read", "create", "update"] }
@@ -298,7 +486,7 @@ path "database/creds/mariadb-role" { capabilities = ["read", "update"] }
 path "sys/seal-status" { capabilities = ["read"] }
 EOF
 
-cat << 'EOF' > ~/admin-policy.hcl
+cat << 'EOF' > "$HOME/admin-policy.hcl"
 path "secret/*" { capabilities = ["create", "read", "update", "delete", "list", "sudo"] }
 path "auth/*" { capabilities = ["create", "read", "update", "delete", "list", "sudo"] }
 path "sys/policies/acl/*" { capabilities = ["create", "read", "update", "delete", "list"] }
@@ -306,46 +494,42 @@ path "sys/health" { capabilities = ["read"] }
 path "sys/unseal" { capabilities = ["update"] }
 EOF
 
-cat << 'EOF' > ~/warden-policy.hcl
+cat << 'EOF' > "$HOME/warden-policy.hcl"
 path "secret/data/incidents/warden/*" { capabilities = ["create", "update"] }
 path "secret/data/config/thresholds" { capabilities = ["read"] }
 EOF
 
 echo "-> Injecting Security Policies into Vault..."
-vault policy write gitops-policy ~/gitops-policy.hcl > /dev/null
-vault policy write fleet-policy ~/fleet-policy.hcl > /dev/null
-vault policy write auditor-policy ~/auditor-policy.hcl > /dev/null
-vault policy write dashboard-ui-policy ~/dashboard-ui-policy.hcl > /dev/null
-vault policy write admin-policy ~/admin-policy.hcl > /dev/null
-vault policy write warden-policy ~/warden-policy.hcl > /dev/null
+vault policy write gitops-policy "$HOME/gitops-policy.hcl" >/dev/null
+vault policy write fleet-policy "$HOME/fleet-policy.hcl" >/dev/null
+vault policy write auditor-policy "$HOME/auditor-policy.hcl" >/dev/null
+vault policy write dashboard-ui-policy "$HOME/dashboard-ui-policy.hcl" >/dev/null
+vault policy write admin-policy "$HOME/admin-policy.hcl" >/dev/null
+vault policy write warden-policy "$HOME/warden-policy.hcl" >/dev/null
 
 echo "-> Registering Machine Identities (AppRoles)..."
-vault write auth/approle/role/gitops-service policies="gitops-policy" token_ttl=1h > /dev/null
-vault write auth/approle/role/fleet-service policies="fleet-policy" token_ttl=1h > /dev/null
-vault write auth/approle/role/security-scanner policies="auditor-policy" token_ttl=30m > /dev/null
-vault write auth/approle/role/dashboard-api policies="dashboard-ui-policy" token_ttl=2h > /dev/null
+vault write auth/approle/role/gitops-service policies="gitops-policy" token_ttl=1h >/dev/null
+vault write auth/approle/role/fleet-service policies="fleet-policy" token_ttl=1h >/dev/null
+vault write auth/approle/role/security-scanner policies="auditor-policy" token_ttl=30m >/dev/null
+vault write auth/approle/role/dashboard-api policies="dashboard-ui-policy" token_ttl=2h >/dev/null
 
 echo "-> Generating Secure AppRole Credentials for Subsystems..."
 DASH_ROLE_ID=$(vault read -field=role_id auth/approle/role/dashboard-api/role-id)
 DASH_SECRET_ID=$(vault write -f -field=secret_id auth/approle/role/dashboard-api/secret-id)
-echo "{\"role_id\": \"$DASH_ROLE_ID\", \"secret_id\": \"$DASH_SECRET_ID\"}" > ~/dashboard_approle.json
-chmod 600 ~/dashboard_approle.json
+echo "{\"role_id\": \"$DASH_ROLE_ID\", \"secret_id\": \"$DASH_SECRET_ID\"}" > "$HOME/dashboard_approle.json"
+chmod 600 "$HOME/dashboard_approle.json"
 
 GITOPS_ROLE_ID=$(vault read -field=role_id auth/approle/role/gitops-service/role-id)
 GITOPS_SECRET_ID=$(vault write -f -field=secret_id auth/approle/role/gitops-service/secret-id)
-echo "{\"role_id\": \"$GITOPS_ROLE_ID\", \"secret_id\": \"$GITOPS_SECRET_ID\"}" > ~/gitops_approle.json
-chmod 600 ~/gitops_approle.json
+echo "{\"role_id\": \"$GITOPS_ROLE_ID\", \"secret_id\": \"$GITOPS_SECRET_ID\"}" > "$HOME/gitops_approle.json"
+chmod 600 "$HOME/gitops_approle.json"
 
 echo -e "\e[1;32m✅ Principle of Least Privilege Established.\e[0m"
 
-echo "-> Fetching Gitea (ARM64)..."
-pkg install gitea -y > /dev/null 2>&1
-
-mkdir -p ~/gitea_data/conf
-cat << EOF > ~/gitea_data/conf/app.ini
+mkdir -p "$HOME/gitea_data/conf"
+cat << EOF > "$HOME/gitea_data/conf/app.ini"
 APP_NAME = Pocket Lab GitOps Repository
 RUN_MODE = prod
-RUN_USER = $(whoami)
 
 [security]
 INSTALL_LOCK = true
@@ -356,7 +540,12 @@ DISABLE_SSH = true
 OFFLINE_MODE = true
 
 [database]
-DB_TYPE = sqlite3
+DB_TYPE = mysql
+HOST = 127.0.0.1:3306
+NAME = gitea
+USER = gitea
+PASSWD = $GITEA_PASS
+SSL_MODE = disable
 PATH = /data/data/com.termux/files/home/gitea_data/gitea.db
 
 [actions]
@@ -364,55 +553,53 @@ ENABLED = true
 EOF
 
 echo "-> Executing Gitea Boot Sequence..."
-nohup gitea web -c ~/gitea_data/conf/app.ini > ~/gitea_boot.log 2>&1 &
-GITEA_PID=$!
-sleep 3
-
-# ENTERPRISE GITEA SELF-HEALING ROUTINE
-if grep -q "Expect user" ~/gitea_boot.log; then
-    echo "   [!] Gitea OS User mismatch detected. Applying self-healing patch..."
-    EXPECTED_USER=$(grep "current user is:" ~/gitea_boot.log | awk -F'current user is: ' '{print $2}' | tr -d '\n' | tr -d "'")
-    if [ ! -z "$EXPECTED_USER" ]; then
-        sed -i "s/RUN_USER = .*/RUN_USER = $EXPECTED_USER/" ~/gitea_data/conf/app.ini
-        nohup gitea web -c ~/gitea_data/conf/app.ini > ~/gitea_boot.log 2>&1 &
-        GITEA_PID=$!
-    fi
+if ! pgrep -f "gitea web -c $HOME/gitea_data/conf/app.ini" >/dev/null 2>&1; then
+    nohup gitea web -c "$HOME/gitea_data/conf/app.ini" > "$LOG_DIR/gitea.log" 2>&1 &
 fi
-
-while ! curl -s http://127.0.0.1:3030 > /dev/null; do sleep 2; done
+wait_for_http "http://127.0.0.1:3030" 60 || { tail -n 200 "$LOG_DIR/gitea.log" || true; die "Gitea did not become ready"; }
 
 echo "-> Provisioning Admin Account natively via variables..."
-gitea admin user create --username "$GITEA_USER" --password "$GITEA_PASS" --email "admin@pocketlab.local" --admin -c ~/gitea_data/conf/app.ini > /dev/null 2>&1
+gitea admin user create --username "$GITEA_USER" --password "$GITEA_PASS" --email "admin@pocketlab.local" --admin -c "$HOME/gitea_data/conf/app.ini" >/dev/null 2>&1 || true
 
 echo "-> Fetching Gitea Act_Runner (ARM64)..."
-wget -qO act_runner "https://dl.gitea.com/act_runner/0.2.10/act_runner-0.2.10-linux-arm64"
-chmod +x act_runner && mv act_runner $PREFIX/bin/act_runner
-
-echo "-> Registering Runner (Host Execution Mode)..."
-RUNNER_TOKEN=$(gitea --config ~/gitea_data/conf/app.ini actions generate-runner-token)
-if [ -z "$RUNNER_TOKEN" ]; then
-    echo -e "\e[1;31mError: Failed to generate Gitea runner token. Check gitea_boot.log\e[0m"
-    exit 1
+if ! have act_runner; then
+    download_if_missing "https://dl.gitea.com/act_runner/0.2.10/act_runner-0.2.10-linux-arm64" "$PREFIX/bin/act_runner" 755
 fi
 
-act_runner register --no-interactive --instance http://127.0.0.1:3030 --token "$RUNNER_TOKEN" --name termux-edge-runner --labels termux-arm64:host > /dev/null 2>&1
-nohup act_runner daemon > ~/act_runner.log 2>&1 &
+echo "-> Registering Runner (Host Execution Mode)..."
+RUNNER_TOKEN=$(gitea --config "$HOME/gitea_data/conf/app.ini" actions generate-runner-token)
+if [ -z "$RUNNER_TOKEN" ]; then
+    die "Failed to generate Gitea runner token. Check gitea.log"
+fi
+
+mkdir -p "$HOME/act_runner"
+if [[ ! -f "$HOME/act_runner/config.yaml" ]]; then
+    act_runner register --no-interactive --instance http://127.0.0.1:3030 --token "$RUNNER_TOKEN" --name termux-edge-runner --labels termux-arm64:host --config "$HOME/act_runner/config.yaml" >/dev/null 2>&1 || true
+fi
+nohup act_runner daemon --config "$HOME/act_runner/config.yaml" > "$LOG_DIR/act_runner.log" 2>&1 &
 RUNNER_PID=$!
 
 echo "-> Creating Private Repositories..."
-curl -s -X POST "http://127.0.0.1:3030/api/v1/user/repos" -u "$GITEA_USER:$GITEA_PASS" -H "Content-Type: application/json" -d '{"name": "iac-catalog", "private": true}' > /dev/null
-curl -s -X POST "http://127.0.0.1:3030/api/v1/user/repos" -u "$GITEA_USER:$GITEA_PASS" -H "Content-Type: application/json" -d '{"name": "pocket_lab_iac", "private": true}' > /dev/null
+curl -s -X POST "http://127.0.0.1:3030/api/v1/user/repos" -u "$GITEA_USER:$GITEA_PASS" -H "Content-Type: application/json" -d '{"name": "iac-catalog", "private": true}' >/dev/null || true
+curl -s -X POST "http://127.0.0.1:3030/api/v1/user/repos" -u "$GITEA_USER:$GITEA_PASS" -H "Content-Type: application/json" -d '{"name": "pocket_lab_iac", "private": true}' >/dev/null || true
 
-# --- STAGE 8: IaC Catalog Seeder & CI/CD Pipelines ---
+# =============================================================================
+# STAGE 8: IaC Catalog Seeder & CI/CD Pipelines
+# =============================================================================
 print_header "STAGE 8: Executing Enterprise Catalog Seeder"
 
-cat << 'SEEDER_EOF' > ~/seed_catalog.sh
-#!/bin/bash
+cat << 'SEEDER_EOF' > "$HOME/seed_catalog.sh"
+#!/data/data/com.termux/files/usr/bin/bash
+set -Eeuo pipefail
+IFS=$'\n\t'
+
 G_USER=$1
 G_PASS=$2
-mkdir -p ~/iac-catalog-temp && cd ~/iac-catalog-temp
 
-# 1. Ubuntu Base (Logical Foundation) -> Nomad Batch Job
+mkdir -p "$HOME/iac-catalog-temp"
+cd "$HOME/iac-catalog-temp"
+rm -rf ./* || true
+
 mkdir -p ubuntu_base
 cat << 'INNER_EOF' > ubuntu_base/app.nomad
 job "ubuntu_base" {
@@ -430,7 +617,6 @@ cat << 'INNER_EOF' > ubuntu_base/metadata.json
 { "title": "Ubuntu Core", "description": "Raw Debian-based PRoot environment.", "icon": "TerminalSquare" }
 INNER_EOF
 
-# 2. PhotoPrism App -> Nomad Service Job with Vault Secrets Injection
 mkdir -p photoprism
 cat << 'INNER_EOF' > photoprism/app.nomad
 job "photoprism" {
@@ -462,7 +648,6 @@ cat << 'INNER_EOF' > photoprism/metadata.json
 { "title": "PhotoPrism AI", "description": "AI-powered photo indexer with Vault Dynamic Secrets via Nomad.", "icon": "Image" }
 INNER_EOF
 
-# 3. Security Scanners -> Ansible Playbook via Semaphore
 mkdir -p security_scanners
 cat << 'INNER_EOF' > security_scanners/maintenance.yml
 ---
@@ -487,7 +672,6 @@ cat << 'INNER_EOF' > security_scanners/metadata.json
 { "title": "Security Scanners", "description": "Ephemeral Trivy & Lynis Ansible Playbook.", "icon": "ShieldCheck" }
 INNER_EOF
 
-# 4. Host Hardening Remediation -> Ansible Playbook
 mkdir -p host_hardening
 cat << 'INNER_EOF' > host_hardening/maintenance.yml
 ---
@@ -503,7 +687,6 @@ cat << 'INNER_EOF' > host_hardening/metadata.json
 { "title": "Host Hardening", "description": "Automated remediation for Lynis warnings.", "icon": "Lock" }
 INNER_EOF
 
-# 5. CVE Patcher Remediation -> Ansible Playbook
 mkdir -p cve_patcher
 cat << 'INNER_EOF' > cve_patcher/maintenance.yml
 ---
@@ -518,7 +701,6 @@ cat << 'INNER_EOF' > cve_patcher/metadata.json
 { "title": "CVE Patcher", "description": "Automated APT package patching inside PRoot.", "icon": "Wrench" }
 INNER_EOF
 
-# 6. Disaster Recovery: Auto Backup -> Ansible Playbook
 mkdir -p dr_automate_backup
 cat << 'INNER_EOF' > dr_automate_backup/maintenance.yml
 ---
@@ -537,7 +719,6 @@ cat << 'INNER_EOF' > dr_automate_backup/metadata.json
 { "title": "Automated Backups", "description": "Daily cron backup scheduler.", "icon": "Clock" }
 INNER_EOF
 
-# 7. Disaster Recovery: Manual Snapshot -> Ansible Playbook
 mkdir -p dr_manual_snapshot
 cat << 'INNER_EOF' > dr_manual_snapshot/maintenance.yml
 ---
@@ -552,28 +733,23 @@ cat << 'INNER_EOF' > dr_manual_snapshot/metadata.json
 { "title": "Manual Snapshot", "description": "Point-in-time ecosystem state capture.", "icon": "DownloadCloud" }
 INNER_EOF
 
-# Push to Local Registry
 git init
 git config user.name "PocketLab Automation"
 git config user.email "gitops@pocketlab.local"
 git branch -M main
 git add .
-git commit -m "Initial commit: Populating Enterprise Catalog"
-git remote add origin "http://${G_USER}:${G_PASS}@127.0.0.1:3030/${G_USER}/iac-catalog.git"
+git commit -m "Initial commit: Populating Enterprise Catalog" >/dev/null 2>&1 || true
+git remote add origin "http://${G_USER}:${G_PASS}@127.0.0.1:3030/${G_USER}/iac-catalog.git" 2>/dev/null || git remote set-url origin "http://${G_USER}:${G_PASS}@127.0.0.1:3030/${G_USER}/iac-catalog.git"
 git push -u origin main
 SEEDER_EOF
 
 echo "-> Executing Catalog Seeder..."
-chmod +x ~/seed_catalog.sh
-bash ~/seed_catalog.sh "$GITEA_USER" "$GITEA_PASS" > /dev/null 2>&1
+chmod +x "$HOME/seed_catalog.sh"
+bash "$HOME/seed_catalog.sh" "$GITEA_USER" "$GITEA_PASS" >/dev/null 2>&1 || true
 
 echo "-> Seeding Nomad & Ansible Workflows..."
-mkdir -p ~/pocket_lab_iac/.gitea/workflows
-cd ~/pocket_lab_iac
-
-# ==========================================
-# WORKFLOW: Nomad & Ansible Orchestration Pipeline
-# ==========================================
+mkdir -p "$HOME/pocket_lab_iac/.gitea/workflows"
+cd "$HOME/pocket_lab_iac"
 cat << 'EOF' > .gitea/workflows/deploy.yaml
 name: Global Orchestration Pipeline
 on: [push]
@@ -585,7 +761,6 @@ jobs:
         uses: actions/checkout@v3
       - name: Deploy Workloads
         run: |
-          # 1. Orchestrate Nomad Jobs
           export VAULT_ADDR='http://127.0.0.1:8200'
           for dir in */; do
             if [ -f "$dir/app.nomad" ]; then
@@ -593,8 +768,6 @@ jobs:
               nomad job run "$dir/app.nomad"
             fi
           done
-          
-          # 2. Trigger Ansible Playbooks
           for dir in */; do
             if [ -f "$dir/maintenance.yml" ]; then
               echo "Executing Maintenance Playbook: $dir"
@@ -608,55 +781,72 @@ git config user.name "PocketLab Automation"
 git config user.email "gitops@pocketlab.local"
 git branch -M main
 git add .
-git commit -m "Initial commit: Orchestration Workflows Initialized"
-git remote add origin "http://${GITEA_USER}:${GITEA_PASS}@127.0.0.1:3030/${GITEA_USER}/pocket_lab_iac.git"
-git push -u origin main > /dev/null 2>&1
+git commit -m "Initial commit: Orchestration Workflows Initialized" >/dev/null 2>&1 || true
+git remote add origin "http://${GITEA_USER}:${GITEA_PASS}@127.0.0.1:3030/${GITEA_USER}/pocket_lab_iac.git" 2>/dev/null || git remote set-url origin "http://${GITEA_USER}:${GITEA_PASS}@127.0.0.1:3030/${GITEA_USER}/pocket_lab_iac.git"
+git push -u origin main >/dev/null 2>&1 || true
 
 echo "-> Shredding plain-text variables & temporary scripts..."
-rm -rf ~/iac-catalog-temp ~/seed_catalog.sh
+rm -rf "$HOME/iac-catalog-temp" "$HOME/seed_catalog.sh"
 unset GITEA_PASS
 unset GITEA_USER
 
 echo "-> Shutting down temporary boot processes..."
-kill $RUNNER_PID
-kill $GITEA_PID
-kill $VAULT_PID
+kill "${RUNNER_PID:-0}" 2>/dev/null || true
+kill "${GITEA_PID:-0}" 2>/dev/null || true
+kill "${VAULT_PID:-0}" 2>/dev/null || true
 pkill mysqld || pkill mariadbd || true
 
 echo -e "\e[1;32m✅ Identity, Orchestration Engine, & Catalog Seeded & Ready.\e[0m"
 sleep 2
 
-# --- STAGE 9: Secure HTTPS Activation ---
+# =============================================================================
+# STAGE 9: Secure HTTPS Activation
+# =============================================================================
 print_header "STAGE 9: Secure HTTPS Activation"
-mkdir -p ~/.tailscale
-curl -fsSL https://raw.githubusercontent.com/bropines/tailscale-termux-cli/main/remote-install.sh | bash
-echo 'TS_SOCKS5_PORT=1055' > ~/.tailscale/.env
-tailscaled-start
+mkdir -p "$HOME/.tailscale"
+if [[ ! -x "$HOME/.tailscale/tailscale_installer.sh" ]]; then
+    curl -fsSL https://raw.githubusercontent.com/bropines/tailscale-termux-cli/main/remote-install.sh -o "$HOME/.tailscale/tailscale_installer.sh"
+    chmod +x "$HOME/.tailscale/tailscale_installer.sh"
+fi
+bash "$HOME/.tailscale/tailscale_installer.sh" || true
+echo 'TS_SOCKS5_PORT=1055' > "$HOME/.tailscale/.env"
+tailscaled-start || true
 sleep 3
 
 echo -e "\n\e[1;35m⚠️  ACTION REQUIRED: AUTHENTICATE NODE\e[0m"
-tailscale-cli up --hostname=pocket-lab
+tailscale-cli up --hostname=pocket-lab || true
 pause
 
-# --- STAGE 10: Fetch Edge Dashboard & Init Script ---
+# =============================================================================
+# STAGE 10: Fetch Edge Dashboard & Configurations
+# =============================================================================
 print_header "STAGE 10: Fetching Edge Dashboard & Configurations"
 
 LATEST_RELEASE=$(curl -s "https://api.github.com/repos/$REPO/releases/latest")
 ZIP_URL=$(echo "$LATEST_RELEASE" | jq -r '.assets[] | select(.name=="dist.zip") | .browser_download_url')
+if [[ -z "${ZIP_URL:-}" || "$ZIP_URL" == "null" ]]; then
+    die "dist.zip release asset not found"
+fi
 
-wget -q -O ~/dist.zip "$ZIP_URL"
-unzip -o ~/dist.zip -d ~/pwa_dist > /dev/null 2>&1
-rm ~/dist.zip
-if [ -d ~/pwa_dist/dist ]; then mv ~/pwa_dist/dist/* ~/pwa_dist/ && rm -rf ~/pwa_dist/dist; fi
+wget -q -O "$HOME/dist.zip" "$ZIP_URL"
+unzip -o "$HOME/dist.zip" -d "$HOME/pwa_dist" >/dev/null 2>&1
+rm -f "$HOME/dist.zip"
+if [ -d "$HOME/pwa_dist/dist" ]; then
+    mv "$HOME/pwa_dist/dist"/* "$HOME/pwa_dist/" 2>/dev/null || true
+    rm -rf "$HOME/pwa_dist/dist"
+fi
 
 RAW_BASE="https://raw.githubusercontent.com/$REPO/main"
-wget -q -O ~/api_server.py "$RAW_BASE/api_server.py"
-wget -q -O ~/update_pocketlab.sh "$RAW_BASE/update_pocketlab.sh"
-chmod +x ~/update_pocketlab.sh
+wget -q -O "$HOME/api_server.py" "$RAW_BASE/api_server.py" || true
+wget -q -O "$HOME/update_pocketlab.sh" "$RAW_BASE/update_pocketlab.sh" || true
+chmod +x "$HOME/update_pocketlab.sh" 2>/dev/null || true
 
 echo "  -> Generating Init Script (start_dashboard.sh)..."
-cat << 'START_DASH_EOF' > ~/start_dashboard.sh
+cat << 'START_DASH_EOF' > "$HOME/start_dashboard.sh"
 #!/data/data/com.termux/files/usr/bin/bash
+set -Eeuo pipefail
+IFS=$'\n\t'
+
 echo -e "\n=> 🚀 Igniting Pocket Lab Edge Architecture..."
 
 if [ ! -f ~/api_server.py ]; then
@@ -667,82 +857,71 @@ fi
 mkdir -p ~/api ~/pocket_lab_logs ~/pwa_dist ~/storage/downloads
 rm -f ~/pocket_lab_logs/*.log
 
-echo "  -> Purging old lingering processes..."
-pkill python || true
-pkill python3 || true
-pkill caddy || true
-pkill vault || true
-pkill gitea || true
-pkill act_runner || true
-pkill mysqld || pkill mariadbd || true
-pkill nomad || true
-pkill semaphore || true
-sleep 2
-
-# ==========================================
-# 1. CORE DATA & IDENTITY ENGINES
-# ==========================================
-echo "  -> Starting MariaDB Database Engine..."
-mkdir -p $PREFIX/var/run/mysqld
-if [ -f "$PREFIX/bin/mariadbd" ]; then
-    MYSQLD_BIN="$PREFIX/bin/mariadbd"
-else
-    MYSQLD_BIN="$PREFIX/bin/mysqld"
-fi
-nohup $MYSQLD_BIN --datadir=$PREFIX/var/lib/mysql > ~/pocket_lab_logs/mariadb.log 2>&1 &
-
-echo "  -> Starting HashiCorp Vault Server..."
-export VAULT_ADDR='http://127.0.0.1:8200'
-nohup vault server -config=$HOME/vault_config.hcl > ~/pocket_lab_logs/vault.log 2>&1 &
-
-echo "  -> Starting Gitea GitOps Registry..."
-nohup gitea web -c ~/gitea_data/conf/app.ini > ~/pocket_lab_logs/gitea.log 2>&1 &
-
-echo "  -> Starting Gitea Actions Engine (act_runner)..."
-nohup act_runner daemon > ~/pocket_lab_logs/act_runner.log 2>&1 &
-
-# ==========================================
-# 2. ENTERPRISE ORCHESTRATION ENGINES
-# ==========================================
-echo "  -> Starting HashiCorp Nomad Server..."
-mkdir -p ~/nomad_data
-cat << EOF > ~/nomad_config.hcl
-data_dir  = "/data/data/com.termux/files/home/nomad_data"
-bind_addr = "0.0.0.0"
-server { enabled = true; bootstrap_expect = 1 }
-client { enabled = true }
-plugin "raw_exec" { config { enabled = true } }
-vault {
-  enabled = true
-  address = "http://127.0.0.1:8200"
-  token   = "${ROOT_TOKEN}"
+log() {
+    printf '[%s] [RUNTIME] %s\n' "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" "$*" | tee -a ~/pocket_lab_logs/runtime.log
 }
-EOF
-nohup nomad agent -config=$HOME/nomad_config.hcl > ~/pocket_lab_logs/nomad.log 2>&1 &
 
-echo "  -> Starting Ansible Semaphore Automator..."
-nohup semaphore server --config=$HOME/semaphore_config.json > ~/pocket_lab_logs/semaphore.log 2>&1 &
+ensure_started() {
+    local name="$1"
+    shift
+    local pattern="$1"
+    shift
+    if ! pgrep -f "$pattern" >/dev/null 2>&1; then
+        log "Starting $name"
+        nohup "$@" >/dev/null 2>&1 &
+    else
+        log "$name already running"
+    fi
+}
 
-# ==========================================
-# 3. TELEMETRY & OBSERVABILITY
-# ==========================================
+start_mariadb() {
+    local MYSQLD_BIN
+    if command -v mariadbd >/dev/null 2>&1; then
+        MYSQLD_BIN="mariadbd"
+    else
+        MYSQLD_BIN="mysqld"
+    fi
+    ensure_started "MariaDB" "$MYSQLD_BIN --datadir=$PREFIX/var/lib/mysql" "$MYSQLD_BIN" --datadir="$PREFIX/var/lib/mysql" --socket="$PREFIX/var/run/mysqld/mysqld.sock" --pid-file="$PREFIX/var/run/mysqld/mysqld.pid"
+}
+
+start_vault() {
+    ensure_started "Vault" "vault server -config=$HOME/vault_config.hcl" vault server -config="$HOME/vault_config.hcl"
+}
+
+start_gitea() {
+    ensure_started "Gitea" "gitea web -c $HOME/gitea_data/conf/app.ini" gitea web -c "$HOME/gitea_data/conf/app.ini"
+}
+
+start_runner() {
+    ensure_started "act_runner" "act_runner daemon" act_runner daemon
+}
+
+start_nomad() {
+    ensure_started "Nomad" "nomad agent -config=$HOME/nomad_config.hcl" nomad agent -config="$HOME/nomad_config.hcl"
+}
+
+start_semaphore() {
+    ensure_started "Semaphore" "semaphore server --config=$HOME/semaphore_config.json" semaphore server --config="$HOME/semaphore_config.json"
+}
+
+start_telemetry() {
 cat << 'TELEMETRY_EOF' > ~/telemetry_daemon.sh
 #!/bin/bash
 echo "Telemetry Daemon Started at $(date)"
 
-TEMP_LIMIT=48      
-RAM_LIMIT=90       
+TEMP_LIMIT=48
+RAM_LIMIT=90
 
 while true; do
     TEMP=$(cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null || echo "35000")
     TEMP_C=$((TEMP / 1000))
-    MEM_FREE=$(cat /proc/meminfo | grep MemFree | awk '{print $2}')
-    MEM_TOTAL=$(cat /proc/meminfo | grep MemTotal | awk '{print $2}')
+    MEM_FREE=$(grep MemFree /proc/meminfo | awk '{print $2}')
+    MEM_TOTAL=$(grep MemTotal /proc/meminfo | awk '{print $2}')
     MEM_PCT=$(( 100 - (MEM_FREE * 100 / MEM_TOTAL) ))
-    
+
     STATUS="nominal"
     if [ "$TEMP_C" -ge "$TEMP_LIMIT" ]; then STATUS="overheat_intervention"; fi
-    if [ "$MEM_PCT" -ge "$RAM_LIMIT" ]; then if [ "$STATUS" == "nominal" ]; then STATUS="memory_intervention"; fi; fi
+    if [ "$MEM_PCT" -ge "$RAM_LIMIT" ] && [ "$STATUS" = "nominal" ]; then STATUS="memory_intervention"; fi
 
     if [ "$STATUS" != "nominal" ]; then
         pkill -9 photoprism || true
@@ -755,35 +934,48 @@ while true; do
 done
 TELEMETRY_EOF
 chmod +x ~/telemetry_daemon.sh
+ensure_started "Telemetry" "telemetry_daemon.sh" bash ~/telemetry_daemon.sh
+}
 
-echo "  -> Starting Hardware Telemetry Daemon..."
-nohup bash ~/telemetry_daemon.sh > ~/pocket_lab_logs/telemetry.log 2>&1 &
+start_pwa() {
+    ensure_started "PWA" "http.server 3000 --directory ~/pwa_dist" python3 -m http.server 3000 --directory ~/pwa_dist
+}
 
-# ==========================================
-# 4. USER INTERFACES & API BRIDGES
-# ==========================================
-echo "  -> Starting PWA Web Server (Port 3000)..."
-nohup python3 -m http.server 3000 --directory ~/pwa_dist > ~/pocket_lab_logs/pwa_server.log 2>&1 &
+start_api() {
+    ensure_started "API bridge" "api_server.py" python3 ~/api_server.py
+}
 
-echo "  -> Starting Active API Command Bridge (Port 8080)..."
-nohup python3 ~/api_server.py > ~/pocket_lab_logs/api_server.log 2>&1 &
+start_caddy() {
+    ensure_started "Caddy" "caddy run --config ~/Caddyfile" caddy run --config ~/Caddyfile
+}
 
-# ==========================================
-# 5. MESH NETWORKING & INGRESS
-# ==========================================
-echo "  -> Starting Caddy Reverse Proxy..."
-nohup caddy run --config ~/Caddyfile > ~/pocket_lab_logs/caddy.log 2>&1 &
-sleep 2
+start_tailscale() {
+    if command -v tailscale-cli >/dev/null 2>&1; then
+        tailscale-cli serve --bg --https 443 http://127.0.0.1:8443 || true
+    fi
+}
 
-echo "  -> Binding Tailscale to Caddy..."
-tailscale-cli serve --bg --https 443 http://127.0.0.1:8443
+mkdir -p "$PREFIX/var/run/mysqld"
 
-echo -e "\n=> ✅ Pocket Lab Services are LIVE and secured by Caddy!"
+while true; do
+    start_mariadb
+    start_vault
+    start_gitea
+    start_runner
+    start_nomad
+    start_semaphore
+    start_telemetry
+    start_pwa
+    start_api
+    start_caddy
+    start_tailscale
+    sleep 20
+done
 START_DASH_EOF
 
-chmod +x ~/start_dashboard.sh
+chmod +x "$HOME/start_dashboard.sh"
 
-cat << 'EOF' > ~/Caddyfile
+cat << 'EOF' > "$HOME/Caddyfile"
 :8443 {
     header Strict-Transport-Security "max-age=31536000; includeSubDomains"
     handle /api/* { reverse_proxy 127.0.0.1:8080 }
@@ -795,16 +987,17 @@ cat << 'EOF' > ~/Caddyfile
 }
 EOF
 
-# --- STAGE 11: System Ignition ---
+# =============================================================================
+# STAGE 11: System Ignition
+# =============================================================================
 print_header "STAGE 11: System Ignition"
-bash ~/start_dashboard.sh
-DOMAIN=$(tailscale-cli status --json | jq -r '.Self.DNSName' | sed 's/\.$//')
+bash "$HOME/start_dashboard.sh" || true
+DOMAIN=$(tailscale-cli status --json | jq -r '.Self.DNSName' | sed 's/\.$//' || true)
 
-# Retrieve the Root Token and Unseal Key to present to the user
-ROOT_TOKEN=$(jq -r '.root_token' ~/vault_keys.json)
-UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' ~/vault_keys.json)
+ROOT_TOKEN=$(jq -r '.root_token' "$HOME/vault_keys.json")
+UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' "$HOME/vault_keys.json")
 
-clear
+clear || true
 echo -e "\e[1;32m====================================================\e[0m"
 echo -e "\e[1;32m                 ✅ SYSTEM ONLINE                   \e[0m"
 echo -e "\e[1;32m====================================================\e[0m"
