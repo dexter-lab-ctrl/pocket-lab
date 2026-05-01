@@ -75,9 +75,12 @@ install_ansible_in_proot() {
     fi
 
     log "INFO" "Installing Ansible inside proot Ubuntu"
+    # FIXED: Added ForceIPv4 & gai.conf updates to prevent Errno 110 Launchpad/Tailscale Timeout
     proot-distro login ubuntu -- bash -lc '
         set -e
         export DEBIAN_FRONTEND=noninteractive
+        echo "Acquire::ForceIPv4 \"true\";" > /etc/apt/apt.conf.d/99force-ipv4
+        echo "precedence ::ffff:0:0/96  100" >> /etc/gai.conf
         apt-get update
         apt-get install -y ansible python3 python3-pip openssh-client sshpass
     '
@@ -211,6 +214,22 @@ if ! have nomad; then
     chmod +x "$PREFIX/bin/nomad"
     rm -f "$STATE_DIR/nomad.zip"
 fi
+
+# FIXED: Nomad configuration generation was missing in original script
+cat << 'EOF' > "$HOME/nomad_config.hcl"
+data_dir  = "/data/data/com.termux/files/home/nomad_data"
+bind_addr = "127.0.0.1"
+server {
+  enabled          = true
+  bootstrap_expect = 1
+}
+client {
+  enabled = true
+  options = {
+    "driver.raw_exec.enable" = "1"
+  }
+}
+EOF
 
 echo "-> Downloading Ansible Semaphore (Task Automator)..."
 if ! have semaphore; then
@@ -399,10 +418,13 @@ if ! pgrep -f "vault server -config=$HOME/vault_config.hcl" >/dev/null 2>&1; the
     nohup vault server -config="$HOME/vault_config.hcl" > "$LOG_DIR/vault.log" 2>&1 &
 fi
 
-echo "-> Waiting for Vault API..."
-wait_for_http "http://127.0.0.1:8200/v1/sys/health" 60 || die "Vault did not become ready"
+echo "-> Waiting for Vault Engine Listener..."
+# FIXED: Wait for TCP instead of HTTP, since HTTP 501 Uninitialized causes curl -f to fail
+wait_for_tcp 127.0.0.1 8200 60 || die "Vault did not become ready on port 8200"
+sleep 3 # Buffer for listener to fully initialize
 
-if ! vault status >/dev/null 2>&1; then
+# FIXED: Check configuration file existence rather than unstable vault status outputs
+if [ ! -f "$HOME/vault_keys.json" ]; then
     echo "-> Initializing Vault (1 Key Share)..."
     vault operator init -key-shares=1 -key-threshold=1 -format=json > "$HOME/vault_keys.json"
     chmod 600 "$HOME/vault_keys.json"
@@ -412,9 +434,7 @@ UNSEAL_KEY=$(jq -r '.unseal_keys_b64[0]' "$HOME/vault_keys.json")
 ROOT_TOKEN=$(jq -r '.root_token' "$HOME/vault_keys.json")
 
 echo "-> Unsealing Vault & Authenticating..."
-if vault status >/dev/null 2>&1; then
-    :
-else
+if ! vault status >/dev/null 2>&1; then
     vault operator unseal "$UNSEAL_KEY" >/dev/null
 fi
 vault login "$ROOT_TOKEN" >/dev/null
@@ -454,19 +474,14 @@ GITEA_USER="pocket_admin"
 if [[ -f "$STATE_DIR/gitea_admin_password.txt" ]]; then
     GITEA_PASS="$(cat "$STATE_DIR/gitea_admin_password.txt")"
 else
-    # Disable pipefail to prevent head from triggering SIGPIPE and killing the script
-    set +o pipefail
-    GITEA_PASS=$(tr -dc 'a-f0-9' </dev/urandom | fold -w 24 | head -n 1)
-    set -o pipefail
-    
+    # FIXED: Replaced urandom pipes with highly stable openssl generator to prevent bash SIGPIPE crashes
+    GITEA_PASS=$(openssl rand -hex 12)
     printf '%s' "$GITEA_PASS" > "$STATE_DIR/gitea_admin_password.txt"
     chmod 600 "$STATE_DIR/gitea_admin_password.txt"
 fi
 vault kv put secret/gitea username="$GITEA_USER" password="$GITEA_PASS" >/dev/null
 
-set +o pipefail
-PP_PASS=$(tr -dc 'a-zA-Z0-9' </dev/urandom | fold -w 16 | head -n 1)
-set -o pipefail
+PP_PASS=$(openssl rand -hex 12)
 vault kv put secret/photoprism username="admin" password="$PP_PASS" >/dev/null
 
 echo "-> Provisioning Vault Admin DB Role & App Databases..."
@@ -749,7 +764,7 @@ cat << 'INNER_EOF' > cve_patcher/maintenance.yml
   connection: local
   tasks:
     - name: Update apt packages in PRoot
-      command: proot-distro login ubuntu -- apt-get update && apt-get upgrade -y
+      command: proot-distro login ubuntu -- bash -c 'echo "Acquire::ForceIPv4 \"true\";" > /etc/apt/apt.conf.d/99force-ipv4 && apt-get update && apt-get upgrade -y'
 INNER_EOF
 cat << 'INNER_EOF' > cve_patcher/metadata.json
 { "title": "CVE Patcher", "description": "Automated APT package patching inside PRoot.", "icon": "Wrench" }
@@ -958,6 +973,16 @@ start_semaphore() {
     ensure_started "Semaphore" "semaphore server --config=$HOME/semaphore_config.json" semaphore server --config="$HOME/semaphore_config.json"
 }
 
+# FIXED: Actually start the Loki server to capture metrics
+start_loki() {
+    ensure_started "Loki" "loki -config.file=$HOME/loki-config.yaml" loki -config.file="$HOME/loki-config.yaml"
+}
+
+# FIXED: Actually start Promtail so it passes metrics to Loki
+start_promtail() {
+    ensure_started "Promtail" "promtail -config.file=$HOME/promtail-config.yaml" promtail -config.file="$HOME/promtail-config.yaml"
+}
+
 start_telemetry() {
 cat << 'TELEMETRY_EOF' > ~/telemetry_daemon.sh
 #!/bin/bash
@@ -1018,6 +1043,8 @@ while true; do
     start_runner
     start_nomad
     start_semaphore
+    start_loki
+    start_promtail
     start_telemetry
     start_pwa
     start_api
