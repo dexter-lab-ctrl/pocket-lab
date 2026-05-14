@@ -33,9 +33,9 @@ export default function DisasterRecoveryTab() {
     
     if (!isLiveEnv) {
       // SIMULATOR MODE
-      setDeploymentLogs(`[*] SIMULATOR: Initializing Ansible Semaphore Automator for '${blueprintId}'...\n`);
-      setTimeout(() => setDeploymentLogs(prev => prev + `[semaphore] Compiling maintenance playbook...\n`), 800);
-      setTimeout(() => setDeploymentLogs(prev => prev + `[semaphore] Executing playbook tasks (${action})...\n`), 1800);
+      setDeploymentLogs(`[*] SIMULATOR: Initializing GitOps Pipeline for '${blueprintId}'...\n`);
+      setTimeout(() => setDeploymentLogs(prev => prev + `[act_runner] Compiling maintenance playbook...\n`), 800);
+      setTimeout(() => setDeploymentLogs(prev => prev + `[act_runner] Executing playbook tasks (${action})...\n`), 1800);
       setTimeout(() => {
         setDeploymentLogs(prev => prev + `\n[SUCCESS] Execution complete! Disaster Recovery state synchronized.`);
         setDeployingEngine(null);
@@ -97,7 +97,7 @@ export default function DisasterRecoveryTab() {
              <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest">Business Continuity</h3>
           </div>
           <h2 className="text-4xl font-black text-white tracking-tight mb-2 relative z-10">Stateful Recovery</h2>
-          <p className="text-slate-400 text-sm max-w-lg relative z-10">Manage immutable snapshots of your entire container ecosystem. All automated schedules are strictly enforced via Ansible Semaphore playbooks, ensuring auditable operations.</p>
+          <p className="text-slate-400 text-sm max-w-lg relative z-10">Manage immutable snapshots of your entire container ecosystem. All automated schedules are strictly enforced via Ansible playbooks executed by Gitea Actions, ensuring auditable operations.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -110,7 +110,7 @@ export default function DisasterRecoveryTab() {
               </div>
             </div>
             <h3 className="text-xl font-black text-white mb-2">Immutable Cron</h3>
-            <p className="text-slate-400 text-sm mb-6 flex-1">Declaratively enforce a daily snapshot schedule (03:00 AM local). Ansible Semaphore manages the execution reliably.</p>
+            <p className="text-slate-400 text-sm mb-6 flex-1">Declaratively enforce a daily snapshot schedule (03:00 AM local). Gitea Actions manages the execution reliably.</p>
             
             {/* iOS Style Toggle */}
             <div className="flex items-center justify-between bg-black/40 p-4 rounded-2xl border border-white/5">
@@ -197,7 +197,7 @@ export default function DisasterRecoveryTab() {
              <div className="flex-1 overflow-y-auto p-5 font-mono text-xs whitespace-pre-wrap leading-relaxed text-emerald-100/90 scrollbar-thin scrollbar-thumb-slate-700">
                {deploymentLogs ? (
                  <div className="animate-in fade-in">
-                   <div className="text-slate-500 mb-2 border-b border-slate-800 pb-2">Pocket Lab Semaphore Engine v2.17<br/>Module: Disaster Recovery</div>
+                   <div className="text-slate-500 mb-2 border-b border-slate-800 pb-2">Pocket Lab GitOps Engine (act_runner)<br/>Module: Disaster Recovery</div>
                    {deploymentLogs}
                    <div ref={logsEndRef} />
                  </div>
@@ -215,7 +215,7 @@ export default function DisasterRecoveryTab() {
                   <span className={`w-2 h-2 rounded-full ${deployingEngine ? 'bg-emerald-500 animate-pulse' : 'bg-slate-600'}`}></span>
                   <span>{deployingEngine ? 'Task Running' : 'Engine Idle'}</span>
                 </div>
-                <span>SEMAPHORE_TASK_LOCK=ON</span>
+                <span>PIPELINE_TASK_LOCK=ON</span>
              </div>
           </div>
       </div>

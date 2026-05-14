@@ -25,29 +25,31 @@ export default function SecurityPostureTab() {
     
     const fetchSecurityLogs = async () => {
       try {
-        // Active Ping to check if Loki is really there
-        const res = await fetch(`/loki/api/v1/query?query={job="security_scanners"}&limit=5`);
+        // Active Ping to check if Loki is really there (Aligned with Promtail job label)
+        const res = await fetch(`/loki/api/v1/query?query={job="pm2_logs"} |= "security_audit"&limit=5`);
         const text = await res.text();
         let data = safeParseJSON(text);
         setIsLiveEnv(true);
-          if (data?.data?.result?.length > 0) {
-            setTrivyVulns({ critical: 0, high: 2, medium: 5 });
-            setLynisMetrics({ index: 82, warnings: 1, suggestions: 8 });
-            setScanHistory([
-              { id: Date.now(), time: new Date().toLocaleTimeString(), engine: 'Semaphore Playbook', status: 'Scan Completed', target: 'all-subsystems' }
-            ]);
-          } else {
-            setTrivyVulns({ critical: 0, high: 0, medium: 0 });
-            setLynisMetrics({ index: 0, warnings: 0, suggestions: 0 });
-            setScanHistory([]);
-          }
-      } catch (err) { setIsLiveEnv(false);
+        
+        if (data?.data?.result?.length > 0) {
+          setTrivyVulns({ critical: 0, high: 2, medium: 5 });
+          setLynisMetrics({ index: 82, warnings: 1, suggestions: 8 });
+          setScanHistory([
+            { id: Date.now(), time: new Date().toLocaleTimeString(), engine: 'Ansible Playbook', status: 'Scan Completed', target: 'all-subsystems' }
+          ]);
+        } else {
+          setTrivyVulns({ critical: 0, high: 0, medium: 0 });
+          setLynisMetrics({ index: 0, warnings: 0, suggestions: 0 });
+          setScanHistory([]);
+        }
+      } catch (err) { 
+        setIsLiveEnv(false);
         // Fallback to Simulator if the backend API isn't live
         setTrivyVulns({ critical: 2, high: 5, medium: 12 });
         setLynisMetrics({ index: 68, warnings: 3, suggestions: 14 });
         setScanHistory([
-          { id: 1, time: new Date().toLocaleTimeString(), engine: 'Semaphore Playbook', status: 'Found 19 CVEs', target: 'ubuntu-rootfs' },
-          { id: 2, time: new Date(Date.now() - 5000).toLocaleTimeString(), engine: 'Semaphore Playbook', status: 'Hardening Index: 68', target: 'termux-host' }
+          { id: 1, time: new Date().toLocaleTimeString(), engine: 'Gitea Action', status: 'Found 19 CVEs', target: 'ubuntu-rootfs' },
+          { id: 2, time: new Date(Date.now() - 5000).toLocaleTimeString(), engine: 'Gitea Action', status: 'Hardening Index: 68', target: 'termux-host' }
         ]);
       }
     };
@@ -72,9 +74,10 @@ export default function SecurityPostureTab() {
         body: JSON.stringify({ intent: 'tofu_deploy', app_name: 'security_scanners', action: 'apply' })
       });
       safeParseJSON(await res.text());
-      showToast('success', 'Semaphore Playbook Deployed. Executing audits...');
-    } catch (err) { setIsLiveEnv(false);
-      showToast('error', 'Control Plane Unreachable. Failed to execute Semaphore Playbook.');
+      showToast('success', 'GitOps Pipeline Triggered. Executing audits...');
+    } catch (err) { 
+      setIsLiveEnv(false);
+      showToast('error', 'Control Plane Unreachable. Failed to trigger GitOps pipeline.');
     } finally {
       setIsScanning(false);
     }
@@ -102,9 +105,10 @@ export default function SecurityPostureTab() {
         body: JSON.stringify({ intent: 'tofu_deploy', app_name: blueprintName, action: 'apply' })
       });
       safeParseJSON(await res.text());
-      showToast('success', `Semaphore Remediation: ${blueprintName} playbook queued.`);
+      showToast('success', `GitOps Remediation: ${blueprintName} playbook queued.`);
       setTimeout(triggerScan, 2000);
-    } catch (err) { setIsLiveEnv(false);
+    } catch (err) { 
+      setIsLiveEnv(false);
       showToast('error', `Failed to execute ${blueprintName} playbook.`);
     } finally {
       isLynis ? setIsRemediatingLynis(false) : setIsRemediatingTrivy(false);
@@ -265,7 +269,7 @@ export default function SecurityPostureTab() {
         <div className="bg-slate-900/80 px-4 md:px-6 py-4 border-b border-white/5 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <FileJson className="w-5 h-5 text-indigo-400" />
-            <span className="font-bold text-white text-sm md:text-base">Drone Execution Logs</span>
+            <span className="font-bold text-white text-sm md:text-base">GitOps Execution Logs</span>
           </div>
           <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 px-2 py-1 bg-black/40 rounded border border-white/5 hidden sm:block">Grafana Loki Stream</span>
         </div>

@@ -28,24 +28,44 @@ export default function LogExplorerTab() {
     let interval;
     
     if (!isLiveEnv && isLive) {
-      // --- SIMULATOR MODE ---
+      // --- SIMULATOR MODE (Updated for PM2 / GitOps Architecture) ---
       interval = setInterval(() => {
         const levels = ['INFO', 'INFO', 'INFO', 'WARN', 'ERROR'];
-        const services = ['caddy-proxy', 'nomad-client', 'semaphore-agent', 'vault-kms'];
+        const services = ['caddy-proxy', 'pocket-api', 'infra-runner', 'vault-kms', 'pocket-telemetry', 'pm2-daemon'];
         
+        const service = services[Math.floor(Math.random() * services.length)];
+        let message = `[Simulated] Process heartbeat acknowledged.`;
+
+        // Generate context-aware mock logs matching the new infrastructure
+        if (service === 'infra-runner') {
+            message = `[act_runner] Polling Gitea repository for new declarative workflow jobs...`;
+        } else if (service === 'pocket-api') {
+            message = `[API] 200 OK - Intent 'telemetry_poll' processed in 12ms.`;
+        } else if (service === 'vault-kms') {
+            message = `[Vault] Ephemeral AppRole token generated for policy 'gitops-policy' (TTL: 1h).`;
+        } else if (service === 'pm2-daemon') {
+            message = `[PM2] Process 'photoprism' resource utilization nominal (CPU: 12%).`;
+        } else if (service === 'caddy-proxy') {
+            message = `[Caddy] HTTP/2.0 200 OK /api/telemetry - Handled TLS 1.3 request.`;
+        }
+
+        if (levels[Math.floor(Math.random() * levels.length)] === 'ERROR') {
+            message = `[CRITICAL] Connection timeout during reconciliation. Retrying via exponential backoff.`;
+        }
+
         const newLog = {
           id: Math.random().toString(36).substr(2, 9),
           timestamp: new Date().toISOString(),
           level: levels[Math.floor(Math.random() * levels.length)],
-          service: services[Math.floor(Math.random() * services.length)],
-          message: `[Simulated] Process ${Math.random().toString(36).substr(2, 6)} executed successfully in subsystem.`,
+          service: service,
+          message: message,
         };
 
         setLogs(prev => {
           const updated = [...prev, newLog];
           return updated.length > 200 ? updated.slice(updated.length - 200) : updated;
         });
-      }, 800);
+      }, 1200);
 
     } else if (isLiveEnv && isLive) {
       // --- PRODUCTION MODE (Real Grafana Loki API) ---
@@ -56,6 +76,7 @@ export default function LogExplorerTab() {
             query = `${searchQuery} |~ "(?i)${severityFilter}"`;
           }
 
+          // Queries Loki directly (Assumes Caddy/API routes this endpoint to Loki on port 3100)
           const res = await fetch(`/loki/api/v1/query?query=${encodeURIComponent(query)}&limit=100`);
           
           const text = await res.text();
@@ -79,7 +100,7 @@ export default function LogExplorerTab() {
           parsedLogs.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
           setLogs(parsedLogs);
         } catch (err) {
-          setLogs([{ id: 'err', timestamp: new Date().toISOString(), level: 'ERROR', service: 'system', message: 'Connecting to Loki Log Aggregator API (Ensure Promtail is running)...' }]);
+          setLogs([{ id: 'err', timestamp: new Date().toISOString(), level: 'ERROR', service: 'system', message: 'Connecting to Loki Log Aggregator API (Ensure Promtail is running via PM2)...' }]);
         }
       };
 

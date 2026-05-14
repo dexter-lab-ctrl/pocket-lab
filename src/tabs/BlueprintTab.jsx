@@ -6,7 +6,43 @@ import {
   History, GitBranch, ShieldCheck, AlignLeft, Cpu, Zap, ExternalLink,
   Terminal, FileText, Play, RotateCw, Trash2, Eye 
 } from 'lucide-react';
-import { useTelemetry } from '../hooks/useTelemetry';
+
+// Inlined useTelemetry hook for standalone compatibility
+const useTelemetry = () => {
+  const [liveData, setLiveData] = useState(null);
+  const [isConnected, setIsConnected] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchTelemetry = async () => {
+      try {
+        const res = await fetch('/api/telemetry.json');
+        const text = await res.text();
+        const data = JSON.parse(text);
+        
+        if (isMounted) {
+          if (!data.error) {
+            setLiveData(data);
+            setIsConnected(true);
+          } else {
+            setIsConnected(false);
+          }
+        }
+      } catch (err) {
+        if (isMounted) setIsConnected(false);
+      }
+    };
+
+    fetchTelemetry();
+    const intervalId = setInterval(fetchTelemetry, 5000);
+    return () => {
+      isMounted = false;
+      clearInterval(intervalId);
+    };
+  }, []);
+
+  return { liveData, isConnected };
+};
 
 export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEnableMotion }) {
   const [activeNode, setActiveNode] = useState('client');
@@ -14,7 +50,6 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
   const [simState, setSimState] = useState('normal'); 
   const [fleetNodes, setFleetNodes] = useState([]);
   
-  // Inspector Tabs: 'insight', 'config', 'logs'
   const [inspectorTab, setInspectorTab] = useState('insight');
   const [nodeLogs, setNodeLogs] = useState([]);
   const [isExecuting, setIsExecuting] = useState(false);
@@ -24,7 +59,6 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
 
   const { liveData, isConnected } = useTelemetry();
 
-  // HTML-PROOF ENVIRONMENT DETECTION
   const [isLiveEnv, setIsLiveEnv] = useState(false);
   useEffect(() => {
     fetch('/api/telemetry.json')
@@ -36,14 +70,12 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
       .catch(() => setIsLiveEnv(false));
   }, []);
 
-  // Failsafe for Parallax in case it isn't passed from App.jsx
   const safeGetParallaxStyle = typeof getParallaxStyle === 'function' ? getParallaxStyle : () => ({});
 
   const effectiveSimState = liveData 
     ? (liveData.cpuTemp > 48 ? 'overheat' : liveData.freeSpaceMB < 500 ? 'storage' : 'normal')
     : simState;
 
-  // CPU/RAM Micro-Metrics Simulation
   const [microMetrics, setMicroMetrics] = useState({ cpu: 12, ram: 45 });
   useEffect(() => {
     const int = setInterval(() => {
@@ -55,7 +87,6 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
     return () => clearInterval(int);
   }, [microMetrics]);
 
-  // Background Ambient Log Generator
   useEffect(() => {
     if (isExecuting) return; 
     setNodeLogs([]); 
@@ -63,11 +94,11 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
     const logGenerators = {
       client: () => `[TLS] Handshake complete. Cipher: TLS_AES_256_GCM_SHA384`,
       ingress: () => `[Caddy] HTTP/2 200 OK /api/telemetry - Latency: ${Math.floor(Math.random() * 20 + 2)}ms`,
-      gitops: () => `[Nomad] Job evaluation complete. Allocations healthy and running.`,
-      security: () => `[Vault] Token lease tracking nominal. AppRole TTL: 2h.`,
-      observability: () => `[Promtail] Scraping 5 targets. Ingest rate: ${Math.floor(Math.random() * 10)} kb/s.`,
-      workload: () => `[Nomad Client] Task 'photoprism-daemon' resource utilization: ${microMetrics.cpu}%.`,
-      storage: () => `[Semaphore] Scheduled playbook 'maintenance.yml' resting. MariaDB I/O nominal.`
+      gitops: () => `[act_runner] Workflow evaluation complete. Deployment verified and queued.`,
+      security: () => `[Vault] Token lease tracking nominal. OPA Interceptor guarding execution pipeline.`,
+      observability: () => `[Promtail] Scraping pm2_logs. Ingest rate: ${Math.floor(Math.random() * 10)} kb/s.`,
+      workload: () => `[PM2 Daemon] Process 'photoprism' resource utilization: ${microMetrics.cpu}%.`,
+      storage: () => `[Ansible Cron] Scheduled playbook 'maintenance.yml' resting. MariaDB I/O nominal.`
     };
 
     const int = setInterval(() => {
@@ -81,9 +112,6 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
     return () => clearInterval(int);
   }, [activeNode, microMetrics.ram, isExecuting]);
 
-  // ==========================================
-  // ACTION ENGINE: EXECUTING COMMANDS ON DEVICE
-  // ==========================================
   const executeNodeAction = async (action) => {
     setIsExecuting(true);
     setInspectorTab('logs'); 
@@ -133,15 +161,12 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
     }
   };
 
-  // ==========================================
-  // LIVE FLEET TOPOLOGY SYNC
-  // ==========================================
   useEffect(() => {
     const fetchFleet = async () => {
       if (!isLiveEnv) {
         setFleetNodes([
-          { id: 'worker1', name: 'pixel-edge-01', role: 'Nomad Client', ip: '100.101.50.2', status: 'active', isCurrent: false, latency: 1.2 },
-          { id: 'worker2', name: 'samsung-nfs', role: 'Storage Node', ip: '100.101.50.3', status: 'active', isCurrent: false, latency: 2.5 }
+          { id: 'worker1', name: 'pixel-edge-01', role: 'Mesh Node', ip: '100.101.50.2', status: 'active', isCurrent: false, latency: 1.2 },
+          { id: 'worker2', name: 'samsung-nfs', role: 'Mesh Storage Node', ip: '100.101.50.3', status: 'active', isCurrent: false, latency: 2.5 }
         ]);
         return;
       }
@@ -171,7 +196,7 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
   const handlePointerUpOrLeave = () => { if (pressTimer.current) clearTimeout(pressTimer.current); };
 
   // ==========================================
-  // 1. STATIC LOGICAL CONTROL PLANE NODES
+  // CONTROL PLANE SECURE ACTION MAPPING
   // ==========================================
   const archNodes = {
     client: {
@@ -179,11 +204,11 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
       color: "text-sky-400", bg: "bg-sky-500/10", border: "border-sky-500/30",
       glow: "shadow-[0_0_20px_rgba(56,189,248,0.2)]", activeGlow: "shadow-[0_0_40px_rgba(56,189,248,0.6)] border-sky-400",
       desc: "End-to-End Encrypted Browser / PWA Access.",
-      deepDive: "Your laptop or phone connects securely via Tailscale MagicDNS. The browser establishes a trusted TLS 1.3 connection using automatically provisioned Let's Encrypt certificates. Zero public internet ports are exposed.",
+      deepDive: "Your laptop or phone connects securely via Tailscale MagicDNS. The browser establishes a trusted TLS 1.3 connection. Zero public internet ports are exposed.",
       configSnippet: "URL: https://pocket-lab.[tailnet].ts.net\nTLS: Let's Encrypt ECDSA\nProtocol: HTTPS / HTTP2 / WSS",
       actions: [
-        { icon: RotateCw, label: "Refresh Session Token", cmd: "echo 'Frontend TLS Session Tokens manually cycled via PWA.'" }, 
-        { icon: ShieldCheck, label: "Verify TLS Handshake", cmd: "curl -sI https://127.0.0.1:8443 -k | grep -i HTTP" }
+        { icon: RotateCw, label: "Refresh Session Token", cmd: "python3 -c \"print('Frontend TLS Session Tokens manually cycled via PWA.')\"" }, 
+        { icon: ShieldCheck, label: "Verify TLS Handshake", cmd: "curl -sI https://127.0.0.1:8443 -k" }
       ],
       vitals: [
         { label: "Protocol", val: "TLS 1.3 / HTTP2" },
@@ -196,11 +221,11 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
       color: "text-teal-400", bg: "bg-teal-500/10", border: "border-teal-500/30",
       glow: "shadow-[0_0_20px_rgba(45,212,191,0.2)]", activeGlow: "shadow-[0_0_40px_rgba(45,212,191,0.6)] border-teal-400",
       desc: "Userspace Networking & L7 Reverse Proxy.",
-      deepDive: "Traffic enters via patched tailscaled. Tailscale terminates the VPN tunnel and hands traffic to Caddy. Caddy acts as the Layer 7 router, directing /api to Python, /nomad to HashiCorp, and / to the React PWA.",
-      configSnippet: "tailscaled --tun=userspace-networking \\\n  --socket=$PREFIX/var/run/tailscale.sock\n\n# Caddyfile L7 Routing\npocket-lab.ts.net {\n  reverse_proxy /api/* 127.0.0.1:8080\n  reverse_proxy /nomad/* 127.0.0.1:4646\n  reverse_proxy /semaphore/* 127.0.0.1:8082\n  reverse_proxy * 127.0.0.1:3000\n}",
+      deepDive: "Traffic enters via patched tailscaled. Tailscale terminates the VPN tunnel and hands traffic to Caddy. Caddy acts as the Layer 7 router, directing /api to Python and / to the React PWA.",
+      configSnippet: "tailscaled --tun=userspace-networking \\\n  --socket=$PREFIX/var/run/tailscale.sock\n\n# Caddyfile L7 Routing\npocket-lab.ts.net {\n  reverse_proxy /api/* 127.0.0.1:8080\n  reverse_proxy * 127.0.0.1:3000\n}",
       actions: [
-        { icon: Play, label: "Reload Caddy Configuration", cmd: "caddy reload --config ~/Caddyfile" }, 
-        { icon: ShieldAlert, label: "Check Tailscale Status", cmd: "tailscale netcheck" }
+        { icon: Play, label: "Reload Caddy via PM2", cmd: "pm2 reload caddy" }, 
+        { icon: ShieldAlert, label: "Check Tailscale Status", cmd: "tailscale-cli status" }
       ],
       vitals: [
         { label: "WireGuard Tunnel", val: "Active (Userspace TUN)" },
@@ -209,20 +234,20 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
       ]
     },
     gitops: {
-      id: 'gitops', title: "Global Orchestration Plane", Icon: Layers,
+      id: 'gitops', title: "GitOps Pipeline & PM2", Icon: Layers,
       color: "text-indigo-400", bg: "bg-indigo-500/10", border: "border-indigo-500/30",
       glow: "shadow-[0_0_20px_rgba(99,102,241,0.2)]", activeGlow: "shadow-[0_0_40px_rgba(99,102,241,0.6)] border-indigo-400",
-      desc: "Nomad Workloads & Semaphore Automations.",
-      deepDive: "Gitea stores your catalog. When a change is pushed, Gitea Actions trigger Nomad to orchestrate long-running application jobs (.nomad) and signal Ansible Semaphore to run maintenance and configuration playbooks (.yml).",
-      configSnippet: "# 1. Nomad Job Submission\nnomad job run ~/pocket_lab_iac/photoprism/app.nomad\n\n# 2. Semaphore Task Execution\nansible-playbook ~/pocket_lab_iac/security_scanners/maintenance.yml",
+      desc: "Gitea Actions & PM2 Host-Hypervisor.",
+      deepDive: "Gitea stores your app catalog. When a deployment is pushed, Gitea Actions (act_runner) executes Ansible playbooks. PM2 acts as the local hypervisor, orchestrating the bridged PRoot services and keeping them alive.",
+      configSnippet: "# 1. GitOps Action Trigger (act_runner)\nname: Deploy Workload\nruns-on: ubuntu-latest\nsteps:\n  - run: ansible-playbook playbook.yml\n\n# 2. PM2 Daemon Control\npm2 start ecosystem.config.js",
       actions: [
-        { icon: Activity, label: "View Nomad Cluster Status", cmd: "nomad node status && nomad server members" }, 
-        { icon: Check, label: "Ping Semaphore API", cmd: "curl -sI http://127.0.0.1:8082/api/ping | grep HTTP || echo 'Semaphore API OK'" }
+        { icon: Activity, label: "View PM2 Daemon Status", cmd: "pm2 status" }, 
+        { icon: Check, label: "Ping GitOps act_runner", cmd: "pm2 info act_runner" }
       ],
       vitals: [
-        { label: "HashiCorp Nomad", val: "Online (Port 4646)" },
-        { label: "Ansible Semaphore", val: "Online (Port 8082)" },
-        { label: "Gitea Actions", val: "Runner Connected" }
+        { label: "Local Hypervisor", val: "PM2 Daemon" },
+        { label: "CI/CD Engine", val: "Gitea Actions" },
+        { label: "Runner Status", val: "Active (act_runner)" }
       ]
     },
     security: {
@@ -230,16 +255,16 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
       color: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/30",
       glow: "shadow-[0_0_20px_rgba(52,211,153,0.2)]", activeGlow: "shadow-[0_0_40px_rgba(52,211,153,0.6)] border-emerald-400",
       desc: "Zero-Trust Identity & Policy-as-Code.",
-      deepDive: "Nomad securely authenticates with HashiCorp Vault using AppRoles. Vault injects short-lived, high-entropy secrets directly into Nomad job allocations. Concurrently, OPA validates Nomad JSON specifications to block malicious port bindings.",
-      configSnippet: "# 1. Policy Guardrail Check\nopa eval -i app.nomad.json -d policies/ \\\n  \"data.pocketlab.deny\"\n\n# 2. Native Vault Secret Injection via Nomad\nvault {\n  policies = [\"gitops-policy\"]\n  change_mode = \"restart\"\n}",
+      deepDive: "Ansible securely authenticates with HashiCorp Vault during playbook execution. Concurrently, OPA's Gatekeeper validates all Ansible playbooks via our custom interceptor to block malicious port bindings and hardcoded secrets.",
+      configSnippet: "# 1. Policy Guardrail Interception\npython3 ~/api/opa_interceptor.py playbook.yml\n\n# 2. OPA Rego Evaluation\nopa eval -i parsed_playbook.json -d policies/ \\\n  \"data.pocketlab.deny\"\n\n# 3. Vault Secret Lookup (Ansible)\npassword: \"{{ lookup('hashi_vault', 'secret=secret/data/mariadb') }}\"",
       actions: [
-        { icon: Lock, label: "Seal HashiCorp Vault", cmd: "export VAULT_ADDR=http://127.0.0.1:8200 && vault operator seal" }, 
-        { icon: ShieldCheck, label: "Run Rego Guardrail Test", cmd: "opa eval -d ~/pocket_lab_policies \"data.pocketlab.deny\"" }
+        { icon: Lock, label: "Check Vault Status", cmd: "vault status" }, 
+        { icon: ShieldCheck, label: "Test Gatekeeper", cmd: "python3 ~/api/opa_interceptor.py --dry-run" }
       ],
       vitals: [
         { label: "HashiCorp Vault", val: "Unsealed (Port 8200)" },
-        { label: "OPA Engine", val: "Enforce Mode (Port 8181)" },
-        { label: "Active Policies", val: "3 Rego Rulesets Loaded" }
+        { label: "Gatekeeper", val: "Enforce Mode Active" },
+        { label: "Rego Policies", val: "3 Rulesets Loaded" }
       ]
     },
     observability: {
@@ -250,35 +275,35 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
       glow: effectiveSimState === 'overheat' ? "shadow-[0_0_30px_rgba(249,115,22,0.5)] animate-pulse" : "shadow-[0_0_20px_rgba(59,130,246,0.2)]",
       activeGlow: effectiveSimState === 'overheat' ? "shadow-[0_0_50px_rgba(249,115,22,0.9)] border-orange-500" : "shadow-[0_0_40px_rgba(59,130,246,0.6)] border-blue-400",
       desc: "Grafana Loki & Telemetry Aggregation.",
-      deepDive: "Promtail runs as a daemon, scraping syslog, Nomad allocation outputs, and Caddy access logs, shipping them to the local Loki database. Node metrics are actively polled to trigger mitigations during thermal events.",
-      configSnippet: "# Promtail Shipper Config\nscrape_configs:\n- job_name: termux_system\n  static_configs:\n  - targets: ['localhost']\n    labels:\n      job: varlogs\n      __path__: /data/data/com.termux.../*log",
+      deepDive: "Promtail runs as a PM2 daemon, scraping syslog, PM2 stdout, and Caddy access logs, shipping them to the local Loki database. Node metrics are actively polled to trigger mitigations during thermal events.",
+      configSnippet: "# Promtail Shipper Config\nscrape_configs:\n- job_name: pm2_logs\n  static_configs:\n  - targets: ['localhost']\n    labels:\n      job: pm2_stdout\n      __path__: /root/.pm2/logs/*.log",
       actions: [
-        { icon: Activity, label: "Poll Hardware Telemetry", cmd: "cat ~/api/telemetry.json && echo ''" }, 
-        { icon: Trash2, label: "Purge Stale Chunks", cmd: "find ~/loki_data/chunks -type f -mtime +7 -exec rm {} \\; || echo 'No stale chunks found older than 7 days.'" }
+        { icon: Activity, label: "Poll Hardware Telemetry", cmd: "curl -s http://127.0.0.1:8080/api/telemetry.json" }, 
+        { icon: Trash2, label: "Flush PM2 Buffers", cmd: "pm2 flush" }
       ],
       vitals: [
         { label: "Grafana Loki DB", val: "Online (Port 3100)" },
-        { label: "Promtail Shipper", val: "Active (Watching 5 files)" },
+        { label: "Promtail Shipper", val: "Active (Watching PM2 Logs)" },
         { label: "LogQL Queries", val: "0 ms Latency" }
       ]
     },
     workload: {
-      id: 'workload', title: "Edge Workload (Nomad)", Icon: Server,
+      id: 'workload', title: "Edge Workload (PRoot)", Icon: Server,
       color: effectiveSimState !== 'normal' ? "text-slate-500" : "text-purple-400",
       bg: effectiveSimState !== 'normal' ? "bg-slate-800/50" : "bg-purple-500/10",
       border: effectiveSimState !== 'normal' ? "border-slate-700/50" : "border-purple-500/30",
       glow: effectiveSimState !== 'normal' ? "shadow-none" : "shadow-[0_0_20px_rgba(168,85,247,0.2)]",
       activeGlow: effectiveSimState !== 'normal' ? "shadow-none border-slate-600" : "shadow-[0_0_40px_rgba(168,85,247,0.6)] border-purple-400",
-      desc: "Isolated Ubuntu Subsystem (Auto-Healing).",
-      deepDive: "The actual applications (like PhotoPrism) run inside a faked Debian filesystem orchestrated by HashiCorp Nomad using the raw_exec driver. Nomad natively injects database credentials from Vault during initialization and ensures the process stays alive.",
-      configSnippet: "job \"photoprism\" {\n  type = \"service\"\n  group \"ai-workload\" {\n    task \"proot-execution\" {\n      driver = \"raw_exec\"\n      config {\n        command = \"proot-distro\"\n        args = [\"login\", \"ubuntu\", \"--\", \"bash\", \"-c\", \"/opt/photoprism/bin/photoprism start\"]\n      }\n      resources { cpu = 500; memory = 256 }\n    }\n  }\n}",
+      desc: "Isolated Ubuntu Subsystem via PM2.",
+      deepDive: "The actual applications (like PhotoPrism) run inside a virtualized Ubuntu filesystem. Ansible deploys them by wrapping commands in `proot-distro login ubuntu`. PM2 natively monitors these processes to ensure high availability.",
+      configSnippet: "# Ansible PRoot Deployment Wrapper\n- name: Deploy Workload inside Ubuntu\n  ansible.builtin.shell: |\n    pm2 start \"proot-distro login ubuntu -- /opt/app/start.sh\" --name \"my-app\"\n\n# PM2 Subsystem Monitoring\npm2 save",
       actions: [
-        { icon: RotateCw, label: "Restart via Nomad", cmd: "nomad job restart photoprism || echo 'Nomad evaluating restart directive...'" }, 
-        { icon: TerminalSquare, label: "Proot Shell Access", cmd: "proot-distro login ubuntu -- bash -c 'uname -a && echo \"Active UID:\" && id'" }
+        { icon: RotateCw, label: "Restart via PM2", cmd: "pm2 restart photoprism" }, 
+        { icon: TerminalSquare, label: "Check Subsystem Logs", cmd: "pm2 logs photoprism --lines 15" }
       ],
       vitals: [
         { label: "Subsystem", val: effectiveSimState !== 'normal' ? "SIGSTOP (Halted)" : "Ubuntu 22.04 LTS" },
-        { label: "Orchestrator", val: "Nomad (raw_exec driver)" },
+        { label: "Process Manager", val: "PM2 (Host-Hypervisor)" },
         { label: "Compute Usage", val: effectiveSimState !== 'normal' ? "0%" : `${microMetrics.cpu}% CPU Load` }
       ]
     },
@@ -289,12 +314,12 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
       border: effectiveSimState === 'storage' ? "border-red-500/80" : "border-green-500/30",
       glow: effectiveSimState === 'storage' ? "shadow-[0_0_30px_rgba(239,68,68,0.5)] animate-pulse" : "shadow-[0_0_20px_rgba(34,197,94,0.2)]",
       activeGlow: effectiveSimState === 'storage' ? "shadow-[0_0_50px_rgba(239,68,68,0.9)] border-red-500" : "shadow-[0_0_40px_rgba(34,197,94,0.6)] border-green-400",
-      desc: "Zero-duplication mounts, MariaDB, & Vault volumes.",
-      deepDive: "The Android DCIM folder is bind-mounted directly into PRoot as a read-only source. Vault core data and MariaDB instances are persisted to the Termux home directory, protected by local Android encryption. Backups are executed via Semaphore Playbooks.",
-      configSnippet: "# Semaphore Ansible Playbook:\n- name: Automated Enterprise Backups\n  hosts: localhost\n  tasks:\n    - name: Trigger MariaDB Dump\n      command: mysqldump -u vault_admin -p mariadb > backup.sql\n\n    - name: Archive Vault Volumes\n      command: tar -czvf vault_data.tar.gz ~/vault_data",
+      desc: "Zero-duplication mounts, MariaDB, & Vault.",
+      deepDive: "The Android DCIM folder is bind-mounted directly into PRoot as a read-only source. Vault core data and MariaDB instances are persisted to the Termux home directory, protected by local Android encryption. Backups are executed via GitOps Playbooks.",
+      configSnippet: "# Ansible Backup Playbook:\n- name: Automated Enterprise Backups\n  hosts: localhost\n  tasks:\n    - name: Trigger MariaDB Dump\n      command: mysqldump -u vault_admin -p mariadb > backup.sql\n\n    - name: Archive Vault Volumes\n      command: tar -czvf vault_data.tar.gz ~/vault_data",
       actions: [
-        { icon: Database, label: "Trigger MariaDB Dump", cmd: "mysqldump -u vault_admin -pvault_admin_secret_99 mariadb > ~/storage/downloads/mariadb_backup.sql && echo 'MariaDB successfully dumped to Android Downloads folder.'" }, 
-        { icon: Shield, label: "Backup Vault Data", cmd: "tar -czvf ~/storage/downloads/vault_data_backup.tar.gz ~/vault_data && echo 'HashiCorp Vault volumes securely archived to Android Downloads folder.'" }
+        { icon: Database, label: "Trigger MariaDB GitOps Backup", cmd: "ansible-playbook ~/pocket_lab_iac/backup_restore/maintenance.yml -e \"target=mariadb\"" }, 
+        { icon: Shield, label: "Trigger Vault GitOps Backup", cmd: "ansible-playbook ~/pocket_lab_iac/backup_restore/maintenance.yml -e \"target=vault\"" }
       ],
       vitals: [
         { label: "Media Mount", val: "Read-Only (/storage/dcim)" },
@@ -304,9 +329,6 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
     }
   };
 
-  // ==========================================
-  // 2. DYNAMIC FLEET NODES
-  // ==========================================
   const fleetDict = {};
   fleetNodes.filter(n => !n.isCurrent).forEach(n => {
     fleetDict[n.id] = {
@@ -319,11 +341,11 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
       glow: n.status === 'active' ? "shadow-[0_0_20px_rgba(52,211,153,0.2)]" : "shadow-none",
       activeGlow: n.status === 'active' ? "shadow-[0_0_40px_rgba(52,211,153,0.6)] border-emerald-400" : "border-slate-500",
       desc: `Remote Edge Node (${n.role})`,
-      deepDive: `This is a cryptographically verified edge node participating in your private Tailnet. It runs a Nomad Client agent, allowing workloads to be scheduled and distributed securely across your mesh network.`,
-      configSnippet: `# Nomad Client & Mesh Routing\nHostname: ${n.name}\nAssigned IP: ${n.ip}\nNomad Status: ${n.status.toUpperCase()}\n\n# Verify Connection\nnomad node status ${n.name}`,
+      deepDive: `This is a cryptographically verified edge node participating in your private Tailnet. It connects securely via userspace networking, allowing workloads to be distributed across your mesh network.`,
+      configSnippet: `# Tailscale Mesh Routing\nHostname: ${n.name}\nAssigned IP: ${n.ip}\nNode Status: ${n.status.toUpperCase()}\n\n# Verify Connection\ntailscale ping ${n.ip}`,
       actions: [
-        { icon: TerminalSquare, label: "Check Mesh Latency", cmd: `tailscale ping ${n.ip}` }, 
-        { icon: Network, label: "Traceroute Path", cmd: `traceroute ${n.ip} || echo 'Traceroute complete.'` }
+        { icon: TerminalSquare, label: "Check Mesh Latency", cmd: `tailscale-cli ping ${n.ip}` }, 
+        { icon: Network, label: "Check Peer Status", cmd: `tailscale-cli status` }
       ],
       vitals: [
         { label: "Tailnet IPv4", val: n.ip },
@@ -336,9 +358,6 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
 
   const allNodes = { ...archNodes, ...fleetDict };
 
-  // ==========================================
-  // REUSABLE COMPONENTS
-  // ==========================================
   const NodeRenderer = ({ nodeKey }) => {
     const node = allNodes[nodeKey];
     if (!node) return null;
@@ -391,7 +410,6 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
         .animate-radar { animation: radarSweep 8s infinite linear; transform-origin: center; }
       `}} />
 
-      {/* Haptic Vitals Modal */}
       {activeVitalNode && (() => {
         const VitalIcon = allNodes[activeVitalNode].Icon;
         return (
@@ -461,7 +479,6 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
         {/* Blueprint Layout Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 relative">
           
-          {/* LEFT COLUMN: Data Center Topology */}
           <div className="lg:col-span-5 flex flex-col items-center py-6 relative animate-in fade-in duration-500 rounded-[2.5rem] bg-[#020617] border border-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden px-4 md:px-8">
             <div className="absolute inset-0 opacity-[0.1]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
             
@@ -478,7 +495,7 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
               </div>
 
               <NodeRenderer nodeKey="gitops" />
-              <FlowLine labelPort="TCP:4646" labelSec="Job Submission" state={effectiveSimState} />
+              <FlowLine labelPort="TCP:8080" labelSec="Job Submission" state={effectiveSimState} />
               
               <NodeRenderer nodeKey="security" />
               <FlowLine labelPort="Vault:8200" labelSec="Secret Injection" state={effectiveSimState} />
@@ -582,7 +599,7 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
                                        <button 
                                          key={idx} 
                                          onClick={() => executeNodeAction(action)}
-                                         disabled={isExecuting} // FIX: Restored simulator functionality!
+                                         disabled={isExecuting}
                                          className={`bg-slate-800/80 hover:bg-slate-700 text-slate-200 font-bold py-4 px-4 rounded-xl flex items-center justify-center transition-all border border-white/5 hover:border-white/20 shadow-md group disabled:opacity-50 disabled:cursor-not-allowed`}
                                        >
                                          <action.icon className={`w-4 h-4 mr-2 ${node.color} ${isExecuting ? 'animate-spin text-slate-500' : 'group-hover:scale-110 transition-transform'}`} /> 
@@ -609,11 +626,11 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
                               <div className="p-5 font-mono text-xs whitespace-pre-wrap leading-loose overflow-x-auto text-slate-300 flex-1">
                                 {node.configSnippet.split('\n').map((line, i) => {
                                   if (line.trim().startsWith('#')) return <div key={i} className="text-slate-500 italic">{line}</div>;
-                                  const parts = line.split(/(export|tailscaled|tailscale|mysqldump|tar|proot-distro|echo|nomad|ansible-playbook|vault|job|type|group|task|driver|config|resources|command|args|https|http|opa|data|path|scrape_configs|targets|labels)/g);
+                                  const parts = line.split(/(export|tailscaled|tailscale|mysqldump|tar|proot-distro|pm2|echo|ansible-playbook|vault|job|type|group|task|driver|config|resources|command|args|https|http|opa|data|path|scrape_configs|targets|labels)/g);
                                   return (
                                     <div key={i}>
                                       {parts.map((part, j) => {
-                                        if (part && ['export', 'tailscaled', 'tailscale', 'mysqldump', 'tar', 'proot-distro', 'echo', 'nomad', 'ansible-playbook', 'vault', 'job', 'type', 'group', 'task', 'driver', 'config', 'resources', 'command', 'args', 'opa', 'data', 'path', 'scrape_configs', 'targets', 'labels'].includes(part)) return <span key={j} className="text-pink-400">{part}</span>;
+                                        if (part && ['export', 'tailscaled', 'tailscale', 'mysqldump', 'tar', 'proot-distro', 'pm2', 'echo', 'ansible-playbook', 'vault', 'job', 'type', 'group', 'task', 'driver', 'config', 'resources', 'command', 'args', 'opa', 'data', 'path', 'scrape_configs', 'targets', 'labels'].includes(part)) return <span key={j} className="text-pink-400">{part}</span>;
                                         if (part && ['https', 'http'].includes(part)) return <span key={j} className="text-yellow-300">{part}</span>;
                                         if (part && part.includes('=')) {
                                           const splitEq = part.split('=');

@@ -90,14 +90,14 @@ export default function AppStoreTab() {
       return;
     }
     try {
-      // The API proxy safely handles this and routes to Nomad/Semaphore via Gitea Actions
+      // The API proxy safely handles this and routes to Gitea Actions (act_runner)
       const res = await fetch('/api/action/update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ intent: 'tofu_deploy', app_name: appId, action: 'apply' })
       });
       if (!res.ok) throw new Error(`API Error`);
-      showToast('success', `Successfully submitted ${appTitle} to Global Orchestrator.`);
+      showToast('success', `Successfully submitted ${appTitle} to GitOps Pipeline.`);
     } catch (err) {
       showToast('error', `Failed to deploy ${appTitle}. Verify API and Gitea connectivity.`);
     } finally {
@@ -167,7 +167,7 @@ export default function AppStoreTab() {
                <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest">{!isLiveEnv ? 'Simulator Sandbox' : 'Live Orchestration Environment'}</h3>
             </div>
             <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-2">Private Registry</h2>
-            <p className="text-slate-400 text-sm max-w-xl">Dynamically serving Nomad Jobs and Ansible Playbooks from the local Gitea instance.</p>
+            <p className="text-slate-400 text-sm max-w-xl">Dynamically serving Application Blueprints and Ansible Playbooks from the local Gitea registry.</p>
           </div>
           <button onClick={fetchCatalog} disabled={isFetching} className="hidden md:flex mt-4 md:mt-0 p-3 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 text-white transition-all items-center">
              <RefreshCw className={`w-5 h-5 ${isFetching ? 'animate-spin text-indigo-400' : 'text-slate-400'}`} />
@@ -209,7 +209,7 @@ export default function AppStoreTab() {
                     }`}
                   >
                     {loadingApp === app.id ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <PlayCircle className="w-5 h-5 mr-2" />}
-                    {loadingApp === app.id ? 'Submitting Job...' : 'Deploy Workload'}
+                    {loadingApp === app.id ? 'Triggering Pipeline...' : 'Deploy Workload'}
                   </button>
                 </div>
               );

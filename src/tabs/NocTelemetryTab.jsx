@@ -1,8 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Activity, HardDrive, MemoryStick, Server, Thermometer, Wifi, ArrowDown, Loader2, WifiOff } from 'lucide-react';
+import { Activity, HardDrive, MemoryStick, Server, Thermometer, Wifi, ArrowDown, Loader2, Cpu } from 'lucide-react';
 
 export default function NocTelemetryTab() {
-  const [telemetry, setTelemetry] = useState({ cpuTemp: 0, freeSpaceMB: 0, ramPct: 0 });
+  const [telemetry, setTelemetry] = useState({ 
+    cpu_temp_c: 0, 
+    free_space_mb: 0, 
+    cpu_usage_percent: 0,
+    memory_usage_mb: 0 
+  });
   
   // Intelligent connection tracking
   const [connectionStatus, setConnectionStatus] = useState('connecting'); // 'online', 'simulation'
@@ -27,9 +32,10 @@ export default function NocTelemetryTab() {
     } catch (err) {
       // Fallback to Simulation if Backend is unavailable or returns HTML (Vite)
       setTelemetry({
-        cpuTemp: 45200 + Math.floor(Math.random() * 5000),
-        freeSpaceMB: 12500 - Math.floor(Math.random() * 100),
-        ramPct: 65 + Math.floor(Math.random() * 10)
+        cpu_temp_c: 45.2 + Math.floor(Math.random() * 5),
+        free_space_mb: 12500 - Math.floor(Math.random() * 100),
+        cpu_usage_percent: 15 + Math.floor(Math.random() * 10),
+        memory_usage_mb: 4096 + Math.floor(Math.random() * 500)
       });
       setConnectionStatus('simulation');
     } finally {
@@ -71,9 +77,8 @@ export default function NocTelemetryTab() {
     touchStartY.current = 0;
   };
 
-  const formatTemp = (mC) => (mC / 1000).toFixed(1);
-  const tempVal = telemetry.cpuTemp > 0 ? formatTemp(telemetry.cpuTemp) : '0.0';
-  const isHot = telemetry.cpuTemp > 65000;
+  const tempVal = telemetry.cpu_temp_c > 0 ? telemetry.cpu_temp_c.toFixed(1) : '0.0';
+  const isHot = telemetry.cpu_temp_c > 65.0;
 
   const getNodeDisplay = () => {
     if (connectionStatus === 'simulation') return { text: 'SIMULATION', color: 'text-indigo-400', glow: 'shadow-[0_0_15px_rgba(99,102,241,0.2)]' };
@@ -91,7 +96,7 @@ export default function NocTelemetryTab() {
 
   return (
     <div 
-      className="max-w-6xl mx-auto p-4 relative"
+      className="max-w-7xl mx-auto p-4 relative"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -148,48 +153,78 @@ export default function NocTelemetryTab() {
           </div>
         </div>
 
-        {/* METRICS GRID - MOBILE OPTIMIZED SPARK-BARS */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* METRICS GRID - EXPANDED TO 3 COLUMNS FOR CPU USAGE */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           
-          {/* RAM Usage */}
-          <div className="bg-[#05080f] border border-white/10 rounded-3xl p-6 shadow-xl">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-blue-500/10 rounded-lg border border-blue-500/20"><MemoryStick className="w-5 h-5 text-blue-400" /></div>
-                <h3 className="font-bold text-white">Memory Allocation</h3>
+          {/* CPU Usage */}
+          <div className="bg-[#05080f] border border-white/10 rounded-3xl p-6 shadow-xl flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-emerald-500/10 rounded-lg border border-emerald-500/20"><Cpu className="w-5 h-5 text-emerald-400" /></div>
+                  <h3 className="font-bold text-white">Compute Utilization</h3>
+                </div>
+                <span className="text-2xl font-black text-emerald-400">{telemetry.cpu_usage_percent}%</span>
               </div>
-              <span className="text-2xl font-black text-blue-400">{telemetry.ramPct}%</span>
-            </div>
-            <div className="w-full h-3 bg-slate-900 rounded-full overflow-hidden border border-white/5">
-              <div 
-                className={`h-full transition-all duration-1000 ease-out relative bg-blue-500`}
-                style={{ width: `${telemetry.ramPct}%` }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white/30" />
+              <div className="w-full h-3 bg-slate-900 rounded-full overflow-hidden border border-white/5">
+                <div 
+                  className={`h-full transition-all duration-1000 ease-out relative bg-emerald-500`}
+                  style={{ width: `${telemetry.cpu_usage_percent}%` }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white/30" />
+                </div>
               </div>
             </div>
             <div className="flex justify-between mt-2 text-[10px] font-mono text-slate-500">
               <span>0%</span>
-              <span>PRoot Subsystem Bounds</span>
+              <span>Kernel Space</span>
               <span>100%</span>
             </div>
           </div>
 
-          {/* Storage Free Space */}
-          <div className="bg-[#05080f] border border-white/10 rounded-3xl p-6 shadow-xl">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-purple-500/10 rounded-lg border border-purple-500/20"><HardDrive className="w-5 h-5 text-purple-400" /></div>
-                <h3 className="font-bold text-white">Edge Storage Available</h3>
+          {/* Memory Allocation */}
+          <div className="bg-[#05080f] border border-white/10 rounded-3xl p-6 shadow-xl flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-blue-500/10 rounded-lg border border-blue-500/20"><MemoryStick className="w-5 h-5 text-blue-400" /></div>
+                  <h3 className="font-bold text-white">Memory Allocation</h3>
+                </div>
+                <span className="text-2xl font-black text-blue-400">{telemetry.memory_usage_mb} <span className="text-sm">MB</span></span>
               </div>
-              <span className="text-2xl font-black text-purple-400">{telemetry.freeSpaceMB} <span className="text-sm">MB</span></span>
+              <div className="w-full h-3 bg-slate-900 rounded-full overflow-hidden border border-white/5">
+                <div 
+                  className={`h-full transition-all duration-1000 ease-out relative bg-blue-500`}
+                  style={{ width: `${Math.max(5, Math.min(100, (telemetry.memory_usage_mb / 8192) * 100))}%` }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white/30" />
+                </div>
+              </div>
             </div>
-            <div className="w-full h-3 bg-slate-900 rounded-full overflow-hidden border border-white/5">
-              <div 
-                className={`h-full transition-all duration-1000 ease-out relative bg-purple-500`}
-                style={{ width: `${Math.max(10, Math.min(100, (telemetry.freeSpaceMB / 256000) * 100))}%` }}
-              >
-                 <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white/30" />
+            <div className="flex justify-between mt-2 text-[10px] font-mono text-slate-500">
+              <span>0 MB</span>
+              <span>Native & PRoot Subsystems</span>
+              <span>8192 MB+</span>
+            </div>
+          </div>
+
+          {/* Storage Free Space */}
+          <div className="bg-[#05080f] border border-white/10 rounded-3xl p-6 shadow-xl flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-purple-500/10 rounded-lg border border-purple-500/20"><HardDrive className="w-5 h-5 text-purple-400" /></div>
+                  <h3 className="font-bold text-white">Edge Storage</h3>
+                </div>
+                <span className="text-2xl font-black text-purple-400">{telemetry.free_space_mb} <span className="text-sm">MB</span></span>
+              </div>
+              <div className="w-full h-3 bg-slate-900 rounded-full overflow-hidden border border-white/5">
+                <div 
+                  className={`h-full transition-all duration-1000 ease-out relative bg-purple-500`}
+                  style={{ width: `${Math.max(10, Math.min(100, (telemetry.free_space_mb / 256000) * 100))}%` }}
+                >
+                   <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white/30" />
+                </div>
               </div>
             </div>
              <div className="flex justify-between mt-2 text-[10px] font-mono text-slate-500">

@@ -33,8 +33,8 @@ export default function IdentityVaultTab() {
   // ENTERPRISE LEAST PRIVILEGE: Machine Identity / AppRole State
   const [machineIdentities, setMachineIdentities] = useState([
     {
-      id: 'gitops-service',
-      name: 'Global Orchestrator',
+      id: 'infra-runner',
+      name: 'Gitea Action Worker',
       icon: TerminalSquare,
       status: 'active',
       ttl: '58m 42s',
@@ -44,7 +44,7 @@ export default function IdentityVaultTab() {
       border: 'border-emerald-500/30'
     },
     {
-      id: 'dashboard-api',
+      id: 'pocket-api',
       name: 'Control Plane API',
       icon: Bot,
       status: 'active',
@@ -55,12 +55,12 @@ export default function IdentityVaultTab() {
       border: 'border-sky-500/30'
     },
     {
-      id: 'fleet-service',
-      name: 'Tailscale Fleet Manager',
-      icon: Network,
+      id: 'db-runner',
+      name: 'Automated Backup Drone',
+      icon: Database,
       status: 'idle',
       ttl: 'Expired',
-      policies: ['fleet-policy'],
+      policies: ['backup-policy'],
       color: 'text-slate-400',
       bg: 'bg-slate-800',
       border: 'border-white/10'
@@ -183,7 +183,7 @@ export default function IdentityVaultTab() {
                <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest">KMS Status</h3>
             </div>
             <h2 className="text-4xl font-black text-white tracking-tight">Vault is {isSealed ? 'Sealed' : 'Active'}</h2>
-            <p className="text-slate-400 text-sm mt-2 max-w-md">The Identity engine is {isSealed ? 'locked. No applications can retrieve secrets.' : 'authenticated. HashiCorp Nomad can now natively inject secrets into edge workloads.'}</p>
+            <p className="text-slate-400 text-sm mt-2 max-w-md">The Identity engine is {isSealed ? 'locked. No applications can retrieve secrets.' : 'authenticated. PM2 daemons and Gitea Actions runners can now dynamically request short-lived secrets.'}</p>
           </div>
           
           <button onClick={() => setIsSealed(!isSealed)} className={`p-6 rounded-3xl border transition-all transform active:scale-95 z-10 ${isSealed ? 'bg-red-600 border-red-400 text-white shadow-[0_0_20px_rgba(220,38,38,0.4)]' : 'bg-slate-800 border-white/10 text-emerald-400 hover:border-emerald-500/50'}`}>

@@ -24,6 +24,7 @@ export default function GiteaRegistryTab() {
   const fetchPipelines = async () => {
     try {
       // Actively attempt to hit the real Python API securely
+      // This seamlessly hits Gitea Actions API proxy
       const res = await fetch('/api/pipeline_status.json');
       const text = await res.text();
       let data;
@@ -41,10 +42,10 @@ export default function GiteaRegistryTab() {
     } catch (err) {
       // Fallback to Sandbox Simulator if API is unreachable or returns HTML
       setPipelines([
-        { id: 104, name: 'Nomad Workload Deployment', status: 'running', commit_msg: 'Orchestrating Nomad Job: photoprism', time: new Date().toISOString() },
-        { id: 103, name: 'Enterprise Maintenance Playbook', status: 'success', commit_msg: 'Ansible: MariaDB Backup', time: new Date(Date.now() - 60000).toISOString() },
-        { id: 102, name: 'Nightly Security Audit', status: 'success', commit_msg: 'Automated CRON Trigger', time: new Date(Date.now() - 3600000).toISOString() },
-        { id: 101, name: 'Nomad Workload Deployment', status: 'failure', commit_msg: 'Orchestrating Nomad Job: ubuntu_base (Blocked by OPA)', time: new Date(Date.now() - 86400000).toISOString() },
+        { id: 104, name: 'Workload Deployment', status: 'running', commit_msg: 'GitOps: Deploying photoprism via UI', time: new Date().toISOString() },
+        { id: 103, name: 'Maintenance Action', status: 'success', commit_msg: 'Ansible: MariaDB Backup', time: new Date(Date.now() - 60000).toISOString() },
+        { id: 102, name: 'Security Audit', status: 'success', commit_msg: 'Automated CRON Trigger', time: new Date(Date.now() - 3600000).toISOString() },
+        { id: 101, name: 'Workload Deployment', status: 'failure', commit_msg: 'GitOps: Deploying ubuntu_base (Blocked by OPA)', time: new Date(Date.now() - 86400000).toISOString() },
       ]);
     } finally {
       setIsFetching(false);
@@ -85,7 +86,7 @@ export default function GiteaRegistryTab() {
              <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest">{isLiveEnv ? 'Live API Connected' : 'Sandbox Simulator'}</h3>
           </div>
           <h2 className="text-4xl font-black text-white tracking-tight mb-2">Global Orchestration Pipelines</h2>
-          <p className="text-slate-400 text-sm max-w-xl">Live execution logs from the Gitea Actions <code className="text-indigo-400">termux-arm64</code> runner executing Nomad Jobs and Ansible Playbooks.</p>
+          <p className="text-slate-400 text-sm max-w-xl">Live execution logs from the Gitea Actions <code className="text-indigo-400">infra-runner</code> orchestrating state changes via Ansible and PM2.</p>
         </div>
       </div>
 
@@ -121,7 +122,7 @@ export default function GiteaRegistryTab() {
                         <h4 className="text-white font-black text-sm md:text-lg flex items-center truncate">
                           <span className="truncate">{run.name}</span>
                           {run.name.includes('Security') && <ShieldCheck className="w-4 h-4 ml-2 text-indigo-400 shrink-0 hidden sm:block" />}
-                          {run.name.includes('Nomad') && <PlayCircle className="w-4 h-4 ml-2 text-emerald-400 shrink-0 hidden sm:block" />}
+                          {run.name.includes('Workload') && <PlayCircle className="w-4 h-4 ml-2 text-emerald-400 shrink-0 hidden sm:block" />}
                         </h4>
                         <div className="flex items-center space-x-2 mt-0.5 md:mt-1 text-xs">
                           <GitCommit className="w-3 h-3 text-slate-500 shrink-0" />
@@ -150,22 +151,22 @@ export default function GiteaRegistryTab() {
                       <div className="text-slate-500 mb-1">[00:00:00] Setting up job environment in Termux sub-shell...</div>
                       <div className="mb-1"><span>[00:00:01]</span> <span className="text-emerald-400">✔</span> Checkout Workspace Repository</div>
                       
-                      {run.name.includes('Nomad') && (
+                      {run.name.includes('Workload') && (
                         <>
                           <div className="mb-1"><span>[00:00:02]</span> <span className="text-emerald-400">✔</span> Execute: <span className="text-white">opa eval -d ~/pocket_lab_policies "data.pocketlab.deny"</span></div>
                           {run.status === 'failure' ? (
                             <>
                               <div className="mb-1 text-red-500 pl-4">Policy Violation Detected.</div>
-                              <div className="mt-2 text-red-400 font-bold">Error: OPA policy violation. Nomad driver 'raw_exec' required to run PRoot isolation on this Android Kernel.</div>
+                              <div className="mt-2 text-red-400 font-bold">Error: OPA policy violation. Playbook attempts to execute restricted operation or missing AppRole context.</div>
                             </>
                           ) : (
                             <>
                               <div className="mb-1 text-emerald-500 pl-4">Policy Guardrails Passed. No violations detected.</div>
-                              <div className="mb-1"><span>[00:00:03]</span> <span className="text-yellow-400">⚙</span> Execute: <span className="text-white">nomad job run app.nomad</span></div>
+                              <div className="mb-1"><span>[00:00:03]</span> <span className="text-yellow-400">⚙</span> Execute: <span className="text-white">ansible-playbook playbook.yml</span></div>
                               {run.status === 'success' ? (
-                                <div className="mt-2 text-emerald-400 font-bold">Job submission successful. Allocations placed and healthy!</div>
+                                <div className="mt-2 text-emerald-400 font-bold">State reconciliation successful. PM2 daemon natively bound to port.</div>
                               ) : (
-                                <div className="mt-2 text-blue-400 font-bold animate-pulse">Submitting job to Nomad server...</div>
+                                <div className="mt-2 text-blue-400 font-bold animate-pulse">Reconciling edge state via Ansible...</div>
                               )}
                             </>
                           )}
@@ -174,9 +175,9 @@ export default function GiteaRegistryTab() {
 
                       {run.name.includes('Maintenance') && (
                         <>
-                          <div className="mb-1"><span>[00:00:02]</span> <span className="text-emerald-400">✔</span> Verifying Semaphore Agent Connection...</div>
+                          <div className="mb-1"><span>[00:00:02]</span> <span className="text-emerald-400">✔</span> Requesting dynamic Vault AppRole token...</div>
                           <div className="mb-1"><span>[00:00:03]</span> <span className="text-yellow-400">⚙</span> Executing: <span className="text-white">ansible-playbook maintenance.yml</span></div>
-                          <div className="mt-2 text-emerald-400 font-bold">Playbook execution complete. OS level tasks resolved.</div>
+                          <div className="mt-2 text-emerald-400 font-bold">Playbook execution complete. Discarding ephemeral Vault token.</div>
                         </>
                       )}
 

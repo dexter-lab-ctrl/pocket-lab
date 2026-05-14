@@ -63,7 +63,7 @@ export default function FleetScalingTab() {
       setTimeout(() => {
         setNodes([
           { id: 'master', name: 'pocket-lab-cp', role: 'Control Plane', ip: '100.101.50.1', status: 'active', isCurrent: true },
-          { id: 'worker1', name: 'pixel-edge-01', role: 'Nomad Client', ip: '100.101.50.2', status: 'active', isCurrent: false },
+          { id: 'worker1', name: 'pixel-edge-01', role: 'Compute Node', ip: '100.101.50.2', status: 'active', isCurrent: false },
           { id: 'worker2', name: 'samsung-nfs', role: 'Storage Node', ip: '100.101.50.3', status: Math.random() > 0.8 ? 'offline' : 'active', isCurrent: false },
         ]);
         setIsRefreshing(false);
@@ -137,10 +137,6 @@ export default function FleetScalingTab() {
           body: JSON.stringify({ intent: 'save_tailscale_key', api_key: apiInputValue })
         });
         
-        const text = await res.text();
-        let data;
-        try { data = JSON.parse(text); } catch { throw new Error("Invalid Format"); }
-        
         if (res.ok) {
           setIsConfigured(true);
         } else {
@@ -206,9 +202,20 @@ export default function FleetScalingTab() {
 
   const copyToClipboard = () => {
     if (navigator.vibrate) navigator.vibrate(10);
-    navigator.clipboard.writeText(ztpCommand);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      // Legacy execCommand is preferred here to bypass restrictive iframe/sandbox clipboard policies
+      const textArea = document.createElement("textarea");
+      textArea.value = ztpCommand;
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy ZTP command text', err);
+    }
   };
 
   return (
@@ -249,7 +256,7 @@ export default function FleetScalingTab() {
                <h3 className="text-[10px] md:text-xs font-black text-slate-500 uppercase tracking-widest">{!isLiveEnv ? 'Simulator Sandbox' : 'Cluster Operations'}</h3>
             </div>
             <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-2 relative z-10">Zero-Touch Provisioning</h2>
-            <p className="text-slate-400 text-sm max-w-xl relative z-10">Dynamically compile node-specific installation payloads using Tailscale API. Scale your Android fleet securely without manual terminal configuration.</p>
+            <p className="text-slate-400 text-sm max-w-xl relative z-10">Dynamically compile node-specific installation payloads using Tailscale API. Scale your Mesh Fleet securely without manual terminal configuration.</p>
           </div>
 
           {/* DYNAMIC RENDER: First Time Setup vs ZTP Generator */}
@@ -308,7 +315,7 @@ export default function FleetScalingTab() {
                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                    <button onClick={() => { if(navigator.vibrate) navigator.vibrate(10); setSelectedRole('compute'); }} className={`p-3 md:p-4 rounded-2xl md:rounded-[1.5rem] border text-left transition-all flex items-center ${selectedRole === 'compute' ? 'bg-indigo-600/20 border-indigo-500/50 text-indigo-200' : 'bg-slate-900/50 border-white/5 text-slate-400 hover:border-white/20'}`}>
                      <Cpu className="w-5 h-5 mr-3 shrink-0" />
-                     <div><div className="font-bold text-sm text-white">Compute Node</div><div className="text-[9px] md:text-[10px] mt-0.5">AI & Container execution</div></div>
+                     <div><div className="font-bold text-sm text-white">Compute Node</div><div className="text-[9px] md:text-[10px] mt-0.5">Edge Workloads & PRoot</div></div>
                    </button>
                    <button onClick={() => { if(navigator.vibrate) navigator.vibrate(10); setSelectedRole('storage'); }} className={`p-3 md:p-4 rounded-2xl md:rounded-[1.5rem] border text-left transition-all flex items-center ${selectedRole === 'storage' ? 'bg-indigo-600/20 border-indigo-500/50 text-indigo-200' : 'bg-slate-900/50 border-white/5 text-slate-400 hover:border-white/20'}`}>
                      <Database className="w-5 h-5 mr-3 shrink-0" />
@@ -357,7 +364,7 @@ export default function FleetScalingTab() {
           <div className="bg-[#05080f] border border-white/10 rounded-[2.5rem] p-5 md:p-6 shadow-xl">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center">
-                 <Network className="w-4 h-4 mr-2" /> Tailnet Topology
+                 <Network className="w-4 h-4 mr-2" /> Mesh Fleet Topology
               </h3>
               <span className="text-[9px] bg-white/5 border border-white/10 text-slate-400 px-2 py-1 rounded-md uppercase tracking-widest font-bold">
                 {nodes.length} Nodes

@@ -48,25 +48,25 @@ export default function PolicyGuardrailsTab() {
     })();
   }, []);
 
-  // Logical Edge Node Policies updated for HashiCorp Nomad
+  // Logical Edge Node Policies updated for Gitea Actions & PM2
   const policies = {
     ports: {
       name: "Privileged Port Restriction",
-      desc: "Prevents workloads from binding to ports < 1024, which are restricted by the Android OS.",
+      desc: "Prevents workloads from binding to ports < 1024, which are restricted by the Android OS kernel.",
       severity: "CRITICAL",
-      rego: `package pocketlab.network\n\ndefault allow = false\n\nallow {\n    not contains_privileged_port\n}\n\ncontains_privileged_port {\n    port := input.Job.TaskGroups[_].Tasks[_].Config.ports[_]\n    port < 1024\n}\n\ndeny[msg] {\n    contains_privileged_port\n    msg := "Android OS denies non-root binding to ports < 1024. Please use a port > 1023."\n}`
+      rego: `package pocketlab.network\n\ndeny[msg] {\n    port := input.playbook.tasks[_].pm2_env.PORT\n    to_number(port) < 1024\n    msg := "Android OS denies non-root binding to ports < 1024. Please use a port > 1023."\n}`
     },
-    storage: {
-      name: "Driver Type Enforcement",
-      desc: "Ensures Nomad only spins up raw_exec PRoot drivers on the Android kernel.",
+    secrets: {
+      name: "Hardcoded Secrets Prevention",
+      desc: "Ensures declarative playbooks use Vault AppRole lookups instead of plaintext variables.",
       severity: "HIGH",
-      rego: `package pocketlab.storage\n\ndeny[msg] {\n    driver := input.Job.TaskGroups[_].Tasks[_].Driver\n    driver != "raw_exec"\n    msg := "Only raw_exec is permitted to run PRoot isolation on this Android Kernel."\n}`
+      rego: `package pocketlab.security\n\ndeny[msg] {\n    some key\n    val := input.playbook.vars[key]\n    contains(lower(key), "password")\n    not contains(val, "lookup('hashi_vault'")\n    msg := "Hardcoded secrets detected. You must use the Vault AppRole lookup plugin."\n}`
     },
-    nomad: {
-      name: "Nomad Datacenter Constraint",
-      desc: "Ensures declarative blueprints properly specify a Nomad target Datacenter.",
+    execution: {
+      name: "PRoot Isolation Enforcement",
+      desc: "Ensures Linux binaries (apt/dpkg) are executed inside the PRoot Ubuntu subsystem, not native Termux.",
       severity: "MEDIUM",
-      rego: `package pocketlab.engine\n\ndeny[msg] {\n    job := input.Job\n    not job.Datacenters\n    msg := "Enterprise violation: Nomad job must specify Datacenters."\n}`
+      rego: `package pocketlab.execution\n\ndeny[msg] {\n    task := input.playbook.tasks[_]\n    contains(task.command, "apt-get")\n    not contains(task.prefix, "proot-distro login ubuntu")\n    msg := "Linux package managers must be executed inside the PRoot Ubuntu subsystem."\n}`
     }
   };
 
@@ -75,11 +75,11 @@ export default function PolicyGuardrailsTab() {
     if (!isLiveEnv) {
       // --- SIMULATOR MODE ---
       interval = setInterval(() => {
-        const triggers = ['nomad_job_submit', 'semaphore_playbook_exec', 'caddy_route_update'];
+        const triggers = ['gitea_action_push', 'ansible_playbook_deploy', 'caddy_route_update'];
         const results = [
           { status: 'PASS', msg: 'No violations detected.', time: 80 },
           { status: 'PASS', msg: 'No violations detected.', time: 45 },
-          { status: enforceMode ? 'DENIED' : 'AUDIT_WARN', msg: 'Android OS denies non-root binding to ports < 1024.', time: 120 }
+          { status: enforceMode ? 'DENIED' : 'AUDIT_WARN', msg: 'Hardcoded secrets detected. You must use the Vault AppRole lookup plugin.', time: 120 }
         ];
         
         const trigger = triggers[Math.floor(Math.random() * triggers.length)];
@@ -230,7 +230,7 @@ export default function PolicyGuardrailsTab() {
                <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest">Open Policy Agent</h3>
             </div>
             <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-2 relative z-10">Policy as Code</h2>
-            <p className="text-slate-400 text-sm relative z-10">Prevent misconfigurations before they deploy. OPA intercepts Enterprise Orchestrator requests and evaluates them against declarative Rego policies.</p>
+            <p className="text-slate-400 text-sm relative z-10">Prevent misconfigurations before they deploy. OPA intercepts Gitea Actions and Ansible Playbooks, evaluating them against declarative Rego policies before PM2 applies the state.</p>
             
             <div className={`mt-6 p-4 rounded-2xl border flex items-center justify-between transition-colors relative z-10 ${enforceMode ? 'bg-indigo-900/30 border-indigo-500/50' : 'bg-black/40 border-white/5'}`}>
               <div>
@@ -322,7 +322,7 @@ export default function PolicyGuardrailsTab() {
                {evaluations.length === 0 ? (
                  <div className="h-full flex flex-col items-center justify-center opacity-30 text-slate-400">
                    <Activity className="w-10 h-10 mb-2 animate-pulse" />
-                   <p className="text-xs">Awaiting Nomad Job Specifications...</p>
+                   <p className="text-xs">Awaiting Gitea/Ansible Declarations...</p>
                  </div>
                ) : (
                  evaluations.map((ev) => (
