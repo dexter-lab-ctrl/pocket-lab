@@ -1,6 +1,6 @@
 ---
 # Open Policy Agent (DevSecOps) Configuration
-opa_version: "v0.62.1"
+opa_version: "v1.16.2"
 opa_arch: "linux_arm64_static"
 
 # Native Termux Execution Paths

@@ -17,10 +17,12 @@ backup_dir() {
   fi
 }
 
+# 1. File-based backups (Playbooks, Configurations, Caddy certs, Vault Unseal Keys)
 {% for target in backup_targets %}
 backup_dir "{{ target.name }}" "{{ target.path }}"
 {% endfor %}
 
+# 2. Database backups (Gitea and Vault)
 if command -v mariadb-dump >/dev/null 2>&1 && [ -S "{{ mariadb_socket | default(common_base_dir ~ '/mariadb/mysqld.sock') }}" ]; then
   # Execute dump using injected credentials instead of root
   mariadb-dump \
@@ -28,9 +30,15 @@ if command -v mariadb-dump >/dev/null 2>&1 && [ -S "{{ mariadb_socket | default(
     -u"{{ mariadb_backup_user | default('pocket_admin') }}" \
     -p"{{ mariadb_backup_password }}" \
     -S "{{ mariadb_socket | default(common_base_dir ~ '/mariadb/mysqld.sock') }}" \
-    --databases gitea semaphore > "${RUN_DIR}/mariadb.sql"
+    --databases gitea vault > "${RUN_DIR}/mariadb.sql"
 fi
 
+# 3. Compress the final archive
 tar -czf "${BACKUP_ROOT}/pocket-lab-${STAMP}.tar.gz" -C "${RUN_DIR}" .
+
+# 4. Clean up uncompressed run directory to save storage space
+rm -rf "${RUN_DIR}"
+
+# 5. Purge backups older than RETENTION_DAYS
 find "${BACKUP_ROOT}" -maxdepth 1 -type f -name 'pocket-lab-*.tar.gz' -mtime +"${RETENTION_DAYS}" -delete || true
 log "Backup complete: ${BACKUP_ROOT}/pocket-lab-${STAMP}.tar.gz"

@@ -9,14 +9,15 @@ source "$SCRIPT_DIR/lib/common.sh"
 # Each stage may invoke one or more subordinate scripts, but bootstrap.sh
 # itself stays orchestration-only.
 STAGE_GROUPS=(
-  "$SCRIPT_DIR/install-termux-packages.sh"
-  "$SCRIPT_DIR/install-proot-ubuntu.sh"
-  "$SCRIPT_DIR/install-binaries.sh"
-  "$SCRIPT_DIR/init-vault.sh|$SCRIPT_DIR/init-mariadb.sh|$SCRIPT_DIR/start-gitea.sh"
-  "$SCRIPT_DIR/seed-gitops-repo.sh"
-  "$SCRIPT_DIR/install-tailscale.sh"
-  "$SCRIPT_DIR/start-dashboard.sh"
-  "$SCRIPT_DIR/smoke-test.sh"
+  "$SCRIPT_DIR/install-termux-packages.sh"      # Stage 1: Base OS packages (curl, unzip, etc.)
+  "$SCRIPT_DIR/install-proot-ubuntu.sh"         # Stage 2: Subsystem isolation
+  "$SCRIPT_DIR/install-binaries.sh"             # Stage 3: Python, Node, etc.
+  "$SCRIPT_DIR/init-vault.sh|$SCRIPT_DIR/init-mariadb.sh|$SCRIPT_DIR/start-gitea.sh" # Stage 4: Backend services
+  "$SCRIPT_DIR/seed-gitops-repo.sh"             # Stage 5: GitOps initialization
+  "$SCRIPT_DIR/install-tailscale.sh"            # Stage 6: Network mesh
+  "$SCRIPT_DIR/install-pwa-ui.sh"               # Stage 7: Fetch UI releases from GitHub
+  "$SCRIPT_DIR/start-dashboard.sh"              # Stage 8: Launch control plane and proxy
+  "$SCRIPT_DIR/smoke-test.sh"                   # Stage 9: Final validation
 )
 
 usage() {

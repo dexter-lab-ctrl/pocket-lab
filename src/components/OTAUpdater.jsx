@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CloudDownload, RefreshCw, AlertTriangle, ChevronRight, Zap, CheckCircle2, Server, GitBranch } from 'lucide-react';
 
 // This should track your actual GitOps Infrastructure repository
-const GITHUB_REPO = 'dexter-lab-ctrl/pocket-lab-iac'; 
+const GITHUB_REPO = 'dexter-lab-ctrl/pocket-lab'; 
 const CURRENT_VERSION = 'v1.1.0';
 
 export default function OTAUpdater() {

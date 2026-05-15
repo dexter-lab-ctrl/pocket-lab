@@ -8,31 +8,19 @@
     - "{{ dashboard_api_dir }}"
     - "{{ dashboard_ui_dir }}"
 
-- name: dashboard_api | render API server
-  ansible.builtin.template:
-    src: api_server.py.j2
-    dest: "{{ dashboard_api_dir }}/api_server.py"
-    mode: '0750'
+- name: dashboard_api | verify api process is running
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:{{ dashboard_api_port }}{{ dashboard_health_path }}"
+    method: GET
+    return_content: yes
+    status_code: 200
+  register: api_health
+  ignore_errors: yes
 
-- name: dashboard_api | render launcher
-  ansible.builtin.template:
-    src: start_dashboard.sh.j2
-    dest: "{{ dashboard_launcher_path }}"
-    mode: '0750'
-
-- name: dashboard_api | render UI landing page
-  ansible.builtin.template:
-    src: index.html.j2
-    dest: "{{ dashboard_ui_dir }}/index.html"
-    mode: '0640'
-
-- name: dashboard_api | validate Python syntax
-  ansible.builtin.command: python3 -m py_compile "{{ dashboard_api_dir }}/api_server.py"
-  changed_when: false
-
-- name: dashboard_api | validate launcher shell syntax
-  ansible.builtin.command: bash -n "{{ dashboard_launcher_path }}"
-  changed_when: false
+- name: dashboard_api | warn if control plane is down
+  ansible.builtin.debug:
+    msg: "WARNING: Pocket Lab API is not responding on port {{ dashboard_api_port }}. Ensure start-dashboard.sh was executed."
+  when: api_health.failed
 
 - name: dashboard_api | persist asset manifest
   ansible.builtin.copy:
@@ -41,6 +29,6 @@
     content: |
       {
         "api_port": {{ dashboard_api_port }},
-        "ui_port": {{ dashboard_ui_port }},
-        "launcher": "{{ dashboard_launcher_path }}"
+        "ui_dir": "{{ dashboard_ui_dir }}",
+        "health_endpoint": "{{ dashboard_health_path }}"
       }

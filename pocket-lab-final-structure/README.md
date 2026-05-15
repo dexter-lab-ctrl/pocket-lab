@@ -12,7 +12,7 @@
 ## Execution order
 
 1. Run bootstrap scripts from `pocket-lab-bootstrap-production-scripts-patched/`
-2. Bring up Vault, MariaDB, Gitea, and Semaphore
+2. Bring up Vault, MariaDB, Gitea, and PM2
 3. Seed `pocket-lab-iac-api-compatible/` into Gitea
 4. Start the runtime API from `runtime/api/pocket_lab_api_server.py`
 5. Start the dashboard and supervision loop

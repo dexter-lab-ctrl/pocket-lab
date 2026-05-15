@@ -1,7 +1,7 @@
 ---
 # DevSecOps Tool Versioning
-trivy_version: "0.50.1"
-lynis_version: "3.1.1"
+trivy_version: "0.70.0"
+lynis_version: "3.1.6"
 
 # Binary and Report Paths (PRoot Ubuntu context)
 security_bin_dir: "/usr/local/bin"

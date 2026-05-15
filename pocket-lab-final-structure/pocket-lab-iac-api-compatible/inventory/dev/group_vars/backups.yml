@@ -4,9 +4,10 @@ backup_retention_days: 14
 backup_script_path: "{{ common_base_dir }}/backups/backup.sh"
 backup_restore_path: "{{ common_base_dir }}/backups/restore.sh"
 backup_manifest_path: "{{ common_base_dir }}/backups/manifest.json"
+
 backup_targets:
   - name: vault
-    path: "{{ common_base_dir }}/vault/data"
+    path: "{{ common_base_dir }}/vault"
   - name: gitea
     path: "{{ common_base_dir }}/gitea"
   - name: dashboard

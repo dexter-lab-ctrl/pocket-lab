@@ -5,7 +5,8 @@ IFS=$'\n\t'
 SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib/common.sh"
 
-API_SERVER="${API_SERVER:-$HOME/pocket_lab_api_server.py}"
+# Day-3 Dynamic API Path mapped to project structure
+API_SERVER="${API_SERVER:-$SCRIPT_DIR/../../runtime/api/pocket_lab_api_server.py}"
 PWA_DIR="${PWA_DIR:-$HOME/pwa_dist}"
 CADDYFILE="${CADDYFILE:-$HOME/Caddyfile}"
 HARDWARE_DAEMON="${HARDWARE_DAEMON:-$HOME/hardware_daemon.py}"
@@ -14,18 +15,58 @@ OBS_DIR="$HOME/observability_configs"
 DASH_PORT="${DASH_PORT:-8443}"
 API_PORT="${API_PORT:-8080}"
 
+get_ts_fqdn() {
+  if command -v tailscale >/dev/null 2>&1; then
+    # Fetch DNSName from Tailscale, remove the trailing dot
+    local fqdn
+    fqdn=$(tailscale status --json | jq -r '.Self.DNSName' | sed 's/\.$//')
+    if [[ -n "$fqdn" && "$fqdn" != "null" ]]; then
+      echo "$fqdn"
+      return 0
+    fi
+  fi
+  return 1
+}
+
 ensure_assets() {
   [[ -f "$API_SERVER" ]] || die "Missing dashboard API server: $API_SERVER"
   [[ -d "$PWA_DIR" ]] || mkdir -p "$PWA_DIR"
   mkdir -p "$OBS_DIR/loki_data"
   mkdir -p "$HOME/api"
+
+  # SELF-HEALING UI CHECK
+  # If the compiled frontend is missing, dynamically call the installer script
+  if [[ ! -f "$PWA_DIR/index.html" ]]; then
+      log INFO "UI assets not found in $PWA_DIR. Triggering auto-recovery..."
+      bash "$SCRIPT_DIR/install-pwa-ui.sh" || die "Failed to auto-recover UI assets."
+  fi
 }
 
 write_caddyfile() {
+  local ts_fqdn
+  ts_fqdn=$(get_ts_fqdn || echo "")
+
   if [[ ! -f "$CADDYFILE" ]]; then
-    log INFO "Generating Caddyfile for frontend and API proxying..."
-    cat > "$CADDYFILE" <<EOF2
+    log INFO "Generating Dynamic Caddyfile..."
+    
+    # Check if we have a valid Tailscale FQDN
+    if [[ "$ts_fqdn" == *".ts.net" ]]; then
+      log INFO "Tailscale detected: Enabling HTTPS for $ts_fqdn"
+      cat > "$CADDYFILE" <<EOF
+$ts_fqdn {
+  tls {
+    get_certificate tailscale
+  }
+EOF
+    else
+      log WARN "Tailscale not detected or MagicDNS disabled. Falling back to HTTP port ${DASH_PORT}."
+      cat > "$CADDYFILE" <<EOF
 :${DASH_PORT} {
+EOF
+    fi
+
+    # Append the shared handlers (API, Gitea, Loki, PWA)
+    cat >> "$CADDYFILE" <<EOF
   encode gzip zstd
   header Strict-Transport-Security "max-age=31536000; includeSubDomains"
   header X-Content-Type-Options "nosniff"
@@ -42,7 +83,7 @@ write_caddyfile() {
     file_server
   }
 }
-EOF2
+EOF
   fi
 }
 
@@ -213,7 +254,7 @@ scrape_configs:
       - targets: ["127.0.0.1:8200"]
 EOF
 
-  # GRAFANA CUSTOM.INI (Port 3050 to avoid Semaphore conflict)
+  # GRAFANA CUSTOM.INI
   cat > "$OBS_DIR/custom.ini" <<EOF
 [server]
 http_port = 3050
@@ -268,14 +309,15 @@ start_pm2_daemons() {
 
 main() {
   ensure_root_dirs
-  require_cmd python3 caddy curl pm2 proot-distro
+  # Added jq for Tailscale MagicDNS parsing
+  require_cmd python3 caddy curl pm2 proot-distro jq
   ensure_assets
   write_hardware_daemon
   write_caddyfile
   write_observability_configs
   start_pm2_daemons
   
-  log INFO "Infrastructure and AppRole-free Observability Mesh successfully delegated to PM2."
+  log INFO "Infrastructure and Observability Mesh successfully delegated to PM2."
 }
 
 main "$@"

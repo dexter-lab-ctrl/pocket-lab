@@ -1,21 +1,36 @@
+{% if caddy_tailscale_fqdn | length > 0 %}
+{{ caddy_tailscale_fqdn }} {
+    tls {
+        get_certificate tailscale
+    }
+{% else %}
 :{{ caddy_public_port }} {
+{% endif %}
     header {
         Strict-Transport-Security "max-age={{ caddy_hsts_max_age }}; includeSubDomains"
         X-Content-Type-Options "nosniff"
         X-Frame-Options "DENY"
         Referrer-Policy "no-referrer"
     }
+    
     encode zstd gzip
+    
     handle /healthz {
         respond "ok" 200
     }
+    
     handle /api/* {
         reverse_proxy {{ caddy_routes.api }}
     }
-    handle /loki/* {                           
+    
+    handle /loki/* {
         reverse_proxy {{ caddy_routes.loki }}
-    }                                          
+    }
+    
+    # Day-3 Static PWA Serving
     handle /* {
-        reverse_proxy {{ caddy_routes.ui }}
+        root * {{ caddy_pwa_dir }}
+        try_files {path} /index.html
+        file_server
     }
 }

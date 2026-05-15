@@ -1,11 +1,13 @@
 ---
-env_name: dev
+env_name: prod
 control_plane_name: pocket-lab
 common_base_dir: "{{ lookup('env', 'POCKET_LAB_BASE_DIR') | default('/data/data/com.termux/files/home/pocket-lab', true) }}"
 common_log_dir: "{{ common_base_dir }}/logs"
 common_run_dir: "{{ common_base_dir }}/run"
 common_cache_dir: "{{ common_base_dir }}/cache"
 common_state_dir: "{{ common_base_dir }}/state"
+
+# Updated to remove legacy /dashboard and include /api & /pwa_dist
 common_manage_dirs:
   - "{{ common_base_dir }}"
   - "{{ common_log_dir }}"
@@ -19,7 +21,8 @@ common_manage_dirs:
   - "{{ common_base_dir }}/gitea"
   - "{{ common_base_dir }}/gitea/conf"
   - "{{ common_base_dir }}/gitea-runners"	
-  - "{{ common_base_dir }}/dashboard"
+  - "{{ common_base_dir }}/api"
+  - "{{ common_base_dir }}/pwa_dist"
   - "{{ common_base_dir }}/iac-catalog"
   - "{{ common_base_dir }}/backups"
   - "{{ common_base_dir }}/tailscale"
@@ -91,12 +94,20 @@ gitea_vault_token: "{{ lookup('env', 'GITEA_VAULT_TOKEN') | default('', true) }}
 gitea_ui_password: "{{ lookup('env', 'GITEA_UI_PASSWORD') | default('', true) }}"
 gitea_service_password: "{{ lookup('env', 'GITEA_SERVICE_PASSWORD') | default('', true) }}"
 
+# Updated Caddy Block for Day-3 Architecture
 caddy_public_port: 8443
 caddy_config_path: "{{ common_base_dir }}/caddy/Caddyfile"
 caddy_state_dir: "{{ common_base_dir }}/caddy"
+
+# Day-3: Frontend static hosting directory
+caddy_pwa_dir: "{{ common_base_dir }}/pwa_dist"
+
+# Day-3: Optional Tailscale FQDN (e.g. pocket-lab.tailnet.ts.net)
+caddy_tailscale_fqdn: ""
+
 caddy_routes:
   api: 127.0.0.1:8080
-  ui: 127.0.0.1:8082
+  loki: 127.0.0.1:3100
 caddy_tls_mode: internal
 caddy_hsts_max_age: 31536000
 
