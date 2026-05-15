@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+export POCKET_LAB_ENV="{{ env_name }}"
+export DASHBOARD_API_PORT="{{ dashboard_api_port }}"
+
+mkdir -p "{{ dashboard_api_dir }}" "{{ dashboard_ui_dir }}" "{{ common_log_dir }}"
+
+# Ensure pm2 is available
+if ! command -v pm2 >/dev/null 2>&1; then
+  echo "Error: PM2 is required to run the Pocket Lab dashboard services." >&2
+  exit 1
+fi
+
+echo "🚀 Starting Dashboard API via PM2..."
+pm2 start "{{ dashboard_api_dir }}/api_server.py" \
+  --name "dashboard-api" \
+  --interpreter python3
+
+echo "🚀 Starting Dashboard UI via PM2..."
+# We wrap the python module call in bash so PM2 handles it cleanly
+pm2 start bash \
+  --name "dashboard-ui" \
+  -- -c "python3 -m http.server {{ dashboard_ui_port }} --directory {{ dashboard_ui_dir }}"
+
+if command -v caddy >/dev/null 2>&1; then
+  echo "🚀 Starting Caddy Reverse Proxy via PM2..."
+  pm2 start caddy \
+    --name "caddy" \
+    -- run --config "{{ caddy_config_path | default(common_base_dir ~ '/caddy/Caddyfile') }}"
+fi
+
+echo "💾 Saving PM2 process list..."
+pm2 save
+
+echo "✅ Dashboard deployment complete. Check status with: pm2 status"

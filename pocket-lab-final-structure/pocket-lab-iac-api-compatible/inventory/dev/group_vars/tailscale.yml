@@ -1,0 +1,7 @@
+---
+tailscale_hostname: pocket-lab
+# [FIXED] Aligned to the native $HOME directory expected by the patched bropines installer
+tailscale_state_dir: "{{ lookup('env', 'HOME') }}/.tailscale"
+tailscale_socks5_port: 1055
+tailscale_auth_key: "{{ lookup('env', 'TS_AUTH_KEY') | default('', true) }}"
+tailscale_extra_args: "--accept-dns=true --accept-routes=true"

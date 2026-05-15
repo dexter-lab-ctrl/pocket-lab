@@ -1,0 +1,4 @@
+---
+- name: mariadb configuration updated
+  ansible.builtin.debug:
+    msg: "mariadb configuration changed. External service restarts are handled by the runtime launcher or supervisor."

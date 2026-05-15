@@ -1,0 +1,8 @@
+---
+dashboard_api_enabled: true
+dashboard_api_dir: "{{ common_base_dir }}/dashboard"
+dashboard_api_port: 8080
+dashboard_ui_dir: "{{ common_base_dir }}/pwa_dist"
+dashboard_ui_port: 8082  # Changed from 3000 to avoid Semaphore conflict
+dashboard_launcher_path: "{{ common_base_dir }}/dashboard/start_dashboard.sh"
+dashboard_health_path: /health

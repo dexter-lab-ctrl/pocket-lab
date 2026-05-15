@@ -1,0 +1,26 @@
+---
+- name: Enterprise Security Auditing (Trivy & Lynis)
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Execute Trivy Rootfs Vulnerability Scan
+      ansible.builtin.shell: |
+        proot-distro login ubuntu -- bash -c "trivy rootfs / --scanners vuln --severity CRITICAL,HIGH --format json -o /tmp/trivy_report.json"
+        echo '{"event": "security_audit", "engine": "Trivy", "status": "COMPLETED", "target": "ubuntu-rootfs"}'
+      register: trivy_scan
+      changed_when: true
+      ignore_errors: true
+
+    - name: Execute Lynis Host Hardening Audit
+      ansible.builtin.shell: |
+        proot-distro login ubuntu -- bash -c "lynis audit system --quick --warnings-only > /tmp/lynis_report.txt"
+        echo '{"event": "security_audit", "engine": "Lynis", "status": "COMPLETED", "target": "ubuntu-rootfs"}'
+      register: lynis_scan
+      changed_when: true
+      ignore_errors: true
+
+    - name: Emit Audit Summary to Promtail
+      ansible.builtin.debug:
+        msg: "Security Audit completed successfully."

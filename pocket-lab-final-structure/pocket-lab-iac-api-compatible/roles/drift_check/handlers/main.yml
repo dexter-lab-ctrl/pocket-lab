@@ -1,0 +1,4 @@
+---
+- name: drift_check configuration updated
+  ansible.builtin.debug:
+    msg: "drift_check configuration changed. External service restarts are handled by the runtime launcher or supervisor."

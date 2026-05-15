@@ -1,0 +1,31 @@
+---
+- name: caddy | ensure directories exist
+  ansible.builtin.file:
+    path: "{{ caddy_state_dir }}"
+    state: directory
+    mode: '0750'
+
+- name: caddy | render reverse proxy configuration
+  ansible.builtin.template:
+    src: Caddyfile.j2
+    dest: "{{ caddy_config_path }}"
+    mode: '0640'
+
+- name: caddy | validate configuration
+  ansible.builtin.command: caddy validate --config "{{ caddy_config_path }}"
+  register: caddy_validate
+  changed_when: false
+  failed_when: caddy_validate.rc != 0
+  no_log: true
+
+- name: caddy | persist route summary
+  ansible.builtin.copy:
+    dest: "{{ caddy_state_dir }}/routes.json"
+    mode: '0640'
+    content: |
+      {
+        "api": "{{ caddy_routes.api }}",
+        "ui": "{{ caddy_routes.ui }}",
+        "loki": "{{ caddy_routes.loki }}",
+        "public_port": {{ caddy_public_port }}
+      }

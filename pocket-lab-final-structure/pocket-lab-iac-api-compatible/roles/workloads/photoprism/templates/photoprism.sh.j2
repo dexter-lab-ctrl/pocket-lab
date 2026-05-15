@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+export PHOTOPRISM_ADMIN_PASSWORD="${PHOTOPRISM_ADMIN_PASSWORD:-{{ photoprism_admin_password }}}"
+
+if [ -z "${PHOTOPRISM_ADMIN_PASSWORD}" ]; then
+  echo "PHOTOPRISM_ADMIN_PASSWORD is required" >&2
+  exit 1
+fi
+
+echo "🚀 Starting PhotoPrism Workload via Termux PM2 Bridge..."
+
+# The Termux PM2 instance wraps the PRoot execution to prevent Android kernel SIGSYS panics
+if ! pm2 describe photoprism >/dev/null 2>&1; then
+  pm2 start bash \
+    --name "photoprism" \
+    -- -c "export PHOTOPRISM_ADMIN_PASSWORD='${PHOTOPRISM_ADMIN_PASSWORD}' \
+           && export PHOTOPRISM_STORAGE_PATH='{{ photoprism_data_dir }}' \
+           && export PHOTOPRISM_ORIGINALS_PATH='{{ photoprism_data_dir }}/originals' \
+           && export PHOTOPRISM_IMPORT_PATH='{{ photoprism_data_dir }}/import' \
+           && proot-distro login ubuntu -- {{ photoprism_bin }} start"
+  pm2 save
+else
+  echo "PhotoPrism is already managed by PM2. Use 'pm2 restart photoprism' to apply changes."
+fi

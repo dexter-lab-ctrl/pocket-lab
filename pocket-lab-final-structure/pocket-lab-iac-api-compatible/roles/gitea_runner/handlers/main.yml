@@ -1,0 +1,4 @@
+---
+- name: gitea_runner configuration updated
+  ansible.builtin.debug:
+    msg: "gitea_runner configuration changed. External service restarts are handled by the runtime launcher or supervisor."

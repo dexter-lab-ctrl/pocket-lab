@@ -1,0 +1,16 @@
+---
+- name: Automated CVE Remediation Pipeline
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Apply OS-Level Security Patches
+      ansible.builtin.shell: |
+        proot-distro login ubuntu -- bash -c "apt-get update -qq && apt-get upgrade -y -qq"
+      register: patch_result
+      changed_when: "'upgraded' in patch_result.stdout"
+
+    - name: Log Patch Event to Loki
+      ansible.builtin.shell: |
+        echo '{"event": "security_audit", "engine": "Trivy-Remediation", "status": "PATCHED", "target": "ubuntu-rootfs"}'

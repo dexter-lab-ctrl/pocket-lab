@@ -1,0 +1,7 @@
+---
+tailscale_hostname: pocket-lab
+# The patched installer relies heavily on the native $HOME directory
+tailscale_state_dir: "{{ lookup('env', 'HOME') }}/.tailscale"
+tailscale_socks5_port: 1055
+tailscale_auth_key: "{{ lookup('env', 'TS_AUTH_KEY') | default('', true) }}"
+tailscale_extra_args: "--accept-dns=true --accept-routes=true"

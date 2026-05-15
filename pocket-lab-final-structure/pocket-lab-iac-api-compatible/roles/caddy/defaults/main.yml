@@ -1,0 +1,10 @@
+---
+caddy_public_port: 8443
+caddy_config_path: "{{ common_base_dir }}/caddy/Caddyfile"
+caddy_state_dir: "{{ common_base_dir }}/caddy"
+caddy_routes:
+  api: 127.0.0.1:8080
+  ui: 127.0.0.1:3000
+  loki: 127.0.0.1:3100
+caddy_tls_mode: internal
+caddy_hsts_max_age: 31536000

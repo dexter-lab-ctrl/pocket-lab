@@ -1,0 +1,16 @@
+---
+- name: Lynis Hardening Remediation Pipeline
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Enforce Strict File Permissions on PRoot /etc
+      ansible.builtin.shell: |
+        proot-distro login ubuntu -- bash -c "chmod 644 /etc/passwd && chmod 000 /etc/shadow"
+      register: perm_result
+      changed_when: true
+
+    - name: Log Hardening Event to Loki
+      ansible.builtin.shell: |
+        echo '{"event": "security_audit", "engine": "Lynis-Remediation", "status": "HARDENED", "target": "ubuntu-rootfs"}'

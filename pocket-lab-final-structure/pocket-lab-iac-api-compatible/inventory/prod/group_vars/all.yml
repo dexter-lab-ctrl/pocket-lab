@@ -1,0 +1,148 @@
+---
+env_name: prod
+control_plane_name: pocket-lab
+common_base_dir: "{{ lookup('env', 'POCKET_LAB_BASE_DIR') | default('/data/data/com.termux/files/home/pocket-lab', true) }}"
+common_log_dir: "{{ common_base_dir }}/logs"
+common_run_dir: "{{ common_base_dir }}/run"
+common_cache_dir: "{{ common_base_dir }}/cache"
+common_state_dir: "{{ common_base_dir }}/state"
+common_manage_dirs:
+  - "{{ common_base_dir }}"
+  - "{{ common_log_dir }}"
+  - "{{ common_run_dir }}"
+  - "{{ common_cache_dir }}"
+  - "{{ common_state_dir }}"
+  - "{{ common_base_dir }}/vault"
+  - "{{ common_base_dir }}/vault/data"
+  - "{{ common_base_dir }}/vault/audit"
+  - "{{ common_base_dir }}/mariadb"
+  - "{{ common_base_dir }}/gitea"
+  - "{{ common_base_dir }}/gitea/conf"
+  - "{{ common_base_dir }}/gitea-runners"	
+  - "{{ common_base_dir }}/dashboard"
+  - "{{ common_base_dir }}/iac-catalog"
+  - "{{ common_base_dir }}/backups"
+  - "{{ common_base_dir }}/tailscale"
+  - "{{ common_base_dir }}/workloads"
+
+common_required_commands:
+  - git
+  - curl
+  - jq
+  - python3
+  - bash
+
+vault_api_addr: http://127.0.0.1:8200
+vault_listener_addr: 127.0.0.1:8200
+vault_kv_path: secret
+vault_database_mount: database
+vault_approle_mount: approle
+vault_token: "{{ lookup('env', 'VAULT_TOKEN') | default('', true) }}"
+vault_role_id: "{{ lookup('env', 'VAULT_ROLE_ID') | default('', true) }}"
+vault_secret_id: "{{ lookup('env', 'VAULT_SECRET_ID') | default('', true) }}"
+vault_db_admin_user: vault_admin
+vault_db_admin_password: "{{ lookup('env', 'VAULT_DB_ADMIN_PASSWORD') | default('', true) }}"
+vault_manage_kv: true
+vault_manage_database_engine: true
+vault_manage_approle: true
+vault_manage_policies: true
+vault_manage_database_roles: true
+vault_manage_audit: true
+vault_export_approle_ids: false
+
+mariadb_service_host: 127.0.0.1
+mariadb_port: 3306
+# [FIXED] Aligned to native Termux socket path
+mariadb_socket: "/data/data/com.termux/files/usr/var/run/mysqld.sock"
+mariadb_datadir: "{{ common_base_dir }}/mariadb"
+
+mariadb_root_socket_login: false
+# [FIXED] Using secure admin user rather than passwordless root
+mariadb_admin_user: pocket_admin
+mariadb_admin_password: "{{ lookup('env', 'MARIADB_ADMIN_PASSWORD') | default('', true) }}"
+mariadb_databases:
+  - name: gitea
+    charset: utf8mb4
+    collation: utf8mb4_general_ci
+mariadb_users: []
+
+vault_secret_bundles: []
+vault_policies: []
+vault_mounts: []
+vault_database_connections: []
+vault_database_roles: []
+vault_approle_roles: []
+
+gitea_http_port: 3030
+gitea_api_url: http://127.0.0.1:3030
+gitea_admin_user: pocket_admin
+gitea_admin_email: admin@pocketlab.local
+gitea_vault_secret_path: secret/data/gitea
+gitea_app_dir: "{{ common_base_dir }}/gitea"
+gitea_conf_dir: "{{ common_base_dir }}/gitea/conf"
+gitea_state_dir: "{{ common_base_dir }}/gitea/state"
+gitea_runtime_ini: "{{ common_base_dir }}/gitea/conf/app.runtime.ini"
+gitea_repositories: []
+gitea_orgs: []
+gitea_branch_protections: []
+gitea_bootstrap_admin: true
+
+gitea_vault_token: "{{ lookup('env', 'GITEA_VAULT_TOKEN') | default('', true) }}"
+gitea_ui_password: "{{ lookup('env', 'GITEA_UI_PASSWORD') | default('', true) }}"
+gitea_service_password: "{{ lookup('env', 'GITEA_SERVICE_PASSWORD') | default('', true) }}"
+
+caddy_public_port: 8443
+caddy_config_path: "{{ common_base_dir }}/caddy/Caddyfile"
+caddy_state_dir: "{{ common_base_dir }}/caddy"
+caddy_routes:
+  api: 127.0.0.1:8080
+  ui: 127.0.0.1:8082
+caddy_tls_mode: internal
+caddy_hsts_max_age: 31536000
+
+catalog_seed_root: "{{ common_base_dir }}/iac-catalog"
+catalog_seed_repo_name: iac-catalog
+catalog_seed_remote_url: http://127.0.0.1:3030/pocket_admin/iac-catalog.git
+catalog_seed_admin_user: pocket_admin
+catalog_seed_admin_password: "{{ lookup('env', 'GITEA_ADMIN_PASSWORD') | default('', true) }}"
+catalog_seed_git_email: gitops@pocketlab.local
+catalog_seed_git_name: Pocket Lab Automation
+catalog_seed_push_enabled: false
+catalog_seed_templates: []
+
+backup_root: "{{ common_base_dir }}/backups"
+backup_retention_days: 14
+backup_script_path: "{{ common_base_dir }}/backups/backup.sh"
+backup_restore_path: "{{ common_base_dir }}/backups/restore.sh"
+backup_manifest_path: "{{ common_base_dir }}/backups/manifest.json"
+backup_targets: []
+
+# Note: Renamed from observability_ to drift_check_ to match the role update
+drift_check_log_dir: "{{ common_log_dir }}"
+drift_report_path: "{{ common_base_dir }}/drift-report.json"
+drift_check_endpoints: []
+
+photoprism_enabled: true
+photoprism_root: "{{ common_base_dir }}/workloads/photoprism"
+photoprism_bin: /opt/photoprism/bin/photoprism
+photoprism_data_dir: "{{ common_base_dir }}/workloads/photoprism/data"
+photoprism_config_dir: "{{ common_base_dir }}/workloads/photoprism/config"
+photoprism_state_dir: "{{ common_base_dir }}/workloads/photoprism/state"
+photoprism_admin_password: "{{ lookup('env', 'PHOTOPRISM_ADMIN_PASSWORD') | default('', true) }}"
+photoprism_launcher_path: "{{ common_base_dir }}/workloads/photoprism/start-photoprism.sh"
+
+gitea_runner_base_dir: "{{ common_base_dir }}/gitea-runners"
+gitea_runner_api_url: "http://127.0.0.1:3030"
+gitea_runner_admin_user: "pocket_admin"
+gitea_runner_admin_password: "{{ lookup('env', 'GITEA_UI_PASSWORD') | default('', true) }}"
+
+gitea_runners:
+  - name: infra-runner
+    labels: "infra-runner:host"
+    approle: gitops-service
+  - name: vault-runner
+    labels: "vault-runner:host"
+    approle: workload-service
+  - name: db-runner
+    labels: "db-runner:host"
+    approle: backup-service

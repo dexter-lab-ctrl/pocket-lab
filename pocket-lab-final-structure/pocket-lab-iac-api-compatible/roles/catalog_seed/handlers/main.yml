@@ -1,0 +1,4 @@
+---
+- name: catalog_seed configuration updated
+  ansible.builtin.debug:
+    msg: "catalog_seed configuration changed. External service restarts are handled by the runtime launcher or supervisor."

@@ -1,0 +1,13 @@
+---
+observability_base_dir: "{{ common_base_dir }}/observability"
+
+# Port Assignments per Master Blueprint
+observability_prometheus_port: 9090
+observability_loki_port: 3100
+observability_promtail_port: 9080
+observability_grafana_port: 3050
+
+# Cross-Boundary Paths
+# Promtail (in PRoot) needs to scrape PM2 logs (in Native Termux)
+observability_termux_pm2_logs: "/data/data/com.termux/files/home/.pm2/logs"
+observability_ubuntu_name: "ubuntu"

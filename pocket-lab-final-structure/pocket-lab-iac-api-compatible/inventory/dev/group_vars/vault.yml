@@ -1,0 +1,129 @@
+---
+vault_config_dir: "{{ common_base_dir }}/vault"
+vault_config_path: "{{ common_base_dir }}/vault/vault.hcl"
+vault_data_dir: "{{ common_base_dir }}/vault/data"
+vault_audit_path: "{{ common_base_dir }}/vault/audit.log"
+vault_manage_audit: true
+vault_export_approle_ids: true
+vault_db_admin_password: "{{ lookup('env', 'VAULT_DB_ADMIN_PASSWORD') | default('', true) }}"
+
+vault_mounts:
+  - path: secret
+    type: kv-v2
+  - path: database
+    type: database
+  - path: approle
+    type: approle
+
+vault_policies:
+  - name: gitops-service
+    rules: |
+      path "secret/data/gitea" { capabilities = ["read"] }
+      path "secret/data/tailscale" { capabilities = ["read"] }
+      path "secret/data/mariadb" { capabilities = ["read"] }
+      path "secret/data/workloads/*" { capabilities = ["read"] }
+      path "database/creds/gitea-role" { capabilities = ["read"] }
+  - name: dashboard-api
+    rules: |
+      path "secret/data/gitea" { capabilities = ["read"] }
+      path "secret/data/tailscale" { capabilities = ["read", "create", "update"] }
+      path "secret/data/photoprism" { capabilities = ["read", "create", "update"] }
+      path "sys/seal-status" { capabilities = ["read"] }
+  - name: backup-service
+    rules: |
+      path "secret/data/mariadb" { capabilities = ["read"] }
+      path "secret/data/gitea" { capabilities = ["read"] }
+  - name: workload-service
+    rules: |
+      path "secret/data/workloads/*" { capabilities = ["read"] }
+  - name: fleet-policy
+    rules: |
+      path "secret/data/tailscale" { capabilities = ["read"] }
+      path "secret/data/photoprism" { capabilities = ["deny"] }
+      path "database/creds/*" { capabilities = ["deny"] }
+  - name: auditor-policy
+    rules: |
+      path "secret/metadata/*" { capabilities = ["list", "read"] }
+      path "database/config/*" { capabilities = ["read"] }
+      path "sys/health" { capabilities = ["read"] }
+  - name: admin-policy
+    rules: |
+      path "secret/*" { capabilities = ["create", "read", "update", "delete", "list", "sudo"] }
+      path "auth/*" { capabilities = ["create", "read", "update", "delete", "list", "sudo"] }
+      path "sys/policies/acl/*" { capabilities = ["create", "read", "update", "delete", "list"] }
+      path "sys/health" { capabilities = ["read"] }
+      path "sys/unseal" { capabilities = ["update"] }
+  - name: warden-policy
+    rules: |
+      path "secret/data/incidents/warden/*" { capabilities = ["create", "update"] }
+      path "secret/data/config/thresholds" { capabilities = ["read"] }
+
+vault_database_connections:
+  - name: mariadb
+    plugin_name: mysql-database-plugin
+    host: 127.0.0.1
+    port: 3306
+    username: "{{ vault_db_admin_user }}"
+    password: "{{ vault_db_admin_password }}"
+    allowed_roles:
+      - gitea-role
+
+vault_database_roles:
+  - name: gitea-role
+    db_name: mariadb
+    creation_statements: |
+      CREATE USER '{{name}}'@'127.0.0.1' IDENTIFIED BY '{{password}}';
+      GRANT ALL PRIVILEGES ON gitea.* TO '{{name}}'@'127.0.0.1';
+    revocation_statements: |
+      DROP USER IF EXISTS '{{name}}'@'127.0.0.1';
+    default_ttl: 1h
+    max_ttl: 24h
+
+vault_approle_roles:
+  - name: gitops-service
+    policies: [gitops-service]
+    token_ttl: 1h
+    token_max_ttl: 24h
+    secret_id_ttl: 24h
+  - name: dashboard-api
+    policies: [dashboard-api]
+    token_ttl: 2h
+    token_max_ttl: 24h
+    secret_id_ttl: 24h
+  - name: backup-service
+    policies: [backup-service]
+    token_ttl: 2h
+    token_max_ttl: 24h
+    secret_id_ttl: 24h
+  - name: workload-service
+    policies: [workload-service]
+    token_ttl: 1h
+    token_max_ttl: 24h
+    secret_id_ttl: 24h
+  - name: fleet-service
+    policies: [fleet-policy]
+    token_ttl: 1h
+    token_max_ttl: 24h
+    secret_id_ttl: 24h
+  - name: security-scanner
+    policies: [auditor-policy]
+    token_ttl: 30m
+    token_max_ttl: 24h
+    secret_id_ttl: 24h
+
+vault_secret_bundles:
+  - path: gitea
+    data:
+      username: "{{ gitea_admin_user }}"
+      password: "{{ gitea_ui_password }}"
+      service_pass: "{{ gitea_service_password }}"
+  - path: tailscale
+    data:
+      auth_key: "{{ tailscale_auth_key }}"
+  - path: mariadb
+    data:
+      admin_user: "{{ mariadb_admin_user }}"
+      admin_password: "{{ mariadb_admin_password }}"
+  - path: workloads/photoprism
+    data:
+      admin_password: "{{ photoprism_admin_password }}"

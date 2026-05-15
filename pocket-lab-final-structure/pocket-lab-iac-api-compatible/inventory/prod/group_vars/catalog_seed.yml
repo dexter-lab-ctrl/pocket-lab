@@ -1,0 +1,10 @@
+---
+catalog_seed_source_root: "{{ playbook_dir | dirname }}/iac-catalog"
+catalog_seed_root: "{{ common_base_dir }}/iac-catalog"
+catalog_seed_repo_name: iac-catalog
+catalog_seed_remote_url: http://127.0.0.1:3030/pocket_admin/iac-catalog.git
+catalog_seed_admin_user: pocket_admin
+catalog_seed_admin_password: "{{ lookup('env', 'GITEA_ADMIN_PASSWORD') | default('', true) }}"
+catalog_seed_git_email: gitops@pocketlab.local
+catalog_seed_git_name: Pocket Lab Automation
+catalog_seed_push_enabled: true

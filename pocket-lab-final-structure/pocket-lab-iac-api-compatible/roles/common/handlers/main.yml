@@ -1,0 +1,4 @@
+---
+- name: common configuration updated
+  ansible.builtin.debug:
+    msg: "common configuration changed. External service restarts are handled by the runtime launcher or supervisor."

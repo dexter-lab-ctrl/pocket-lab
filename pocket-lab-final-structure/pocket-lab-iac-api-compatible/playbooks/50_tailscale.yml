@@ -1,0 +1,7 @@
+---
+- name: 50 tailscale
+  hosts: tailscale
+  gather_facts: false
+  roles:
+    - common
+    - tailscale

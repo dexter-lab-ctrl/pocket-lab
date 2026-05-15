@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pocket Lab Dashboard</title>
+  <style>
+    :root { color-scheme: dark; }
+    body { font-family: system-ui, sans-serif; margin: 2rem; line-height: 1.55; background: #111827; color: #e5e7eb; }
+    main { max-width: 760px; }
+    code, pre { background: #1f2937; padding: 0.2rem 0.35rem; border-radius: 0.35rem; }
+    .card { background: #0f172a; border: 1px solid #334155; border-radius: 1rem; padding: 1rem 1.25rem; margin: 1rem 0; }
+    a { color: #93c5fd; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Pocket Lab Dashboard</h1>
+    <p>Environment: <code>{{ env_name }}</code></p>
+    <section class="card">
+      <h2>Services</h2>
+      <ul>
+        <li>Vault: 8200</li>
+        <li>MariaDB: 3306</li>
+        <li>Gitea: 3030</li>
+        <li>Semaphore: 3000</li> <li>Dashboard UI: {{ dashboard_ui_port }}</li> <li>Caddy: {{ caddy_public_port | default('8443') }}</li>
+      </ul>
+    </section>
+    <section class="card">
+      <h2>Health</h2>
+      <p>API health endpoint: <code>{{ dashboard_health_path }}</code></p>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,9 @@
+---
+- name: 80 catalog seed
+  hosts: catalog_seed
+  gather_facts: false
+  roles:
+    - common
+    - vault
+    - gitea
+    - catalog_seed

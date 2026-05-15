@@ -1,0 +1,65 @@
+---
+- name: photoprism | validate inputs
+  ansible.builtin.assert:
+    that:
+      - photoprism_root is defined
+      - photoprism_bin is defined
+    fail_msg: "PhotoPrism role requires a root directory and binary path."
+
+- name: photoprism | require admin password when enabled
+  when: photoprism_enabled | bool
+  ansible.builtin.assert:
+    that:
+      - photoprism_admin_password | string | length > 0
+    fail_msg: "PHOTOPRISM_ADMIN_PASSWORD must be provided when PhotoPrism is enabled."
+  no_log: true
+
+- name: photoprism | ensure directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0750'
+  loop:
+    - "{{ photoprism_root }}"
+    - "{{ photoprism_data_dir }}"
+    - "{{ photoprism_data_dir }}/originals"
+    - "{{ photoprism_data_dir }}/import"
+    - "{{ photoprism_config_dir }}"
+    - "{{ photoprism_state_dir }}"
+
+- name: photoprism | render launcher
+  ansible.builtin.template:
+    src: photoprism.sh.j2
+    dest: "{{ photoprism_launcher_path }}"
+    mode: '0750'
+  no_log: true
+
+- name: photoprism | validate launcher syntax
+  ansible.builtin.command: bash -n "{{ photoprism_launcher_path }}"
+  changed_when: false
+
+- name: photoprism | persist descriptor
+  ansible.builtin.copy:
+    dest: "{{ photoprism_state_dir }}/descriptor.json"
+    mode: '0640'
+    content: |
+      {
+        "service": "photoprism",
+        "bin": "{{ photoprism_bin }}",
+        "enabled": {{ photoprism_enabled | string | lower }}
+      }
+
+# [THE FIX]: Actually trigger the PM2 deployment if enabled
+- name: photoprism | start workload natively via PM2
+  when: photoprism_enabled | bool
+  ansible.builtin.command: "{{ photoprism_launcher_path }}"
+  register: photoprism_start
+  changed_when: "'Starting PhotoPrism' in photoprism_start.stdout"
+  no_log: true
+
+- name: photoprism | summarize
+  ansible.builtin.debug:
+    msg:
+      - "Launcher: {{ photoprism_launcher_path }}"
+      - "Data dir: {{ photoprism_data_dir }}"
+      - "State dir: {{ photoprism_state_dir }}"

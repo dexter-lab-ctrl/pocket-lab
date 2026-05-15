@@ -1,0 +1,5 @@
+{
+  "title": "Backup and Restore",
+  "description": "Run backup and restore checks for the local control plane.",
+  "icon": "DatabaseBackup"
+}

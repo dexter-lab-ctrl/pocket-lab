@@ -1,0 +1,6 @@
+---
+collections:
+  - name: ansible.posix
+  - name: community.general
+  - name: community.crypto
+  - name: community.hashi_vault  # Required for Vault lookups in OPA & Playbooks

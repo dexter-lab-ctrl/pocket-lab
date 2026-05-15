@@ -1,0 +1,16 @@
+---
+catalog_seed_source_root: "{{ playbook_dir | dirname }}/iac-catalog"
+catalog_seed_root: "{{ common_base_dir }}/iac-catalog"
+catalog_seed_repo_name: iac-catalog
+
+# Dynamically construct the URL using the Gitea role's facts.
+# The urlencode filter is CRITICAL to handle special characters in the Vault password.
+catalog_seed_remote_url: >-
+  http://{{ gitea_admin_user | default('pocket_admin') }}:{{ gitea_ui_pass | default(catalog_seed_admin_password) | urlencode }}@127.0.0.1:3030/{{ gitea_admin_user | default('pocket_admin') }}/{{ catalog_seed_repo_name }}.git
+
+catalog_seed_admin_user: pocket_admin
+catalog_seed_admin_password: "{{ lookup('env', 'GITEA_ADMIN_PASSWORD') | default('', true) }}"
+catalog_seed_git_email: gitops@pocketlab.local
+catalog_seed_git_name: Pocket Lab Automation
+catalog_seed_push_enabled: false
+catalog_seed_templates: []

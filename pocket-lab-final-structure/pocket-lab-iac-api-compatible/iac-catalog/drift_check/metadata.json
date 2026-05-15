@@ -1,0 +1,5 @@
+{
+  "title": "Drift Check",
+  "description": "Compare live state with GitOps desired state.",
+  "icon": "Diff"
+}

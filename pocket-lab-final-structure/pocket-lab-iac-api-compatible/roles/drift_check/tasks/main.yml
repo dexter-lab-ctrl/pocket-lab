@@ -1,0 +1,35 @@
+---
+- name: drift_check | ensure log directory exists
+  ansible.builtin.file:
+    path: "{{ drift_check_log_dir }}"
+    state: directory
+    mode: '0750'
+
+- name: drift_check | render health check runner
+  ansible.builtin.template:
+    src: healthcheck.sh.j2
+    dest: "{{ drift_check_log_dir }}/healthcheck.sh"
+    mode: '0750'
+
+- name: drift_check | run health checks
+  ansible.builtin.command: "{{ drift_check_log_dir }}/healthcheck.sh"
+  register: drift_check_result
+  changed_when: false
+  failed_when: false
+
+- name: drift_check | persist drift report
+  ansible.builtin.copy:
+    dest: "{{ drift_report_path }}"
+    mode: '0640'
+    content: |
+      {
+        "status": "{{ 'healthy' if drift_check_result.rc == 0 else 'degraded' }}",
+        "generated_by": "drift_check role",
+        "timestamp_utc": "{{ lookup('pipe', 'date -u +%Y-%m-%dT%H:%M:%SZ') }}"
+      }
+
+- name: drift_check | summarize monitored endpoints
+  ansible.builtin.debug:
+    msg:
+      - "Checks: {{ drift_check_endpoints | map(attribute='name') | list }}"
+      - "Drift report: {{ drift_report_path }}"

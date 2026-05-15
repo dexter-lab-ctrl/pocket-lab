@@ -1,0 +1,35 @@
+---
+vault_config_dir: "{{ common_base_dir }}/vault"
+vault_config_path: "{{ vault_config_dir }}/vault.hcl"
+vault_data_dir: "{{ vault_config_dir }}/data"
+vault_audit_path: "{{ vault_config_dir }}/audit.log"
+vault_api_addr: http://127.0.0.1:8200
+vault_listener_addr: 127.0.0.1:8200
+vault_kv_path: secret
+vault_database_mount: database
+vault_approle_mount: approle
+vault_mounts:
+  - path: "{{ vault_kv_path }}"
+    type: kv-v2
+  - path: "{{ vault_database_mount }}"
+    type: database
+  - path: "{{ vault_approle_mount }}"
+    type: approle
+vault_policies: []
+vault_database_connections: []
+vault_database_roles: []
+vault_approle_roles: []
+vault_secret_bundles: []
+vault_manage_kv: true
+vault_manage_database_engine: true
+vault_manage_approle: true
+vault_manage_policies: true
+vault_manage_database_roles: true
+vault_manage_audit: true
+vault_export_approle_ids: false
+vault_token: "{{ lookup('env', 'VAULT_TOKEN') | default('', true) }}"
+vault_role_id: "{{ lookup('env', 'VAULT_ROLE_ID') | default('', true) }}"
+vault_secret_id: "{{ lookup('env', 'VAULT_SECRET_ID') | default('', true) }}"
+vault_db_admin_user: vault_admin
+vault_db_admin_password: "{{ lookup('env', 'VAULT_DB_ADMIN_PASSWORD') | default('', true) }}"
+vault_approle_exports_dir: "{{ common_state_dir }}/vault/approles"

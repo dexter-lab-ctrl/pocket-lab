@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+status=0
+checks=(
+{% for check in drift_check_endpoints %}
+  "{{ check.name }}|{{ check.url }}"
+{% endfor %}
+)
+
+for item in "${checks[@]}"; do
+  name="${item%%|*}"
+  url="${item#*|}"
+  if ! curl -fsS "$url" >/dev/null; then
+    printf '[FAIL] %s %s\n' "$name" "$url" >&2
+    status=1
+  else
+    printf '[OK] %s %s\n' "$name" "$url"
+  fi
+done
+
+exit "$status"

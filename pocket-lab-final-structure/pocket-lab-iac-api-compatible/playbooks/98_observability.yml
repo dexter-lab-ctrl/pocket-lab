@@ -1,0 +1,8 @@
+---
+- name: 98 observability
+  hosts: observability
+  gather_facts: false
+  roles:
+    - common
+    - vault
+    - observability

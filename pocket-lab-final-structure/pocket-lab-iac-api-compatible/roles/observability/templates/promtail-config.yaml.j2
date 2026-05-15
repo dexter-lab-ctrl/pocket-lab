@@ -1,0 +1,19 @@
+server:
+  http_listen_port: {{ observability_promtail_port }}
+  grpc_listen_port: 0
+
+clients:
+  - url: http://127.0.0.1:{{ observability_loki_port }}/loki/api/v1/push
+
+positions:
+  filename: {{ observability_base_dir }}/promtail/positions.yaml
+
+scrape_configs:
+  - job_name: pm2_logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: pm2_logs
+          # [THE FIX]: Scraping Native Android PM2 logs from inside Ubuntu PRoot
+          __path__: {{ observability_termux_pm2_logs }}/*.log

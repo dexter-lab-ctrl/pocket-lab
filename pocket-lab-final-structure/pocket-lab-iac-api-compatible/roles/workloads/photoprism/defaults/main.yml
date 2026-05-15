@@ -1,0 +1,9 @@
+---
+photoprism_enabled: true
+photoprism_root: "{{ common_base_dir }}/workloads/photoprism"
+photoprism_bin: /opt/photoprism/bin/photoprism
+photoprism_data_dir: "{{ photoprism_root }}/data"
+photoprism_config_dir: "{{ photoprism_root }}/config"
+photoprism_state_dir: "{{ photoprism_root }}/state"
+photoprism_admin_password: "{{ lookup('env', 'PHOTOPRISM_ADMIN_PASSWORD') | default('', true) }}"
+photoprism_launcher_path: "{{ photoprism_root }}/start-photoprism.sh"

@@ -1,5 +1,19 @@
+# Frontend Build Artifacts
 node_modules/
 dist/
 dist.zip
-.env
+
+# Python & Backend
+__pycache__/
+*.pyc
+*.pyo
+*.log
+
+# OS Files
 .DS_Store
+Thumbs.db
+
+# Environment & Secrets
+.env
+api/telemetry.json
+api/opa_config.json

@@ -1,0 +1,36 @@
+---
+- name: Secret rotation maintenance
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Authenticate with Vault AppRole
+      ansible.builtin.uri:
+        url: "{{ vault_api_addr | default('http://127.0.0.1:8200') }}/v1/auth/approle/login"
+        method: POST
+        body_format: json
+        body:
+          role_id: "{{ lookup('env', 'VAULT_ROLE_ID') }}"
+          secret_id: "{{ lookup('env', 'VAULT_SECRET_ID') }}"
+        status_code: 200
+      register: vault_login
+      no_log: true
+
+    - name: Set dynamic Vault token
+      ansible.builtin.set_fact:
+        dynamic_vault_token: "{{ vault_login.json.auth.client_token }}"
+      no_log: true
+
+    - name: Rotate application secret in Vault
+      ansible.builtin.uri:
+        url: "{{ vault_api_addr | default('http://127.0.0.1:8200') }}/v1/secret/data/photoprism"
+        method: POST
+        headers:
+          X-Vault-Token: "{{ dynamic_vault_token }}"
+        body_format: json
+        body:
+          data:
+            username: admin
+            password: "{{ lookup('password', '/dev/null length=24 chars=ascii_letters,digits') }}"
+        status_code: [200, 204]
+      no_log: true

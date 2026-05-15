@@ -1,0 +1,10 @@
+---
+drift_check_log_dir: "{{ common_log_dir }}"
+drift_report_path: "{{ common_base_dir }}/drift-report.json"
+drift_check_endpoints:
+  - name: vault
+    url: http://127.0.0.1:8200/v1/sys/health
+  - name: gitea
+    url: http://127.0.0.1:3030/api/healthz
+  - name: dashboard
+    url: http://127.0.0.1:8080/healthz

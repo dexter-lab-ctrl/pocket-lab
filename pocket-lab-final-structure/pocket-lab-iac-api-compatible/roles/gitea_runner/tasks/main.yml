@@ -1,0 +1,107 @@
+---
+- name: gitea_runner | validate inputs
+  ansible.builtin.assert:
+    that:
+      - gitea_runner_admin_password | string | length > 0
+    fail_msg: "GITEA_UI_PASSWORD must be available in the environment to query the Gitea API."
+  no_log: true
+
+- name: gitea_runner | ensure base directory exists
+  ansible.builtin.file:
+    path: "{{ gitea_runner_base_dir }}"
+    state: directory
+    mode: '0750'
+
+- name: gitea_runner | wait for Gitea API to be reachable
+  ansible.builtin.uri:
+    url: "{{ gitea_runner_api_url }}/api/healthz"
+    method: GET
+    status_code: 200
+  register: _gitea_health
+  until: _gitea_health.status == 200
+  retries: 5
+  delay: 5
+
+- name: gitea_runner | fetch global registration token
+  ansible.builtin.uri:
+    url: "{{ gitea_runner_api_url }}/api/v1/admin/runners/registration-token"
+    method: GET
+    user: "{{ gitea_runner_admin_user }}"
+    password: "{{ gitea_runner_admin_password }}"
+    force_basic_auth: true
+    status_code: 200
+  register: gitea_runner_token_req
+  changed_when: false
+  no_log: true
+
+- name: gitea_runner | ensure individual runner directories exist
+  loop: "{{ gitea_runners }}"
+  loop_control:
+    label: "{{ item.name }}"
+  ansible.builtin.file:
+    path: "{{ gitea_runner_base_dir }}/{{ item.name }}"
+    state: directory
+    mode: '0750'
+
+- name: gitea_runner | render runner configurations
+  loop: "{{ gitea_runners }}"
+  loop_control:
+    label: "{{ item.name }}"
+  ansible.builtin.template:
+    src: config.yaml.j2
+    dest: "{{ gitea_runner_base_dir }}/{{ item.name }}/config.yaml"
+    mode: '0640'
+
+- name: gitea_runner | read Vault AppRole identities
+  loop: "{{ gitea_runners }}"
+  loop_control:
+    label: "{{ item.name }}"
+  ansible.builtin.slurp:
+    src: "{{ common_state_dir }}/vault/approles/{{ item.approle }}.json"
+  register: approle_payloads
+  no_log: true
+
+- name: gitea_runner | inject Zero-Trust .env files
+  loop: "{{ approle_payloads.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+  ansible.builtin.copy:
+    dest: "{{ gitea_runner_base_dir }}/{{ item.item.name }}/.env"
+    mode: '0600'
+    content: |
+      VAULT_ROLE_ID={{ (item.content | b64decode | from_json).role_id }}
+      VAULT_SECRET_ID={{ (item.content | b64decode | from_json).secret_id }}
+  no_log: true
+
+- name: gitea_runner | register runners with Gitea
+  loop: "{{ gitea_runners }}"
+  loop_control:
+    label: "{{ item.name }}"
+  ansible.builtin.command:
+    cmd: >
+      act_runner register 
+      --no-interactive 
+      --instance "{{ gitea_runner_api_url }}" 
+      --token "{{ gitea_runner_token_req.json.token }}" 
+      --name "{{ item.name }}" 
+      --labels "{{ item.labels }}" 
+      --config "config.yaml"
+    chdir: "{{ gitea_runner_base_dir }}/{{ item.name }}"
+    creates: "{{ gitea_runner_base_dir }}/{{ item.name }}/.runner"
+  no_log: true
+
+- name: gitea_runner | start isolated runners natively via PM2
+  loop: "{{ gitea_runners }}"
+  loop_control:
+    label: "{{ item.name }}"
+  ansible.builtin.shell: |
+    if ! pm2 describe "runner-{{ item.name }}" >/dev/null 2>&1; then
+      # Source the Vault AppRole credentials before starting the daemon
+      source .env
+      pm2 start act_runner --name "runner-{{ item.name }}" --cwd "{{ gitea_runner_base_dir }}/{{ item.name }}" -- daemon -c config.yaml
+      pm2 save
+    fi
+  args:
+    chdir: "{{ gitea_runner_base_dir }}/{{ item.name }}"
+    executable: /data/data/com.termux/files/usr/bin/bash
+  changed_when: false

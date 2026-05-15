@@ -1,0 +1,42 @@
+---
+- name: backups | ensure backup directory exists
+  ansible.builtin.file:
+    path: "{{ backup_root }}"
+    state: directory
+    mode: '0750'
+
+- name: backups | render backup script
+  ansible.builtin.template:
+    src: backup.sh.j2
+    dest: "{{ backup_script_path }}"
+    mode: '0750'
+
+- name: backups | render restore script
+  ansible.builtin.template:
+    src: restore.sh.j2
+    dest: "{{ backup_restore_path }}"
+    mode: '0750'
+
+- name: backups | write retention manifest
+  ansible.builtin.copy:
+    dest: "{{ backup_manifest_path }}"
+    mode: '0640'
+    content: |
+      {
+        "retention_days": {{ backup_retention_days }},
+        "targets": {{ backup_targets | to_json }}
+      }
+
+- name: backups | validate backup script syntax
+  ansible.builtin.command: bash -n "{{ backup_script_path }}"
+  changed_when: false
+
+- name: backups | validate restore script syntax
+  ansible.builtin.command: bash -n "{{ backup_restore_path }}"
+  changed_when: false
+
+- name: backups | summarize
+  ansible.builtin.debug:
+    msg:
+      - "Backup root: {{ backup_root }}"
+      - "Retention days: {{ backup_retention_days }}"

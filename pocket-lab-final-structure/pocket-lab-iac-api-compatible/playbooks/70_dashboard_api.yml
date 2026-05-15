@@ -1,0 +1,7 @@
+---
+- name: 70 dashboard api
+  hosts: dashboard_api
+  gather_facts: false
+  roles:
+    - common
+    - dashboard_api

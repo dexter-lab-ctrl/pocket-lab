@@ -1,0 +1,29 @@
+---
+mariadb_datadir: "{{ common_base_dir }}/mariadb"
+# [FIXED] Aligned to native Termux socket path
+mariadb_socket: "/data/data/com.termux/files/usr/var/run/mysqld.sock"
+mariadb_port: 3306
+mariadb_service_host: 127.0.0.1
+
+mariadb_root_socket_login: false
+# [FIXED] Using secure admin user rather than passwordless root
+mariadb_admin_user: pocket_admin
+mariadb_admin_password: "{{ lookup('env', 'MARIADB_ADMIN_PASSWORD') | default('', true) }}"
+
+mariadb_databases:
+  - name: gitea
+    charset: utf8mb4
+    collation: utf8mb4_general_ci
+
+mariadb_users:
+  - name: gitea
+    host: 127.0.0.1
+    password: "{{ gitea_service_password }}"
+    privileges:
+      - "ALL PRIVILEGES ON gitea.*"
+
+  - name: vault_admin
+    host: 127.0.0.1
+    password: "{{ vault_db_admin_password }}"
+    privileges:
+      - "ALL PRIVILEGES ON *.*"

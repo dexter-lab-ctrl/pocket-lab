@@ -1,0 +1,27 @@
+---
+gitea_app_dir: "{{ common_base_dir }}/gitea"
+gitea_conf_dir: "{{ common_base_dir }}/gitea/conf"
+gitea_state_dir: "{{ common_base_dir }}/gitea/state"
+gitea_runtime_ini: "{{ common_base_dir }}/gitea/conf/app.runtime.ini"
+gitea_admin_user: pocket_admin
+gitea_admin_email: admin@pocketlab.local
+gitea_database_name: gitea
+gitea_database_user: gitea
+gitea_repositories:
+  - name: iac-catalog
+    private: true
+    auto_init: false
+    description: Seed catalog for day-1 and day-2 content
+  - name: pocket_lab_iac
+    private: true
+    auto_init: false
+    description: Pocket Lab infrastructure repository
+gitea_orgs:
+  - name: pocket_lab
+    full_name: Pocket Lab
+    description: Pocket Lab organization
+gitea_branch_protections:
+  - repo: pocket_lab_iac
+    branch: main
+    required_approvals: 1
+    enable_push: false

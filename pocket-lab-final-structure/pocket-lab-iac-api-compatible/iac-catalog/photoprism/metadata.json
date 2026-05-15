@@ -1,0 +1,5 @@
+{
+  "title": "PhotoPrism",
+  "description": "Deploy the PhotoPrism workload using the GitOps workload role.",
+  "icon": "Image"
+}

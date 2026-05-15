@@ -1,0 +1,4 @@
+---
+- name: dashboard_api configuration updated
+  ansible.builtin.debug:
+    msg: "dashboard_api configuration changed. External service restarts are handled by the runtime launcher or supervisor."

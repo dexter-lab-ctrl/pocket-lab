@@ -1,0 +1,6 @@
+---
+- name: 00 preflight
+  hosts: common
+  gather_facts: false
+  roles:
+    - common

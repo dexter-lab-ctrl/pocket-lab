@@ -1,0 +1,34 @@
+---
+- name: common | validate environment
+  ansible.builtin.assert:
+    that:
+      - common_env_name in ['dev', 'prod']
+      - common_base_dir is string
+      - common_manage_dirs | length > 0
+    fail_msg: "Unsupported environment or missing base directory settings."
+
+- name: common | validate required commands
+  ansible.builtin.command: "{{ item }} --version"
+  loop: "{{ common_required_commands | default(['git','curl','jq','python3','bash']) }}"
+  changed_when: false
+  failed_when: false
+  register: common_command_checks
+
+- name: common | create shared directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0750'
+  loop: "{{ common_manage_dirs }}"
+
+- name: common | write runtime metadata
+  ansible.builtin.copy:
+    dest: "{{ common_state_dir }}/runtime.json"
+    mode: '0640'
+    content: |
+      {
+        "environment": "{{ common_env_name }}",
+        "base_dir": "{{ common_base_dir }}",
+        "control_plane_name": "{{ control_plane_name }}",
+        "generated_by": "common role"
+      }

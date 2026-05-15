@@ -1,0 +1,22 @@
+APP_NAME = Pocket Lab GitOps Repository
+RUN_MODE = prod
+
+[security]
+INSTALL_LOCK = true
+
+[server]
+HTTP_PORT = {{ gitea_http_port }}
+DISABLE_SSH = true
+OFFLINE_MODE = true
+ROOT_URL = http://127.0.0.1:{{ gitea_http_port }}/
+
+[database]
+DB_TYPE = mysql
+HOST = {{ mariadb_service_host }}:{{ mariadb_port }}
+NAME = {{ gitea_database_name | default('gitea') }}
+USER = {{ gitea_database_user | default('gitea') }}
+PASSWD = {{ gitea_service_pass }}
+
+[service]
+DISABLE_REGISTRATION = true
+REQUIRE_SIGNIN_VIEW = true

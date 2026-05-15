@@ -1,0 +1,6 @@
+---
+- name: PhotoPrism workload
+  hosts: workloads
+  gather_facts: false
+  roles:
+    - workloads/photoprism

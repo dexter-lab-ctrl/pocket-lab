@@ -1,0 +1,66 @@
+---
+- name: tailscale | ensure patched state directory exists
+  ansible.builtin.file:
+    path: "{{ tailscale_state_dir }}"
+    state: directory
+    mode: '0750'
+
+- name: tailscale | download bropines patched installer
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/bropines/tailscale-termux-cli/main/remote-install.sh
+    dest: "{{ tailscale_state_dir }}/tailscale_installer.sh"
+    mode: '0750'
+
+- name: tailscale | execute patched installer
+  ansible.builtin.command:
+    cmd: bash "{{ tailscale_state_dir }}/tailscale_installer.sh"
+  # Ensures this only runs once by checking if the wrapper was successfully created
+  args:
+    creates: "{{ ansible_env.PREFIX | default('/data/data/com.termux/files/usr') }}/bin/tailscaled-start"
+  failed_when: false
+
+- name: tailscale | render env file for patched daemon
+  ansible.builtin.copy:
+    dest: "{{ tailscale_state_dir }}/.env"
+    mode: '0600'
+    content: |
+      TS_SOCKS5_PORT={{ tailscale_socks5_port }}
+  no_log: true
+
+- name: tailscale | start patched daemon wrapper
+  ansible.builtin.shell: |
+    if ! pgrep -f tailscaled >/dev/null 2>&1; then
+      tailscaled-start
+    fi
+  changed_when: false
+
+- name: tailscale | wait for daemon to initialize
+  ansible.builtin.pause:
+    seconds: 3
+
+- name: tailscale | authenticate when auth key is provided
+  when: tailscale_auth_key | string | length > 0
+  ansible.builtin.command: "tailscale-cli up --hostname={{ tailscale_hostname }} --authkey={{ tailscale_auth_key }} {{ tailscale_extra_args }}"
+  register: tailscale_up
+  changed_when: tailscale_up.rc == 0
+  failed_when: false
+  no_log: true
+
+- name: tailscale | capture status
+  ansible.builtin.command: "tailscale-cli status --json"
+  register: tailscale_status
+  changed_when: false
+  failed_when: false
+
+- name: tailscale | persist status snapshot
+  ansible.builtin.copy:
+    dest: "{{ tailscale_state_dir }}/status.json"
+    mode: '0640'
+    content: "{{ tailscale_status.stdout | default('{}') }}"
+
+- name: tailscale | summarize state
+  ansible.builtin.debug:
+    msg:
+      - "Hostname: {{ tailscale_hostname }}"
+      - "State dir: {{ tailscale_state_dir }}"
+      - "SOCKS5 Proxy: 127.0.0.1:{{ tailscale_socks5_port }}"

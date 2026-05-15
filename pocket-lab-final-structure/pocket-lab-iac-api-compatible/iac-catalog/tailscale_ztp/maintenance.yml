@@ -1,0 +1,38 @@
+---
+- name: Tailscale ZTP maintenance
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Authenticate with Vault AppRole
+      ansible.builtin.uri:
+        url: "{{ vault_api_addr | default('http://127.0.0.1:8200') }}/v1/auth/approle/login"
+        method: POST
+        body_format: json
+        body:
+          role_id: "{{ lookup('env', 'VAULT_ROLE_ID') }}"
+          secret_id: "{{ lookup('env', 'VAULT_SECRET_ID') }}"
+        status_code: 200
+      register: vault_login
+      no_log: true
+
+    - name: Set dynamic Vault token
+      ansible.builtin.set_fact:
+        dynamic_vault_token: "{{ vault_login.json.auth.client_token }}"
+      no_log: true
+
+    - name: Verify Tailscale API key exists in Vault
+      ansible.builtin.uri:
+        url: "{{ vault_api_addr | default('http://127.0.0.1:8200') }}/v1/secret/data/tailscale"
+        method: GET
+        headers:
+          X-Vault-Token: "{{ dynamic_vault_token }}"
+        status_code: [200, 404]
+      register: tailscale_secret
+      changed_when: false
+      no_log: true
+
+    - name: Fail when Tailscale secret is missing
+      ansible.builtin.fail:
+        msg: "Tailscale API key is not yet stored in Vault."
+      when: tailscale_secret.status == 404

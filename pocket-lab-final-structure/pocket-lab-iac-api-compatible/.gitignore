@@ -1,0 +1,13 @@
+.cache/
+*.log
+*.retry
+*.tmp
+*.swp
+logs/
+run/
+state/
+backups/*.tar.gz
+**/__pycache__/
+**/*.pyc
+.runner
+.env

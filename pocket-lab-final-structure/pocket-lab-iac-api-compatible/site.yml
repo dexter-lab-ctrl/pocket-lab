@@ -1,0 +1,18 @@
+---
+- import_playbook: playbooks/00_preflight.yml
+- import_playbook: playbooks/10_vault.yml
+- import_playbook: playbooks/20_mariadb.yml
+- import_playbook: playbooks/30_gitea.yml
+
+# NEW: DevSecOps Guardrails (Open Policy Agent)
+# Inserted here to intercept any deployments from Gitea/Ansible
+- import_playbook: playbooks/40_opa.yml
+
+- import_playbook: playbooks/50_tailscale.yml
+- import_playbook: playbooks/60_caddy.yml
+- import_playbook: playbooks/70_dashboard_api.yml
+- import_playbook: playbooks/80_catalog_seed.yml
+- import_playbook: playbooks/90_workloads.yml
+- import_playbook: playbooks/95_backup_restore.yml
+- import_playbook: playbooks/97_gitea_runner.yml
+- import_playbook: playbooks/99_drift_check.yml

@@ -1,0 +1,40 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  syntax:
+    # Use your new infrastructure runner label
+    runs-on: infra-runner
+    steps:
+      # Removed actions/checkout@v4 due to Android kernel permission issues
+      
+      - name: Fix Local Permissions
+        run: |
+          # Ensure the script has proper execution rights in the PRoot environment
+          chmod -R +r .
+          
+      - name: Validate YAML files
+        run: |
+          python3 - <<'PY'
+          import pathlib, yaml
+          root = pathlib.Path('.')
+          # Scan for all YAML files except those in hidden or build directories
+          for path in root.rglob('*.yml'):
+              if '.git' in path.parts or 'node_modules' in path.parts:
+                  continue
+              try:
+                  yaml.safe_load(path.read_text())
+              except Exception as e:
+                  print(f"Error in {path}: {e}")
+                  exit(1)
+          print('YAML validation complete')
+          PY
+
+      - name: Ansible Syntax Check
+        run: |
+          # Use the natively installed ansible-playbook in Termux/PRoot
+          # We point to the local site.yml without needing a fresh checkout
+          ansible-playbook --syntax-check site.yml

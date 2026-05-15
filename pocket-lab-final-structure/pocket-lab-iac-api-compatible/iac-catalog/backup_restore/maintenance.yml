@@ -1,0 +1,6 @@
+---
+- name: Backup and restore maintenance
+  hosts: backups
+  gather_facts: false
+  roles:
+    - backups

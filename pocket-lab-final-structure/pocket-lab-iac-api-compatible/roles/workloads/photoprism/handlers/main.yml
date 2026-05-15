@@ -1,0 +1,4 @@
+---
+- name: photoprism assets updated
+  ansible.builtin.debug:
+    msg: "PhotoPrism assets changed. Restart is handled externally."

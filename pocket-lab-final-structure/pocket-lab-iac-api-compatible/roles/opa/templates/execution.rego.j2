@@ -1,0 +1,8 @@
+package pocketlab.execution
+
+deny[msg] {
+    task := input.playbook.tasks[_]
+    contains(task.command, "apt-get")
+    not contains(task.prefix, "proot-distro login ubuntu")
+    msg := "Linux package managers must be executed inside the PRoot Ubuntu subsystem."
+}

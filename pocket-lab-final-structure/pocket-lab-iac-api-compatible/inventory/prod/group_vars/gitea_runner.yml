@@ -1,0 +1,16 @@
+---
+gitea_runner_base_dir: "{{ common_base_dir }}/gitea-runners"
+gitea_runner_api_url: "http://127.0.0.1:3030"
+gitea_runner_admin_user: "pocket_admin"
+gitea_runner_admin_password: "{{ lookup('env', 'GITEA_UI_PASSWORD') | default('', true) }}"
+
+gitea_runners:
+  - name: infra-runner
+    labels: "infra-runner:host"
+    approle: gitops-service
+  - name: vault-runner
+    labels: "vault-runner:host"
+    approle: workload-service
+  - name: db-runner
+    labels: "db-runner:host"
+    approle: backup-service

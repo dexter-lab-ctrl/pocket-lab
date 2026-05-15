@@ -1,0 +1,34 @@
+---
+- name: opa | Install PyYAML for interceptor parsing
+  ansible.builtin.pip:
+    name: pyyaml
+    executable: pip3
+
+- name: opa | Download OPA ARM64 binary
+  ansible.builtin.get_url:
+    url: "https://openpolicyagent.org/downloads/{{ opa_version }}/opa_{{ opa_arch }}"
+    dest: "{{ opa_bin_dir }}/opa"
+    mode: '0755'
+    force: false
+
+- name: opa | Ensure policies directory exists
+  ansible.builtin.file:
+    path: "{{ opa_policies_dir }}"
+    state: directory
+    mode: '0750'
+
+- name: opa | Deploy Rego policies
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "{{ opa_policies_dir }}/{{ item | regex_replace('\\.j2$', '') }}"
+    mode: '0640'
+  loop:
+    - ports.rego.j2
+    - secrets.rego.j2
+    - execution.rego.j2
+
+- name: opa | Deploy Gatekeeper Interceptor script
+  ansible.builtin.template:
+    src: opa_interceptor.py.j2
+    dest: "{{ opa_interceptor_dest }}"
+    mode: '0755'

@@ -1,0 +1,201 @@
+---
+- name: gitea | validate inputs
+  ansible.builtin.assert:
+    that:
+      - gitea_app_dir is defined
+      - gitea_http_port is defined
+      - gitea_vault_secret_path is defined
+      - gitea_repositories is iterable
+      - gitea_orgs is iterable
+    fail_msg: "Gitea role requires app settings and secret bundle path."
+
+- name: gitea | determine Vault auth token
+  ansible.builtin.set_fact:
+    gitea_vault_effective_token: "{{ gitea_vault_token | default(vault_token | default('', true)) }}"
+  no_log: true
+
+- name: gitea | login with AppRole when token is absent
+  when:
+    - gitea_vault_effective_token | length == 0
+    - vault_role_id | default('', true) | length > 0
+    - vault_secret_id | default('', true) | length > 0
+  ansible.builtin.uri:
+    url: "{{ vault_api_addr | default('http://127.0.0.1:8200') }}/v1/auth/{{ vault_approle_mount | default('approle') }}/login"
+    method: POST
+    body_format: json
+    body:
+      role_id: "{{ vault_role_id }}"
+      secret_id: "{{ vault_secret_id }}"
+    status_code: 200
+  register: gitea_vault_login
+  changed_when: false
+  no_log: true
+
+- name: gitea | select AppRole token
+  when: gitea_vault_login is defined and gitea_vault_login.json.auth.client_token is defined
+  ansible.builtin.set_fact:
+    gitea_vault_effective_token: "{{ gitea_vault_login.json.auth.client_token }}"
+  no_log: true
+
+- name: gitea | ensure token is available
+  ansible.builtin.assert:
+    that:
+      - gitea_vault_effective_token | string | length > 0
+    fail_msg: "Vault token or AppRole credentials are required for Gitea reconciliation."
+  no_log: true
+
+- name: gitea | fetch secret bundle from Vault
+  ansible.builtin.uri:
+    url: "{{ vault_api_addr | default('http://127.0.0.1:8200') }}/v1/{{ gitea_vault_secret_path }}"
+    method: GET
+    headers:
+      X-Vault-Token: "{{ gitea_vault_effective_token }}"
+    status_code: 200
+  register: gitea_secret
+  changed_when: false
+  no_log: true
+
+- name: gitea | extract secret values
+  ansible.builtin.set_fact:
+    # Fixed variable name to match what app.ini.j2 expects
+    gitea_service_password: "{{ gitea_secret.json.data.data.service_pass }}"
+    gitea_ui_pass: "{{ gitea_secret.json.data.data.password }}"
+  no_log: true
+
+- name: gitea | validate secrets
+  ansible.builtin.assert:
+    that:
+      - gitea_service_password | string | length > 0
+      - gitea_ui_pass | string | length > 0
+    fail_msg: "Gitea secret bundle must contain password and service_pass."
+  no_log: true
+
+- name: gitea | ensure directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0750'
+  loop:
+    - "{{ gitea_app_dir }}"
+    - "{{ gitea_conf_dir }}"
+    - "{{ gitea_state_dir }}"
+
+- name: gitea | render runtime config
+  ansible.builtin.template:
+    src: app.ini.j2
+    dest: "{{ gitea_runtime_ini }}"
+    mode: '0600'
+  no_log: true
+
+- name: gitea | validate API reachability
+  ansible.builtin.uri:
+    url: "{{ gitea_api_url }}/api/healthz"
+    method: GET
+    status_code: [200, 404]
+  register: gitea_health
+  changed_when: false
+  failed_when: false
+
+- name: gitea | query existing repos
+  ansible.builtin.uri:
+    url: "{{ gitea_api_url }}/api/v1/user/repos?limit=100&page=1"
+    method: GET
+    user: "{{ gitea_admin_user }}"
+    password: "{{ gitea_ui_pass }}"
+    force_basic_auth: true
+    status_code: [200, 401, 403]
+  register: gitea_repo_list
+  changed_when: false
+  failed_when: false
+  no_log: true
+
+- name: gitea | query existing orgs
+  ansible.builtin.uri:
+    url: "{{ gitea_api_url }}/api/v1/user/orgs?limit=100&page=1"
+    method: GET
+    user: "{{ gitea_admin_user }}"
+    password: "{{ gitea_ui_pass }}"
+    force_basic_auth: true
+    status_code: [200, 401, 403]
+  register: gitea_org_list
+  changed_when: false
+  failed_when: false
+  no_log: true
+
+- name: gitea | create missing organizations
+  loop: "{{ gitea_orgs }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - gitea_org_list.json is defined
+    - item.name not in (gitea_org_list.json | map(attribute='username') | list)
+  ansible.builtin.uri:
+    url: "{{ gitea_api_url }}/api/v1/orgs"
+    method: POST
+    user: "{{ gitea_admin_user }}"
+    password: "{{ gitea_ui_pass }}"
+    force_basic_auth: true
+    body_format: json
+    body:
+      username: "{{ item.name }}"
+      full_name: "{{ item.full_name | default(item.name) }}"
+      description: "{{ item.description | default('Managed by GitOps') }}"
+      website: "{{ item.website | default('') }}"
+      location: "{{ item.location | default('') }}"
+    status_code: [201, 409]
+  changed_when: true
+  no_log: true
+
+- name: gitea | create missing repositories
+  loop: "{{ gitea_repositories }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - gitea_repo_list.json is defined
+    - item.name not in (gitea_repo_list.json | map(attribute='name') | list)
+  ansible.builtin.uri:
+    url: "{{ gitea_api_url }}/api/v1/user/repos"
+    method: POST
+    user: "{{ gitea_admin_user }}"
+    password: "{{ gitea_ui_pass }}"
+    force_basic_auth: true
+    body_format: json
+    body:
+      name: "{{ item.name }}"
+      private: "{{ item.private | default(true) }}"
+      auto_init: "{{ item.auto_init | default(false) }}"
+      description: "{{ item.description | default('Managed by GitOps') }}"
+    status_code: [201, 409]
+  changed_when: true
+  no_log: true
+
+- name: gitea | update repository defaults
+  loop: "{{ gitea_repositories }}"
+  loop_control:
+    label: "{{ item.name }}"
+  ansible.builtin.uri:
+    url: "{{ gitea_api_url }}/api/v1/repos/{{ gitea_admin_user }}/{{ item.name }}"
+    method: PATCH
+    user: "{{ gitea_admin_user }}"
+    password: "{{ gitea_ui_pass }}"
+    force_basic_auth: true
+    body_format: json
+    body:
+      default_branch: "{{ item.default_branch | default('main') }}"
+      description: "{{ item.description | default('Managed by GitOps') }}"
+      private: "{{ item.private | default(true) }}"
+    status_code: [200, 204, 404]
+  failed_when: false
+  changed_when: true
+  no_log: true
+
+- name: gitea | persist desired state manifest
+  ansible.builtin.copy:
+    dest: "{{ gitea_state_dir }}/reconciliation.json"
+    mode: '0640'
+    content: |
+      {
+        "repositories": {{ gitea_repositories | map(attribute='name') | list | to_json }},
+        "organizations": {{ gitea_orgs | map(attribute='name') | list | to_json }},
+        "branch_protections": {{ gitea_branch_protections | to_json }}
+      }

@@ -1,0 +1,139 @@
+---
+- name: catalog_seed | validate inputs
+  ansible.builtin.assert:
+    that:
+      - catalog_seed_source_root is defined
+      - catalog_seed_root is defined
+      - catalog_seed_source_root | string | length > 0
+      - catalog_seed_root | string | length > 0
+    fail_msg: "catalog_seed requires source and destination roots."
+
+- name: catalog_seed | ensure source tree exists
+  ansible.builtin.stat:
+    path: "{{ catalog_seed_source_root }}"
+  register: catalog_seed_source_stat
+  delegate_to: localhost
+  run_once: true
+
+- name: catalog_seed | fail when source tree is missing
+  ansible.builtin.assert:
+    that:
+      - catalog_seed_source_stat.stat.exists
+      - catalog_seed_source_stat.stat.isdir
+    fail_msg: "The checked-in iac-catalog source tree is missing."
+
+- name: catalog_seed | ensure destination exists
+  ansible.builtin.file:
+    path: "{{ catalog_seed_root }}"
+    state: directory
+    mode: '0750'
+
+- name: catalog_seed | copy catalog tree into local checkout
+  ansible.builtin.copy:
+    src: "{{ catalog_seed_source_root }}/"
+    dest: "{{ catalog_seed_root }}/"
+    mode: preserve
+    directory_mode: '0750'
+    force: true
+  register: catalog_seed_copy
+
+- name: catalog_seed | ensure .git exists
+  ansible.builtin.stat:
+    path: "{{ catalog_seed_root }}/.git"
+  register: catalog_seed_gitdir
+
+- name: catalog_seed | initialize git repository when absent
+  when: not catalog_seed_gitdir.stat.exists
+  ansible.builtin.command:
+    argv:
+      - git
+      - init
+      - "{{ catalog_seed_root }}"
+  changed_when: true
+
+- name: catalog_seed | configure git identity
+  ansible.builtin.command:
+    argv:
+      - git
+      - -C
+      - "{{ catalog_seed_root }}"
+      - config
+      - "{{ item.key }}"
+      - "{{ item.value }}"
+  loop:
+    - { key: user.name, value: "{{ catalog_seed_git_name }}" }
+    - { key: user.email, value: "{{ catalog_seed_git_email }}" }
+    - { key: init.defaultBranch, value: main }
+  changed_when: false
+
+- name: catalog_seed | stage tree when changed or repo is new
+  when: catalog_seed_copy is changed or not catalog_seed_gitdir.stat.exists
+  ansible.builtin.command:
+    argv:
+      - git
+      - -C
+      - "{{ catalog_seed_root }}"
+      - add
+      - -A
+  changed_when: true
+
+- name: catalog_seed | create initial commit when repository is new
+  when: not catalog_seed_gitdir.stat.exists
+  ansible.builtin.command:
+    argv:
+      - git
+      - -C
+      - "{{ catalog_seed_root }}"
+      - commit
+      - -m
+      - Seed iac-catalog repository
+  changed_when: true
+  failed_when: false
+
+- name: catalog_seed | set origin remote
+  when: catalog_seed_remote_url | length > 0
+  block:
+    - name: catalog_seed | remove existing origin
+      ansible.builtin.command:
+        argv:
+          - git
+          - -C
+          - "{{ catalog_seed_root }}"
+          - remote
+          - remove
+          - origin
+      failed_when: false
+      changed_when: false
+      no_log: true  # SECURITY: Prevents leaking the injected URL credentials
+
+    - name: catalog_seed | add origin remote
+      ansible.builtin.command:
+        argv:
+          - git
+          - -C
+          - "{{ catalog_seed_root }}"
+          - remote
+          - add
+          - origin
+          - "{{ catalog_seed_remote_url }}"
+      failed_when: false
+      changed_when: false
+      no_log: true  # SECURITY: Prevents leaking the injected URL credentials
+
+- name: catalog_seed | push to remote when enabled
+  when:
+    - catalog_seed_push_enabled | bool
+    - catalog_seed_remote_url | length > 0
+  ansible.builtin.command:
+    argv:
+      - git
+      - -C
+      - "{{ catalog_seed_root }}"
+      - push
+      - -u
+      - origin
+      - main
+  register: catalog_seed_push
+  changed_when: catalog_seed_push.rc == 0
+  failed_when: catalog_seed_push.rc != 0
+  no_log: true  # SECURITY: Prevents leaking the URL in the git output

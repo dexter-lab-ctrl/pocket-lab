@@ -1,0 +1,13 @@
+---
+common_env_name: "{{ env_name | default('dev') }}"
+common_base_dir: "{{ lookup('env', 'POCKET_LAB_BASE_DIR') | default('/data/data/com.termux/files/home/pocket-lab', true) }}"
+common_log_dir: "{{ common_base_dir }}/logs"
+common_run_dir: "{{ common_base_dir }}/run"
+common_cache_dir: "{{ common_base_dir }}/cache"
+common_state_dir: "{{ common_base_dir }}/state"
+common_manage_dirs:
+  - "{{ common_base_dir }}"
+  - "{{ common_log_dir }}"
+  - "{{ common_run_dir }}"
+  - "{{ common_cache_dir }}"
+  - "{{ common_state_dir }}"

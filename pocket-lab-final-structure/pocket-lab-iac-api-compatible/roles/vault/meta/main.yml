@@ -1,0 +1,9 @@
+---
+galaxy_info:
+  role_name: vault
+  author: OpenAI
+  description: Pocket Lab vault reconciliation
+  license: MIT
+  min_ansible_version: '2.15'
+dependencies:
+  - common

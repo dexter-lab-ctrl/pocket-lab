@@ -1,0 +1,7 @@
+package pocketlab.network
+
+deny[msg] {
+    port := input.playbook.tasks[_].pm2_env.PORT
+    to_number(port) < 1024
+    msg := "Android OS denies non-root binding to ports < 1024. Please use a port > 1023."
+}

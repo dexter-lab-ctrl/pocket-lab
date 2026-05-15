@@ -1,0 +1,9 @@
+---
+- name: Drift check
+  hosts: drift_check
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Run drift check role
+      ansible.builtin.include_role:
+        name: drift_check

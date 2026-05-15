@@ -1,0 +1,7 @@
+---
+- name: Deploy OPA DevSecOps Guardrails
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  roles:
+    - role: opa

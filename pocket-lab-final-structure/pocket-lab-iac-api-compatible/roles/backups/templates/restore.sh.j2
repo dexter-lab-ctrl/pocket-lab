@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ARCHIVE="${1:-}"
+if [ -z "${ARCHIVE}" ] || [ ! -f "${ARCHIVE}" ]; then
+  echo "Usage: restore.sh /path/to/archive.tar.gz" >&2
+  exit 1
+fi
+
+tmpdir="$(mktemp -d)"
+trap 'rm -rf "${tmpdir}"' EXIT
+
+tar -xzf "${ARCHIVE}" -C "${tmpdir}"
+for item in "${tmpdir}"/*; do
+  case "$(basename "$item")" in
+    mariadb.sql)
+      if command -v mariadb >/dev/null 2>&1; then
+        # Execute restore using injected credentials instead of root
+        mariadb \
+          --protocol=socket \
+          -u"{{ mariadb_backup_user | default('pocket_admin') }}" \
+          -p"{{ mariadb_backup_password }}" \
+          -S "{{ mariadb_socket | default(common_base_dir ~ '/mariadb/mysqld.sock') }}" < "$item"
+        echo "Restored database: $item"
+      fi
+      ;;
+    *)
+      echo "Restored artifact: $item"
+      ;;
+  esac
+done

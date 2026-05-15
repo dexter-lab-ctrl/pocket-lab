@@ -1,0 +1,12 @@
+---
+# DevSecOps Tool Versioning
+trivy_version: "0.50.1"
+lynis_version: "3.1.1"
+
+# Binary and Report Paths (PRoot Ubuntu context)
+security_bin_dir: "/usr/local/bin"
+security_report_dir: "/tmp"
+
+# Audit Configuration
+# Used by the SecurityPostureTab to filter logs in Loki
+security_audit_label: "security_audit"

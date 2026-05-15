@@ -1,0 +1,4 @@
+---
+drift_check_log_dir: "{{ common_log_dir }}"
+drift_report_path: "{{ common_base_dir }}/drift-report.json"
+drift_check_endpoints: []

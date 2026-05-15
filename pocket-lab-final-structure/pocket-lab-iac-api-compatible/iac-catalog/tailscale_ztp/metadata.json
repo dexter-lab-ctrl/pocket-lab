@@ -1,0 +1,5 @@
+{
+  "title": "Tailscale ZTP",
+  "description": "Validate or refresh Tailscale zero-touch provisioning support.",
+  "icon": "Network"
+}

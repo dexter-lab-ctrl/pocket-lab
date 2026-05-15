@@ -1,0 +1,4 @@
+---
+- name: vault configuration updated
+  ansible.builtin.debug:
+    msg: "vault configuration changed. External service restarts are handled by the runtime launcher or supervisor."

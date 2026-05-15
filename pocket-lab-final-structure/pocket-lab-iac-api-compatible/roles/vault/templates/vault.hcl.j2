@@ -1,0 +1,17 @@
+disable_mlock = true
+ui = true
+api_addr = "{{ vault_api_addr }}"
+
+storage "file" {
+  path = "{{ vault_data_dir }}"
+}
+
+listener "tcp" {
+  address     = "{{ vault_listener_addr }}"
+  tls_disable = 1
+}
+
+# [THE FIX]: Required for Prometheus scraping in the Pocket Lab observability stack
+telemetry {
+  unauthenticated_metrics_access = true
+}

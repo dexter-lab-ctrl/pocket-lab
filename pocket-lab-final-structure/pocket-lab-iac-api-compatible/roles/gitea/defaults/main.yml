@@ -1,0 +1,17 @@
+---
+gitea_app_dir: "{{ common_base_dir }}/gitea"
+gitea_conf_dir: "{{ common_base_dir }}/gitea/conf"
+gitea_state_dir: "{{ common_base_dir }}/gitea/state"
+gitea_runtime_ini: "{{ common_base_dir }}/gitea/conf/app.runtime.ini"
+gitea_http_port: 3030
+gitea_api_url: http://127.0.0.1:3030
+gitea_admin_user: pocket_admin
+gitea_admin_email: admin@pocketlab.local
+gitea_vault_secret_path: secret/data/gitea
+gitea_vault_token: "{{ lookup('env', 'GITEA_VAULT_TOKEN') | default('', true) }}"
+gitea_ui_password: "{{ lookup('env', 'GITEA_UI_PASSWORD') | default('', true) }}"
+gitea_service_password: "{{ lookup('env', 'GITEA_SERVICE_PASSWORD') | default('', true) }}"
+gitea_repositories: []
+gitea_orgs: []
+gitea_branch_protections: []
+gitea_bootstrap_admin: true

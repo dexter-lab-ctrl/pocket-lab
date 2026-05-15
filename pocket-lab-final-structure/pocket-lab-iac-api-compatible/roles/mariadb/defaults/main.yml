@@ -1,0 +1,14 @@
+---
+mariadb_datadir: "{{ common_base_dir }}/mariadb"
+# Aligned with the native Termux path defined in init-mariadb.sh
+mariadb_socket: "/data/data/com.termux/files/usr/var/run/mysqld.sock"
+mariadb_port: 3306
+mariadb_service_host: 127.0.0.1
+mariadb_root_socket_login: false
+
+# Replaced root with our Pocket Lab admin credentials
+mariadb_admin_user: pocket_admin
+mariadb_admin_password: "{{ lookup('env', 'MARIADB_ADMIN_PASSWORD') | default('', true) }}"
+
+mariadb_databases: []
+mariadb_users: []

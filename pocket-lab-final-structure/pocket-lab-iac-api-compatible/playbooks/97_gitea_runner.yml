@@ -1,0 +1,7 @@
+---
+- name: 97 gitea runner
+  hosts: gitea
+  gather_facts: false
+  roles:
+    - common
+    - gitea_runner

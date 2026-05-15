@@ -1,0 +1,8 @@
+---
+- name: 30 gitea
+  hosts: gitea
+  gather_facts: false
+  roles:
+    - common
+    - vault
+    - gitea

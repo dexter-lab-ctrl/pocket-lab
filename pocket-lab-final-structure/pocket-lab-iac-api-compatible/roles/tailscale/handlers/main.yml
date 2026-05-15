@@ -1,0 +1,4 @@
+---
+- name: tailscale configuration updated
+  ansible.builtin.debug:
+    msg: "tailscale configuration changed. External service restarts are handled by the runtime launcher or supervisor."

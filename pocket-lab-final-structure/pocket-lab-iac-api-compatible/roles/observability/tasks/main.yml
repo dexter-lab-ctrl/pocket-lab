@@ -1,0 +1,61 @@
+---
+- name: observability | ensure PRoot application directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0750'
+  loop:
+    - "{{ observability_base_dir }}/grafana/data"
+    - "{{ observability_base_dir }}/grafana/logs"
+    - "{{ observability_base_dir }}/grafana/plugins"
+    - "{{ observability_base_dir }}/grafana/provisioning/dashboards"
+    - "{{ observability_base_dir }}/grafana/provisioning/datasources"
+    - "{{ observability_base_dir }}/prometheus"
+    - "{{ observability_base_dir }}/loki"
+    - "{{ observability_base_dir }}/promtail"
+
+- name: observability | render Loki config
+  ansible.builtin.template:
+    src: loki-config.yaml.j2
+    dest: "{{ observability_base_dir }}/loki/config.yaml"
+    mode: '0640'
+
+- name: observability | render Promtail config
+  ansible.builtin.template:
+    src: promtail-config.yaml.j2
+    dest: "{{ observability_base_dir }}/promtail/config.yaml"
+    mode: '0640'
+
+- name: observability | render Prometheus config
+  ansible.builtin.template:
+    src: prometheus.yml.j2
+    dest: "{{ observability_base_dir }}/prometheus/prometheus.yml"
+    mode: '0640'
+
+- name: observability | render Grafana custom.ini
+  ansible.builtin.template:
+    src: custom.ini.j2
+    dest: "{{ observability_base_dir }}/grafana/custom.ini"
+    mode: '0640'
+
+- name: observability | orchestrate services via PM2 Bridge
+  ansible.builtin.shell: |
+    if ! pm2 describe loki >/dev/null 2>&1; then
+      pm2 start bash --name "loki" -- -c "proot-distro login {{ observability_ubuntu_name }} -- loki -config.file={{ observability_base_dir }}/loki/config.yaml"
+    fi
+    
+    if ! pm2 describe promtail >/dev/null 2>&1; then
+      pm2 start bash --name "promtail" -- -c "proot-distro login {{ observability_ubuntu_name }} -- promtail -config.file={{ observability_base_dir }}/promtail/config.yaml"
+    fi
+
+    if ! pm2 describe prometheus >/dev/null 2>&1; then
+      pm2 start bash --name "prometheus" -- -c "proot-distro login {{ observability_ubuntu_name }} -- prometheus --config.file={{ observability_base_dir }}/prometheus/prometheus.yml --storage.tsdb.path={{ observability_base_dir }}/prometheus/data --web.listen-address=127.0.0.1:{{ observability_prometheus_port }}"
+    fi
+
+    if ! pm2 describe grafana >/dev/null 2>&1; then
+      # [THE FIX]: Executing via bash -c to change into the /opt/grafana installation directory before launching
+      pm2 start bash --name "grafana" -- -c "proot-distro login {{ observability_ubuntu_name }} -- bash -c 'cd /opt/grafana && ./bin/grafana-server --homepath=/opt/grafana --config={{ observability_base_dir }}/grafana/custom.ini'"
+    fi
+    
+    pm2 save
+  changed_when: false

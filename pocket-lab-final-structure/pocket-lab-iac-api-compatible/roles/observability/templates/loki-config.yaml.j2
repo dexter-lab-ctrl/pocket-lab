@@ -1,0 +1,32 @@
+auth_enabled: false
+
+server:
+  http_listen_port: {{ observability_loki_port }}
+  # [THE FIX]: Binds to localhost to avoid startup race conditions
+  http_listen_address: 127.0.0.1 
+
+common:
+  instance_addr: 127.0.0.1
+  path_prefix: {{ observability_base_dir }}/loki
+  storage:
+    filesystem:
+      chunks_directory: {{ observability_base_dir }}/loki/chunks
+      rules_directory: {{ observability_base_dir }}/loki/rules
+  replication_factor: 1
+  ring:
+    kvstore:
+      store: inmemory
+
+schema_config:
+  configs:
+    - from: 2020-10-24
+      store: boltdb-shipper
+      object_store: filesystem
+      schema: v11
+      index:
+        prefix: index_
+        period: 24h
+
+# [THE FIX]: Bypasses Android's restricted network interface polling
+frontend:
+  instance_interface_names: [lo]

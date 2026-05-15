@@ -1,0 +1,81 @@
+---
+- name: mariadb | validate inputs
+  ansible.builtin.assert:
+    that:
+      - mariadb_datadir is defined
+      - mariadb_socket is defined
+      - mariadb_databases is iterable
+      - mariadb_users is iterable
+    fail_msg: "MariaDB role requires datadir, socket, databases, and users."
+
+- name: mariadb | ensure directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0750'
+  loop:
+    - "{{ mariadb_datadir }}"
+    - "{{ mariadb_datadir }}/tmp"
+
+- name: mariadb | ensure service socket is present
+  ansible.builtin.stat:
+    path: "{{ mariadb_socket }}"
+  register: mariadb_socket_stat
+  changed_when: false
+
+- name: mariadb | create databases
+  loop: "{{ mariadb_databases }}"
+  loop_control:
+    label: "{{ item.name }}"
+  ansible.builtin.command:
+    argv:
+      - mariadb
+      - --protocol=socket
+      - -u{{ mariadb_admin_user }}         # Using the secure admin user
+      - -p{{ mariadb_admin_password }}     # Injected password
+      - -S
+      - "{{ mariadb_socket }}"
+      - -e
+      - >-
+        CREATE DATABASE IF NOT EXISTS `{{ item.name }}`
+        CHARACTER SET {{ item.charset | default('utf8mb4') }}
+        COLLATE {{ item.collation | default('utf8mb4_general_ci') }};
+  changed_when: true
+  no_log: true  # Added to prevent leaking the DB password in Ansible logs
+  when: mariadb_socket_stat.stat.exists
+
+- name: mariadb | create and secure users
+  loop: "{{ mariadb_users }}"
+  loop_control:
+    label: "{{ item.name }}@{{ item.host | default('127.0.0.1') }}"
+  ansible.builtin.command:
+    argv:
+      - mariadb
+      - --protocol=socket
+      - -u{{ mariadb_admin_user }}         # Using the secure admin user
+      - -p{{ mariadb_admin_password }}     # Injected password
+      - -S
+      - "{{ mariadb_socket }}"
+      - -e
+      - >-
+        CREATE USER IF NOT EXISTS '{{ item.name }}'@'{{ item.host | default('127.0.0.1') }}'
+        IDENTIFIED BY '{{ item.password }}';
+        ALTER USER '{{ item.name }}'@'{{ item.host | default('127.0.0.1') }}'
+        IDENTIFIED BY '{{ item.password }}';
+        {% for privilege in item.privileges | default([]) %}
+        GRANT {{ privilege }} TO '{{ item.name }}'@'{{ item.host | default('127.0.0.1') }}';
+        {% endfor %}
+        FLUSH PRIVILEGES;
+  changed_when: true
+  no_log: true
+  when: mariadb_socket_stat.stat.exists
+
+- name: mariadb | store manifest
+  ansible.builtin.copy:
+    dest: "{{ common_state_dir }}/mariadb-state.json"
+    mode: '0640'
+    content: |
+      {
+        "databases": {{ mariadb_databases | map(attribute='name') | list | to_json }},
+        "users": {{ mariadb_users | map(attribute='name') | list | to_json }}
+      }
