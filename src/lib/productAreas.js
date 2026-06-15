@@ -23,6 +23,12 @@ export const PRODUCT_AREAS = {
     description: 'Device onboarding and fleet growth',
     tabs: ['fleet'],
   },
+  configure: {
+    label: 'Configure',
+    simpleLabel: 'Settings',
+    description: 'Modes, preferences, and governance controls',
+    tabs: ['settings'],
+  },
 };
 
 export function productAreaForTab(tabId) {

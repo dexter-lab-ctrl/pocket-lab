@@ -2,7 +2,7 @@
   "tier": "Storybook Screenshot Evidence for MkDocs",
   "capture_mode": "storybook-static iframe screenshot with deterministic FastAPI mocks",
   "runtime_scope": "documentation-only Storybook iframe capture; deterministic mock FastAPI data; no direct NATS access; no frontend shell execution",
-  "generated_at_utc": "2026-06-15T11:11:45.528Z",
+  "generated_at_utc": "2026-06-15T20:25:27.007Z",
   "storybook_index": "storybook-static/index.json",
   "screenshot_count": 29,
   "screen_count": 11,
@@ -17,11 +17,11 @@
       "simple_label": "Apps & Services",
       "component": "AppStoreTab",
       "story_export": "AppStoreNormal",
-      "story_id": "pocket-lab-tier-9-ui-screens--app-store-normal",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--app-store-normal&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--app-store-normal",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--app-store-normal&viewMode=story",
       "screenshot": "generated/ui-screenshots/app-store__app-store-normal.png",
       "repository_path": "docs/product/generated/ui-screenshots/app-store__app-store-normal.png",
-      "sha256": "3140beb85eb5a00300f4aeb8a5d2ded84afebb50772a3fd550db7fb9b6509280",
+      "sha256": "40a11e675d4da4dbf0a1ad2aa3f6add7294209fa3562085a4583037af1632230",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -33,11 +33,11 @@
       "simple_label": "Apps & Services",
       "component": "AppStoreTab",
       "story_export": "AppStoreSimpleMode",
-      "story_id": "pocket-lab-tier-9-ui-screens--app-store-simple-mode",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--app-store-simple-mode&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--app-store-simple-mode",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--app-store-simple-mode&viewMode=story",
       "screenshot": "generated/ui-screenshots/app-store__app-store-simple-mode.png",
       "repository_path": "docs/product/generated/ui-screenshots/app-store__app-store-simple-mode.png",
-      "sha256": "b9b5a411b1e34a748b9f5e434d4b51424b91cf634bb618e72ef736bf9cfa443f",
+      "sha256": "64d2d51d3f61f7a48ea8690927a0a0d0aaa13929307850a4f3526be24696ad13",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -49,11 +49,11 @@
       "simple_label": "Apps & Services",
       "component": "AppStoreTab",
       "story_export": "AppStoreEmptyState",
-      "story_id": "pocket-lab-tier-9-ui-screens--app-store-empty-state",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--app-store-empty-state&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--app-store-empty-state",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--app-store-empty-state&viewMode=story",
       "screenshot": "generated/ui-screenshots/app-store__app-store-empty-state.png",
       "repository_path": "docs/product/generated/ui-screenshots/app-store__app-store-empty-state.png",
-      "sha256": "1a1693522b6343eabc835ccb80715382ddc5e571cde4384890c8c84bb9324bc1",
+      "sha256": "323ab8ddbeda108b6706078390dc9ccd1633703bba1fcb5b8dc7a21e1e3fdf44",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -65,11 +65,11 @@
       "simple_label": "Apps & Services",
       "component": "AppStoreTab",
       "story_export": "AppStoreDegradedWriteBlocked",
-      "story_id": "pocket-lab-tier-9-ui-screens--app-store-degraded-write-blocked",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--app-store-degraded-write-blocked&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--app-store-degraded-write-blocked",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--app-store-degraded-write-blocked&viewMode=story",
       "screenshot": "generated/ui-screenshots/app-store__app-store-degraded-write-blocked.png",
       "repository_path": "docs/product/generated/ui-screenshots/app-store__app-store-degraded-write-blocked.png",
-      "sha256": "52b442452134abb7175fdeaf16f0bc5f55ef5a09587ebf8362eff06466b667a0",
+      "sha256": "bbbfee482e7eecd42187f8b41679737b091ae0f79841e93bb691956dca2d4395",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -81,11 +81,11 @@
       "simple_label": "Keep My Environment Updated",
       "component": "GitOpsTab",
       "story_export": "GitOpsProfessional",
-      "story_id": "pocket-lab-tier-9-ui-screens--git-ops-professional",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--git-ops-professional&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--git-ops-professional",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--git-ops-professional&viewMode=story",
       "screenshot": "generated/ui-screenshots/gitops__git-ops-professional.png",
       "repository_path": "docs/product/generated/ui-screenshots/gitops__git-ops-professional.png",
-      "sha256": "e5d67c287c3df034bf37d547d2a24511ee1112e0d78ac58846a01d22d0424040",
+      "sha256": "fb52354c12b66b187ffd0215ff11e7e9caca862662b17b34499a6a34df2def3b",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -97,11 +97,11 @@
       "simple_label": "Keep My Environment Updated",
       "component": "GitOpsTab",
       "story_export": "GitOpsSimpleMode",
-      "story_id": "pocket-lab-tier-9-ui-screens--git-ops-simple-mode",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--git-ops-simple-mode&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--git-ops-simple-mode",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--git-ops-simple-mode&viewMode=story",
       "screenshot": "generated/ui-screenshots/gitops__git-ops-simple-mode.png",
       "repository_path": "docs/product/generated/ui-screenshots/gitops__git-ops-simple-mode.png",
-      "sha256": "5579124ab88ebea45b98d1503c841f8e9d8e35e39844764332b31d4eb36274ef",
+      "sha256": "0732c05934d10a69c2a3f2f3c045bfba5088dfc5b7b6592be176b0f389ce0a09",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -113,11 +113,11 @@
       "simple_label": "Keep My Environment Updated",
       "component": "GitOpsTab",
       "story_export": "GitOpsApprovalRequired",
-      "story_id": "pocket-lab-tier-9-ui-screens--git-ops-approval-required",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--git-ops-approval-required&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--git-ops-approval-required",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--git-ops-approval-required&viewMode=story",
       "screenshot": "generated/ui-screenshots/gitops__git-ops-approval-required.png",
       "repository_path": "docs/product/generated/ui-screenshots/gitops__git-ops-approval-required.png",
-      "sha256": "6d5952ff551c4b9207eb2aaedc260d66cb741d0e9719a49e2f713590cb2e38ae",
+      "sha256": "545611fe610acee4ba0e05fcecbf2ef2e4dbefc7330bec8c1b9673a6638a0dde",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -129,11 +129,11 @@
       "simple_label": "Keep My Environment Updated",
       "component": "GitOpsTab",
       "story_export": "GitOpsFailedOperation",
-      "story_id": "pocket-lab-tier-9-ui-screens--git-ops-failed-operation",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--git-ops-failed-operation&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--git-ops-failed-operation",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--git-ops-failed-operation&viewMode=story",
       "screenshot": "generated/ui-screenshots/gitops__git-ops-failed-operation.png",
       "repository_path": "docs/product/generated/ui-screenshots/gitops__git-ops-failed-operation.png",
-      "sha256": "c49c4c6fd1976ce886988d78cf83fd908504eaf870c2968ea8a6ebbe8b489d69",
+      "sha256": "5b47e58e43690c690942ec0ab102b3d1bd16efcfefe4c97ce39f10aade04ea83",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -145,11 +145,11 @@
       "simple_label": "My Devices",
       "component": "FleetScalingTab",
       "story_export": "FleetNormal",
-      "story_id": "pocket-lab-tier-9-ui-screens--fleet-normal",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--fleet-normal&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--fleet-normal",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--fleet-normal&viewMode=story",
       "screenshot": "generated/ui-screenshots/fleet-scaling__fleet-normal.png",
       "repository_path": "docs/product/generated/ui-screenshots/fleet-scaling__fleet-normal.png",
-      "sha256": "46e7e59bea6c9f4fb7c38855194b8f220604cfd76ea3f06c8bf2b27a2bd940cd",
+      "sha256": "c9c4267286fbdd0848f2fd398c2bad6ba8778de0a0da0e271fd7a3a3e66d3ecd",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -161,11 +161,11 @@
       "simple_label": "My Devices",
       "component": "FleetScalingTab",
       "story_export": "FleetSimpleMode",
-      "story_id": "pocket-lab-tier-9-ui-screens--fleet-simple-mode",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--fleet-simple-mode&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--fleet-simple-mode",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--fleet-simple-mode&viewMode=story",
       "screenshot": "generated/ui-screenshots/fleet-scaling__fleet-simple-mode.png",
       "repository_path": "docs/product/generated/ui-screenshots/fleet-scaling__fleet-simple-mode.png",
-      "sha256": "cf105cbb5d7327feba71175aab6b5d2282c223999eaa1505600ee655dfc63db0",
+      "sha256": "218912f58f672575c7dcd019144189976a80d6ad3f07c2fef94e9b560841b8ad",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -177,11 +177,11 @@
       "simple_label": "My Devices",
       "component": "FleetScalingTab",
       "story_export": "FleetEmptyAgents",
-      "story_id": "pocket-lab-tier-9-ui-screens--fleet-empty-agents",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--fleet-empty-agents&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--fleet-empty-agents",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--fleet-empty-agents&viewMode=story",
       "screenshot": "generated/ui-screenshots/fleet-scaling__fleet-empty-agents.png",
       "repository_path": "docs/product/generated/ui-screenshots/fleet-scaling__fleet-empty-agents.png",
-      "sha256": "b70e9f4fdef41aef4eaa4bf4414572efee95a90efd54238dc8cf0b545a48c2bb",
+      "sha256": "ef327d4be29c91d9266ce10a5004cdc6854bed76265ffc402aea12d5a1942bf5",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -193,11 +193,11 @@
       "simple_label": "My Devices",
       "component": "FleetScalingTab",
       "story_export": "FleetDegraded",
-      "story_id": "pocket-lab-tier-9-ui-screens--fleet-degraded",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--fleet-degraded&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--fleet-degraded",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--fleet-degraded&viewMode=story",
       "screenshot": "generated/ui-screenshots/fleet-scaling__fleet-degraded.png",
       "repository_path": "docs/product/generated/ui-screenshots/fleet-scaling__fleet-degraded.png",
-      "sha256": "217950a553a68de05e15f4fa8bdbc463269d0097c1813731eaa204a245e6fec2",
+      "sha256": "b846e1cb0ab129f97c3828469ba81cb6ef14565ea80b05ca1c82eaeb4d46e52d",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -209,11 +209,11 @@
       "simple_label": "Passwords & Access",
       "component": "IdentityVaultTab",
       "story_export": "IdentityVaultNormal",
-      "story_id": "pocket-lab-tier-9-ui-screens--identity-vault-normal",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--identity-vault-normal&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--identity-vault-normal",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--identity-vault-normal&viewMode=story",
       "screenshot": "generated/ui-screenshots/identity-vault__identity-vault-normal.png",
       "repository_path": "docs/product/generated/ui-screenshots/identity-vault__identity-vault-normal.png",
-      "sha256": "ff1a5dc199580ec9a2c7a291c41460e2824d6bbc693ab1ddd0fb578adb1efee7",
+      "sha256": "d557ce97460747e7e25a6213f0a0bd9ed35c17805eea96cf6629691dfe7bb61e",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -225,11 +225,11 @@
       "simple_label": "Passwords & Access",
       "component": "IdentityVaultTab",
       "story_export": "IdentityVaultSimpleMode",
-      "story_id": "pocket-lab-tier-9-ui-screens--identity-vault-simple-mode",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--identity-vault-simple-mode&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--identity-vault-simple-mode",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--identity-vault-simple-mode&viewMode=story",
       "screenshot": "generated/ui-screenshots/identity-vault__identity-vault-simple-mode.png",
       "repository_path": "docs/product/generated/ui-screenshots/identity-vault__identity-vault-simple-mode.png",
-      "sha256": "3d89b4edcdc11b75503f8e71bc0dd31cbf0d2c7d46f6a967b525cc3f8fc5e0a7",
+      "sha256": "06284a561c0d0bbb1c9a9be3cba8948f19da0ba8402e57d761b14fa25a499040",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -241,11 +241,11 @@
       "simple_label": "Passwords & Access",
       "component": "IdentityVaultTab",
       "story_export": "IdentityVaultSuccess",
-      "story_id": "pocket-lab-tier-9-ui-screens--identity-vault-success",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--identity-vault-success&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--identity-vault-success",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--identity-vault-success&viewMode=story",
       "screenshot": "generated/ui-screenshots/identity-vault__identity-vault-success.png",
       "repository_path": "docs/product/generated/ui-screenshots/identity-vault__identity-vault-success.png",
-      "sha256": "ee358edba0e968cc0615bc408c04724a1272a3aca42d30880914577859fb302f",
+      "sha256": "0747cacf9e7f4b453011d5f834c3ee26b97410914157fd00862dc371831e3eb2",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -257,11 +257,11 @@
       "simple_label": "Passwords & Access",
       "component": "IdentityVaultTab",
       "story_export": "IdentityVaultFailedOperation",
-      "story_id": "pocket-lab-tier-9-ui-screens--identity-vault-failed-operation",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--identity-vault-failed-operation&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--identity-vault-failed-operation",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--identity-vault-failed-operation&viewMode=story",
       "screenshot": "generated/ui-screenshots/identity-vault__identity-vault-failed-operation.png",
       "repository_path": "docs/product/generated/ui-screenshots/identity-vault__identity-vault-failed-operation.png",
-      "sha256": "af5f04d5bf0b98de09d22a7ba85150bff9285be88acc828eded189412ea5bf14",
+      "sha256": "6afd44292ae1e61acf87c73784e4c57b8536e6489c62e7143f683ef83630d6f0",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -273,11 +273,11 @@
       "simple_label": "Release",
       "component": "ReleaseWorkflowTab",
       "story_export": "ReleaseWorkflowNormal",
-      "story_id": "pocket-lab-tier-9-ui-screens--release-workflow-normal",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--release-workflow-normal&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--release-workflow-normal",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--release-workflow-normal&viewMode=story",
       "screenshot": "generated/ui-screenshots/release-workflow__release-workflow-normal.png",
       "repository_path": "docs/product/generated/ui-screenshots/release-workflow__release-workflow-normal.png",
-      "sha256": "ac94544c78550ed4ae4596d08fa68e53fb7dffe64b12a862705ed04a0687338b",
+      "sha256": "ef61195bd4a73917e5e6f6f54283341c5c0c3e2f16c60e808b0b74cc7e73c913",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -289,11 +289,11 @@
       "simple_label": "Release",
       "component": "ReleaseWorkflowTab",
       "story_export": "ReleaseWorkflowSimpleMode",
-      "story_id": "pocket-lab-tier-9-ui-screens--release-workflow-simple-mode",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--release-workflow-simple-mode&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--release-workflow-simple-mode",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--release-workflow-simple-mode&viewMode=story",
       "screenshot": "generated/ui-screenshots/release-workflow__release-workflow-simple-mode.png",
       "repository_path": "docs/product/generated/ui-screenshots/release-workflow__release-workflow-simple-mode.png",
-      "sha256": "d44b548630963eb252b3f8acb5302ad100c40addacd64b72c3dc4ada17777562",
+      "sha256": "343017b652d83fd9f74c174b088c16698200e2d24fcbd7ccd4496e0435c1dc39",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -305,11 +305,11 @@
       "simple_label": "Release",
       "component": "ReleaseWorkflowTab",
       "story_export": "ReleaseWorkflowLoading",
-      "story_id": "pocket-lab-tier-9-ui-screens--release-workflow-loading",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--release-workflow-loading&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--release-workflow-loading",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--release-workflow-loading&viewMode=story",
       "screenshot": "generated/ui-screenshots/release-workflow__release-workflow-loading.png",
       "repository_path": "docs/product/generated/ui-screenshots/release-workflow__release-workflow-loading.png",
-      "sha256": "f94cabcec1c54716783658ae11c5f1cb8a7f3abeb87ba410b9253da9b5b1b927",
+      "sha256": "5172bd4f5039951341b6ccdbf0435a33610e8369794e02cc9207ddd8a7df0b1c",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -321,11 +321,11 @@
       "simple_label": "Release",
       "component": "ReleaseWorkflowTab",
       "story_export": "ReleaseWorkflowError",
-      "story_id": "pocket-lab-tier-9-ui-screens--release-workflow-error",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--release-workflow-error&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--release-workflow-error",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--release-workflow-error&viewMode=story",
       "screenshot": "generated/ui-screenshots/release-workflow__release-workflow-error.png",
       "repository_path": "docs/product/generated/ui-screenshots/release-workflow__release-workflow-error.png",
-      "sha256": "852922a831453bf1603e39824a2b3bae372af8649bce7d4cb56a2559a42f4120",
+      "sha256": "9b04c11d9857ae6652ad2f37375d642ab0161a63d416faadb767665082ce7be3",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -337,11 +337,11 @@
       "simple_label": "Health & Issues",
       "component": "DriftCenterTab",
       "story_export": "DriftCenterNormal",
-      "story_id": "pocket-lab-tier-9-ui-screens--drift-center-normal",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--drift-center-normal&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--drift-center-normal",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--drift-center-normal&viewMode=story",
       "screenshot": "generated/ui-screenshots/drift-center__drift-center-normal.png",
       "repository_path": "docs/product/generated/ui-screenshots/drift-center__drift-center-normal.png",
-      "sha256": "47040df6fd006228ac83d81884a8b0e62c634e7b0d5f5756425aa1cbe06ddb05",
+      "sha256": "6205e58f8c9973abb24dd09cc480af5ebbb01c57325b6a56f1edb02ae010e2d9",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -353,11 +353,11 @@
       "simple_label": "Health & Issues",
       "component": "DriftCenterTab",
       "story_export": "DriftCenterSimpleMode",
-      "story_id": "pocket-lab-tier-9-ui-screens--drift-center-simple-mode",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--drift-center-simple-mode&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--drift-center-simple-mode",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--drift-center-simple-mode&viewMode=story",
       "screenshot": "generated/ui-screenshots/drift-center__drift-center-simple-mode.png",
       "repository_path": "docs/product/generated/ui-screenshots/drift-center__drift-center-simple-mode.png",
-      "sha256": "e68d1b7b07a07600f4f3de462a9ffd52db88c92f57a2443fa0bada342cfdc8bb",
+      "sha256": "f9258dd0e74be7fa69e261f0ab2d69b79d68d8c86bae6b7eb7116ca322a51717",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -369,11 +369,11 @@
       "simple_label": "Health & Issues",
       "component": "DriftCenterTab",
       "story_export": "DriftCenterPermissionRequired",
-      "story_id": "pocket-lab-tier-9-ui-screens--drift-center-permission-required",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--drift-center-permission-required&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--drift-center-permission-required",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--drift-center-permission-required&viewMode=story",
       "screenshot": "generated/ui-screenshots/drift-center__drift-center-permission-required.png",
       "repository_path": "docs/product/generated/ui-screenshots/drift-center__drift-center-permission-required.png",
-      "sha256": "3f831016dc637d8d6e05f8dd281d5537047f418fe88c0e478944f6d541d52261",
+      "sha256": "8ffdeca0b3f605d21c4ee20e08a1812ad636f8e9674a8975c32d8ca1be5454f2",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -385,11 +385,11 @@
       "simple_label": "Health & Issues",
       "component": "DriftCenterTab",
       "story_export": "DriftCenterFailedOperation",
-      "story_id": "pocket-lab-tier-9-ui-screens--drift-center-failed-operation",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--drift-center-failed-operation&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--drift-center-failed-operation",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--drift-center-failed-operation&viewMode=story",
       "screenshot": "generated/ui-screenshots/drift-center__drift-center-failed-operation.png",
       "repository_path": "docs/product/generated/ui-screenshots/drift-center__drift-center-failed-operation.png",
-      "sha256": "fa0c2b540cf58ccbeba5321e1283f08d7cb28cad370834f0535644baabec699a",
+      "sha256": "f88c1ed13c2692a67daa55eb87289b74310900327ac6f064cb201ef79d28a2cb",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -401,11 +401,11 @@
       "simple_label": "Safety Center",
       "component": "SecurityPostureTab",
       "story_export": "SecurityPostureSimple",
-      "story_id": "pocket-lab-tier-9-ui-screens--security-posture-simple",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--security-posture-simple&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--security-posture-simple",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--security-posture-simple&viewMode=story",
       "screenshot": "generated/ui-screenshots/security-posture__security-posture-simple.png",
       "repository_path": "docs/product/generated/ui-screenshots/security-posture__security-posture-simple.png",
-      "sha256": "a481c41a08d313bb312933bb2d939ddf8e1a544dc1ac3f4cd8687dd6a832cec2",
+      "sha256": "307b312fecb6f50a4f18f6037bdc999ed8a53e688254fbce12658a4c6d986758",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -417,11 +417,11 @@
       "simple_label": "System Status",
       "component": "NocTelemetryTab",
       "story_export": "NocTelemetryDegraded",
-      "story_id": "pocket-lab-tier-9-ui-screens--noc-telemetry-degraded",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--noc-telemetry-degraded&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--noc-telemetry-degraded",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--noc-telemetry-degraded&viewMode=story",
       "screenshot": "generated/ui-screenshots/noc-telemetry__noc-telemetry-degraded.png",
       "repository_path": "docs/product/generated/ui-screenshots/noc-telemetry__noc-telemetry-degraded.png",
-      "sha256": "72602a22311469772ad1e9a2032f47f0108d608a991a3ea716058314cee92ba6",
+      "sha256": "1a89d73e21cde1345bfd589c8124c2936f020b4d513f6e9b25e56b2717f0a40b",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -433,11 +433,11 @@
       "simple_label": "Backups",
       "component": "DisasterRecoveryTab",
       "story_export": "DisasterRecoveryNormal",
-      "story_id": "pocket-lab-tier-9-ui-screens--disaster-recovery-normal",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--disaster-recovery-normal&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--disaster-recovery-normal",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--disaster-recovery-normal&viewMode=story",
       "screenshot": "generated/ui-screenshots/disaster-recovery__disaster-recovery-normal.png",
       "repository_path": "docs/product/generated/ui-screenshots/disaster-recovery__disaster-recovery-normal.png",
-      "sha256": "ed1e645f52dbf5ab835893bc70287931b01ed0fadec168470da7d66e0f69ed8e",
+      "sha256": "e3f2edd760a6a6b8eec0849246484e0bf6dbd090d269d5ddb3b308aa1be83ad1",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -449,11 +449,11 @@
       "simple_label": "Enterprise policy guardrails",
       "component": "PolicyGuardrailsTab",
       "story_export": "PolicyGuardrailsNormal",
-      "story_id": "pocket-lab-tier-9-ui-screens--policy-guardrails-normal",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--policy-guardrails-normal&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--policy-guardrails-normal",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--policy-guardrails-normal&viewMode=story",
       "screenshot": "generated/ui-screenshots/policy-guardrails__policy-guardrails-normal.png",
       "repository_path": "docs/product/generated/ui-screenshots/policy-guardrails__policy-guardrails-normal.png",
-      "sha256": "519eaca69551a8ade466bc8ea41937b409dd09ce23d09a48dab58ec6e1fe0859",
+      "sha256": "9af076288253f1ffc0c5e8ae1fd3a82e41ee5a100eb2f8f664409110170c4088",
       "viewport": {
         "width": 1365,
         "height": 900
@@ -465,11 +465,11 @@
       "simple_label": "Settings / Enterprise Governance",
       "component": "SettingsTab",
       "story_export": "SettingsEnterpriseGovernance",
-      "story_id": "pocket-lab-tier-9-ui-screens--settings-enterprise-governance",
-      "story_url": "iframe.html?id=pocket-lab-tier-9-ui-screens--settings-enterprise-governance&viewMode=story",
+      "story_id": "pocket-lab-ui-evidence-screens--settings-enterprise-governance",
+      "story_url": "iframe.html?id=pocket-lab-ui-evidence-screens--settings-enterprise-governance&viewMode=story",
       "screenshot": "generated/ui-screenshots/settings-governance__settings-enterprise-governance.png",
       "repository_path": "docs/product/generated/ui-screenshots/settings-governance__settings-enterprise-governance.png",
-      "sha256": "c1b0992e93187045cd1b17fed7007c70a70bfa689451ff4ff7cc8420e02bc355",
+      "sha256": "977d811f806783f346676f45a6e94fadf8ec92c330feea41e5e4220c37103ab1",
       "viewport": {
         "width": 1365,
         "height": 900

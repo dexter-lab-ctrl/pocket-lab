@@ -1981,3 +1981,75 @@ textarea {
     transform: none !important;
   }
 }
+
+/* Mobile/compact mode switch alignment polish */
+.mode-switcher {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+.mode-switcher-compact {
+  width: min(100%, 22rem);
+  justify-content: center;
+}
+
+.mode-switcher-group {
+  min-width: 0;
+}
+
+.mode-chip {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .mode-switcher {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .mode-switcher-compact,
+  .mode-switcher:not(.mode-switcher-compact) {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    justify-items: stretch;
+  }
+
+  .mode-switcher-group {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: center;
+    justify-content: stretch;
+  }
+
+  .mode-switcher-group svg {
+    display: none;
+  }
+
+  .mode-chip {
+    width: 100%;
+    padding-inline: 0.5rem;
+    text-align: center;
+    letter-spacing: 0.055em;
+  }
+}
+
+@media (min-width: 641px) {
+  .mode-switcher-compact {
+    width: auto;
+  }
+}
+
+/* Mobile More sheet reachability and safe-area polish */
+.mobile-more-sheet {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+
+.mobile-more-sheet .mobile-more-group:last-child {
+  margin-bottom: 0.5rem;
+}
