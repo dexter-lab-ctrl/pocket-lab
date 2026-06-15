@@ -1,0 +1,129 @@
+{
+  "evidence": {
+    "accessibility": {
+      "command": "task test:a11y",
+      "command_results": [
+        {
+          "command": [
+            "task",
+            "test:a11y"
+          ],
+          "exit_code": 0,
+          "finished_at": "2026-06-12T13:42:47Z",
+          "name": "playwright-a11y",
+          "path": ".pocketlab-dev/validation/command-results/playwright-a11y.json",
+          "started_at": "2026-06-12T13:42:40Z",
+          "status": "present"
+        },
+        {
+          "name": "a11y",
+          "path": ".pocketlab-dev/validation/command-results/a11y.json",
+          "status": "missing"
+        },
+        {
+          "name": "test-a11y",
+          "path": ".pocketlab-dev/validation/command-results/test-a11y.json",
+          "status": "missing"
+        }
+      ],
+      "status": "tracked"
+    },
+    "freshness": {
+      "checks": [
+        "source_fingerprint matches current UI metadata, Storybook stories, screenshot manifest, and generated UI docs",
+        "screenshot count matches Tier 9 story export count",
+        "generated MkDocs page references every screenshot evidence item",
+        "screenshot file SHA-256 values match the manifest"
+      ],
+      "status": "tracked"
+    },
+    "release": {
+      "command_results": [
+        {
+          "command": [
+            "timeout",
+            "--kill-after=30s",
+            "900s",
+            "task",
+            "release:dry-run"
+          ],
+          "exit_code": 0,
+          "finished_at": "2026-06-12T14:35:18Z",
+          "name": "release-dry-run",
+          "path": ".pocketlab-dev/validation/command-results/release-dry-run.json",
+          "started_at": "2026-06-12T14:32:29Z",
+          "status": "present"
+        },
+        {
+          "name": "npm-build",
+          "path": ".pocketlab-dev/validation/command-results/npm-build.json",
+          "status": "missing"
+        },
+        {
+          "name": "storybook-build",
+          "path": ".pocketlab-dev/validation/command-results/storybook-build.json",
+          "status": "missing"
+        },
+        {
+          "name": "mkdocs-build",
+          "path": ".pocketlab-dev/validation/command-results/mkdocs-build.json",
+          "status": "missing"
+        }
+      ],
+      "commands": [
+        "task storybook:build",
+        "npm run build",
+        "mkdocs build --strict",
+        "task docs:ui:evidence:check"
+      ],
+      "status": "tracked"
+    },
+    "visual": {
+      "command": "task test:visual",
+      "command_results": [
+        {
+          "command": [
+            "task",
+            "test:visual"
+          ],
+          "exit_code": 0,
+          "finished_at": "2026-06-12T13:42:40Z",
+          "name": "playwright-visual",
+          "path": ".pocketlab-dev/validation/command-results/playwright-visual.json",
+          "started_at": "2026-06-12T13:42:32Z",
+          "status": "present"
+        },
+        {
+          "name": "visual",
+          "path": ".pocketlab-dev/validation/command-results/visual.json",
+          "status": "missing"
+        },
+        {
+          "name": "test-visual",
+          "path": ".pocketlab-dev/validation/command-results/test-visual.json",
+          "status": "missing"
+        }
+      ],
+      "status": "tracked"
+    }
+  },
+  "generated_at_utc": "2026-06-13T12:28:35Z",
+  "generated_files": [
+    "docs/validation/generated/ui-evidence-manifest.json",
+    "docs/validation/generated/ui-evidence.md"
+  ],
+  "generated_ui_doc_sha256": "dca6930c869fab74d7f4de08511fbfb37217bf2d6330c4dab55d6f99df6deca1",
+  "mkdocs_image_link_count": 29,
+  "screen_count": 11,
+  "screenshot_count": 29,
+  "screenshot_manifest_sha256": "af7160913926f4ad1fe32c7dee52ac0221909e0f0e3453a82807e1559d1e777e",
+  "source_files": [
+    "src/stories/tier9UiScreens.json",
+    "src/stories/PocketLabTabs.stories.jsx",
+    "docs/product/generated/ui-screenshot-manifest.json",
+    "docs/product/generated/ui-screen-reference.generated.md"
+  ],
+  "source_fingerprint": "1db7d408c9e396f602463762a3030433bbf63eba69d41a20129305dbbbcfdb72",
+  "story_export_count": 29,
+  "tier": "Tier 9B \u2014 UI Evidence Freshness, Visual, Accessibility, and Release Evidence"
+}

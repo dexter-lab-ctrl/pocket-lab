@@ -13,6 +13,7 @@
     - "{{ observability_base_dir }}/prometheus"
     - "{{ observability_base_dir }}/loki"
     - "{{ observability_base_dir }}/promtail"
+    - "{{ observability_base_dir }}/gatus"
 
 - name: observability | render Loki config
   ansible.builtin.template:
@@ -24,6 +25,12 @@
   ansible.builtin.template:
     src: promtail-config.yaml.j2
     dest: "{{ observability_base_dir }}/promtail/config.yaml"
+    mode: '0640'
+
+- name: observability | render Gatus config
+  ansible.builtin.template:
+    src: gatus-config.yaml.j2
+    dest: "{{ observability_base_dir }}/gatus/config.yaml"
     mode: '0640'
 
 - name: observability | render Prometheus config
@@ -40,10 +47,14 @@
 
 - name: observability | orchestrate services via PM2 Bridge
   ansible.builtin.shell: |
+    if ! pm2 describe gatus >/dev/null 2>&1; then
+      pm2 start bash --name "gatus" -- -c "GATUS_CONFIG_PATH={{ observability_base_dir }}/gatus/config.yaml gatus"
+    fi
+
     if ! pm2 describe loki >/dev/null 2>&1; then
       pm2 start bash --name "loki" -- -c "proot-distro login {{ observability_ubuntu_name }} -- loki -config.file={{ observability_base_dir }}/loki/config.yaml"
     fi
-    
+
     if ! pm2 describe promtail >/dev/null 2>&1; then
       pm2 start bash --name "promtail" -- -c "proot-distro login {{ observability_ubuntu_name }} -- promtail -config.file={{ observability_base_dir }}/promtail/config.yaml"
     fi
@@ -56,6 +67,6 @@
       # [THE FIX]: Executing via bash -c to change into the /opt/grafana installation directory before launching
       pm2 start bash --name "grafana" -- -c "proot-distro login {{ observability_ubuntu_name }} -- bash -c 'cd /opt/grafana && ./bin/grafana-server --homepath=/opt/grafana --config={{ observability_base_dir }}/grafana/custom.ini'"
     fi
-    
+
     pm2 save
   changed_when: false

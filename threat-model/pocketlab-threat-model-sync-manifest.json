@@ -1,0 +1,4525 @@
+{
+  "apiVersion": "pocketlab.io/v1alpha1",
+  "kind": "ThreatModelSourceSyncManifest",
+  "metadata": {
+    "name": "pocketlab-threat-model-source-sync",
+    "tier": "6.9A",
+    "generatedAt": "2026-06-13T23:15:29.957182+00:00",
+    "description": "Synchronizes threat-model evidence from Structurizr, OpenAPI, AsyncAPI, Typed Operations, and operation metadata."
+  },
+  "source_fingerprint": "3145a6785d9b330ad02fb689e0dbb9d924890c7a634b7312e3afec887435d0a1",
+  "sources": {
+    "structurizr": {
+      "path": "architecture/structurizr/workspace.dsl",
+      "views": [
+        "Android",
+        "Developer",
+        "audit-and-dlq-paths",
+        "container-view",
+        "domain-services",
+        "event-driven-runtime",
+        "nats-command-event-boundaries",
+        "security-review",
+        "system-context",
+        "typed-operation-flow"
+      ],
+      "tier5b_views_present": {
+        "security-review": true,
+        "nats-command-event-boundaries": true,
+        "audit-and-dlq-paths": true
+      },
+      "elements": [
+        {
+          "id": "user",
+          "type": "person",
+          "name": "Operator / Home Lab Admin"
+        },
+        {
+          "id": "github",
+          "type": "softwareSystem",
+          "name": "GitHub Repository"
+        },
+        {
+          "id": "tailscale",
+          "type": "softwareSystem",
+          "name": "Tailscale / Mesh Network"
+        },
+        {
+          "id": "vaultExternal",
+          "type": "softwareSystem",
+          "name": "Vault / OpenBao Runtime"
+        },
+        {
+          "id": "opaExternal",
+          "type": "softwareSystem",
+          "name": "OPA Runtime"
+        },
+        {
+          "id": "gatusExternal",
+          "type": "softwareSystem",
+          "name": "Gatus Health Engine"
+        },
+        {
+          "id": "backupStore",
+          "type": "softwareSystem",
+          "name": "Backup Storage"
+        },
+        {
+          "id": "pocketlab",
+          "type": "softwareSystem",
+          "name": "Pocket Lab"
+        },
+        {
+          "id": "pwa",
+          "type": "container",
+          "name": "React / Vite PWA"
+        },
+        {
+          "id": "api",
+          "type": "container",
+          "name": "FastAPI Control API"
+        },
+        {
+          "id": "nats",
+          "type": "container",
+          "name": "NATS / JetStream"
+        },
+        {
+          "id": "worker",
+          "type": "container",
+          "name": "Pocket Lab Worker"
+        },
+        {
+          "id": "eventStore",
+          "type": "container",
+          "name": "Event Journal / Workflow Store"
+        },
+        {
+          "id": "auditTrail",
+          "type": "container",
+          "name": "Audit Trail / Evidence Store"
+        },
+        {
+          "id": "dlqSubjects",
+          "type": "container",
+          "name": "DLQ / Retry Subjects"
+        },
+        {
+          "id": "operationRegistry",
+          "type": "container",
+          "name": "Typed Operations Catalog"
+        },
+        {
+          "id": "docsPortal",
+          "type": "container",
+          "name": "MkDocs Documentation Portal"
+        },
+        {
+          "id": "gitops",
+          "type": "container",
+          "name": "GitOps / Source Adapter"
+        },
+        {
+          "id": "blueprint",
+          "type": "container",
+          "name": "Blueprint / App Catalog Engine"
+        },
+        {
+          "id": "drift",
+          "type": "container",
+          "name": "Drift Engine"
+        },
+        {
+          "id": "fleet",
+          "type": "container",
+          "name": "Fleet Agent Control"
+        },
+        {
+          "id": "vault",
+          "type": "container",
+          "name": "Identity Vault Adapter"
+        },
+        {
+          "id": "security",
+          "type": "container",
+          "name": "Security / Policy Guardrails"
+        },
+        {
+          "id": "telemetry",
+          "type": "container",
+          "name": "NOC Telemetry Adapter"
+        },
+        {
+          "id": "release",
+          "type": "container",
+          "name": "Release Workflow Orchestrator"
+        },
+        {
+          "id": "backup",
+          "type": "container",
+          "name": "Backup / Disaster Recovery Engine"
+        }
+      ],
+      "relationships": [
+        {
+          "source": "user",
+          "target": "pwa",
+          "description": "Uses"
+        },
+        {
+          "source": "pwa",
+          "target": "api",
+          "description": "Calls REST API and WebSocket event stream"
+        },
+        {
+          "source": "api",
+          "target": "pwa",
+          "description": "Streams operation events and live status updates"
+        },
+        {
+          "source": "api",
+          "target": "nats",
+          "description": "Publishes typed commands and events"
+        },
+        {
+          "source": "worker",
+          "target": "nats",
+          "description": "Consumes commands and publishes events/audit/DLQ"
+        },
+        {
+          "source": "nats",
+          "target": "worker",
+          "description": "Delivers durable commands to the worker"
+        },
+        {
+          "source": "worker",
+          "target": "eventStore",
+          "description": "Records operation lifecycle and workflow state"
+        },
+        {
+          "source": "worker",
+          "target": "auditTrail",
+          "description": "Writes auditable operation, policy, vault, release, and recovery evidence"
+        },
+        {
+          "source": "nats",
+          "target": "dlqSubjects",
+          "description": "Routes retry-exhausted messages to dead-letter subjects"
+        },
+        {
+          "source": "dlqSubjects",
+          "target": "auditTrail",
+          "description": "Preserves failed command/event evidence for audit and recovery"
+        },
+        {
+          "source": "api",
+          "target": "eventStore",
+          "description": "Reads operation status, events, and workflow state"
+        },
+        {
+          "source": "api",
+          "target": "auditTrail",
+          "description": "Reads audit evidence for reviews and operator status"
+        },
+        {
+          "source": "pwa",
+          "target": "docsPortal",
+          "description": "Reads generated documentation"
+        },
+        {
+          "source": "docsPortal",
+          "target": "operationRegistry",
+          "description": "Documents typed operations"
+        },
+        {
+          "source": "docsPortal",
+          "target": "api",
+          "description": "Documents OpenAPI contract"
+        },
+        {
+          "source": "docsPortal",
+          "target": "nats",
+          "description": "Documents AsyncAPI event contract"
+        },
+        {
+          "source": "api",
+          "target": "operationRegistry",
+          "description": "Validates typed operation metadata"
+        },
+        {
+          "source": "api",
+          "target": "release",
+          "description": "Starts release check/apply"
+        },
+        {
+          "source": "api",
+          "target": "drift",
+          "description": "Starts drift workflows"
+        },
+        {
+          "source": "api",
+          "target": "fleet",
+          "description": "Starts fleet onboarding"
+        },
+        {
+          "source": "api",
+          "target": "vault",
+          "description": "Starts secret operations"
+        },
+        {
+          "source": "api",
+          "target": "security",
+          "description": "Starts security operations"
+        },
+        {
+          "source": "api",
+          "target": "telemetry",
+          "description": "Reads telemetry and live status"
+        },
+        {
+          "source": "api",
+          "target": "blueprint",
+          "description": "Refreshes catalog and starts deploy workflows"
+        },
+        {
+          "source": "api",
+          "target": "backup",
+          "description": "Starts backup/verify/restore workflows"
+        },
+        {
+          "source": "worker",
+          "target": "release",
+          "description": "Executes release workflow stages"
+        },
+        {
+          "source": "worker",
+          "target": "drift",
+          "description": "Executes drift domain commands"
+        },
+        {
+          "source": "worker",
+          "target": "fleet",
+          "description": "Executes fleet domain commands"
+        },
+        {
+          "source": "worker",
+          "target": "vault",
+          "description": "Executes secret rotation/dynamic lease commands"
+        },
+        {
+          "source": "worker",
+          "target": "security",
+          "description": "Executes security scans and OPA configuration"
+        },
+        {
+          "source": "worker",
+          "target": "dlqSubjects",
+          "description": "Publishes failure outcomes when commands cannot be recovered"
+        },
+        {
+          "source": "worker",
+          "target": "blueprint",
+          "description": "Executes catalog refresh and blueprint deployment"
+        },
+        {
+          "source": "worker",
+          "target": "backup",
+          "description": "Executes backup and restore workflows"
+        },
+        {
+          "source": "worker",
+          "target": "telemetry",
+          "description": "Publishes health and telemetry events"
+        },
+        {
+          "source": "gitops",
+          "target": "github",
+          "description": "Reads desired state and release source"
+        },
+        {
+          "source": "release",
+          "target": "github",
+          "description": "Checks and applies releases"
+        },
+        {
+          "source": "fleet",
+          "target": "tailscale",
+          "description": "Uses mesh connectivity and join material"
+        },
+        {
+          "source": "vault",
+          "target": "vaultExternal",
+          "description": "Rotates and reads dynamic secrets"
+        },
+        {
+          "source": "security",
+          "target": "opaExternal",
+          "description": "Evaluates and updates policy guardrails"
+        },
+        {
+          "source": "api",
+          "target": "opaExternal",
+          "description": "Requests policy decisions before sensitive control-plane actions"
+        },
+        {
+          "source": "api",
+          "target": "vaultExternal",
+          "description": "Coordinates secret operations through the vault adapter"
+        },
+        {
+          "source": "worker",
+          "target": "vaultExternal",
+          "description": "Uses secret leases during execution when required"
+        },
+        {
+          "source": "telemetry",
+          "target": "gatusExternal",
+          "description": "Reads health status"
+        },
+        {
+          "source": "backup",
+          "target": "backupStore",
+          "description": "Writes and restores backups"
+        },
+        {
+          "source": "user",
+          "target": "pwa",
+          "description": "Clicks Install / Update / Rotate Secret / Run Scan"
+        },
+        {
+          "source": "pwa",
+          "target": "api",
+          "description": "POST typed operation"
+        },
+        {
+          "source": "api",
+          "target": "operationRegistry",
+          "description": "Validate operation metadata"
+        },
+        {
+          "source": "api",
+          "target": "nats",
+          "description": "Publish command"
+        },
+        {
+          "source": "nats",
+          "target": "worker",
+          "description": "Deliver command"
+        },
+        {
+          "source": "worker",
+          "target": "eventStore",
+          "description": "Record operation.created / worker_claimed"
+        },
+        {
+          "source": "worker",
+          "target": "nats",
+          "description": "Emit operation logs/events"
+        },
+        {
+          "source": "api",
+          "target": "pwa",
+          "description": "Stream events via API/WebSocket"
+        },
+        {
+          "source": "worker",
+          "target": "eventStore",
+          "description": "Record succeeded/failed/DLQ state"
+        }
+      ],
+      "digest": {
+        "path": "architecture/structurizr/workspace.dsl",
+        "sha256": "80659057feb60cff51f7afcd2b0fe61c4994b99b8377abed011ff2d082d46a9a",
+        "bytes": 13185
+      }
+    },
+    "openapi": {
+      "path": "contracts/generated/openapi.json",
+      "title": "Pocket Lab FastAPI/NATS Control API",
+      "version": "2.3.0-phase12",
+      "endpoint_count": 80,
+      "mutating_endpoint_count": 23,
+      "endpoints": [
+        {
+          "key": "GET /api",
+          "method": "GET",
+          "path": "/api",
+          "operationId": "api_index_api_get",
+          "summary": "Api Index",
+          "tags": [],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/catalog.json",
+          "method": "GET",
+          "path": "/api/catalog.json",
+          "operationId": "catalog_api_catalog_json_get",
+          "summary": "Catalog",
+          "tags": [
+            "catalog"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/catalog/refresh",
+          "method": "GET",
+          "path": "/api/catalog/refresh",
+          "operationId": "catalog_refresh_get_api_catalog_refresh_get",
+          "summary": "Catalog Refresh Get",
+          "tags": [
+            "catalog"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "POST /api/catalog/refresh",
+          "method": "POST",
+          "path": "/api/catalog/refresh",
+          "operationId": "catalog_refresh_api_catalog_refresh_post",
+          "summary": "Catalog Refresh",
+          "tags": [
+            "catalog"
+          ],
+          "mutating": true,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/config/tailscale.json",
+          "method": "GET",
+          "path": "/api/config/tailscale.json",
+          "operationId": "tailscale_config_api_config_tailscale_json_get",
+          "summary": "Tailscale Config",
+          "tags": [
+            "fleet"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/drift/jobs",
+          "method": "GET",
+          "path": "/api/drift/jobs",
+          "operationId": "drift_jobs_api_drift_jobs_get",
+          "summary": "Drift Jobs",
+          "tags": [
+            "drift"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/drift/jobs/{job_id}",
+          "method": "GET",
+          "path": "/api/drift/jobs/{job_id}",
+          "operationId": "drift_job_api_drift_jobs__job_id__get",
+          "summary": "Drift Job",
+          "tags": [
+            "drift"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/drift/jobs/{job_id}/diff",
+          "method": "GET",
+          "path": "/api/drift/jobs/{job_id}/diff",
+          "operationId": "drift_job_diff_api_drift_jobs__job_id__diff_get",
+          "summary": "Drift Job Diff",
+          "tags": [
+            "drift"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/drift/metrics",
+          "method": "GET",
+          "path": "/api/drift/metrics",
+          "operationId": "drift_metrics_api_drift_metrics_get",
+          "summary": "Drift Metrics",
+          "tags": [
+            "drift"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/drift/summary",
+          "method": "GET",
+          "path": "/api/drift/summary",
+          "operationId": "drift_summary_api_drift_summary_get",
+          "summary": "Drift Summary",
+          "tags": [
+            "drift"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "POST /api/drift/{action}",
+          "method": "POST",
+          "path": "/api/drift/{action}",
+          "operationId": "drift_action_api_drift__action__post",
+          "summary": "Drift Action",
+          "tags": [
+            "drift"
+          ],
+          "mutating": true,
+          "security_defined": false
+        },
+        {
+          "key": "POST /api/events/publish",
+          "method": "POST",
+          "path": "/api/events/publish",
+          "operationId": "publish_event_api_events_publish_post",
+          "summary": "Publish Event",
+          "tags": [
+            "events"
+          ],
+          "mutating": true,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/events/recent",
+          "method": "GET",
+          "path": "/api/events/recent",
+          "operationId": "recent_events_api_events_recent_get",
+          "summary": "Recent Events",
+          "tags": [
+            "events"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/events/status",
+          "method": "GET",
+          "path": "/api/events/status",
+          "operationId": "event_bus_status_api_events_status_get",
+          "summary": "Event Bus Status",
+          "tags": [
+            "events"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/fleet.json",
+          "method": "GET",
+          "path": "/api/fleet.json",
+          "operationId": "fleet_api_fleet_json_get",
+          "summary": "Fleet",
+          "tags": [
+            "fleet"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/fleet/agent/bootstrap",
+          "method": "GET",
+          "path": "/api/fleet/agent/bootstrap",
+          "operationId": "fleet_agent_bootstrap_api_fleet_agent_bootstrap_get",
+          "summary": "Fleet Agent Bootstrap",
+          "tags": [
+            "fleet"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/fleet/agents",
+          "method": "GET",
+          "path": "/api/fleet/agents",
+          "operationId": "fleet_agents_api_fleet_agents_get",
+          "summary": "Fleet Agents",
+          "tags": [
+            "fleet"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "POST /api/fleet/agents/broadcast",
+          "method": "POST",
+          "path": "/api/fleet/agents/broadcast",
+          "operationId": "broadcast_fleet_agent_command_api_fleet_agents_broadcast_post",
+          "summary": "Broadcast Fleet Agent Command",
+          "tags": [
+            "fleet"
+          ],
+          "mutating": true,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/fleet/agents/{node_id}",
+          "method": "GET",
+          "path": "/api/fleet/agents/{node_id}",
+          "operationId": "fleet_agent_api_fleet_agents__node_id__get",
+          "summary": "Fleet Agent",
+          "tags": [
+            "fleet"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/fleet/agents/{node_id}/commands",
+          "method": "GET",
+          "path": "/api/fleet/agents/{node_id}/commands",
+          "operationId": "fleet_agent_commands_api_fleet_agents__node_id__commands_get",
+          "summary": "Fleet Agent Commands",
+          "tags": [
+            "fleet"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "POST /api/fleet/agents/{node_id}/commands",
+          "method": "POST",
+          "path": "/api/fleet/agents/{node_id}/commands",
+          "operationId": "send_fleet_agent_command_api_fleet_agents__node_id__commands_post",
+          "summary": "Send Fleet Agent Command",
+          "tags": [
+            "fleet"
+          ],
+          "mutating": true,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/fleet/health.json",
+          "method": "GET",
+          "path": "/api/fleet/health.json",
+          "operationId": "fleet_health_api_fleet_health_json_get",
+          "summary": "Fleet Health",
+          "tags": [
+            "fleet"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "POST /api/fleet/join",
+          "method": "POST",
+          "path": "/api/fleet/join",
+          "operationId": "create_fleet_join_api_fleet_join_post",
+          "summary": "Create Fleet Join",
+          "tags": [
+            "fleet"
+          ],
+          "mutating": true,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/fleet/nodes/{node_id}/health",
+          "method": "GET",
+          "path": "/api/fleet/nodes/{node_id}/health",
+          "operationId": "fleet_node_health_api_fleet_nodes__node_id__health_get",
+          "summary": "Fleet Node Health",
+          "tags": [
+            "fleet"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/git_history.json",
+          "method": "GET",
+          "path": "/api/git_history.json",
+          "operationId": "git_history_api_git_history_json_get",
+          "summary": "Git History",
+          "tags": [
+            "gitops"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/gitops/health.json",
+          "method": "GET",
+          "path": "/api/gitops/health.json",
+          "operationId": "gitops_health_api_gitops_health_json_get",
+          "summary": "Gitops Health",
+          "tags": [
+            "gitops"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/health-engine.json",
+          "method": "GET",
+          "path": "/api/health-engine.json",
+          "operationId": "health_engine_api_health_engine_json_get",
+          "summary": "Health Engine",
+          "tags": [
+            "health"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "POST /api/health/check",
+          "method": "POST",
+          "path": "/api/health/check",
+          "operationId": "health_check_api_health_check_post",
+          "summary": "Health Check",
+          "tags": [
+            "health"
+          ],
+          "mutating": true,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/join.sh",
+          "method": "GET",
+          "path": "/api/join.sh",
+          "operationId": "join_script_api_join_sh_get",
+          "summary": "Join Script",
+          "tags": [
+            "fleet"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "POST /api/live-status/restart",
+          "method": "POST",
+          "path": "/api/live-status/restart",
+          "operationId": "live_status_restart_api_live_status_restart_post",
+          "summary": "Live Status Restart",
+          "tags": [
+            "events"
+          ],
+          "mutating": true,
+          "security_defined": false
+        },
+        {
+          "key": "POST /api/live-status/sample",
+          "method": "POST",
+          "path": "/api/live-status/sample",
+          "operationId": "live_status_sample_api_live_status_sample_post",
+          "summary": "Live Status Sample",
+          "tags": [
+            "events"
+          ],
+          "mutating": true,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/live-status/status",
+          "method": "GET",
+          "path": "/api/live-status/status",
+          "operationId": "live_status_api_live_status_status_get",
+          "summary": "Live Status",
+          "tags": [
+            "events"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/nats/status",
+          "method": "GET",
+          "path": "/api/nats/status",
+          "operationId": "event_bus_status_api_nats_status_get",
+          "summary": "Event Bus Status",
+          "tags": [
+            "events"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/opa_evaluations.json",
+          "method": "GET",
+          "path": "/api/opa_evaluations.json",
+          "operationId": "opa_evaluations_api_opa_evaluations_json_get",
+          "summary": "Opa Evaluations",
+          "tags": [
+            "security"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/opa_interceptor.py",
+          "method": "GET",
+          "path": "/api/opa_interceptor.py",
+          "operationId": "opa_interceptor_api_opa_interceptor_py_get",
+          "summary": "Opa Interceptor",
+          "tags": [
+            "security"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/operations",
+          "method": "GET",
+          "path": "/api/operations",
+          "operationId": "operations_api_operations_get",
+          "summary": "Operations",
+          "tags": [
+            "operations"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "POST /api/operations/execute",
+          "method": "POST",
+          "path": "/api/operations/execute",
+          "operationId": "execute_operation_api_operations_execute_post",
+          "summary": "Execute Operation",
+          "tags": [
+            "operations"
+          ],
+          "mutating": true,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/operations/health",
+          "method": "GET",
+          "path": "/api/operations/health",
+          "operationId": "operation_health_api_operations_health_get",
+          "summary": "Operation Health",
+          "tags": [
+            "operations"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "POST /api/operations/preview",
+          "method": "POST",
+          "path": "/api/operations/preview",
+          "operationId": "preview_operation_api_operations_preview_post",
+          "summary": "Preview Operation",
+          "tags": [
+            "operations"
+          ],
+          "mutating": true,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/operations/runs",
+          "method": "GET",
+          "path": "/api/operations/runs",
+          "operationId": "operation_runs_api_operations_runs_get",
+          "summary": "Operation Runs",
+          "tags": [
+            "operations"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/operations/{job_id}",
+          "method": "GET",
+          "path": "/api/operations/{job_id}",
+          "operationId": "operation_job_api_operations__job_id__get",
+          "summary": "Operation Job",
+          "tags": [
+            "operations"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/operations/{job_id}/status",
+          "method": "GET",
+          "path": "/api/operations/{job_id}/status",
+          "operationId": "operation_status_api_operations__job_id__status_get",
+          "summary": "Operation Status",
+          "tags": [
+            "operations"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/pipeline_status.json",
+          "method": "GET",
+          "path": "/api/pipeline_status.json",
+          "operationId": "pipeline_status_api_pipeline_status_json_get",
+          "summary": "Pipeline Status",
+          "tags": [
+            "gitops"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "POST /api/release/self-update/apply",
+          "method": "POST",
+          "path": "/api/release/self-update/apply",
+          "operationId": "release_apply_api_release_self_update_apply_post",
+          "summary": "Release Apply",
+          "tags": [
+            "release"
+          ],
+          "mutating": true,
+          "security_defined": false
+        },
+        {
+          "key": "POST /api/release/self-update/check",
+          "method": "POST",
+          "path": "/api/release/self-update/check",
+          "operationId": "release_check_api_release_self_update_check_post",
+          "summary": "Release Check",
+          "tags": [
+            "release"
+          ],
+          "mutating": true,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/release/self-update/status",
+          "method": "GET",
+          "path": "/api/release/self-update/status",
+          "operationId": "release_status_api_release_self_update_status_get",
+          "summary": "Release Status",
+          "tags": [
+            "release"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/release/workflow",
+          "method": "GET",
+          "path": "/api/release/workflow",
+          "operationId": "release_workflow_api_release_workflow_get",
+          "summary": "Release Workflow",
+          "tags": [
+            "release"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/release/workflow.json",
+          "method": "GET",
+          "path": "/api/release/workflow.json",
+          "operationId": "release_workflow_api_release_workflow_json_get",
+          "summary": "Release Workflow",
+          "tags": [
+            "release"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/reliability/dead-letters",
+          "method": "GET",
+          "path": "/api/reliability/dead-letters",
+          "operationId": "reliability_dead_letters_api_reliability_dead_letters_get",
+          "summary": "Reliability Dead Letters",
+          "tags": [
+            "events"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "POST /api/reliability/dead-letters/{dead_letter_id}/replay",
+          "method": "POST",
+          "path": "/api/reliability/dead-letters/{dead_letter_id}/replay",
+          "operationId": "reliability_replay_dead_letter_api_reliability_dead_letters__dead_letter_id__replay_post",
+          "summary": "Reliability Replay Dead Letter",
+          "tags": [
+            "events"
+          ],
+          "mutating": true,
+          "security_defined": false
+        },
+        {
+          "key": "POST /api/reliability/recover",
+          "method": "POST",
+          "path": "/api/reliability/recover",
+          "operationId": "reliability_recover_api_reliability_recover_post",
+          "summary": "Reliability Recover",
+          "tags": [
+            "events"
+          ],
+          "mutating": true,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/reliability/status",
+          "method": "GET",
+          "path": "/api/reliability/status",
+          "operationId": "reliability_status_api_reliability_status_get",
+          "summary": "Reliability Status",
+          "tags": [
+            "events"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/runbooks",
+          "method": "GET",
+          "path": "/api/runbooks",
+          "operationId": "list_runbooks_api_runbooks_get",
+          "summary": "List Runbooks",
+          "tags": [
+            "runbooks"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/runbooks/executions",
+          "method": "GET",
+          "path": "/api/runbooks/executions",
+          "operationId": "list_runbook_executions_api_runbooks_executions_get",
+          "summary": "List Runbook Executions",
+          "tags": [
+            "runbooks"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/runbooks/executions/{execution_id}",
+          "method": "GET",
+          "path": "/api/runbooks/executions/{execution_id}",
+          "operationId": "get_runbook_execution_api_runbooks_executions__execution_id__get",
+          "summary": "Get Runbook Execution",
+          "tags": [
+            "runbooks"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "POST /api/runbooks/executions/{execution_id}/approve",
+          "method": "POST",
+          "path": "/api/runbooks/executions/{execution_id}/approve",
+          "operationId": "approve_runbook_execution_api_runbooks_executions__execution_id__approve_post",
+          "summary": "Approve Runbook Execution",
+          "tags": [
+            "runbooks"
+          ],
+          "mutating": true,
+          "security_defined": false
+        },
+        {
+          "key": "POST /api/runbooks/executions/{execution_id}/reject",
+          "method": "POST",
+          "path": "/api/runbooks/executions/{execution_id}/reject",
+          "operationId": "reject_runbook_execution_api_runbooks_executions__execution_id__reject_post",
+          "summary": "Reject Runbook Execution",
+          "tags": [
+            "runbooks"
+          ],
+          "mutating": true,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/runbooks/{name}",
+          "method": "GET",
+          "path": "/api/runbooks/{name}",
+          "operationId": "get_runbook_api_runbooks__name__get",
+          "summary": "Get Runbook",
+          "tags": [
+            "runbooks"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "POST /api/runbooks/{name}/execute",
+          "method": "POST",
+          "path": "/api/runbooks/{name}/execute",
+          "operationId": "execute_runbook_api_runbooks__name__execute_post",
+          "summary": "Execute Runbook",
+          "tags": [
+            "runbooks"
+          ],
+          "mutating": true,
+          "security_defined": false
+        },
+        {
+          "key": "POST /api/security/scan",
+          "method": "POST",
+          "path": "/api/security/scan",
+          "operationId": "security_scan_api_security_scan_post",
+          "summary": "Security Scan",
+          "tags": [
+            "security"
+          ],
+          "mutating": true,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/settings/governance",
+          "method": "GET",
+          "path": "/api/settings/governance",
+          "operationId": "get_governance_api_settings_governance_get",
+          "summary": "Get Governance",
+          "tags": [
+            "settings"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "PUT /api/settings/governance",
+          "method": "PUT",
+          "path": "/api/settings/governance",
+          "operationId": "update_governance_api_settings_governance_put",
+          "summary": "Update Governance",
+          "tags": [
+            "settings"
+          ],
+          "mutating": true,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/telemetry",
+          "method": "GET",
+          "path": "/api/telemetry",
+          "operationId": "telemetry_api_telemetry_get",
+          "summary": "Telemetry",
+          "tags": [
+            "telemetry"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/telemetry.json",
+          "method": "GET",
+          "path": "/api/telemetry.json",
+          "operationId": "telemetry_api_telemetry_json_get",
+          "summary": "Telemetry",
+          "tags": [
+            "telemetry"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/telemetry/live/status",
+          "method": "GET",
+          "path": "/api/telemetry/live/status",
+          "operationId": "telemetry_live_status_api_telemetry_live_status_get",
+          "summary": "Telemetry Live Status",
+          "tags": [
+            "telemetry"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/v1/query",
+          "method": "GET",
+          "path": "/api/v1/query",
+          "operationId": "loki_query_api_v1_query_get",
+          "summary": "Loki Query",
+          "tags": [
+            "security"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/workers/status",
+          "method": "GET",
+          "path": "/api/workers/status",
+          "operationId": "worker_status_api_workers_status_get",
+          "summary": "Worker Status",
+          "tags": [
+            "events"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/workflows",
+          "method": "GET",
+          "path": "/api/workflows",
+          "operationId": "list_workflows_api_workflows_get",
+          "summary": "List Workflows",
+          "tags": [
+            "workflows"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/workflows/events",
+          "method": "GET",
+          "path": "/api/workflows/events",
+          "operationId": "workflow_events_api_workflows_events_get",
+          "summary": "Workflow Events",
+          "tags": [
+            "workflows"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "POST /api/workflows/rebuild",
+          "method": "POST",
+          "path": "/api/workflows/rebuild",
+          "operationId": "rebuild_workflows_api_workflows_rebuild_post",
+          "summary": "Rebuild Workflows",
+          "tags": [
+            "workflows"
+          ],
+          "mutating": true,
+          "security_defined": false
+        },
+        {
+          "key": "POST /api/workflows/recover",
+          "method": "POST",
+          "path": "/api/workflows/recover",
+          "operationId": "recover_workflows_api_workflows_recover_post",
+          "summary": "Recover Workflows",
+          "tags": [
+            "workflows"
+          ],
+          "mutating": true,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/workflows/recovery/plan",
+          "method": "GET",
+          "path": "/api/workflows/recovery/plan",
+          "operationId": "workflow_recovery_plan_api_workflows_recovery_plan_get",
+          "summary": "Workflow Recovery Plan",
+          "tags": [
+            "workflows"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/workflows/status",
+          "method": "GET",
+          "path": "/api/workflows/status",
+          "operationId": "workflow_status_api_workflows_status_get",
+          "summary": "Workflow Status",
+          "tags": [
+            "workflows"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/workflows/{workflow_id}",
+          "method": "GET",
+          "path": "/api/workflows/{workflow_id}",
+          "operationId": "get_workflow_api_workflows__workflow_id__get",
+          "summary": "Get Workflow",
+          "tags": [
+            "workflows"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/workflows/{workflow_id}/command",
+          "method": "GET",
+          "path": "/api/workflows/{workflow_id}/command",
+          "operationId": "workflow_command_api_workflows__workflow_id__command_get",
+          "summary": "Workflow Command",
+          "tags": [
+            "workflows"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "POST /api/workflows/{workflow_id}/replay",
+          "method": "POST",
+          "path": "/api/workflows/{workflow_id}/replay",
+          "operationId": "replay_workflow_api_workflows__workflow_id__replay_post",
+          "summary": "Replay Workflow",
+          "tags": [
+            "workflows"
+          ],
+          "mutating": true,
+          "security_defined": false
+        },
+        {
+          "key": "GET /health",
+          "method": "GET",
+          "path": "/health",
+          "operationId": "health_health_get",
+          "summary": "Health",
+          "tags": [
+            "health"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /healthz",
+          "method": "GET",
+          "path": "/healthz",
+          "operationId": "health_healthz_get",
+          "summary": "Health",
+          "tags": [
+            "health"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /loki/api/v1/query",
+          "method": "GET",
+          "path": "/loki/api/v1/query",
+          "operationId": "loki_query_loki_api_v1_query_get",
+          "summary": "Loki Query",
+          "tags": [
+            "security"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /ready",
+          "method": "GET",
+          "path": "/ready",
+          "operationId": "ready_ready_get",
+          "summary": "Ready",
+          "tags": [
+            "health"
+          ],
+          "mutating": false,
+          "security_defined": false
+        }
+      ],
+      "digest": {
+        "path": "contracts/generated/openapi.json",
+        "sha256": "c2aa4119d33c2616e85dbf9fb1ce23a1e24ce4e15d9cb13657bcb0c4681f4357",
+        "bytes": 198396
+      }
+    },
+    "asyncapi": {
+      "path": "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+      "title": "Pocket Lab NATS / JetStream Event Contract",
+      "version": "2.3.0-phase12",
+      "channel_count": 56,
+      "channels": [
+        {
+          "name": "pocketlab.audit.release.applied",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.audit.runbook.approved",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.audit.runbook.executed",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.audit.runbook.rejected",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.audit.security.policy_updated",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.audit.vault.secret_rotated",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.commands.catalog.refresh",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.commands.drift.scan",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.commands.fleet.join",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.commands.health.check",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.commands.operation.execute",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.commands.release.apply",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.commands.release.check",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.commands.runbook.approve",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.commands.runbook.execute",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.commands.runbook.reject",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.commands.security.scan",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.commands.vault.dynamic_secret",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.commands.vault.rotate",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.dlq.original_subject",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.catalog.refreshed",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.command.dead_lettered",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.command.failed",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.command.queued",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.command.retry_scheduled",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.command.succeeded",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.drift.detected",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.fleet.node_heartbeat",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.fleet.node_telemetry",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.health.checked",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.operation.created",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.operation.failed",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.operation.log",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.operation.succeeded",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.operation.worker_claimed",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.release.stage.completed",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.release.workflow.completed",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.release.workflow.started",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.runbook.approval_queued",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.runbook.approval_required",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.runbook.approved",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.runbook.failed",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.runbook.queued",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.runbook.rejected",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.runbook.rejection_queued",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.runbook.resumed",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.runbook.started",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.runbook.step_failed",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.runbook.step_started",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.runbook.step_succeeded",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.runbook.succeeded",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.security.finding",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.telemetry.sampled",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.vault.secret_rotated",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.worker.heartbeat",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        },
+        {
+          "name": "pocketlab.events.workflow.recovery_completed",
+          "actions": [],
+          "description": "",
+          "has_publish": false,
+          "has_subscribe": false
+        }
+      ],
+      "digest": {
+        "path": "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+        "sha256": "80b91f358f774e6e9ba795171a22444075b093c0a1d518f905652298dfcfff72",
+        "bytes": 36658
+      }
+    },
+    "typed_operations": {
+      "path": "contracts/operations/pocketlab-typed-operations.json",
+      "operation_count": 19,
+      "operations": [
+        {
+          "name": "backup_now",
+          "nats_subject": "pocketlab.commands.operation.execute",
+          "api_entrypoints": [
+            "/api/operations/execute"
+          ],
+          "raw_keys": [
+            "api_entrypoints",
+            "backend_owner",
+            "failure_events",
+            "nats_subject",
+            "notes",
+            "operation",
+            "params_shape",
+            "professional_label",
+            "safety",
+            "simple_label",
+            "source_file",
+            "success_events",
+            "summary",
+            "tags",
+            "target_shape",
+            "title",
+            "ui_entrypoints"
+          ]
+        },
+        {
+          "name": "backup_verify",
+          "nats_subject": "pocketlab.commands.operation.execute",
+          "api_entrypoints": [
+            "/api/operations/execute"
+          ],
+          "raw_keys": [
+            "api_entrypoints",
+            "backend_owner",
+            "failure_events",
+            "nats_subject",
+            "notes",
+            "operation",
+            "params_shape",
+            "professional_label",
+            "safety",
+            "simple_label",
+            "source_file",
+            "success_events",
+            "summary",
+            "tags",
+            "target_shape",
+            "title",
+            "ui_entrypoints"
+          ]
+        },
+        {
+          "name": "catalog_refresh",
+          "nats_subject": "pocketlab.commands.catalog.refresh",
+          "api_entrypoints": [
+            "/api/catalog/refresh",
+            "/api/operations/execute"
+          ],
+          "raw_keys": [
+            "api_entrypoints",
+            "backend_owner",
+            "failure_events",
+            "nats_subject",
+            "notes",
+            "operation",
+            "params_shape",
+            "professional_label",
+            "safety",
+            "simple_label",
+            "source_file",
+            "success_events",
+            "summary",
+            "tags",
+            "target_shape",
+            "title",
+            "ui_entrypoints"
+          ]
+        },
+        {
+          "name": "configure_opa",
+          "nats_subject": "pocketlab.commands.security.configure_opa",
+          "api_entrypoints": [
+            "/api/operations/execute"
+          ],
+          "raw_keys": [
+            "api_entrypoints",
+            "backend_owner",
+            "failure_events",
+            "nats_subject",
+            "notes",
+            "operation",
+            "params_shape",
+            "professional_label",
+            "safety",
+            "simple_label",
+            "source_file",
+            "success_events",
+            "summary",
+            "tags",
+            "target_shape",
+            "title",
+            "ui_entrypoints"
+          ]
+        },
+        {
+          "name": "deploy_blueprint",
+          "nats_subject": "pocketlab.commands.operation.execute",
+          "api_entrypoints": [
+            "/api/operations/execute"
+          ],
+          "raw_keys": [
+            "api_entrypoints",
+            "backend_owner",
+            "failure_events",
+            "nats_subject",
+            "notes",
+            "operation",
+            "params_shape",
+            "professional_label",
+            "safety",
+            "simple_label",
+            "source_file",
+            "success_events",
+            "summary",
+            "tags",
+            "target_shape",
+            "title",
+            "ui_entrypoints"
+          ]
+        },
+        {
+          "name": "drift_apply",
+          "nats_subject": "pocketlab.commands.drift.apply",
+          "api_entrypoints": [
+            "/api/operations/execute"
+          ],
+          "raw_keys": [
+            "api_entrypoints",
+            "backend_owner",
+            "failure_events",
+            "nats_subject",
+            "notes",
+            "operation",
+            "params_shape",
+            "professional_label",
+            "safety",
+            "simple_label",
+            "source_file",
+            "success_events",
+            "summary",
+            "tags",
+            "target_shape",
+            "title",
+            "ui_entrypoints"
+          ]
+        },
+        {
+          "name": "drift_approve",
+          "nats_subject": "pocketlab.commands.drift.approve",
+          "api_entrypoints": [
+            "/api/operations/execute"
+          ],
+          "raw_keys": [
+            "api_entrypoints",
+            "backend_owner",
+            "failure_events",
+            "nats_subject",
+            "notes",
+            "operation",
+            "params_shape",
+            "professional_label",
+            "safety",
+            "simple_label",
+            "source_file",
+            "success_events",
+            "summary",
+            "tags",
+            "target_shape",
+            "title",
+            "ui_entrypoints"
+          ]
+        },
+        {
+          "name": "drift_ignore",
+          "nats_subject": "pocketlab.commands.drift.ignore",
+          "api_entrypoints": [
+            "/api/operations/execute"
+          ],
+          "raw_keys": [
+            "api_entrypoints",
+            "backend_owner",
+            "failure_events",
+            "nats_subject",
+            "notes",
+            "operation",
+            "params_shape",
+            "professional_label",
+            "safety",
+            "simple_label",
+            "source_file",
+            "success_events",
+            "summary",
+            "tags",
+            "target_shape",
+            "title",
+            "ui_entrypoints"
+          ]
+        },
+        {
+          "name": "drift_preview",
+          "nats_subject": "pocketlab.commands.drift.preview",
+          "api_entrypoints": [
+            "/api/operations/execute",
+            "/api/operations/preview"
+          ],
+          "raw_keys": [
+            "api_entrypoints",
+            "backend_owner",
+            "failure_events",
+            "nats_subject",
+            "notes",
+            "operation",
+            "params_shape",
+            "professional_label",
+            "safety",
+            "simple_label",
+            "source_file",
+            "success_events",
+            "summary",
+            "tags",
+            "target_shape",
+            "title",
+            "ui_entrypoints"
+          ]
+        },
+        {
+          "name": "drift_scan",
+          "nats_subject": "pocketlab.commands.drift.scan",
+          "api_entrypoints": [
+            "/api/operations/execute"
+          ],
+          "raw_keys": [
+            "api_entrypoints",
+            "backend_owner",
+            "failure_events",
+            "nats_subject",
+            "notes",
+            "operation",
+            "params_shape",
+            "professional_label",
+            "safety",
+            "simple_label",
+            "source_file",
+            "success_events",
+            "summary",
+            "tags",
+            "target_shape",
+            "title",
+            "ui_entrypoints"
+          ]
+        },
+        {
+          "name": "fleet_join",
+          "nats_subject": "pocketlab.commands.fleet.join",
+          "api_entrypoints": [
+            "/api/operations/execute"
+          ],
+          "raw_keys": [
+            "api_entrypoints",
+            "backend_owner",
+            "failure_events",
+            "nats_subject",
+            "notes",
+            "operation",
+            "params_shape",
+            "professional_label",
+            "safety",
+            "simple_label",
+            "source_file",
+            "success_events",
+            "summary",
+            "tags",
+            "target_shape",
+            "title",
+            "ui_entrypoints"
+          ]
+        },
+        {
+          "name": "git_sync",
+          "nats_subject": "pocketlab.commands.operation.execute",
+          "api_entrypoints": [
+            "/api/operations/execute"
+          ],
+          "raw_keys": [
+            "api_entrypoints",
+            "backend_owner",
+            "failure_events",
+            "nats_subject",
+            "notes",
+            "operation",
+            "params_shape",
+            "professional_label",
+            "safety",
+            "simple_label",
+            "source_file",
+            "success_events",
+            "summary",
+            "tags",
+            "target_shape",
+            "title",
+            "ui_entrypoints"
+          ]
+        },
+        {
+          "name": "health_check",
+          "nats_subject": "pocketlab.commands.health.check",
+          "api_entrypoints": [
+            "/api/health/check"
+          ],
+          "raw_keys": [
+            "api_entrypoints",
+            "backend_owner",
+            "failure_events",
+            "nats_subject",
+            "notes",
+            "operation",
+            "params_shape",
+            "professional_label",
+            "safety",
+            "simple_label",
+            "source_file",
+            "success_events",
+            "summary",
+            "tags",
+            "target_shape",
+            "title",
+            "ui_entrypoints"
+          ]
+        },
+        {
+          "name": "release_apply",
+          "nats_subject": "pocketlab.commands.release.apply",
+          "api_entrypoints": [
+            "/api/release/self-update/apply"
+          ],
+          "raw_keys": [
+            "api_entrypoints",
+            "backend_owner",
+            "failure_events",
+            "nats_subject",
+            "notes",
+            "operation",
+            "params_shape",
+            "professional_label",
+            "safety",
+            "simple_label",
+            "source_file",
+            "success_events",
+            "summary",
+            "tags",
+            "target_shape",
+            "title",
+            "ui_entrypoints"
+          ]
+        },
+        {
+          "name": "release_check",
+          "nats_subject": "pocketlab.commands.release.check",
+          "api_entrypoints": [
+            "/api/release/self-update/check"
+          ],
+          "raw_keys": [
+            "api_entrypoints",
+            "backend_owner",
+            "failure_events",
+            "nats_subject",
+            "notes",
+            "operation",
+            "params_shape",
+            "professional_label",
+            "safety",
+            "simple_label",
+            "source_file",
+            "success_events",
+            "summary",
+            "tags",
+            "target_shape",
+            "title",
+            "ui_entrypoints"
+          ]
+        },
+        {
+          "name": "restore_backup",
+          "nats_subject": "pocketlab.commands.operation.execute",
+          "api_entrypoints": [
+            "/api/operations/execute",
+            "/api/operations/preview"
+          ],
+          "raw_keys": [
+            "api_entrypoints",
+            "backend_owner",
+            "failure_events",
+            "nats_subject",
+            "notes",
+            "operation",
+            "params_shape",
+            "professional_label",
+            "safety",
+            "simple_label",
+            "source_file",
+            "success_events",
+            "summary",
+            "tags",
+            "target_shape",
+            "title",
+            "ui_entrypoints"
+          ]
+        },
+        {
+          "name": "rotate_secret",
+          "nats_subject": "pocketlab.commands.vault.rotate",
+          "api_entrypoints": [
+            "/api/operations/execute"
+          ],
+          "raw_keys": [
+            "api_entrypoints",
+            "backend_owner",
+            "failure_events",
+            "nats_subject",
+            "notes",
+            "operation",
+            "params_shape",
+            "professional_label",
+            "safety",
+            "simple_label",
+            "source_file",
+            "success_events",
+            "summary",
+            "tags",
+            "target_shape",
+            "title",
+            "ui_entrypoints"
+          ]
+        },
+        {
+          "name": "secret_read_dynamic",
+          "nats_subject": "pocketlab.commands.vault.dynamic_secret",
+          "api_entrypoints": [
+            "/api/operations/execute"
+          ],
+          "raw_keys": [
+            "api_entrypoints",
+            "backend_owner",
+            "failure_events",
+            "nats_subject",
+            "notes",
+            "operation",
+            "params_shape",
+            "professional_label",
+            "safety",
+            "simple_label",
+            "source_file",
+            "success_events",
+            "summary",
+            "tags",
+            "target_shape",
+            "title",
+            "ui_entrypoints"
+          ]
+        },
+        {
+          "name": "security_scan",
+          "nats_subject": "pocketlab.commands.security.scan",
+          "api_entrypoints": [
+            "/api/security/scan"
+          ],
+          "raw_keys": [
+            "api_entrypoints",
+            "backend_owner",
+            "failure_events",
+            "nats_subject",
+            "notes",
+            "operation",
+            "params_shape",
+            "professional_label",
+            "safety",
+            "simple_label",
+            "source_file",
+            "success_events",
+            "summary",
+            "tags",
+            "target_shape",
+            "title",
+            "ui_entrypoints"
+          ]
+        }
+      ],
+      "digest": {
+        "path": "contracts/operations/pocketlab-typed-operations.json",
+        "sha256": "740abf611e28ab291df95cd70f040e5bfca20e9d3849842774ce8c32aea6ec9d",
+        "bytes": 22222
+      }
+    },
+    "operation_metadata": {
+      "path": "operations",
+      "operation_metadata_count": 19,
+      "operations": [
+        {
+          "name": "backup_now",
+          "path": "operations/backup_now.yaml",
+          "title": "Create Backup",
+          "tags": [
+            "backup",
+            "disaster-recovery",
+            "write"
+          ],
+          "nats_subject": "pocketlab.commands.operation.execute",
+          "api_entrypoints": [
+            "/api/operations/execute"
+          ],
+          "security_fields_present": [
+            "attack_surfaces",
+            "data_classification",
+            "evidence",
+            "mitigations",
+            "residual_risks",
+            "stride",
+            "trust_boundaries"
+          ],
+          "security_fields_missing": [],
+          "data_classification": "recovery",
+          "stride": [
+            "Tampering",
+            "Repudiation",
+            "Denial of Service",
+            "Elevation of Privilege"
+          ],
+          "trust_boundaries": [
+            "browser_to_fastapi",
+            "fastapi_to_nats",
+            "nats_to_worker",
+            "worker_to_state_audit"
+          ],
+          "attack_surfaces": [
+            "api_endpoint",
+            "nats_subject",
+            "worker_handler",
+            "state_store",
+            "event_journal",
+            "dlq_subject"
+          ],
+          "mitigations": [
+            "typed_operation_schema",
+            "openapi_validation",
+            "asyncapi_subject_governance",
+            "operation_audit_events",
+            "event_sourced_workflow_journal",
+            "dlq_review_path",
+            "correlation_ids"
+          ],
+          "residual_risks": [
+            "Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.",
+            "Edge-first deployments remain sensitive to host, storage, and network availability."
+          ],
+          "evidence": [
+            "architecture/structurizr/workspace.dsl",
+            "contracts/generated/openapi.json",
+            "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+            "contracts/operations/pocketlab-typed-operations.json",
+            "operations/backup_now.yaml"
+          ],
+          "digest": {
+            "path": "operations/backup_now.yaml",
+            "sha256": "acc49bf6bbfad8e4b9d757b92163aa42f893e289cdb57ba332920e284c7e549d",
+            "bytes": 1821
+          }
+        },
+        {
+          "name": "backup_verify",
+          "path": "operations/backup_verify.yaml",
+          "title": "Verify Backup",
+          "tags": [
+            "backup",
+            "disaster-recovery",
+            "read"
+          ],
+          "nats_subject": "pocketlab.commands.operation.execute",
+          "api_entrypoints": [
+            "/api/operations/execute"
+          ],
+          "security_fields_present": [
+            "attack_surfaces",
+            "data_classification",
+            "evidence",
+            "mitigations",
+            "residual_risks",
+            "stride",
+            "trust_boundaries"
+          ],
+          "security_fields_missing": [],
+          "data_classification": "recovery",
+          "stride": [
+            "Tampering",
+            "Repudiation",
+            "Denial of Service",
+            "Elevation of Privilege"
+          ],
+          "trust_boundaries": [
+            "browser_to_fastapi",
+            "fastapi_to_nats",
+            "nats_to_worker",
+            "worker_to_state_audit"
+          ],
+          "attack_surfaces": [
+            "api_endpoint",
+            "nats_subject",
+            "worker_handler",
+            "state_store",
+            "event_journal",
+            "dlq_subject"
+          ],
+          "mitigations": [
+            "typed_operation_schema",
+            "openapi_validation",
+            "asyncapi_subject_governance",
+            "operation_audit_events",
+            "event_sourced_workflow_journal",
+            "dlq_review_path",
+            "correlation_ids"
+          ],
+          "residual_risks": [
+            "Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.",
+            "Edge-first deployments remain sensitive to host, storage, and network availability."
+          ],
+          "evidence": [
+            "architecture/structurizr/workspace.dsl",
+            "contracts/generated/openapi.json",
+            "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+            "contracts/operations/pocketlab-typed-operations.json",
+            "operations/backup_verify.yaml"
+          ],
+          "digest": {
+            "path": "operations/backup_verify.yaml",
+            "sha256": "39a033d38487384d4f3a6242449f71b2e5fb87bab4f6f8b16172af5cd7288540",
+            "bytes": 1825
+          }
+        },
+        {
+          "name": "catalog_refresh",
+          "path": "operations/catalog_refresh.yaml",
+          "title": "Refresh App Catalog",
+          "tags": [
+            "catalog",
+            "apps",
+            "safe-write"
+          ],
+          "nats_subject": "pocketlab.commands.catalog.refresh",
+          "api_entrypoints": [
+            "/api/catalog/refresh",
+            "/api/operations/execute"
+          ],
+          "security_fields_present": [
+            "attack_surfaces",
+            "data_classification",
+            "evidence",
+            "mitigations",
+            "residual_risks",
+            "stride",
+            "trust_boundaries"
+          ],
+          "security_fields_missing": [],
+          "data_classification": "operational",
+          "stride": [
+            "Tampering",
+            "Repudiation"
+          ],
+          "trust_boundaries": [
+            "browser_to_fastapi",
+            "fastapi_to_nats",
+            "nats_to_worker"
+          ],
+          "attack_surfaces": [
+            "api_endpoint",
+            "nats_subject",
+            "worker_handler"
+          ],
+          "mitigations": [
+            "typed_operation_schema",
+            "openapi_validation",
+            "asyncapi_subject_governance",
+            "operation_audit_events"
+          ],
+          "residual_risks": [
+            "Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete."
+          ],
+          "evidence": [
+            "architecture/structurizr/workspace.dsl",
+            "contracts/generated/openapi.json",
+            "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+            "contracts/operations/pocketlab-typed-operations.json",
+            "operations/catalog_refresh.yaml"
+          ],
+          "digest": {
+            "path": "operations/catalog_refresh.yaml",
+            "sha256": "63a56f29313e31cc5abf2578b326b6b976d96c470a52db511eebf0075c9621e5",
+            "bytes": 1790
+          }
+        },
+        {
+          "name": "configure_opa",
+          "path": "operations/configure_opa.yaml",
+          "title": "Configure OPA",
+          "tags": [
+            "security",
+            "opa",
+            "policy",
+            "write"
+          ],
+          "nats_subject": "pocketlab.commands.security.configure_opa",
+          "api_entrypoints": [
+            "/api/operations/execute"
+          ],
+          "security_fields_present": [
+            "attack_surfaces",
+            "data_classification",
+            "evidence",
+            "mitigations",
+            "residual_risks",
+            "stride",
+            "trust_boundaries"
+          ],
+          "security_fields_missing": [],
+          "data_classification": "policy",
+          "stride": [
+            "Tampering",
+            "Repudiation",
+            "Information Disclosure",
+            "Elevation of Privilege"
+          ],
+          "trust_boundaries": [
+            "browser_to_fastapi",
+            "fastapi_to_nats",
+            "nats_to_worker",
+            "worker_to_secrets_policy"
+          ],
+          "attack_surfaces": [
+            "api_endpoint",
+            "nats_subject",
+            "worker_handler",
+            "vault_or_policy_adapter",
+            "audit_event_payload"
+          ],
+          "mitigations": [
+            "typed_operation_schema",
+            "openapi_validation",
+            "asyncapi_subject_governance",
+            "operation_audit_events",
+            "opa_policy_decision",
+            "secret_redaction",
+            "vault_or_openbao_leases"
+          ],
+          "residual_risks": [
+            "Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.",
+            "New secret or policy fields may require manual redaction review."
+          ],
+          "evidence": [
+            "architecture/structurizr/workspace.dsl",
+            "contracts/generated/openapi.json",
+            "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+            "contracts/operations/pocketlab-typed-operations.json",
+            "operations/configure_opa.yaml"
+          ],
+          "digest": {
+            "path": "operations/configure_opa.yaml",
+            "sha256": "a41c4134342e868d7935007fe10e21f4e7b8aca44aa4a9e2a086caa3bace740b",
+            "bytes": 1839
+          }
+        },
+        {
+          "name": "deploy_blueprint",
+          "path": "operations/deploy_blueprint.yaml",
+          "title": "Deploy Blueprint",
+          "tags": [
+            "blueprint",
+            "app-catalog",
+            "write"
+          ],
+          "nats_subject": "pocketlab.commands.operation.execute",
+          "api_entrypoints": [
+            "/api/operations/execute"
+          ],
+          "security_fields_present": [
+            "attack_surfaces",
+            "data_classification",
+            "evidence",
+            "mitigations",
+            "residual_risks",
+            "stride",
+            "trust_boundaries"
+          ],
+          "security_fields_missing": [],
+          "data_classification": "operational",
+          "stride": [
+            "Tampering",
+            "Repudiation"
+          ],
+          "trust_boundaries": [
+            "browser_to_fastapi",
+            "fastapi_to_nats",
+            "nats_to_worker"
+          ],
+          "attack_surfaces": [
+            "api_endpoint",
+            "nats_subject",
+            "worker_handler"
+          ],
+          "mitigations": [
+            "typed_operation_schema",
+            "openapi_validation",
+            "asyncapi_subject_governance",
+            "operation_audit_events"
+          ],
+          "residual_risks": [
+            "Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete."
+          ],
+          "evidence": [
+            "architecture/structurizr/workspace.dsl",
+            "contracts/generated/openapi.json",
+            "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+            "contracts/operations/pocketlab-typed-operations.json",
+            "operations/deploy_blueprint.yaml"
+          ],
+          "digest": {
+            "path": "operations/deploy_blueprint.yaml",
+            "sha256": "60590cbd7527d274351639823b0f5037a8f9e668015c0b0e0f77b37b425630f8",
+            "bytes": 1716
+          }
+        },
+        {
+          "name": "drift_apply",
+          "path": "operations/drift_apply.yaml",
+          "title": "Apply Drift Remediation",
+          "tags": [
+            "drift",
+            "remediation",
+            "write"
+          ],
+          "nats_subject": "pocketlab.commands.drift.apply",
+          "api_entrypoints": [
+            "/api/operations/execute"
+          ],
+          "security_fields_present": [
+            "attack_surfaces",
+            "data_classification",
+            "evidence",
+            "mitigations",
+            "residual_risks",
+            "stride",
+            "trust_boundaries"
+          ],
+          "security_fields_missing": [],
+          "data_classification": "configuration",
+          "stride": [
+            "Tampering",
+            "Repudiation",
+            "Denial of Service",
+            "Elevation of Privilege"
+          ],
+          "trust_boundaries": [
+            "browser_to_fastapi",
+            "fastapi_to_nats",
+            "nats_to_worker",
+            "worker_to_state_audit"
+          ],
+          "attack_surfaces": [
+            "api_endpoint",
+            "nats_subject",
+            "worker_handler",
+            "state_store",
+            "event_journal",
+            "dlq_subject"
+          ],
+          "mitigations": [
+            "typed_operation_schema",
+            "openapi_validation",
+            "asyncapi_subject_governance",
+            "operation_audit_events",
+            "event_sourced_workflow_journal",
+            "dlq_review_path",
+            "correlation_ids"
+          ],
+          "residual_risks": [
+            "Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.",
+            "Edge-first deployments remain sensitive to host, storage, and network availability."
+          ],
+          "evidence": [
+            "architecture/structurizr/workspace.dsl",
+            "contracts/generated/openapi.json",
+            "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+            "contracts/operations/pocketlab-typed-operations.json",
+            "operations/drift_apply.yaml"
+          ],
+          "digest": {
+            "path": "operations/drift_apply.yaml",
+            "sha256": "f3e9f5f563d36063504ea44ffc5d185a9769987ec9dd78b4e0bafd57d0ac1be1",
+            "bytes": 1825
+          }
+        },
+        {
+          "name": "drift_approve",
+          "path": "operations/drift_approve.yaml",
+          "title": "Approve Drift Remediation",
+          "tags": [
+            "drift",
+            "approval",
+            "write"
+          ],
+          "nats_subject": "pocketlab.commands.drift.approve",
+          "api_entrypoints": [
+            "/api/operations/execute"
+          ],
+          "security_fields_present": [
+            "attack_surfaces",
+            "data_classification",
+            "evidence",
+            "mitigations",
+            "residual_risks",
+            "stride",
+            "trust_boundaries"
+          ],
+          "security_fields_missing": [],
+          "data_classification": "configuration",
+          "stride": [
+            "Tampering",
+            "Repudiation",
+            "Denial of Service",
+            "Elevation of Privilege"
+          ],
+          "trust_boundaries": [
+            "browser_to_fastapi",
+            "fastapi_to_nats",
+            "nats_to_worker",
+            "worker_to_state_audit"
+          ],
+          "attack_surfaces": [
+            "api_endpoint",
+            "nats_subject",
+            "worker_handler",
+            "state_store",
+            "event_journal",
+            "dlq_subject"
+          ],
+          "mitigations": [
+            "typed_operation_schema",
+            "openapi_validation",
+            "asyncapi_subject_governance",
+            "operation_audit_events",
+            "event_sourced_workflow_journal",
+            "dlq_review_path",
+            "correlation_ids"
+          ],
+          "residual_risks": [
+            "Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.",
+            "Edge-first deployments remain sensitive to host, storage, and network availability."
+          ],
+          "evidence": [
+            "architecture/structurizr/workspace.dsl",
+            "contracts/generated/openapi.json",
+            "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+            "contracts/operations/pocketlab-typed-operations.json",
+            "operations/drift_approve.yaml"
+          ],
+          "digest": {
+            "path": "operations/drift_approve.yaml",
+            "sha256": "ed8b54887c51e7239c41e52b14221b155451ae79501ba5f640515e9baff8aee1",
+            "bytes": 1750
+          }
+        },
+        {
+          "name": "drift_ignore",
+          "path": "operations/drift_ignore.yaml",
+          "title": "Ignore Drift Finding",
+          "tags": [
+            "drift",
+            "exception",
+            "write"
+          ],
+          "nats_subject": "pocketlab.commands.drift.ignore",
+          "api_entrypoints": [
+            "/api/operations/execute"
+          ],
+          "security_fields_present": [
+            "attack_surfaces",
+            "data_classification",
+            "evidence",
+            "mitigations",
+            "residual_risks",
+            "stride",
+            "trust_boundaries"
+          ],
+          "security_fields_missing": [],
+          "data_classification": "configuration",
+          "stride": [
+            "Tampering",
+            "Repudiation",
+            "Denial of Service",
+            "Elevation of Privilege"
+          ],
+          "trust_boundaries": [
+            "browser_to_fastapi",
+            "fastapi_to_nats",
+            "nats_to_worker",
+            "worker_to_state_audit"
+          ],
+          "attack_surfaces": [
+            "api_endpoint",
+            "nats_subject",
+            "worker_handler",
+            "state_store",
+            "event_journal",
+            "dlq_subject"
+          ],
+          "mitigations": [
+            "typed_operation_schema",
+            "openapi_validation",
+            "asyncapi_subject_governance",
+            "operation_audit_events",
+            "event_sourced_workflow_journal",
+            "dlq_review_path",
+            "correlation_ids"
+          ],
+          "residual_risks": [
+            "Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.",
+            "Edge-first deployments remain sensitive to host, storage, and network availability."
+          ],
+          "evidence": [
+            "architecture/structurizr/workspace.dsl",
+            "contracts/generated/openapi.json",
+            "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+            "contracts/operations/pocketlab-typed-operations.json",
+            "operations/drift_ignore.yaml"
+          ],
+          "digest": {
+            "path": "operations/drift_ignore.yaml",
+            "sha256": "a0773dd9ae0d95c86bb899fa76c370867ba543316829c916ab9b90f0b9e79c59",
+            "bytes": 1756
+          }
+        },
+        {
+          "name": "drift_preview",
+          "path": "operations/drift_preview.yaml",
+          "title": "Preview Drift Remediation",
+          "tags": [
+            "drift",
+            "preview",
+            "read"
+          ],
+          "nats_subject": "pocketlab.commands.drift.preview",
+          "api_entrypoints": [
+            "/api/operations/execute",
+            "/api/operations/preview"
+          ],
+          "security_fields_present": [
+            "attack_surfaces",
+            "data_classification",
+            "evidence",
+            "mitigations",
+            "residual_risks",
+            "stride",
+            "trust_boundaries"
+          ],
+          "security_fields_missing": [],
+          "data_classification": "configuration",
+          "stride": [
+            "Tampering",
+            "Repudiation",
+            "Denial of Service",
+            "Elevation of Privilege"
+          ],
+          "trust_boundaries": [
+            "browser_to_fastapi",
+            "fastapi_to_nats",
+            "nats_to_worker",
+            "worker_to_state_audit"
+          ],
+          "attack_surfaces": [
+            "api_endpoint",
+            "nats_subject",
+            "worker_handler",
+            "state_store",
+            "event_journal",
+            "dlq_subject"
+          ],
+          "mitigations": [
+            "typed_operation_schema",
+            "openapi_validation",
+            "asyncapi_subject_governance",
+            "operation_audit_events",
+            "event_sourced_workflow_journal",
+            "dlq_review_path",
+            "correlation_ids"
+          ],
+          "residual_risks": [
+            "Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.",
+            "Edge-first deployments remain sensitive to host, storage, and network availability."
+          ],
+          "evidence": [
+            "architecture/structurizr/workspace.dsl",
+            "contracts/generated/openapi.json",
+            "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+            "contracts/operations/pocketlab-typed-operations.json",
+            "operations/drift_preview.yaml"
+          ],
+          "digest": {
+            "path": "operations/drift_preview.yaml",
+            "sha256": "75f4f18bd5cfbce4b8cf826af4487a43758e720f9e185fb7ca4b3a7c2fe6b542",
+            "bytes": 1804
+          }
+        },
+        {
+          "name": "drift_scan",
+          "path": "operations/drift_scan.yaml",
+          "title": "Run Drift Scan",
+          "tags": [
+            "drift",
+            "health",
+            "read"
+          ],
+          "nats_subject": "pocketlab.commands.drift.scan",
+          "api_entrypoints": [
+            "/api/operations/execute"
+          ],
+          "security_fields_present": [
+            "attack_surfaces",
+            "data_classification",
+            "evidence",
+            "mitigations",
+            "residual_risks",
+            "stride",
+            "trust_boundaries"
+          ],
+          "security_fields_missing": [],
+          "data_classification": "configuration",
+          "stride": [
+            "Tampering",
+            "Repudiation",
+            "Denial of Service",
+            "Elevation of Privilege"
+          ],
+          "trust_boundaries": [
+            "browser_to_fastapi",
+            "fastapi_to_nats",
+            "nats_to_worker",
+            "worker_to_state_audit"
+          ],
+          "attack_surfaces": [
+            "api_endpoint",
+            "nats_subject",
+            "worker_handler",
+            "state_store",
+            "event_journal",
+            "dlq_subject"
+          ],
+          "mitigations": [
+            "typed_operation_schema",
+            "openapi_validation",
+            "asyncapi_subject_governance",
+            "operation_audit_events",
+            "event_sourced_workflow_journal",
+            "dlq_review_path",
+            "correlation_ids"
+          ],
+          "residual_risks": [
+            "Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.",
+            "Edge-first deployments remain sensitive to host, storage, and network availability."
+          ],
+          "evidence": [
+            "architecture/structurizr/workspace.dsl",
+            "contracts/generated/openapi.json",
+            "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+            "contracts/operations/pocketlab-typed-operations.json",
+            "operations/drift_scan.yaml"
+          ],
+          "digest": {
+            "path": "operations/drift_scan.yaml",
+            "sha256": "ac912127e123ed5bfab72d2d0a968d008c68012bb7fc2c51c7cb13db2a115667",
+            "bytes": 1918
+          }
+        },
+        {
+          "name": "fleet_join",
+          "path": "operations/fleet_join.yaml",
+          "title": "Join Fleet",
+          "tags": [
+            "fleet",
+            "onboarding",
+            "secret"
+          ],
+          "nats_subject": "pocketlab.commands.fleet.join",
+          "api_entrypoints": [
+            "/api/operations/execute"
+          ],
+          "security_fields_present": [
+            "attack_surfaces",
+            "data_classification",
+            "evidence",
+            "mitigations",
+            "residual_risks",
+            "stride",
+            "trust_boundaries"
+          ],
+          "security_fields_missing": [],
+          "data_classification": "secret",
+          "stride": [
+            "Tampering",
+            "Repudiation",
+            "Information Disclosure",
+            "Elevation of Privilege"
+          ],
+          "trust_boundaries": [
+            "browser_to_fastapi",
+            "fastapi_to_nats",
+            "nats_to_worker",
+            "worker_to_secrets_policy"
+          ],
+          "attack_surfaces": [
+            "api_endpoint",
+            "nats_subject",
+            "worker_handler",
+            "vault_or_policy_adapter",
+            "audit_event_payload"
+          ],
+          "mitigations": [
+            "typed_operation_schema",
+            "openapi_validation",
+            "asyncapi_subject_governance",
+            "operation_audit_events",
+            "opa_policy_decision",
+            "secret_redaction",
+            "vault_or_openbao_leases"
+          ],
+          "residual_risks": [
+            "Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.",
+            "New secret or policy fields may require manual redaction review."
+          ],
+          "evidence": [
+            "architecture/structurizr/workspace.dsl",
+            "contracts/generated/openapi.json",
+            "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+            "contracts/operations/pocketlab-typed-operations.json",
+            "operations/fleet_join.yaml"
+          ],
+          "digest": {
+            "path": "operations/fleet_join.yaml",
+            "sha256": "61d9653c389c98705edf930ca4733cfd2bbc5a73e689876024b70a4e7c5b8af0",
+            "bytes": 1903
+          }
+        },
+        {
+          "name": "git_sync",
+          "path": "operations/git_sync.yaml",
+          "title": "GitOps Sync",
+          "tags": [
+            "gitops",
+            "sync",
+            "write"
+          ],
+          "nats_subject": "pocketlab.commands.operation.execute",
+          "api_entrypoints": [
+            "/api/operations/execute"
+          ],
+          "security_fields_present": [
+            "attack_surfaces",
+            "data_classification",
+            "evidence",
+            "mitigations",
+            "residual_risks",
+            "stride",
+            "trust_boundaries"
+          ],
+          "security_fields_missing": [],
+          "data_classification": "operational",
+          "stride": [
+            "Tampering",
+            "Repudiation"
+          ],
+          "trust_boundaries": [
+            "browser_to_fastapi",
+            "fastapi_to_nats",
+            "nats_to_worker"
+          ],
+          "attack_surfaces": [
+            "api_endpoint",
+            "nats_subject",
+            "worker_handler"
+          ],
+          "mitigations": [
+            "typed_operation_schema",
+            "openapi_validation",
+            "asyncapi_subject_governance",
+            "operation_audit_events"
+          ],
+          "residual_risks": [
+            "Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete."
+          ],
+          "evidence": [
+            "architecture/structurizr/workspace.dsl",
+            "contracts/generated/openapi.json",
+            "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+            "contracts/operations/pocketlab-typed-operations.json",
+            "operations/git_sync.yaml"
+          ],
+          "digest": {
+            "path": "operations/git_sync.yaml",
+            "sha256": "d43f97a7c8f95ecda5161eb099980d0ce09b4004ef7779606daeb81f34299e43",
+            "bytes": 1590
+          }
+        },
+        {
+          "name": "health_check",
+          "path": "operations/health_check.yaml",
+          "title": "Run Health Check",
+          "tags": [
+            "health",
+            "noc",
+            "read"
+          ],
+          "nats_subject": "pocketlab.commands.health.check",
+          "api_entrypoints": [
+            "/api/health/check"
+          ],
+          "security_fields_present": [
+            "attack_surfaces",
+            "data_classification",
+            "evidence",
+            "mitigations",
+            "residual_risks",
+            "stride",
+            "trust_boundaries"
+          ],
+          "security_fields_missing": [],
+          "data_classification": "telemetry",
+          "stride": [
+            "Tampering",
+            "Repudiation",
+            "Information Disclosure",
+            "Denial of Service"
+          ],
+          "trust_boundaries": [
+            "browser_to_fastapi",
+            "fastapi_to_nats",
+            "nats_to_worker"
+          ],
+          "attack_surfaces": [
+            "api_endpoint",
+            "nats_subject",
+            "worker_handler",
+            "telemetry_payload",
+            "status_stream"
+          ],
+          "mitigations": [
+            "typed_operation_schema",
+            "openapi_validation",
+            "asyncapi_subject_governance",
+            "operation_audit_events",
+            "payload_minimization",
+            "event_redaction"
+          ],
+          "residual_risks": [
+            "Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.",
+            "Telemetry schemas can drift if new fields are added without privacy review."
+          ],
+          "evidence": [
+            "architecture/structurizr/workspace.dsl",
+            "contracts/generated/openapi.json",
+            "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+            "contracts/operations/pocketlab-typed-operations.json",
+            "operations/health_check.yaml"
+          ],
+          "digest": {
+            "path": "operations/health_check.yaml",
+            "sha256": "27208e976bb314a932e6daa1d26e4b45663c4d74e1d185d1af1cda93cc76c9a3",
+            "bytes": 1758
+          }
+        },
+        {
+          "name": "release_apply",
+          "path": "operations/release_apply.yaml",
+          "title": "Apply Release",
+          "tags": [
+            "release",
+            "upgrade",
+            "write"
+          ],
+          "nats_subject": "pocketlab.commands.release.apply",
+          "api_entrypoints": [
+            "/api/release/self-update/apply"
+          ],
+          "security_fields_present": [
+            "attack_surfaces",
+            "data_classification",
+            "evidence",
+            "mitigations",
+            "residual_risks",
+            "stride",
+            "trust_boundaries"
+          ],
+          "security_fields_missing": [],
+          "data_classification": "release",
+          "stride": [
+            "Tampering",
+            "Repudiation",
+            "Denial of Service",
+            "Elevation of Privilege"
+          ],
+          "trust_boundaries": [
+            "browser_to_fastapi",
+            "fastapi_to_nats",
+            "nats_to_worker",
+            "worker_to_state_audit"
+          ],
+          "attack_surfaces": [
+            "api_endpoint",
+            "nats_subject",
+            "worker_handler",
+            "state_store",
+            "event_journal",
+            "dlq_subject"
+          ],
+          "mitigations": [
+            "typed_operation_schema",
+            "openapi_validation",
+            "asyncapi_subject_governance",
+            "operation_audit_events",
+            "event_sourced_workflow_journal",
+            "dlq_review_path",
+            "correlation_ids"
+          ],
+          "residual_risks": [
+            "Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.",
+            "Edge-first deployments remain sensitive to host, storage, and network availability."
+          ],
+          "evidence": [
+            "architecture/structurizr/workspace.dsl",
+            "contracts/generated/openapi.json",
+            "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+            "contracts/operations/pocketlab-typed-operations.json",
+            "operations/release_apply.yaml"
+          ],
+          "digest": {
+            "path": "operations/release_apply.yaml",
+            "sha256": "71aaec58b212e6ac08f010daee50bf74b48a8650038089246b4005672c456e8d",
+            "bytes": 1983
+          }
+        },
+        {
+          "name": "release_check",
+          "path": "operations/release_check.yaml",
+          "title": "Check Release",
+          "tags": [
+            "release",
+            "read"
+          ],
+          "nats_subject": "pocketlab.commands.release.check",
+          "api_entrypoints": [
+            "/api/release/self-update/check"
+          ],
+          "security_fields_present": [
+            "attack_surfaces",
+            "data_classification",
+            "evidence",
+            "mitigations",
+            "residual_risks",
+            "stride",
+            "trust_boundaries"
+          ],
+          "security_fields_missing": [],
+          "data_classification": "release",
+          "stride": [
+            "Tampering",
+            "Repudiation",
+            "Denial of Service",
+            "Elevation of Privilege"
+          ],
+          "trust_boundaries": [
+            "browser_to_fastapi",
+            "fastapi_to_nats",
+            "nats_to_worker",
+            "worker_to_state_audit"
+          ],
+          "attack_surfaces": [
+            "api_endpoint",
+            "nats_subject",
+            "worker_handler",
+            "state_store",
+            "event_journal",
+            "dlq_subject"
+          ],
+          "mitigations": [
+            "typed_operation_schema",
+            "openapi_validation",
+            "asyncapi_subject_governance",
+            "operation_audit_events",
+            "event_sourced_workflow_journal",
+            "dlq_review_path",
+            "correlation_ids"
+          ],
+          "residual_risks": [
+            "Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.",
+            "Edge-first deployments remain sensitive to host, storage, and network availability."
+          ],
+          "evidence": [
+            "architecture/structurizr/workspace.dsl",
+            "contracts/generated/openapi.json",
+            "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+            "contracts/operations/pocketlab-typed-operations.json",
+            "operations/release_check.yaml"
+          ],
+          "digest": {
+            "path": "operations/release_check.yaml",
+            "sha256": "6bdeb99f1aa5cc7d8a7f100df7e1d715d13fe0fac753ed45b65027e1d9043438",
+            "bytes": 1829
+          }
+        },
+        {
+          "name": "restore_backup",
+          "path": "operations/restore_backup.yaml",
+          "title": "Restore Backup",
+          "tags": [
+            "backup",
+            "disaster-recovery",
+            "destructive"
+          ],
+          "nats_subject": "pocketlab.commands.operation.execute",
+          "api_entrypoints": [
+            "/api/operations/execute",
+            "/api/operations/preview"
+          ],
+          "security_fields_present": [
+            "attack_surfaces",
+            "data_classification",
+            "evidence",
+            "mitigations",
+            "residual_risks",
+            "stride",
+            "trust_boundaries"
+          ],
+          "security_fields_missing": [],
+          "data_classification": "recovery",
+          "stride": [
+            "Tampering",
+            "Repudiation",
+            "Denial of Service",
+            "Elevation of Privilege"
+          ],
+          "trust_boundaries": [
+            "browser_to_fastapi",
+            "fastapi_to_nats",
+            "nats_to_worker",
+            "worker_to_state_audit"
+          ],
+          "attack_surfaces": [
+            "api_endpoint",
+            "nats_subject",
+            "worker_handler",
+            "state_store",
+            "event_journal",
+            "dlq_subject"
+          ],
+          "mitigations": [
+            "typed_operation_schema",
+            "openapi_validation",
+            "asyncapi_subject_governance",
+            "operation_audit_events",
+            "event_sourced_workflow_journal",
+            "dlq_review_path",
+            "correlation_ids"
+          ],
+          "residual_risks": [
+            "Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.",
+            "Edge-first deployments remain sensitive to host, storage, and network availability."
+          ],
+          "evidence": [
+            "architecture/structurizr/workspace.dsl",
+            "contracts/generated/openapi.json",
+            "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+            "contracts/operations/pocketlab-typed-operations.json",
+            "operations/restore_backup.yaml"
+          ],
+          "digest": {
+            "path": "operations/restore_backup.yaml",
+            "sha256": "60895eaa4c40ff6a7827dce5f69656cb9815880d7985d658d2f97d5db91bcb8b",
+            "bytes": 1939
+          }
+        },
+        {
+          "name": "rotate_secret",
+          "path": "operations/rotate_secret.yaml",
+          "title": "Rotate Secret",
+          "tags": [
+            "vault",
+            "secret",
+            "write"
+          ],
+          "nats_subject": "pocketlab.commands.vault.rotate",
+          "api_entrypoints": [
+            "/api/operations/execute"
+          ],
+          "security_fields_present": [
+            "attack_surfaces",
+            "data_classification",
+            "evidence",
+            "mitigations",
+            "residual_risks",
+            "stride",
+            "trust_boundaries"
+          ],
+          "security_fields_missing": [],
+          "data_classification": "secret",
+          "stride": [
+            "Tampering",
+            "Repudiation",
+            "Information Disclosure",
+            "Elevation of Privilege"
+          ],
+          "trust_boundaries": [
+            "browser_to_fastapi",
+            "fastapi_to_nats",
+            "nats_to_worker",
+            "worker_to_secrets_policy"
+          ],
+          "attack_surfaces": [
+            "api_endpoint",
+            "nats_subject",
+            "worker_handler",
+            "vault_or_policy_adapter",
+            "audit_event_payload"
+          ],
+          "mitigations": [
+            "typed_operation_schema",
+            "openapi_validation",
+            "asyncapi_subject_governance",
+            "operation_audit_events",
+            "opa_policy_decision",
+            "secret_redaction",
+            "vault_or_openbao_leases"
+          ],
+          "residual_risks": [
+            "Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.",
+            "New secret or policy fields may require manual redaction review."
+          ],
+          "evidence": [
+            "architecture/structurizr/workspace.dsl",
+            "contracts/generated/openapi.json",
+            "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+            "contracts/operations/pocketlab-typed-operations.json",
+            "operations/rotate_secret.yaml"
+          ],
+          "digest": {
+            "path": "operations/rotate_secret.yaml",
+            "sha256": "237ca8464a4971a26fb57d9069570e288a7eb1ad65334ca019f631596a1bbb65",
+            "bytes": 1862
+          }
+        },
+        {
+          "name": "secret_read_dynamic",
+          "path": "operations/secret_read_dynamic.yaml",
+          "title": "Read Dynamic Secret",
+          "tags": [
+            "vault",
+            "dynamic-secret",
+            "read"
+          ],
+          "nats_subject": "pocketlab.commands.vault.dynamic_secret",
+          "api_entrypoints": [
+            "/api/operations/execute"
+          ],
+          "security_fields_present": [
+            "attack_surfaces",
+            "data_classification",
+            "evidence",
+            "mitigations",
+            "residual_risks",
+            "stride",
+            "trust_boundaries"
+          ],
+          "security_fields_missing": [],
+          "data_classification": "secret",
+          "stride": [
+            "Tampering",
+            "Repudiation",
+            "Information Disclosure",
+            "Elevation of Privilege"
+          ],
+          "trust_boundaries": [
+            "browser_to_fastapi",
+            "fastapi_to_nats",
+            "nats_to_worker",
+            "worker_to_secrets_policy"
+          ],
+          "attack_surfaces": [
+            "api_endpoint",
+            "nats_subject",
+            "worker_handler",
+            "vault_or_policy_adapter",
+            "audit_event_payload"
+          ],
+          "mitigations": [
+            "typed_operation_schema",
+            "openapi_validation",
+            "asyncapi_subject_governance",
+            "operation_audit_events",
+            "opa_policy_decision",
+            "secret_redaction",
+            "vault_or_openbao_leases"
+          ],
+          "residual_risks": [
+            "Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.",
+            "New secret or policy fields may require manual redaction review."
+          ],
+          "evidence": [
+            "architecture/structurizr/workspace.dsl",
+            "contracts/generated/openapi.json",
+            "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+            "contracts/operations/pocketlab-typed-operations.json",
+            "operations/secret_read_dynamic.yaml"
+          ],
+          "digest": {
+            "path": "operations/secret_read_dynamic.yaml",
+            "sha256": "c9c87767604577e05d32776d25d5f1121144034a8e893a0ef688b094ec59c5e7",
+            "bytes": 1888
+          }
+        },
+        {
+          "name": "security_scan",
+          "path": "operations/security_scan.yaml",
+          "title": "Run Security Scan",
+          "tags": [
+            "security",
+            "policy",
+            "read"
+          ],
+          "nats_subject": "pocketlab.commands.security.scan",
+          "api_entrypoints": [
+            "/api/security/scan"
+          ],
+          "security_fields_present": [
+            "attack_surfaces",
+            "data_classification",
+            "evidence",
+            "mitigations",
+            "residual_risks",
+            "stride",
+            "trust_boundaries"
+          ],
+          "security_fields_missing": [],
+          "data_classification": "policy",
+          "stride": [
+            "Tampering",
+            "Repudiation",
+            "Information Disclosure",
+            "Elevation of Privilege"
+          ],
+          "trust_boundaries": [
+            "browser_to_fastapi",
+            "fastapi_to_nats",
+            "nats_to_worker",
+            "worker_to_secrets_policy"
+          ],
+          "attack_surfaces": [
+            "api_endpoint",
+            "nats_subject",
+            "worker_handler",
+            "vault_or_policy_adapter",
+            "audit_event_payload"
+          ],
+          "mitigations": [
+            "typed_operation_schema",
+            "openapi_validation",
+            "asyncapi_subject_governance",
+            "operation_audit_events",
+            "opa_policy_decision",
+            "secret_redaction",
+            "vault_or_openbao_leases"
+          ],
+          "residual_risks": [
+            "Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.",
+            "New secret or policy fields may require manual redaction review."
+          ],
+          "evidence": [
+            "architecture/structurizr/workspace.dsl",
+            "contracts/generated/openapi.json",
+            "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+            "contracts/operations/pocketlab-typed-operations.json",
+            "operations/security_scan.yaml"
+          ],
+          "digest": {
+            "path": "operations/security_scan.yaml",
+            "sha256": "aa98b073415206e46d30d9ddc3a8e458f36915277e8fd573e8d2a8fb7433ebcb",
+            "bytes": 1821
+          }
+        }
+      ]
+    }
+  },
+  "operation_source_links": [
+    {
+      "operation": "backup_now",
+      "metadata_file": "operations/backup_now.yaml",
+      "typed_operation_present": true,
+      "declared_api_entrypoints": [
+        "/api/operations/execute"
+      ],
+      "openapi_matches": [
+        "POST /api/operations/execute"
+      ],
+      "declared_nats_subject": "pocketlab.commands.operation.execute",
+      "asyncapi_matches": [
+        "pocketlab.commands.operation.execute"
+      ],
+      "security_classification": "recovery",
+      "stride": [
+        "Tampering",
+        "Repudiation",
+        "Denial of Service",
+        "Elevation of Privilege"
+      ]
+    },
+    {
+      "operation": "backup_verify",
+      "metadata_file": "operations/backup_verify.yaml",
+      "typed_operation_present": true,
+      "declared_api_entrypoints": [
+        "/api/operations/execute"
+      ],
+      "openapi_matches": [
+        "POST /api/operations/execute"
+      ],
+      "declared_nats_subject": "pocketlab.commands.operation.execute",
+      "asyncapi_matches": [
+        "pocketlab.commands.operation.execute"
+      ],
+      "security_classification": "recovery",
+      "stride": [
+        "Tampering",
+        "Repudiation",
+        "Denial of Service",
+        "Elevation of Privilege"
+      ]
+    },
+    {
+      "operation": "catalog_refresh",
+      "metadata_file": "operations/catalog_refresh.yaml",
+      "typed_operation_present": true,
+      "declared_api_entrypoints": [
+        "/api/catalog/refresh",
+        "/api/operations/execute"
+      ],
+      "openapi_matches": [
+        "GET /api/catalog/refresh",
+        "POST /api/catalog/refresh",
+        "POST /api/operations/execute"
+      ],
+      "declared_nats_subject": "pocketlab.commands.catalog.refresh",
+      "asyncapi_matches": [
+        "pocketlab.commands.catalog.refresh"
+      ],
+      "security_classification": "operational",
+      "stride": [
+        "Tampering",
+        "Repudiation"
+      ]
+    },
+    {
+      "operation": "configure_opa",
+      "metadata_file": "operations/configure_opa.yaml",
+      "typed_operation_present": true,
+      "declared_api_entrypoints": [
+        "/api/operations/execute"
+      ],
+      "openapi_matches": [
+        "POST /api/operations/execute"
+      ],
+      "declared_nats_subject": "pocketlab.commands.security.configure_opa",
+      "asyncapi_matches": [],
+      "security_classification": "policy",
+      "stride": [
+        "Tampering",
+        "Repudiation",
+        "Information Disclosure",
+        "Elevation of Privilege"
+      ]
+    },
+    {
+      "operation": "deploy_blueprint",
+      "metadata_file": "operations/deploy_blueprint.yaml",
+      "typed_operation_present": true,
+      "declared_api_entrypoints": [
+        "/api/operations/execute"
+      ],
+      "openapi_matches": [
+        "POST /api/operations/execute"
+      ],
+      "declared_nats_subject": "pocketlab.commands.operation.execute",
+      "asyncapi_matches": [
+        "pocketlab.commands.operation.execute"
+      ],
+      "security_classification": "operational",
+      "stride": [
+        "Tampering",
+        "Repudiation"
+      ]
+    },
+    {
+      "operation": "drift_apply",
+      "metadata_file": "operations/drift_apply.yaml",
+      "typed_operation_present": true,
+      "declared_api_entrypoints": [
+        "/api/operations/execute"
+      ],
+      "openapi_matches": [
+        "POST /api/operations/execute"
+      ],
+      "declared_nats_subject": "pocketlab.commands.drift.apply",
+      "asyncapi_matches": [],
+      "security_classification": "configuration",
+      "stride": [
+        "Tampering",
+        "Repudiation",
+        "Denial of Service",
+        "Elevation of Privilege"
+      ]
+    },
+    {
+      "operation": "drift_approve",
+      "metadata_file": "operations/drift_approve.yaml",
+      "typed_operation_present": true,
+      "declared_api_entrypoints": [
+        "/api/operations/execute"
+      ],
+      "openapi_matches": [
+        "POST /api/operations/execute"
+      ],
+      "declared_nats_subject": "pocketlab.commands.drift.approve",
+      "asyncapi_matches": [],
+      "security_classification": "configuration",
+      "stride": [
+        "Tampering",
+        "Repudiation",
+        "Denial of Service",
+        "Elevation of Privilege"
+      ]
+    },
+    {
+      "operation": "drift_ignore",
+      "metadata_file": "operations/drift_ignore.yaml",
+      "typed_operation_present": true,
+      "declared_api_entrypoints": [
+        "/api/operations/execute"
+      ],
+      "openapi_matches": [
+        "POST /api/operations/execute"
+      ],
+      "declared_nats_subject": "pocketlab.commands.drift.ignore",
+      "asyncapi_matches": [],
+      "security_classification": "configuration",
+      "stride": [
+        "Tampering",
+        "Repudiation",
+        "Denial of Service",
+        "Elevation of Privilege"
+      ]
+    },
+    {
+      "operation": "drift_preview",
+      "metadata_file": "operations/drift_preview.yaml",
+      "typed_operation_present": true,
+      "declared_api_entrypoints": [
+        "/api/operations/execute",
+        "/api/operations/preview"
+      ],
+      "openapi_matches": [
+        "POST /api/operations/execute",
+        "POST /api/operations/preview"
+      ],
+      "declared_nats_subject": "pocketlab.commands.drift.preview",
+      "asyncapi_matches": [],
+      "security_classification": "configuration",
+      "stride": [
+        "Tampering",
+        "Repudiation",
+        "Denial of Service",
+        "Elevation of Privilege"
+      ]
+    },
+    {
+      "operation": "drift_scan",
+      "metadata_file": "operations/drift_scan.yaml",
+      "typed_operation_present": true,
+      "declared_api_entrypoints": [
+        "/api/operations/execute"
+      ],
+      "openapi_matches": [
+        "POST /api/operations/execute"
+      ],
+      "declared_nats_subject": "pocketlab.commands.drift.scan",
+      "asyncapi_matches": [
+        "pocketlab.commands.drift.scan"
+      ],
+      "security_classification": "configuration",
+      "stride": [
+        "Tampering",
+        "Repudiation",
+        "Denial of Service",
+        "Elevation of Privilege"
+      ]
+    },
+    {
+      "operation": "fleet_join",
+      "metadata_file": "operations/fleet_join.yaml",
+      "typed_operation_present": true,
+      "declared_api_entrypoints": [
+        "/api/operations/execute"
+      ],
+      "openapi_matches": [
+        "POST /api/operations/execute"
+      ],
+      "declared_nats_subject": "pocketlab.commands.fleet.join",
+      "asyncapi_matches": [
+        "pocketlab.commands.fleet.join"
+      ],
+      "security_classification": "secret",
+      "stride": [
+        "Tampering",
+        "Repudiation",
+        "Information Disclosure",
+        "Elevation of Privilege"
+      ]
+    },
+    {
+      "operation": "git_sync",
+      "metadata_file": "operations/git_sync.yaml",
+      "typed_operation_present": true,
+      "declared_api_entrypoints": [
+        "/api/operations/execute"
+      ],
+      "openapi_matches": [
+        "POST /api/operations/execute"
+      ],
+      "declared_nats_subject": "pocketlab.commands.operation.execute",
+      "asyncapi_matches": [
+        "pocketlab.commands.operation.execute"
+      ],
+      "security_classification": "operational",
+      "stride": [
+        "Tampering",
+        "Repudiation"
+      ]
+    },
+    {
+      "operation": "health_check",
+      "metadata_file": "operations/health_check.yaml",
+      "typed_operation_present": true,
+      "declared_api_entrypoints": [
+        "/api/health/check"
+      ],
+      "openapi_matches": [
+        "POST /api/health/check"
+      ],
+      "declared_nats_subject": "pocketlab.commands.health.check",
+      "asyncapi_matches": [
+        "pocketlab.commands.health.check"
+      ],
+      "security_classification": "telemetry",
+      "stride": [
+        "Tampering",
+        "Repudiation",
+        "Information Disclosure",
+        "Denial of Service"
+      ]
+    },
+    {
+      "operation": "release_apply",
+      "metadata_file": "operations/release_apply.yaml",
+      "typed_operation_present": true,
+      "declared_api_entrypoints": [
+        "/api/release/self-update/apply"
+      ],
+      "openapi_matches": [
+        "POST /api/release/self-update/apply"
+      ],
+      "declared_nats_subject": "pocketlab.commands.release.apply",
+      "asyncapi_matches": [
+        "pocketlab.commands.release.apply"
+      ],
+      "security_classification": "release",
+      "stride": [
+        "Tampering",
+        "Repudiation",
+        "Denial of Service",
+        "Elevation of Privilege"
+      ]
+    },
+    {
+      "operation": "release_check",
+      "metadata_file": "operations/release_check.yaml",
+      "typed_operation_present": true,
+      "declared_api_entrypoints": [
+        "/api/release/self-update/check"
+      ],
+      "openapi_matches": [
+        "POST /api/release/self-update/check"
+      ],
+      "declared_nats_subject": "pocketlab.commands.release.check",
+      "asyncapi_matches": [
+        "pocketlab.commands.release.check"
+      ],
+      "security_classification": "release",
+      "stride": [
+        "Tampering",
+        "Repudiation",
+        "Denial of Service",
+        "Elevation of Privilege"
+      ]
+    },
+    {
+      "operation": "restore_backup",
+      "metadata_file": "operations/restore_backup.yaml",
+      "typed_operation_present": true,
+      "declared_api_entrypoints": [
+        "/api/operations/execute",
+        "/api/operations/preview"
+      ],
+      "openapi_matches": [
+        "POST /api/operations/execute",
+        "POST /api/operations/preview"
+      ],
+      "declared_nats_subject": "pocketlab.commands.operation.execute",
+      "asyncapi_matches": [
+        "pocketlab.commands.operation.execute"
+      ],
+      "security_classification": "recovery",
+      "stride": [
+        "Tampering",
+        "Repudiation",
+        "Denial of Service",
+        "Elevation of Privilege"
+      ]
+    },
+    {
+      "operation": "rotate_secret",
+      "metadata_file": "operations/rotate_secret.yaml",
+      "typed_operation_present": true,
+      "declared_api_entrypoints": [
+        "/api/operations/execute"
+      ],
+      "openapi_matches": [
+        "POST /api/operations/execute"
+      ],
+      "declared_nats_subject": "pocketlab.commands.vault.rotate",
+      "asyncapi_matches": [
+        "pocketlab.commands.vault.rotate"
+      ],
+      "security_classification": "secret",
+      "stride": [
+        "Tampering",
+        "Repudiation",
+        "Information Disclosure",
+        "Elevation of Privilege"
+      ]
+    },
+    {
+      "operation": "secret_read_dynamic",
+      "metadata_file": "operations/secret_read_dynamic.yaml",
+      "typed_operation_present": true,
+      "declared_api_entrypoints": [
+        "/api/operations/execute"
+      ],
+      "openapi_matches": [
+        "POST /api/operations/execute"
+      ],
+      "declared_nats_subject": "pocketlab.commands.vault.dynamic_secret",
+      "asyncapi_matches": [
+        "pocketlab.commands.vault.dynamic_secret"
+      ],
+      "security_classification": "secret",
+      "stride": [
+        "Tampering",
+        "Repudiation",
+        "Information Disclosure",
+        "Elevation of Privilege"
+      ]
+    },
+    {
+      "operation": "security_scan",
+      "metadata_file": "operations/security_scan.yaml",
+      "typed_operation_present": true,
+      "declared_api_entrypoints": [
+        "/api/security/scan"
+      ],
+      "openapi_matches": [
+        "POST /api/security/scan"
+      ],
+      "declared_nats_subject": "pocketlab.commands.security.scan",
+      "asyncapi_matches": [
+        "pocketlab.commands.security.scan"
+      ],
+      "security_classification": "policy",
+      "stride": [
+        "Tampering",
+        "Repudiation",
+        "Information Disclosure",
+        "Elevation of Privilege"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "severity": "warning",
+      "source": "asyncapi",
+      "code": "DECLARED_NATS_SUBJECT_NOT_IN_ASYNCAPI",
+      "message": "Operation configure_opa declares NATS subject pocketlab.commands.security.configure_opa, but it was not found in AsyncAPI channels.",
+      "remediation": "Regenerate AsyncAPI or correct the operation's natsSubject metadata."
+    },
+    {
+      "severity": "warning",
+      "source": "asyncapi",
+      "code": "DECLARED_NATS_SUBJECT_NOT_IN_ASYNCAPI",
+      "message": "Operation drift_apply declares NATS subject pocketlab.commands.drift.apply, but it was not found in AsyncAPI channels.",
+      "remediation": "Regenerate AsyncAPI or correct the operation's natsSubject metadata."
+    },
+    {
+      "severity": "warning",
+      "source": "asyncapi",
+      "code": "DECLARED_NATS_SUBJECT_NOT_IN_ASYNCAPI",
+      "message": "Operation drift_approve declares NATS subject pocketlab.commands.drift.approve, but it was not found in AsyncAPI channels.",
+      "remediation": "Regenerate AsyncAPI or correct the operation's natsSubject metadata."
+    },
+    {
+      "severity": "warning",
+      "source": "asyncapi",
+      "code": "DECLARED_NATS_SUBJECT_NOT_IN_ASYNCAPI",
+      "message": "Operation drift_ignore declares NATS subject pocketlab.commands.drift.ignore, but it was not found in AsyncAPI channels.",
+      "remediation": "Regenerate AsyncAPI or correct the operation's natsSubject metadata."
+    },
+    {
+      "severity": "warning",
+      "source": "asyncapi",
+      "code": "DECLARED_NATS_SUBJECT_NOT_IN_ASYNCAPI",
+      "message": "Operation drift_preview declares NATS subject pocketlab.commands.drift.preview, but it was not found in AsyncAPI channels.",
+      "remediation": "Regenerate AsyncAPI or correct the operation's natsSubject metadata."
+    },
+    {
+      "severity": "info",
+      "source": "openapi",
+      "code": "MUTATING_API_ENDPOINT_NOT_EXPLICITLY_MAPPED",
+      "message": "Mutating OpenAPI endpoint is not explicitly mapped to operation metadata: POST /api/drift/{action}",
+      "remediation": "Add apiEntrypoints to the relevant operations/*.yaml file if this endpoint triggers a typed operation."
+    },
+    {
+      "severity": "info",
+      "source": "openapi",
+      "code": "MUTATING_API_ENDPOINT_NOT_EXPLICITLY_MAPPED",
+      "message": "Mutating OpenAPI endpoint is not explicitly mapped to operation metadata: POST /api/events/publish",
+      "remediation": "Add apiEntrypoints to the relevant operations/*.yaml file if this endpoint triggers a typed operation."
+    },
+    {
+      "severity": "info",
+      "source": "openapi",
+      "code": "MUTATING_API_ENDPOINT_NOT_EXPLICITLY_MAPPED",
+      "message": "Mutating OpenAPI endpoint is not explicitly mapped to operation metadata: POST /api/fleet/agents/broadcast",
+      "remediation": "Add apiEntrypoints to the relevant operations/*.yaml file if this endpoint triggers a typed operation."
+    },
+    {
+      "severity": "info",
+      "source": "openapi",
+      "code": "MUTATING_API_ENDPOINT_NOT_EXPLICITLY_MAPPED",
+      "message": "Mutating OpenAPI endpoint is not explicitly mapped to operation metadata: POST /api/fleet/agents/{node_id}/commands",
+      "remediation": "Add apiEntrypoints to the relevant operations/*.yaml file if this endpoint triggers a typed operation."
+    },
+    {
+      "severity": "info",
+      "source": "openapi",
+      "code": "MUTATING_API_ENDPOINT_NOT_EXPLICITLY_MAPPED",
+      "message": "Mutating OpenAPI endpoint is not explicitly mapped to operation metadata: POST /api/fleet/join",
+      "remediation": "Add apiEntrypoints to the relevant operations/*.yaml file if this endpoint triggers a typed operation."
+    },
+    {
+      "severity": "info",
+      "source": "openapi",
+      "code": "MUTATING_API_ENDPOINT_NOT_EXPLICITLY_MAPPED",
+      "message": "Mutating OpenAPI endpoint is not explicitly mapped to operation metadata: POST /api/live-status/restart",
+      "remediation": "Add apiEntrypoints to the relevant operations/*.yaml file if this endpoint triggers a typed operation."
+    },
+    {
+      "severity": "info",
+      "source": "openapi",
+      "code": "MUTATING_API_ENDPOINT_NOT_EXPLICITLY_MAPPED",
+      "message": "Mutating OpenAPI endpoint is not explicitly mapped to operation metadata: POST /api/live-status/sample",
+      "remediation": "Add apiEntrypoints to the relevant operations/*.yaml file if this endpoint triggers a typed operation."
+    },
+    {
+      "severity": "info",
+      "source": "openapi",
+      "code": "MUTATING_API_ENDPOINT_NOT_EXPLICITLY_MAPPED",
+      "message": "Mutating OpenAPI endpoint is not explicitly mapped to operation metadata: POST /api/reliability/dead-letters/{dead_letter_id}/replay",
+      "remediation": "Add apiEntrypoints to the relevant operations/*.yaml file if this endpoint triggers a typed operation."
+    },
+    {
+      "severity": "info",
+      "source": "openapi",
+      "code": "MUTATING_API_ENDPOINT_NOT_EXPLICITLY_MAPPED",
+      "message": "Mutating OpenAPI endpoint is not explicitly mapped to operation metadata: POST /api/reliability/recover",
+      "remediation": "Add apiEntrypoints to the relevant operations/*.yaml file if this endpoint triggers a typed operation."
+    },
+    {
+      "severity": "info",
+      "source": "openapi",
+      "code": "MUTATING_API_ENDPOINT_NOT_EXPLICITLY_MAPPED",
+      "message": "Mutating OpenAPI endpoint is not explicitly mapped to operation metadata: POST /api/runbooks/executions/{execution_id}/approve",
+      "remediation": "Add apiEntrypoints to the relevant operations/*.yaml file if this endpoint triggers a typed operation."
+    },
+    {
+      "severity": "info",
+      "source": "openapi",
+      "code": "MUTATING_API_ENDPOINT_NOT_EXPLICITLY_MAPPED",
+      "message": "Mutating OpenAPI endpoint is not explicitly mapped to operation metadata: POST /api/runbooks/executions/{execution_id}/reject",
+      "remediation": "Add apiEntrypoints to the relevant operations/*.yaml file if this endpoint triggers a typed operation."
+    },
+    {
+      "severity": "info",
+      "source": "openapi",
+      "code": "MUTATING_API_ENDPOINT_NOT_EXPLICITLY_MAPPED",
+      "message": "Mutating OpenAPI endpoint is not explicitly mapped to operation metadata: POST /api/runbooks/{name}/execute",
+      "remediation": "Add apiEntrypoints to the relevant operations/*.yaml file if this endpoint triggers a typed operation."
+    },
+    {
+      "severity": "info",
+      "source": "openapi",
+      "code": "MUTATING_API_ENDPOINT_NOT_EXPLICITLY_MAPPED",
+      "message": "Mutating OpenAPI endpoint is not explicitly mapped to operation metadata: PUT /api/settings/governance",
+      "remediation": "Add apiEntrypoints to the relevant operations/*.yaml file if this endpoint triggers a typed operation."
+    },
+    {
+      "severity": "info",
+      "source": "openapi",
+      "code": "MUTATING_API_ENDPOINT_NOT_EXPLICITLY_MAPPED",
+      "message": "Mutating OpenAPI endpoint is not explicitly mapped to operation metadata: POST /api/workflows/rebuild",
+      "remediation": "Add apiEntrypoints to the relevant operations/*.yaml file if this endpoint triggers a typed operation."
+    },
+    {
+      "severity": "info",
+      "source": "openapi",
+      "code": "MUTATING_API_ENDPOINT_NOT_EXPLICITLY_MAPPED",
+      "message": "Mutating OpenAPI endpoint is not explicitly mapped to operation metadata: POST /api/workflows/recover",
+      "remediation": "Add apiEntrypoints to the relevant operations/*.yaml file if this endpoint triggers a typed operation."
+    },
+    {
+      "severity": "info",
+      "source": "openapi",
+      "code": "MUTATING_API_ENDPOINT_NOT_EXPLICITLY_MAPPED",
+      "message": "Mutating OpenAPI endpoint is not explicitly mapped to operation metadata: POST /api/workflows/{workflow_id}/replay",
+      "remediation": "Add apiEntrypoints to the relevant operations/*.yaml file if this endpoint triggers a typed operation."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.audit.release.applied",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.audit.runbook.approved",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.audit.runbook.executed",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.audit.runbook.rejected",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.audit.security.policy_updated",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.audit.vault.secret_rotated",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.commands.runbook.approve",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.commands.runbook.execute",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.commands.runbook.reject",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.dlq.original_subject",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.catalog.refreshed",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.command.dead_lettered",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.command.failed",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.command.queued",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.command.retry_scheduled",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.command.succeeded",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.drift.detected",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.fleet.node_heartbeat",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.fleet.node_telemetry",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.health.checked",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.operation.created",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.operation.failed",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.operation.log",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.operation.succeeded",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.operation.worker_claimed",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.release.stage.completed",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.release.workflow.completed",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.release.workflow.started",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.runbook.approval_queued",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.runbook.approval_required",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.runbook.approved",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.runbook.failed",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.runbook.queued",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.runbook.rejected",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.runbook.rejection_queued",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.runbook.resumed",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.runbook.started",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.runbook.step_failed",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.runbook.step_started",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.runbook.step_succeeded",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.runbook.succeeded",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.security.finding",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.telemetry.sampled",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.vault.secret_rotated",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.worker.heartbeat",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    },
+    {
+      "severity": "info",
+      "source": "asyncapi",
+      "code": "ASYNCAPI_CHANNEL_NOT_EXPLICITLY_MAPPED",
+      "message": "AsyncAPI channel is not explicitly mapped to operation metadata: pocketlab.events.workflow.recovery_completed",
+      "remediation": "Add natsSubject to the relevant operations/*.yaml file if this channel is operation-owned."
+    }
+  ],
+  "finding_summary": {
+    "error": 0,
+    "warning": 5,
+    "info": 62
+  },
+  "validation_commands": [
+    "task docs:threat-model:sync:check",
+    "task docs:threat-model:check",
+    "task docs:threat-model:drift",
+    "mkdocs build --strict"
+  ],
+  "remediation_commands": [
+    "task docs:api",
+    "task docs:events",
+    "task docs:operations",
+    "task docs:architecture",
+    "task docs:operations:security:enrich",
+    "task docs:threat-model",
+    "task docs:threat-model:sync"
+  ]
+}

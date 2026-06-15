@@ -1,50 +1,35 @@
 #!/usr/bin/env bash
-# ==============================================================================
-# Script: install-pwa-ui.sh
-# Purpose: Fetches the latest compiled React PWA release from GitHub
-# ==============================================================================
+set -Eeuo pipefail
+IFS=$'\n\t'
+SCRIPT_DIR="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/lib/common.sh"
+REPO="${POCKET_LAB_RELEASE_REPO:-dexter-lab-ctrl/pocket-lab}"
+PWA_DIR="${PWA_DIR:-$POCKET_LAB_PWA_DIR}"
+TMP_DIR="$TMP_ROOT/pwa_extract"
+TMP_ZIP="$TMP_ROOT/dist.zip"
 
-set -e
-
-REPO="dexter-lab-ctrl/pocket-lab"
-PWA_DIR="$HOME/pwa_dist"
-TMP_ZIP="/data/data/com.termux/files/usr/tmp/dist.zip"
-TMP_DIR="/data/data/com.termux/files/usr/tmp/pwa_extract"
-
-echo "======================================================"
-echo "🌐 Installing Pocket Lab UI from GitHub Releases..."
-echo "======================================================"
-
-# Ensure directories exist
-mkdir -p "$PWA_DIR"
-mkdir -p "$TMP_DIR"
-
-# 1. Fetch the download URL of the latest dist.zip
-echo "[1/3] Querying GitHub API for latest release..."
-DOWNLOAD_URL=$(curl -s "https://api.github.com/repos/$REPO/releases/latest" | grep "browser_download_url.*dist.zip" | cut -d '"' -f 4)
-
-if [ -z "$DOWNLOAD_URL" ]; then
-    echo "❌ ERROR: Could not find 'dist.zip' in the latest release for $REPO."
-    echo "Please ensure you have created a GitHub Release and attached 'dist.zip'."
-    exit 1
-fi
-
-# 2. Download the artifact
-echo "[2/3] Downloading artifact: $DOWNLOAD_URL"
-curl -L -o "$TMP_ZIP" "$DOWNLOAD_URL"
-
-# 3. Extract and move to PWA_DIR
-echo "[3/3] Extracting assets to $PWA_DIR..."
-unzip -q -o "$TMP_ZIP" -d "$TMP_DIR"
-
-# Handle potential nested 'dist/' folder from the zip process
-if [ -d "$TMP_DIR/dist" ]; then
-    cp -r "$TMP_DIR/dist/"* "$PWA_DIR/"
-else
-    cp -r "$TMP_DIR/"* "$PWA_DIR/"
-fi
-
-# Clean up
-rm -rf "$TMP_ZIP" "$TMP_DIR"
-
-echo "✅ UI Installation Complete! Assets are ready in $PWA_DIR."
+main() {
+  SCRIPT_NAME="install-pwa-ui.sh"; acquire_lock "$SCRIPT_NAME"; ensure_root_dirs; require_cmd curl unzip
+  ensure_dir_perm "$PWA_DIR" 755; rm -rf "$TMP_DIR"; mkdir -p "$TMP_DIR"
+  log INFO "Querying GitHub latest release for $REPO"
+  local url; url="$(curl -fsSL "https://api.github.com/repos/$REPO/releases/latest" | grep 'browser_download_url.*dist.zip' | head -1 | cut -d '"' -f 4 || true)"
+  [[ -n "$url" ]] || die "Could not find dist.zip in latest release for $REPO"
+  download_file "$url" "$TMP_ZIP"
+  unzip -q -o "$TMP_ZIP" -d "$TMP_DIR"
+  local src="$TMP_DIR"; [[ -d "$TMP_DIR/dist" ]] && src="$TMP_DIR/dist"
+  [[ -f "$src/index.html" ]] || die "Downloaded UI artifact does not contain index.html"
+  local backup
+  backup="$PWA_DIR.previous.$(date -u +%Y%m%d%H%M%S)"
+  if [[ -f "$PWA_DIR/index.html" ]]; then
+    cp -a "$PWA_DIR" "$backup"
+  fi
+  if ! rsync -a --delete "$src/" "$PWA_DIR/" 2>/dev/null; then
+    rm -rf "${PWA_DIR:?}/"*
+    cp -a "$src/." "$PWA_DIR/"
+  fi
+  rm -rf "$TMP_DIR" "$TMP_ZIP"
+  mark_done pwa_ui_ready
+  log INFO "PWA UI assets installed atomically in $PWA_DIR"
+}
+main "$@"

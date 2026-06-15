@@ -1,0 +1,85 @@
+---
+- name: nats | validate production posture
+  ansible.builtin.assert:
+    that:
+      - nats_enabled | bool
+      - nats_require_jetstream | bool
+      - nats_require_auth | bool
+      - nats_listen_host in ['127.0.0.1', 'localhost'] or pocketlab_nats_tls_enabled | bool
+    fail_msg: "Production Pocket Lab requires authenticated JetStream; non-local NATS listeners must enable TLS/mTLS."
+
+- name: nats | verify nats-server binary is installed
+  ansible.builtin.command: nats-server -v
+  changed_when: false
+  register: nats_server_version
+
+- name: nats | ensure config and store directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0750'
+  loop:
+    - "{{ nats_config_dir }}"
+    - "{{ nats_store_dir }}"
+
+- name: nats | derive persistent credentials
+  ansible.builtin.set_fact:
+    nats_api_password_effective: "{{ pocketlab_nats_api_password if (pocketlab_nats_api_password | length) > 0 else lookup('password', nats_config_dir ~ '/api.password length=48 chars=ascii_letters,digits') }}"
+    nats_worker_password_effective: "{{ pocketlab_nats_worker_password if (pocketlab_nats_worker_password | length) > 0 else lookup('password', nats_config_dir ~ '/worker.password length=48 chars=ascii_letters,digits') }}"
+    nats_agent_password_effective: "{{ pocketlab_nats_agent_password if (pocketlab_nats_agent_password | length) > 0 else lookup('password', nats_config_dir ~ '/agent.password length=48 chars=ascii_letters,digits') }}"
+  no_log: true
+
+- name: nats | write runtime credentials env file for launcher and agents
+  ansible.builtin.copy:
+    dest: "{{ nats_env_path }}"
+    mode: '0600'
+    content: |
+      POCKETLAB_NATS_API_USER={{ pocketlab_nats_api_user }}
+      POCKETLAB_NATS_API_PASSWORD={{ nats_api_password_effective }}
+      POCKETLAB_NATS_WORKER_USER={{ pocketlab_nats_worker_user }}
+      POCKETLAB_NATS_WORKER_PASSWORD={{ nats_worker_password_effective }}
+      POCKETLAB_NATS_AGENT_USER={{ pocketlab_nats_agent_user }}
+      POCKETLAB_NATS_AGENT_PASSWORD={{ nats_agent_password_effective }}
+  no_log: true
+
+- name: nats | render authenticated JetStream server config
+  ansible.builtin.template:
+    src: nats-server.conf.j2
+    dest: "{{ nats_config_path }}"
+    mode: '0600'
+  notify: nats configuration updated
+  no_log: true
+
+- name: nats | write non-secret manifest
+  ansible.builtin.copy:
+    dest: "{{ nats_config_dir }}/manifest.json"
+    mode: '0640'
+    content: |
+      {
+        "server_name": "{{ nats_server_name }}",
+        "config_path": "{{ nats_config_path }}",
+        "store_dir": "{{ nats_store_dir }}",
+        "nats_url": "{{ pocketlab_nats_url }}",
+        "monitor_url": "{{ pocketlab_nats_monitor_url }}",
+        "jetstream_required": {{ nats_require_jetstream | bool | lower }},
+        "auth_required": {{ nats_require_auth | bool | lower }},
+        "tls_enabled": {{ pocketlab_nats_tls_enabled | bool | lower }},
+        "api_user": "{{ pocketlab_nats_api_user }}",
+        "worker_user": "{{ pocketlab_nats_worker_user }}",
+        "agent_user": "{{ pocketlab_nats_agent_user }}"
+      }
+
+- name: nats | probe monitor endpoint when service is already running
+  ansible.builtin.uri:
+    url: "{{ pocketlab_nats_monitor_url }}"
+    method: GET
+    status_code: 200
+    return_content: true
+  register: nats_monitor_probe
+  failed_when: false
+  changed_when: false
+
+- name: nats | report startup command when NATS is not yet running
+  ansible.builtin.debug:
+    msg: "NATS config is ready. Start or restart with: {{ nats_start_command }}"
+  when: nats_monitor_probe.status | default(0) != 200

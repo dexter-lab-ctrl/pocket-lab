@@ -1,0 +1,44 @@
+server_name: {{ nats_server_name }}
+listen: {{ nats_listen_host }}:{{ nats_client_port }}
+http: {{ nats_monitor_host }}:{{ nats_monitor_port }}
+{% if pocketlab_nats_tls_enabled | bool %}
+tls {
+  ca_file: "{{ pocketlab_nats_tls_ca }}"
+  cert_file: "{{ pocketlab_nats_tls_cert }}"
+  key_file: "{{ pocketlab_nats_tls_key }}"
+  verify: true
+}
+{% endif %}
+jetstream {
+  store_dir: "{{ nats_store_dir }}"
+  max_mem_store: {{ nats_max_mem_store }}
+  max_file_store: {{ nats_max_file_store }}
+}
+authorization {
+  users: [
+    {
+      user: "{{ pocketlab_nats_api_user }}"
+      password: "{{ nats_api_password_effective }}"
+      permissions: {
+        publish: ["$JS.API.>", "pocketlab.commands.>", "pocketlab.events.>", "pocketlab.audit.>", "pocketlab.dlq.>"]
+        subscribe: ["_INBOX.>", "pocketlab.events.>", "pocketlab.audit.>"]
+      }
+    },
+    {
+      user: "{{ pocketlab_nats_worker_user }}"
+      password: "{{ nats_worker_password_effective }}"
+      permissions: {
+        publish: ["$JS.API.>", "pocketlab.events.>", "pocketlab.audit.>", "pocketlab.dlq.>"]
+        subscribe: ["_INBOX.>", "pocketlab.commands.>"]
+      }
+    },
+    {
+      user: "{{ pocketlab_nats_agent_user }}"
+      password: "{{ nats_agent_password_effective }}"
+      permissions: {
+        publish: ["pocketlab.events.fleet.>", "pocketlab.events.telemetry.>", "pocketlab.events.health.>"]
+        subscribe: ["_INBOX.>", "pocketlab.commands.node.>"]
+      }
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "apiVersion": "pocketlab.io/v1alpha1",
+  "kind": "RunbookValidationGatesReport",
+  "metadata": {
+    "name": "pocketlab-runbook-validation-gates",
+    "title": "Pocket Lab Tier 7C Runbook Validation Gates",
+    "tier": "7C",
+    "generatedAt": "2026-06-14T08:55:03.458940+00:00",
+    "sourceOfTruth": "runbooks/*.yaml and operations/*.yaml"
+  },
+  "summary": {
+    "runbookCount": 5,
+    "operationReferenceCount": 20,
+    "gateCount": 10,
+    "blockingFailureCount": 0,
+    "warningCount": 0,
+    "status": "pass"
+  },
+  "gates": [
+    {
+      "id": "RB-GATE-001",
+      "title": "Runbook schema and catalog validation",
+      "severity": "blocking",
+      "status": "pass",
+      "message": "All runbooks satisfy the Tier 7A schema and typed-operation catalog validation.",
+      "evidence": [
+        "runbooks/*.yaml",
+        "operations/*.yaml"
+      ],
+      "remediation": "Review the generated validation report and update runbooks/*.yaml."
+    },
+    {
+      "id": "RB-GATE-002",
+      "title": "No direct shell or script execution in runbooks",
+      "severity": "blocking",
+      "status": "pass",
+      "message": "No direct shell/script execution fields were found. Runbooks preserve typed-operation-only execution semantics.",
+      "evidence": [
+        "runbooks/*.yaml"
+      ],
+      "remediation": "Review the generated validation report and update runbooks/*.yaml."
+    },
+    {
+      "id": "RB-GATE-003",
+      "title": "Approval and policy gate",
+      "severity": "blocking",
+      "status": "pass",
+      "message": "High-impact and approval-gated runbooks include enterprise approval metadata.",
+      "evidence": [
+        "runbooks/*.yaml"
+      ],
+      "remediation": "Review the generated validation report and update runbooks/*.yaml."
+    },
+    {
+      "id": "RB-GATE-004",
+      "title": "Evidence coverage gate",
+      "severity": "blocking",
+      "status": "pass",
+      "message": "All runbooks declare operation events, audit events, and workflow journal evidence.",
+      "evidence": [
+        "runbooks/*.yaml"
+      ],
+      "remediation": "Review the generated validation report and update runbooks/*.yaml."
+    },
+    {
+      "id": "RB-GATE-005",
+      "title": "Typed operation contract evidence gate",
+      "severity": "warning",
+      "status": "pass",
+      "message": "All runbook steps reference typed operations with API and NATS evidence metadata.",
+      "evidence": [
+        "operations/*.yaml",
+        "runbooks/*.yaml"
+      ],
+      "remediation": "Review the generated validation report and update runbooks/*.yaml."
+    },
+    {
+      "id": "RB-GATE-006",
+      "title": "Timeout and bounded execution gate",
+      "severity": "warning",
+      "status": "pass",
+      "message": "Runbook timeout metadata is bounded within Tier 7C guidance.",
+      "evidence": [
+        "runbooks/*.yaml"
+      ],
+      "remediation": "Review the generated validation report and update runbooks/*.yaml."
+    },
+    {
+      "id": "RB-GATE-007",
+      "title": "Simple Mode language gate",
+      "severity": "warning",
+      "status": "pass",
+      "message": "Simple Mode runbook labels avoid the configured technical terms.",
+      "evidence": [
+        "runbooks/*.yaml"
+      ],
+      "remediation": "Review the generated validation report and update runbooks/*.yaml."
+    },
+    {
+      "id": "RB-GATE-008",
+      "title": "Generated documentation freshness gate",
+      "severity": "blocking",
+      "status": "pass",
+      "message": "Generated runbook documentation is present for the current catalog.",
+      "evidence": [
+        "docs/operations/generated/runbooks/"
+      ],
+      "remediation": "Review the generated validation report and update runbooks/*.yaml."
+    },
+    {
+      "id": "RB-GATE-009",
+      "title": "Retired architecture token gate",
+      "severity": "blocking",
+      "status": "pass",
+      "message": "No retired architecture tokens were found in Tier 7 runbook paths.",
+      "evidence": [
+        "runbooks/",
+        "scripts/docs/",
+        "docs/operations/generated/runbooks/"
+      ],
+      "remediation": "Review the generated validation report and update runbooks/*.yaml."
+    },
+    {
+      "id": "RB-GATE-010",
+      "title": "Rollback and safety review gate",
+      "severity": "warning",
+      "status": "pass",
+      "message": "High-impact runbooks include rollback and safety metadata suitable for review.",
+      "evidence": [
+        "runbooks/*.yaml"
+      ],
+      "remediation": "Review the generated validation report and update runbooks/*.yaml."
+    }
+  ],
+  "remediation": []
+}

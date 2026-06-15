@@ -10,7 +10,8 @@
 
 - import_playbook: playbooks/50_tailscale.yml
 - import_playbook: playbooks/60_caddy.yml
-- import_playbook: playbooks/70_dashboard_api.yml
+- import_playbook: playbooks/65_nats.yml
+- import_playbook: playbooks/70_fastapi_control_plane.yml
 - import_playbook: playbooks/80_catalog_seed.yml
 - import_playbook: playbooks/90_workloads.yml
 - import_playbook: playbooks/95_backup_restore.yml

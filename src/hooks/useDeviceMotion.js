@@ -28,7 +28,7 @@ export function useDeviceMotion() {
 
     window.addEventListener('deviceorientation', handleOrientation);
     window.addEventListener('mousemove', handleMouseMove);
-    
+
     return () => {
       window.removeEventListener('deviceorientation', handleOrientation);
       window.removeEventListener('mousemove', handleMouseMove);
@@ -41,13 +41,13 @@ export function useDeviceMotion() {
       setMotionEnabled(false);
       return;
     }
-    
+
     if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
       try {
         const permission = await DeviceOrientationEvent.requestPermission();
         if (permission === 'granted') setMotionEnabled(true);
       } catch (error) {
-        setMotionEnabled(true); 
+        setMotionEnabled(true);
       }
     } else {
       setMotionEnabled(true);

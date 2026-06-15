@@ -1,34 +1,30 @@
----
 - name: vault | validate inputs
   ansible.builtin.assert:
     that:
-      - vault_config_path is defined
-      - vault_data_dir is defined
-      - vault_api_addr is defined
-      - vault_listener_addr is defined
-      - vault_policies is iterable
-      - vault_database_connections is iterable
-      - vault_database_roles is iterable
-      - vault_approle_roles is iterable
-    fail_msg: "Vault role requires config, storage, policy, database, and AppRole settings."
-
+    - vault_config_path is defined
+    - vault_data_dir is defined
+    - vault_api_addr is defined
+    - vault_listener_addr is defined
+    - vault_policies is iterable
+    - vault_database_connections is iterable
+    - vault_database_roles is iterable
+    - vault_approle_roles is iterable
+    fail_msg: Vault role requires config, storage, policy, database, and AppRole settings.
 - name: vault | ensure directories exist
   ansible.builtin.file:
-    path: "{{ item }}"
+    path: '{{ item }}'
     state: directory
     mode: '0750'
   loop:
-    - "{{ vault_config_dir }}"
-    - "{{ vault_data_dir }}"
-    - "{{ vault_approle_exports_dir }}"
-    - "{{ vault_config_dir }}/audit"
-
+  - '{{ vault_config_dir }}'
+  - '{{ vault_data_dir }}'
+  - '{{ vault_approle_exports_dir }}'
+  - '{{ vault_config_dir }}/audit'
 - name: vault | render configuration
   ansible.builtin.template:
     src: vault.hcl.j2
-    dest: "{{ vault_config_path }}"
+    dest: '{{ vault_config_path }}'
     mode: '0640'
-
 - name: vault | start vault daemon natively via PM2
   ansible.builtin.shell: |
     if ! pm2 describe vault >/dev/null 2>&1; then
@@ -36,254 +32,232 @@
       pm2 save
     fi
   changed_when: false
-
 - name: vault | wait for daemon to initialize
   ansible.builtin.pause:
     seconds: 3
-
 - name: vault | probe health endpoint
   ansible.builtin.uri:
-    url: "{{ vault_api_addr }}/v1/sys/health"
+    url: '{{ vault_api_addr }}/v1/sys/health'
     method: GET
-    status_code: [200, 429, 472, 473, 501, 503]
+    status_code:
+    - 200
+    - 429
+    - 472
+    - 473
+    - 501
+    - 503
   register: vault_health
   changed_when: false
-
 - name: vault | determine auth method
   ansible.builtin.set_fact:
-    vault_effective_token: "{{ vault_token | default('', true) }}"
+    vault_effective_token: '{{ vault_token | default('''', true) }}'
   no_log: true
-
 - name: vault | login with AppRole when token is absent
   when:
-    - vault_effective_token | length == 0
-    - vault_role_id | length > 0
-    - vault_secret_id | length > 0
+  - vault_effective_token | length == 0
+  - vault_role_id | length > 0
+  - vault_secret_id | length > 0
   ansible.builtin.uri:
-    url: "{{ vault_api_addr }}/v1/auth/{{ vault_approle_mount }}/login"
+    url: '{{ vault_api_addr }}/v1/auth/{{ vault_approle_mount }}/login'
     method: POST
     body_format: json
     body:
-      role_id: "{{ vault_role_id }}"
-      secret_id: "{{ vault_secret_id }}"
+      role_id: '{{ vault_role_id }}'
+      secret_id: '{{ vault_secret_id }}'
     status_code: 200
   register: vault_login
   changed_when: false
   no_log: true
-
 - name: vault | select AppRole token
   when: vault_login is defined and vault_login.json.auth.client_token is defined
   ansible.builtin.set_fact:
-    vault_effective_token: "{{ vault_login.json.auth.client_token }}"
+    vault_effective_token: '{{ vault_login.json.auth.client_token }}'
   no_log: true
-
 - name: vault | ensure token available
   ansible.builtin.assert:
     that:
-      - vault_effective_token | string | length > 0
-    fail_msg: "Vault token or AppRole credentials are required to reconcile Vault."
+    - vault_effective_token | string | length > 0
+    fail_msg: Vault token or AppRole credentials are required to reconcile Vault.
   no_log: true
-
 - name: vault | read current mounts
   ansible.builtin.uri:
-    url: "{{ vault_api_addr }}/v1/sys/mounts"
+    url: '{{ vault_api_addr }}/v1/sys/mounts'
     method: GET
     headers:
-      X-Vault-Token: "{{ vault_effective_token }}"
+      X-Vault-Token: '{{ vault_effective_token }}'
     status_code: 200
   register: vault_mounts_current
   changed_when: false
   no_log: true
-
 - name: vault | enable mounts
-  loop: "{{ vault_mounts }}"
+  loop: '{{ vault_mounts }}'
   loop_control:
-    label: "{{ item.path }}"
-  when: "(vault_mounts_current.json.data | default({})) is not mapping or item.path ~ '/' not in vault_mounts_current.json.data"
+    label: '{{ item.path }}'
+  when: (vault_mounts_current.json.data | default({})) is not mapping or item.path
+    ~ '/' not in vault_mounts_current.json.data
   ansible.builtin.uri:
-    url: "{{ vault_api_addr }}/v1/sys/mounts/{{ item.path }}"
+    url: '{{ vault_api_addr }}/v1/sys/mounts/{{ item.path }}'
     method: POST
     headers:
-      X-Vault-Token: "{{ vault_effective_token }}"
+      X-Vault-Token: '{{ vault_effective_token }}'
     body_format: json
-    body: "{{ {'type': 'kv', 'options': {'version': '2'}} if item.type == 'kv-v2' else {'type': item.type} }}"
-    status_code: [200, 204]
+    body: '{{ {''type'': ''kv'', ''options'': {''version'': ''2''}} if item.type ==
+      ''kv-v2'' else {''type'': item.type} }}'
+    status_code:
+    - 200
+    - 204
   changed_when: true
   no_log: true
-
 - name: vault | configure audit device
   when: vault_manage_audit | bool
   ansible.builtin.uri:
-    url: "{{ vault_api_addr }}/v1/sys/audit/file"
+    url: '{{ vault_api_addr }}/v1/sys/audit/file'
     method: PUT
     headers:
-      X-Vault-Token: "{{ vault_effective_token }}"
+      X-Vault-Token: '{{ vault_effective_token }}'
     body_format: json
     body:
       type: file
       options:
-        file_path: "{{ vault_audit_path }}"
-    status_code: [200, 204]
+        file_path: '{{ vault_audit_path }}'
+    status_code:
+    - 200
+    - 204
   register: vault_audit_result
-  changed_when: "vault_audit_result.status | default(0) in [200, 204]"
+  changed_when: vault_audit_result.status | default(0) in [200, 204]
   failed_when: false
   no_log: true
-
 - name: vault | apply policies
   when: vault_manage_policies | bool
-  loop: "{{ vault_policies }}"
+  loop: '{{ vault_policies }}'
   loop_control:
-    label: "{{ item.name }}"
+    label: '{{ item.name }}'
   ansible.builtin.uri:
-    url: "{{ vault_api_addr }}/v1/sys/policies/acl/{{ item.name }}"
+    url: '{{ vault_api_addr }}/v1/sys/policies/acl/{{ item.name }}'
     method: PUT
     headers:
-      X-Vault-Token: "{{ vault_effective_token }}"
+      X-Vault-Token: '{{ vault_effective_token }}'
     body_format: json
     body:
-      policy: "{{ item.rules }}"
-    status_code: [200, 204]
+      policy: '{{ item.rules }}'
+    status_code:
+    - 200
+    - 204
   changed_when: true
   no_log: true
-
 - name: vault | configure database connections
   when: vault_manage_database_engine | bool
-  loop: "{{ vault_database_connections }}"
+  loop: '{{ vault_database_connections }}'
   loop_control:
-    label: "{{ item.name }}"
+    label: '{{ item.name }}'
   ansible.builtin.uri:
-    url: "{{ vault_api_addr }}/v1/{{ vault_database_mount }}/config/{{ item.name }}"
+    url: '{{ vault_api_addr }}/v1/{{ vault_database_mount }}/config/{{ item.name }}'
     method: POST
     headers:
-      X-Vault-Token: "{{ vault_effective_token }}"
+      X-Vault-Token: '{{ vault_effective_token }}'
     body_format: json
     body:
-      plugin_name: "{{ item.plugin_name | default('mysql-database-plugin') }}"
-      allowed_roles: "{{ item.allowed_roles | default([]) | join(',') }}"
-      connection_url: "{{ item.username }}:{{ item.password }}@tcp({{ item.host | default('127.0.0.1') }}:{{ item.port | default(3306) }})/"
-      username: "{{ item.username }}"
-      password: "{{ item.password }}"
-    status_code: [200, 204]
+      plugin_name: '{{ item.plugin_name | default(''mysql-database-plugin'') }}'
+      allowed_roles: '{{ item.allowed_roles | default([]) | join('','') }}'
+      connection_url: '{{ item.username }}:{{ item.password }}@tcp({{ item.host |
+        default(''127.0.0.1'') }}:{{ item.port | default(3306) }})/'
+      username: '{{ item.username }}'
+      password: '{{ item.password }}'
+    status_code:
+    - 200
+    - 204
   changed_when: true
   no_log: true
-
 - name: vault | configure database roles
   when: vault_manage_database_roles | bool
-  loop: "{{ vault_database_roles }}"
+  loop: '{{ vault_database_roles }}'
   loop_control:
-    label: "{{ item.name }}"
+    label: '{{ item.name }}'
   ansible.builtin.uri:
-    url: "{{ vault_api_addr }}/v1/{{ vault_database_mount }}/roles/{{ item.name }}"
+    url: '{{ vault_api_addr }}/v1/{{ vault_database_mount }}/roles/{{ item.name }}'
     method: POST
     headers:
-      X-Vault-Token: "{{ vault_effective_token }}"
+      X-Vault-Token: '{{ vault_effective_token }}'
     body_format: json
     body:
-      db_name: "{{ item.db_name }}"
-      creation_statements: "{{ item.creation_statements }}"
-      revocation_statements: "{{ item.revocation_statements }}"
-      default_ttl: "{{ item.default_ttl | default('1h') }}"
-      max_ttl: "{{ item.max_ttl | default('24h') }}"
-    status_code: [200, 204]
+      db_name: '{{ item.db_name }}'
+      creation_statements: '{{ item.creation_statements }}'
+      revocation_statements: '{{ item.revocation_statements }}'
+      default_ttl: '{{ item.default_ttl | default(''1h'') }}'
+      max_ttl: '{{ item.max_ttl | default(''24h'') }}'
+    status_code:
+    - 200
+    - 204
   changed_when: true
   no_log: true
-
 - name: vault | enable AppRole auth
   when: vault_manage_approle | bool
   ansible.builtin.uri:
-    url: "{{ vault_api_addr }}/v1/sys/auth/{{ vault_approle_mount }}"
+    url: '{{ vault_api_addr }}/v1/sys/auth/{{ vault_approle_mount }}'
     method: POST
     headers:
-      X-Vault-Token: "{{ vault_effective_token }}"
+      X-Vault-Token: '{{ vault_effective_token }}'
     body_format: json
     body:
       type: approle
-    status_code: [200, 204, 400]
+    status_code:
+    - 200
+    - 204
+    - 400
   changed_when: true
   failed_when: false
   no_log: true
-
 - name: vault | reconcile AppRole roles
   when: vault_manage_approle | bool
-  loop: "{{ vault_approle_roles }}"
+  loop: '{{ vault_approle_roles }}'
   loop_control:
-    label: "{{ item.name }}"
+    label: '{{ item.name }}'
   ansible.builtin.uri:
-    url: "{{ vault_api_addr }}/v1/auth/{{ vault_approle_mount }}/role/{{ item.name }}"
+    url: '{{ vault_api_addr }}/v1/auth/{{ vault_approle_mount }}/role/{{ item.name
+      }}'
     method: POST
     headers:
-      X-Vault-Token: "{{ vault_effective_token }}"
+      X-Vault-Token: '{{ vault_effective_token }}'
     body_format: json
     body:
-      policies: "{{ item.policies | join(',') }}"
-      token_ttl: "{{ item.token_ttl | default('1h') }}"
-      token_max_ttl: "{{ item.token_max_ttl | default('24h') }}"
-      secret_id_ttl: "{{ item.secret_id_ttl | default('24h') }}"
-      secret_id_num_uses: "{{ item.secret_id_num_uses | default(0) }}"
-      token_num_uses: "{{ item.token_num_uses | default(0) }}"
-    status_code: [200, 204]
+      policies: '{{ item.policies | join('','') }}'
+      token_ttl: '{{ item.token_ttl | default(''1h'') }}'
+      token_max_ttl: '{{ item.token_max_ttl | default(''24h'') }}'
+      secret_id_ttl: '{{ item.secret_id_ttl | default(''24h'') }}'
+      secret_id_num_uses: '{{ item.secret_id_num_uses | default(0) }}'
+      token_num_uses: '{{ item.token_num_uses | default(0) }}'
+    status_code:
+    - 200
+    - 204
   changed_when: true
   no_log: true
-
 - name: vault | export AppRole ids when requested
-  when: vault_export_approle_ids | bool
-  loop: "{{ vault_approle_roles }}"
+  ansible.builtin.include_tasks: export_approle_ids.yml
+  loop: '{{ vault_approle_roles }}'
   loop_control:
-    label: "{{ item.name }}"
-  block:
-    - name: vault | read role id
-      ansible.builtin.uri:
-        url: "{{ vault_api_addr }}/v1/auth/{{ vault_approle_mount }}/role/{{ item.name }}/role-id"
-        method: GET
-        headers:
-          X-Vault-Token: "{{ vault_effective_token }}"
-        status_code: 200
-      register: vault_role_id_result
-      changed_when: false
-      no_log: true
-
-    - name: vault | create secret id
-      ansible.builtin.uri:
-        url: "{{ vault_api_addr }}/v1/auth/{{ vault_approle_mount }}/role/{{ item.name }}/secret-id"
-        method: POST
-        headers:
-          X-Vault-Token: "{{ vault_effective_token }}"
-        status_code: 200
-      register: vault_secret_id_result
-      changed_when: true
-      no_log: true
-
-    - name: vault | store AppRole bundle
-      ansible.builtin.copy:
-        dest: "{{ vault_approle_exports_dir }}/{{ item.name }}.json"
-        mode: '0600'
-        content: |
-          {
-            "role_id": "{{ vault_role_id_result.json.data.role_id }}",
-            "secret_id": "{{ vault_secret_id_result.json.data.secret_id }}"
-          }
-      no_log: true
-
+    loop_var: vault_approle_role
+  when: vault_export_approle_ids | bool
 - name: vault | write secret bundles
   when: vault_secret_bundles | length > 0
-  loop: "{{ vault_secret_bundles }}"
+  loop: '{{ vault_secret_bundles }}'
   loop_control:
-    label: "{{ item.path }}"
+    label: '{{ item.path }}'
   ansible.builtin.uri:
-    url: "{{ vault_api_addr }}/v1/{{ vault_kv_path }}/data/{{ item.path }}"
+    url: '{{ vault_api_addr }}/v1/{{ vault_kv_path }}/data/{{ item.path }}'
     method: POST
     headers:
-      X-Vault-Token: "{{ vault_effective_token }}"
+      X-Vault-Token: '{{ vault_effective_token }}'
     body_format: json
     body:
-      data: "{{ item.data }}"
-    status_code: [200, 204]
+      data: '{{ item.data }}'
+    status_code:
+    - 200
+    - 204
   changed_when: true
   no_log: true
-
 - name: vault | write audit summary
   ansible.builtin.copy:
-    dest: "{{ common_state_dir }}/vault-state.json"
+    dest: '{{ common_state_dir }}/vault-state.json'
     mode: '0640'
     content: |
       {

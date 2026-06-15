@@ -1,0 +1,687 @@
+{
+  "apiVersion": "pocketlab.io/v1alpha1",
+  "kind": "RunbookCatalog",
+  "metadata": {
+    "name": "pocketlab-runbook-catalog",
+    "title": "Pocket Lab Runbook Metadata Catalog",
+    "tier": "7A",
+    "generatedAt": "2026-06-14T08:55:03.381671+00:00",
+    "sourceOfTruth": "runbooks/*.yaml"
+  },
+  "summary": {
+    "runbookCount": 5,
+    "operationReferenceCount": 20,
+    "approvalRunbookCount": 5,
+    "categories": [
+      "disaster-recovery",
+      "drift-management",
+      "recovery",
+      "release-management",
+      "security"
+    ],
+    "severities": [
+      "critical",
+      "high",
+      "medium"
+    ]
+  },
+  "runbooks": [
+    {
+      "name": "backup_restore_verify",
+      "title": "Backup Restore Verification",
+      "description": "Prove backup integrity and controlled restore readiness without bypassing typed operations.",
+      "owner": "platform-operations",
+      "tags": [
+        "backup",
+        "disaster-recovery",
+        "validation"
+      ],
+      "sourceFile": "runbooks/backup_restore_verify.yaml",
+      "professionalLabel": "Verify Backup and Restore Readiness",
+      "simpleLabel": "Check Saved Copy and Recovery Readiness",
+      "category": "disaster-recovery",
+      "severity": "high",
+      "trigger": {
+        "manual": true,
+        "scheduleHint": "before-release-or-maintenance"
+      },
+      "requiresApproval": true,
+      "policy": {
+        "approvalReason": "Restore validation can touch backup and recovery paths.",
+        "minimumRole": "operator",
+        "evidenceRequired": true
+      },
+      "approval": {},
+      "governance": {},
+      "prerequisites": [
+        "Backup destination has sufficient free space.",
+        "Operator has selected the backup reference to verify.",
+        "Restore target is clearly identified."
+      ],
+      "steps": [
+        {
+          "order": 1,
+          "name": "create_backup",
+          "title": "Create Backup",
+          "operation": "backup_now",
+          "operationTitle": "Create Backup",
+          "professionalOperationLabel": "Backup now",
+          "simpleOperationLabel": "Save a copy",
+          "natsSubject": "pocketlab.commands.operation.execute",
+          "apiEntrypoints": [
+            "/api/operations/execute"
+          ],
+          "description": "Create a fresh backup snapshot for verification.",
+          "requiresApproval": false,
+          "timeoutSeconds": 600,
+          "onFailure": "stop"
+        },
+        {
+          "order": 2,
+          "name": "verify_backup",
+          "title": "Verify Backup",
+          "operation": "backup_verify",
+          "operationTitle": "Verify Backup",
+          "professionalOperationLabel": "Verify backup",
+          "simpleOperationLabel": "Check saved copy",
+          "natsSubject": "pocketlab.commands.operation.execute",
+          "apiEntrypoints": [
+            "/api/operations/execute"
+          ],
+          "description": "Verify manifest and backup integrity before any restore path is considered.",
+          "requiresApproval": false,
+          "timeoutSeconds": 600,
+          "onFailure": "stop"
+        },
+        {
+          "order": 3,
+          "name": "restore_backup",
+          "title": "Restore Backup",
+          "operation": "restore_backup",
+          "operationTitle": "Restore Backup",
+          "professionalOperationLabel": "Restore backup",
+          "simpleOperationLabel": "Restore saved copy",
+          "natsSubject": "pocketlab.commands.operation.execute",
+          "apiEntrypoints": [
+            "/api/operations/execute",
+            "/api/operations/preview"
+          ],
+          "description": "Execute the typed restore operation only after backup verification succeeds.",
+          "requiresApproval": true,
+          "timeoutSeconds": 1200,
+          "onFailure": "stop"
+        },
+        {
+          "order": 4,
+          "name": "post_restore_health",
+          "title": "Post-restore Health Check",
+          "operation": "health_check",
+          "operationTitle": "Run Health Check",
+          "professionalOperationLabel": "Refresh health snapshot",
+          "simpleOperationLabel": "Check system health",
+          "natsSubject": "pocketlab.commands.health.check",
+          "apiEntrypoints": [
+            "/api/health/check"
+          ],
+          "description": "Confirm runtime health after restore.",
+          "requiresApproval": false,
+          "timeoutSeconds": 300,
+          "onFailure": "stop"
+        }
+      ],
+      "rollback": {
+        "operation": "restore_backup",
+        "requiresApproval": true,
+        "description": "Restore the prior known-good backup if verification restore fails."
+      },
+      "evidence": [
+        "operation_events",
+        "audit_events",
+        "workflow_journal",
+        "backup_manifest",
+        "health_snapshot"
+      ],
+      "safety": {
+        "impact": "high",
+        "notes": "Restore execution requires explicit approval and auditable evidence."
+      }
+    },
+    {
+      "name": "drift_detect_approve_apply",
+      "title": "Drift Detect, Approve, and Apply",
+      "description": "Guided drift remediation using preview, approval, and typed apply operations.",
+      "owner": "platform-operations",
+      "tags": [
+        "drift",
+        "remediation",
+        "approval"
+      ],
+      "sourceFile": "runbooks/drift_detect_approve_apply.yaml",
+      "professionalLabel": "Detect, Approve, and Apply Drift Remediation",
+      "simpleLabel": "Review and Fix Something Changed",
+      "category": "drift-management",
+      "severity": "medium",
+      "trigger": {
+        "manual": true,
+        "eventHints": [
+          "pocketlab.events.operation.succeeded"
+        ]
+      },
+      "requiresApproval": true,
+      "policy": {
+        "approvalReason": "Drift remediation changes desired or runtime state.",
+        "minimumRole": "operator",
+        "evidenceRequired": true
+      },
+      "approval": {},
+      "governance": {},
+      "prerequisites": [
+        "Desired state has been reviewed.",
+        "Operator understands the proposed remediation."
+      ],
+      "steps": [
+        {
+          "order": 1,
+          "name": "scan_drift",
+          "title": "Scan Drift",
+          "operation": "drift_scan",
+          "operationTitle": "Run Drift Scan",
+          "professionalOperationLabel": "Run drift scan",
+          "simpleOperationLabel": "Check what changed",
+          "natsSubject": "pocketlab.commands.drift.scan",
+          "apiEntrypoints": [
+            "/api/operations/execute"
+          ],
+          "description": "Detect configuration or runtime drift.",
+          "requiresApproval": false,
+          "timeoutSeconds": 300,
+          "onFailure": "stop"
+        },
+        {
+          "order": 2,
+          "name": "preview_remediation",
+          "title": "Preview Remediation",
+          "operation": "drift_preview",
+          "operationTitle": "Preview Drift Remediation",
+          "professionalOperationLabel": "Preview remediation",
+          "simpleOperationLabel": "Preview fix",
+          "natsSubject": "pocketlab.commands.drift.preview",
+          "apiEntrypoints": [
+            "/api/operations/preview",
+            "/api/operations/execute"
+          ],
+          "description": "Produce a preview before applying any changes.",
+          "requiresApproval": false,
+          "timeoutSeconds": 300,
+          "onFailure": "stop"
+        },
+        {
+          "order": 3,
+          "name": "approve_remediation",
+          "title": "Approve Remediation",
+          "operation": "drift_approve",
+          "operationTitle": "Approve Drift Remediation",
+          "professionalOperationLabel": "Approve remediation",
+          "simpleOperationLabel": "Approve fix",
+          "natsSubject": "pocketlab.commands.drift.approve",
+          "apiEntrypoints": [
+            "/api/operations/execute"
+          ],
+          "description": "Record approval for the proposed drift remediation.",
+          "requiresApproval": true,
+          "timeoutSeconds": 300,
+          "onFailure": "stop"
+        },
+        {
+          "order": 4,
+          "name": "apply_remediation",
+          "title": "Apply Remediation",
+          "operation": "drift_apply",
+          "operationTitle": "Apply Drift Remediation",
+          "professionalOperationLabel": "Apply remediation",
+          "simpleOperationLabel": "Fix issue",
+          "natsSubject": "pocketlab.commands.drift.apply",
+          "apiEntrypoints": [
+            "/api/operations/execute"
+          ],
+          "description": "Apply approved remediation through typed operation execution.",
+          "requiresApproval": true,
+          "timeoutSeconds": 900,
+          "onFailure": "stop"
+        }
+      ],
+      "rollback": {
+        "operation": "drift_ignore",
+        "requiresApproval": true,
+        "description": "Mark or ignore remediation only after operator review if apply is not safe."
+      },
+      "evidence": [
+        "operation_events",
+        "audit_events",
+        "workflow_journal",
+        "drift_report",
+        "approval_record"
+      ],
+      "safety": {
+        "impact": "medium",
+        "notes": "Preview and approval steps are required before apply."
+      }
+    },
+    {
+      "name": "recover_failed_install",
+      "title": "Recover Failed Install",
+      "description": "Guided recovery path for a failed Apps & Services / Blueprint installation.",
+      "owner": "platform-operations",
+      "tags": [
+        "apps",
+        "recovery",
+        "blueprint",
+        "simple-mode"
+      ],
+      "sourceFile": "runbooks/recover_failed_install.yaml",
+      "professionalLabel": "Recover Failed Blueprint Deployment",
+      "simpleLabel": "Fix Failed App Install",
+      "category": "recovery",
+      "severity": "high",
+      "trigger": {
+        "manual": true,
+        "eventHints": [
+          "pocketlab.events.operation.failed",
+          "pocketlab.dlq.original_subject"
+        ]
+      },
+      "requiresApproval": true,
+      "policy": {
+        "approvalReason": "Failed deployment recovery can change installed state.",
+        "minimumRole": "operator",
+        "evidenceRequired": true
+      },
+      "approval": {},
+      "governance": {},
+      "prerequisites": [
+        "FastAPI control API is reachable.",
+        "NATS / JetStream is healthy.",
+        "Worker process is running.",
+        "Operator has reviewed the failed operation correlation ID."
+      ],
+      "steps": [
+        {
+          "order": 1,
+          "name": "scan_current_state",
+          "title": "Scan Current State",
+          "operation": "drift_scan",
+          "operationTitle": "Run Drift Scan",
+          "professionalOperationLabel": "Run drift scan",
+          "simpleOperationLabel": "Check what changed",
+          "natsSubject": "pocketlab.commands.drift.scan",
+          "apiEntrypoints": [
+            "/api/operations/execute"
+          ],
+          "description": "Detect current runtime drift before recovery actions.",
+          "requiresApproval": false,
+          "timeoutSeconds": 300,
+          "onFailure": "stop"
+        },
+        {
+          "order": 2,
+          "name": "create_safety_backup",
+          "title": "Create Safety Backup",
+          "operation": "backup_now",
+          "operationTitle": "Create Backup",
+          "professionalOperationLabel": "Backup now",
+          "simpleOperationLabel": "Save a copy",
+          "natsSubject": "pocketlab.commands.operation.execute",
+          "apiEntrypoints": [
+            "/api/operations/execute"
+          ],
+          "description": "Create a backup before changing installed state.",
+          "requiresApproval": false,
+          "timeoutSeconds": 600,
+          "onFailure": "stop"
+        },
+        {
+          "order": 3,
+          "name": "reinstall_blueprint",
+          "title": "Re-run Install",
+          "operation": "deploy_blueprint",
+          "operationTitle": "Deploy Blueprint",
+          "professionalOperationLabel": "Deploy Workload",
+          "simpleOperationLabel": "Install",
+          "natsSubject": "pocketlab.commands.operation.execute",
+          "apiEntrypoints": [
+            "/api/operations/execute"
+          ],
+          "description": "Re-run the typed installation operation after backup and drift scan evidence exists.",
+          "requiresApproval": true,
+          "timeoutSeconds": 1200,
+          "onFailure": "stop"
+        },
+        {
+          "order": 4,
+          "name": "verify_health",
+          "title": "Verify Health",
+          "operation": "health_check",
+          "operationTitle": "Run Health Check",
+          "professionalOperationLabel": "Refresh health snapshot",
+          "simpleOperationLabel": "Check system health",
+          "natsSubject": "pocketlab.commands.health.check",
+          "apiEntrypoints": [
+            "/api/health/check"
+          ],
+          "description": "Confirm the recovered service and Pocket Lab runtime are healthy.",
+          "requiresApproval": false,
+          "timeoutSeconds": 300,
+          "onFailure": "continue"
+        }
+      ],
+      "rollback": {
+        "operation": "restore_backup",
+        "requiresApproval": true,
+        "description": "Restore from the safety backup if recovery leaves the environment unhealthy."
+      },
+      "evidence": [
+        "operation_events",
+        "audit_events",
+        "workflow_journal",
+        "backup_manifest",
+        "drift_report"
+      ],
+      "safety": {
+        "impact": "high",
+        "notes": "Must preserve typed operation boundaries, audit events, and rollback evidence."
+      }
+    },
+    {
+      "name": "release_rollback",
+      "title": "Release Rollback",
+      "description": "Controlled rollback path when release validation or apply fails.",
+      "owner": "release-operations",
+      "tags": [
+        "release",
+        "rollback",
+        "recovery"
+      ],
+      "sourceFile": "runbooks/release_rollback.yaml",
+      "professionalLabel": "Roll Back Failed Release",
+      "simpleLabel": "Go Back to Previous Release",
+      "category": "release-management",
+      "severity": "critical",
+      "trigger": {
+        "manual": true,
+        "eventHints": [
+          "pocketlab.events.operation.failed",
+          "pocketlab.dlq.original_subject"
+        ]
+      },
+      "requiresApproval": true,
+      "policy": {
+        "approvalReason": "Release rollback changes platform runtime state.",
+        "minimumRole": "release_manager",
+        "evidenceRequired": true,
+        "approvalRequired": true,
+        "approvalRoles": [
+          "release_manager"
+        ]
+      },
+      "approval": {
+        "required": true,
+        "role": "release_manager",
+        "roles": [
+          "release_manager"
+        ],
+        "reviewerRoles": [
+          "release_manager"
+        ],
+        "approvers": [
+          {
+            "role": "release_manager"
+          }
+        ]
+      },
+      "governance": {
+        "approvalRequired": true,
+        "approvalRoles": [
+          "release_manager"
+        ]
+      },
+      "prerequisites": [
+        "Failed release correlation ID is available.",
+        "Previous known-good release or backup reference is known.",
+        "Operator has reviewed release evidence."
+      ],
+      "steps": [
+        {
+          "order": 1,
+          "name": "check_release_state",
+          "title": "Check Release State",
+          "operation": "release_check",
+          "operationTitle": "Check Release",
+          "professionalOperationLabel": "Check release",
+          "simpleOperationLabel": "Check for update",
+          "natsSubject": "pocketlab.commands.release.check",
+          "apiEntrypoints": [
+            "/api/release/self-update/check"
+          ],
+          "description": "Confirm current release state before rollback.",
+          "requiresApproval": false,
+          "timeoutSeconds": 300,
+          "onFailure": "stop"
+        },
+        {
+          "order": 2,
+          "name": "create_pre_rollback_backup",
+          "title": "Create Pre-rollback Backup",
+          "operation": "backup_now",
+          "operationTitle": "Create Backup",
+          "professionalOperationLabel": "Backup now",
+          "simpleOperationLabel": "Save a copy",
+          "natsSubject": "pocketlab.commands.operation.execute",
+          "apiEntrypoints": [
+            "/api/operations/execute"
+          ],
+          "description": "Capture the current state before rollback.",
+          "requiresApproval": false,
+          "timeoutSeconds": 600,
+          "onFailure": "stop"
+        },
+        {
+          "order": 3,
+          "name": "restore_previous_state",
+          "title": "Restore Previous State",
+          "operation": "restore_backup",
+          "operationTitle": "Restore Backup",
+          "professionalOperationLabel": "Restore backup",
+          "simpleOperationLabel": "Restore saved copy",
+          "natsSubject": "pocketlab.commands.operation.execute",
+          "apiEntrypoints": [
+            "/api/operations/execute",
+            "/api/operations/preview"
+          ],
+          "description": "Restore previous known-good release state.",
+          "requiresApproval": true,
+          "timeoutSeconds": 1200,
+          "onFailure": "stop"
+        },
+        {
+          "order": 4,
+          "name": "verify_after_rollback",
+          "title": "Verify After Rollback",
+          "operation": "health_check",
+          "operationTitle": "Run Health Check",
+          "professionalOperationLabel": "Refresh health snapshot",
+          "simpleOperationLabel": "Check system health",
+          "natsSubject": "pocketlab.commands.health.check",
+          "apiEntrypoints": [
+            "/api/health/check"
+          ],
+          "description": "Confirm runtime health after rollback.",
+          "requiresApproval": false,
+          "timeoutSeconds": 300,
+          "onFailure": "stop"
+        }
+      ],
+      "rollback": {
+        "operation": "release_apply",
+        "requiresApproval": true,
+        "description": "Re-apply release only after root cause review and approval."
+      },
+      "evidence": [
+        "operation_events",
+        "audit_events",
+        "workflow_journal",
+        "backup_manifest",
+        "release_evidence",
+        "health_snapshot"
+      ],
+      "safety": {
+        "impact": "critical",
+        "notes": "Rollback must preserve evidence and correlation IDs for post-incident review."
+      }
+    },
+    {
+      "name": "rotate_secret_with_audit",
+      "title": "Rotate Secret with Audit Evidence",
+      "description": "Rotate a managed secret with policy approval, audit evidence, and post-change verification.",
+      "owner": "security-operations",
+      "tags": [
+        "secrets",
+        "vault",
+        "audit",
+        "security"
+      ],
+      "sourceFile": "runbooks/rotate_secret_with_audit.yaml",
+      "professionalLabel": "Rotate Secret with Audit Evidence",
+      "simpleLabel": "Change Password Safely",
+      "category": "security",
+      "severity": "critical",
+      "trigger": {
+        "manual": true,
+        "eventHints": [
+          "pocketlab.events.operation.succeeded"
+        ]
+      },
+      "requiresApproval": true,
+      "policy": {
+        "approvalReason": "Secret rotation changes sensitive access material.",
+        "minimumRole": "security_reviewer",
+        "evidenceRequired": true,
+        "approvalRequired": true,
+        "approvalRoles": [
+          "security_reviewer"
+        ]
+      },
+      "approval": {
+        "required": true,
+        "role": "security_reviewer",
+        "roles": [
+          "security_reviewer"
+        ],
+        "reviewerRoles": [
+          "security_reviewer"
+        ],
+        "approvers": [
+          {
+            "role": "security_reviewer"
+          }
+        ]
+      },
+      "governance": {
+        "approvalRequired": true,
+        "approvalRoles": [
+          "security_reviewer"
+        ]
+      },
+      "prerequisites": [
+        "Secret owner has approved the rotation window.",
+        "Dependent services are identified.",
+        "Audit destination is reachable."
+      ],
+      "steps": [
+        {
+          "order": 1,
+          "name": "pre_rotation_health",
+          "title": "Pre-rotation Health Check",
+          "operation": "health_check",
+          "operationTitle": "Run Health Check",
+          "professionalOperationLabel": "Refresh health snapshot",
+          "simpleOperationLabel": "Check system health",
+          "natsSubject": "pocketlab.commands.health.check",
+          "apiEntrypoints": [
+            "/api/health/check"
+          ],
+          "description": "Confirm runtime is healthy before secret rotation.",
+          "requiresApproval": false,
+          "timeoutSeconds": 300,
+          "onFailure": "stop"
+        },
+        {
+          "order": 2,
+          "name": "rotate_secret",
+          "title": "Rotate Secret",
+          "operation": "rotate_secret",
+          "operationTitle": "Rotate Secret",
+          "professionalOperationLabel": "Rotate Secret",
+          "simpleOperationLabel": "Change Password",
+          "natsSubject": "pocketlab.commands.vault.rotate",
+          "apiEntrypoints": [
+            "/api/operations/execute"
+          ],
+          "description": "Rotate the selected secret through the typed secret operation.",
+          "requiresApproval": true,
+          "timeoutSeconds": 600,
+          "onFailure": "stop"
+        },
+        {
+          "order": 3,
+          "name": "verify_secret_read",
+          "title": "Verify Secret Access",
+          "operation": "secret_read_dynamic",
+          "operationTitle": "Read Dynamic Secret",
+          "professionalOperationLabel": "Read dynamic secret",
+          "simpleOperationLabel": "Get temporary password",
+          "natsSubject": "pocketlab.commands.vault.dynamic_secret",
+          "apiEntrypoints": [
+            "/api/operations/execute"
+          ],
+          "description": "Verify dynamic secret access path without exposing the secret value.",
+          "requiresApproval": false,
+          "timeoutSeconds": 300,
+          "onFailure": "stop"
+        },
+        {
+          "order": 4,
+          "name": "post_rotation_health",
+          "title": "Post-rotation Health Check",
+          "operation": "health_check",
+          "operationTitle": "Run Health Check",
+          "professionalOperationLabel": "Refresh health snapshot",
+          "simpleOperationLabel": "Check system health",
+          "natsSubject": "pocketlab.commands.health.check",
+          "apiEntrypoints": [
+            "/api/health/check"
+          ],
+          "description": "Confirm runtime health after secret rotation.",
+          "requiresApproval": false,
+          "timeoutSeconds": 300,
+          "onFailure": "continue"
+        }
+      ],
+      "rollback": {
+        "operation": "rotate_secret",
+        "requiresApproval": true,
+        "description": "Rotate again or restore the prior credential according to the approved recovery path."
+      },
+      "evidence": [
+        "operation_events",
+        "audit_events",
+        "workflow_journal",
+        "policy_decision",
+        "redaction_check"
+      ],
+      "safety": {
+        "impact": "critical",
+        "notes": "Secret values must never be written to runbook logs, audit events, docs, or DLQ payloads."
+      }
+    }
+  ]
+}

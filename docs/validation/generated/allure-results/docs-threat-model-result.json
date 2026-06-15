@@ -1,0 +1,52 @@
+{
+  "description": "Repository artifact exists, but no recorded command outcome was found. Use the validation recorder for release-grade evidence.",
+  "fullName": "Pocket Lab Validation::Security::docs-threat-model",
+  "historyId": "872a1c9b0115c86e09d04e002207fd51",
+  "labels": [
+    {
+      "name": "epic",
+      "value": "Tier 8 Validation Documentation"
+    },
+    {
+      "name": "feature",
+      "value": "Security"
+    },
+    {
+      "name": "story",
+      "value": "docs-threat-model"
+    },
+    {
+      "name": "owner",
+      "value": "Security"
+    },
+    {
+      "name": "severity",
+      "value": "blocker"
+    },
+    {
+      "name": "tag",
+      "value": "WARNING"
+    }
+  ],
+  "name": "Threat model validation",
+  "parameters": [
+    {
+      "name": "command",
+      "value": "task docs:threat-model:check"
+    },
+    {
+      "name": "evidence_state",
+      "value": "repository-artifact"
+    },
+    {
+      "name": "generated_at",
+      "value": "2026-06-14T19:32:50Z"
+    }
+  ],
+  "stage": "finished",
+  "start": 1781465570477,
+  "status": "skipped",
+  "stop": 1781465570477,
+  "testCaseId": "docs-threat-model",
+  "uuid": "5a61a13d-533e-5778-b6d0-d1e9a42802c3"
+}

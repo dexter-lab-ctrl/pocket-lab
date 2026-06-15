@@ -1,0 +1,81 @@
+---
+- name: fastapi_control_plane | ensure directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0750'
+  loop:
+    - "{{ fastapi_control_plane_state_dir }}"
+    - "{{ dashboard_ui_dir }}"
+
+- name: fastapi_control_plane | verify NATS credentials env file exists
+  ansible.builtin.stat:
+    path: "{{ pocketlab_nats_env_path }}"
+  register: nats_env_file
+
+- name: fastapi_control_plane | verify NATS server config exists
+  ansible.builtin.stat:
+    path: "{{ pocketlab_nats_config_path }}"
+  register: nats_config_file
+
+- name: fastapi_control_plane | fail when NATS credentials/config are missing in production mode
+  ansible.builtin.fail:
+    msg: "NATS credentials/config are required. Run playbooks/65_nats.yml before reconciling FastAPI."
+  when: pocketlab_nats_required | bool and (not nats_env_file.stat.exists or not nats_config_file.stat.exists)
+
+- name: fastapi_control_plane | verify NATS monitor is running
+  ansible.builtin.uri:
+    url: "{{ pocketlab_nats_monitor_url }}"
+    method: GET
+    return_content: yes
+    status_code: 200
+  register: nats_monitor
+  ignore_errors: yes
+
+- name: fastapi_control_plane | fail when NATS monitor is unavailable in production mode
+  ansible.builtin.fail:
+    msg: "NATS/JetStream is required for production Pocket Lab. Start nats-server with the generated authenticated JetStream config before reconciling FastAPI."
+  when: pocketlab_nats_required | bool and nats_monitor.failed
+
+- name: fastapi_control_plane | verify JetStream is enabled
+  ansible.builtin.assert:
+    that:
+      - nats_monitor.json.jetstream is defined
+      - nats_monitor.json.jetstream | bool
+    fail_msg: "NATS monitor is reachable but JetStream is not enabled; Pocket Lab production requires JetStream."
+  when: pocketlab_nats_require_jetstream | bool and not nats_monitor.failed
+
+- name: fastapi_control_plane | verify FastAPI process is running
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:{{ fastapi_control_plane_port }}{{ fastapi_control_plane_health_path }}"
+    method: GET
+    return_content: yes
+    status_code: 200
+  register: api_health
+  ignore_errors: yes
+
+- name: fastapi_control_plane | warn if control plane is down
+  ansible.builtin.debug:
+    msg: "WARNING: Pocket Lab FastAPI/NATS control plane is not responding on port {{ fastapi_control_plane_port }}. Ensure start-dashboard.sh was executed."
+  when: api_health.failed
+
+- name: fastapi_control_plane | persist asset manifest
+  ansible.builtin.copy:
+    dest: "{{ fastapi_control_plane_state_dir }}/manifest.json"
+    mode: '0640'
+    content: |
+      {
+        "fastapi_port": {{ fastapi_control_plane_port }},
+        "ui_dir": "{{ dashboard_ui_dir }}",
+        "health_endpoint": "{{ fastapi_control_plane_health_path }}",
+        "nats_required": {{ pocketlab_nats_required | bool | lower }},
+        "jetstream_required": {{ pocketlab_nats_require_jetstream | bool | lower }},
+        "worker_execution": "{{ pocketlab_worker_execution }}",
+        "nats_url": "{{ pocketlab_nats_url }}",
+        "nats_api_user": "{{ pocketlab_nats_api_user }}",
+        "nats_worker_user": "{{ pocketlab_nats_worker_user }}",
+        "nats_agent_user": "{{ pocketlab_nats_agent_user }}",
+        "nats_config_path": "{{ pocketlab_nats_config_path }}",
+        "nats_env_path": "{{ pocketlab_nats_env_path }}",
+        "nats_tls_enabled": {{ pocketlab_nats_tls_enabled | bool | lower }}
+      }

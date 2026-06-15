@@ -1,0 +1,52 @@
+{
+  "description": "Recorded command completed successfully.",
+  "fullName": "Pocket Lab Validation::Runtime::nats-runtime",
+  "historyId": "89f3d9d9ad6e83c9ff3ef91ef44097e3",
+  "labels": [
+    {
+      "name": "epic",
+      "value": "Tier 8 Validation Documentation"
+    },
+    {
+      "name": "feature",
+      "value": "Runtime"
+    },
+    {
+      "name": "story",
+      "value": "nats-runtime"
+    },
+    {
+      "name": "owner",
+      "value": "Runtime"
+    },
+    {
+      "name": "severity",
+      "value": "blocker"
+    },
+    {
+      "name": "tag",
+      "value": "PASS"
+    }
+  ],
+  "name": "NATS / JetStream runtime stack evidence",
+  "parameters": [
+    {
+      "name": "command",
+      "value": "timeout --kill-after=15s 180s task test:nats"
+    },
+    {
+      "name": "evidence_state",
+      "value": "executed-command"
+    },
+    {
+      "name": "generated_at",
+      "value": "2026-06-14T19:32:50Z"
+    }
+  ],
+  "stage": "finished",
+  "start": 1781465570478,
+  "status": "passed",
+  "stop": 1781465570478,
+  "testCaseId": "nats-runtime",
+  "uuid": "efa6e7a4-6d77-5579-96c1-9b50ebb53881"
+}

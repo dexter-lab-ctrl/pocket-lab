@@ -1,0 +1,1003 @@
+{
+  "controls": {
+    "PL-CTRL-001": {
+      "description": "User-facing actions must resolve to typed operations executed through FastAPI, NATS / JetStream, and workers.",
+      "evidence": [
+        "contracts/operations/pocketlab-typed-operations.json",
+        "operations/*.yaml",
+        "contracts/asyncapi/pocketlab-nats-jetstream.yaml"
+      ],
+      "family": "Runtime Governance",
+      "title": "Typed Operation Execution Boundary"
+    },
+    "PL-CTRL-002": {
+      "description": "Runbooks orchestrate typed operations and workers own execution, approval handling, rejection, and resume.",
+      "evidence": [
+        "runbooks/*.yaml",
+        "docs/operations/generated/runbooks/runbook-catalog.json",
+        "docs/runtime/runbook-approval-lifecycle.md"
+      ],
+      "family": "Runbook Governance",
+      "title": "Worker-Owned Execution and Resume"
+    },
+    "PL-CTRL-003": {
+      "description": "Personal Mode auto-approval and Enterprise Mode human approval must produce explicit audit evidence.",
+      "evidence": [
+        "pocket-lab-final-structure/runtime/api_fastapi/services/approval_policy.py",
+        "pocket-lab-final-structure/runtime/api_fastapi/services/governance_settings.py",
+        "contracts/asyncapi/pocketlab-nats-jetstream.yaml"
+      ],
+      "family": "Approval Governance",
+      "title": "Adaptive Approval Evidence"
+    },
+    "PL-CTRL-004": {
+      "description": "OPA-style guardrails and policy decisions must be documented and visible in the Security documentation portal.",
+      "evidence": [
+        "src/tabs/PolicyGuardrailsTab.jsx",
+        "docs/security/policy-guardrails-guide.md",
+        "docs/security/generated/policy-reference.md"
+      ],
+      "family": "Security Posture",
+      "title": "Policy Guardrail Visibility"
+    },
+    "PL-CTRL-005": {
+      "description": "Security documentation must be regenerated from repository sources and checked for stale generated artifacts.",
+      "evidence": [
+        "docs/security/generated/policy-evidence-manifest.json",
+        "scripts/docs/check_policy_evidence.py",
+        "scripts/docs/check_policy_docs.py"
+      ],
+      "family": "Documentation Governance",
+      "title": "Threat and Policy Source Freshness"
+    }
+  },
+  "embedded_ui_guardrails": [
+    "execution",
+    "ports",
+    "secrets"
+  ],
+  "formal_opa_bundle_found": false,
+  "generated_by": "scripts/docs/generate_policy_evidence.py",
+  "governance_modes": {
+    "enterprise": {
+      "description": "Opt-in strict governance. Human approval, role checks, and approval/rejection reasons are required for governed runbooks.",
+      "label": "Enterprise Mode"
+    },
+    "personal": {
+      "description": "Default self-hosted mode. Eligible safe and dry-run governed runbooks may auto-approve with audit evidence.",
+      "label": "Personal Mode"
+    },
+    "professional": {
+      "description": "Shows operation, policy, and audit terminology for power users and maintainers.",
+      "label": "Professional Mode"
+    },
+    "simple": {
+      "description": "Uses friendly wording for non-technical users while preserving the same governed execution path.",
+      "label": "Simple Mode"
+    }
+  },
+  "operation_policy_map": [
+    {
+      "operation": "backup_now",
+      "policies": [],
+      "source": "operations/backup_now.yaml"
+    },
+    {
+      "operation": "backup_verify",
+      "policies": [],
+      "source": "operations/backup_verify.yaml"
+    },
+    {
+      "operation": "catalog_refresh",
+      "policies": [],
+      "source": "operations/catalog_refresh.yaml"
+    },
+    {
+      "operation": "configure_opa",
+      "policies": [],
+      "source": "operations/configure_opa.yaml"
+    },
+    {
+      "operation": "deploy_blueprint",
+      "policies": [
+        "hardcoded-secrets-prevention",
+        "privileged-port-restriction",
+        "proot-isolation-enforcement"
+      ],
+      "source": "operations/deploy_blueprint.yaml"
+    },
+    {
+      "operation": "drift_apply",
+      "policies": [
+        "adaptive-runbook-approval"
+      ],
+      "source": "operations/drift_apply.yaml"
+    },
+    {
+      "operation": "drift_approve",
+      "policies": [
+        "adaptive-runbook-approval"
+      ],
+      "source": "operations/drift_approve.yaml"
+    },
+    {
+      "operation": "drift_ignore",
+      "policies": [],
+      "source": "operations/drift_ignore.yaml"
+    },
+    {
+      "operation": "drift_preview",
+      "policies": [],
+      "source": "operations/drift_preview.yaml"
+    },
+    {
+      "operation": "drift_scan",
+      "policies": [],
+      "source": "operations/drift_scan.yaml"
+    },
+    {
+      "operation": "fleet_join",
+      "policies": [],
+      "source": "operations/fleet_join.yaml"
+    },
+    {
+      "operation": "git_sync",
+      "policies": [],
+      "source": "operations/git_sync.yaml"
+    },
+    {
+      "operation": "health_check",
+      "policies": [
+        "privileged-port-restriction"
+      ],
+      "source": "operations/health_check.yaml"
+    },
+    {
+      "operation": "release_apply",
+      "policies": [
+        "adaptive-runbook-approval",
+        "proot-isolation-enforcement"
+      ],
+      "source": "operations/release_apply.yaml"
+    },
+    {
+      "operation": "release_check",
+      "policies": [],
+      "source": "operations/release_check.yaml"
+    },
+    {
+      "operation": "restore_backup",
+      "policies": [
+        "adaptive-runbook-approval",
+        "proot-isolation-enforcement"
+      ],
+      "source": "operations/restore_backup.yaml"
+    },
+    {
+      "operation": "rotate_secret",
+      "policies": [
+        "adaptive-runbook-approval",
+        "hardcoded-secrets-prevention"
+      ],
+      "source": "operations/rotate_secret.yaml"
+    },
+    {
+      "operation": "secret_read_dynamic",
+      "policies": [
+        "hardcoded-secrets-prevention"
+      ],
+      "source": "operations/secret_read_dynamic.yaml"
+    },
+    {
+      "operation": "security_scan",
+      "policies": [
+        "hardcoded-secrets-prevention",
+        "privileged-port-restriction"
+      ],
+      "source": "operations/security_scan.yaml"
+    }
+  ],
+  "operations": [
+    {
+      "api_entrypoints": [
+        "/api/operations/execute"
+      ],
+      "name": "backup_now",
+      "nats_subject": "pocketlab.commands.operation.execute",
+      "safety": "Must verify destination space and redact sensitive data.",
+      "security": {},
+      "source": "operations/backup_now.yaml",
+      "tags": [
+        "backup",
+        "disaster-recovery",
+        "write"
+      ],
+      "title": "Create Backup"
+    },
+    {
+      "api_entrypoints": [
+        "/api/operations/execute"
+      ],
+      "name": "backup_verify",
+      "nats_subject": "pocketlab.commands.operation.execute",
+      "safety": "Read/verification workflow. Should not mutate runtime state.",
+      "security": {},
+      "source": "operations/backup_verify.yaml",
+      "tags": [
+        "backup",
+        "disaster-recovery",
+        "read"
+      ],
+      "title": "Verify Backup"
+    },
+    {
+      "api_entrypoints": [
+        "/api/catalog/refresh",
+        "/api/operations/execute"
+      ],
+      "name": "catalog_refresh",
+      "nats_subject": "pocketlab.commands.catalog.refresh",
+      "safety": "Write action. Requires FastAPI, NATS, JetStream, and worker readiness. Fails closed when degraded.",
+      "security": {},
+      "source": "operations/catalog_refresh.yaml",
+      "tags": [
+        "apps",
+        "catalog",
+        "safe-write"
+      ],
+      "title": "Refresh App Catalog"
+    },
+    {
+      "api_entrypoints": [
+        "/api/operations/execute"
+      ],
+      "name": "configure_opa",
+      "nats_subject": "pocketlab.commands.security.configure_opa",
+      "safety": "Policy mutation. Must be auditable and recoverable.",
+      "security": {},
+      "source": "operations/configure_opa.yaml",
+      "tags": [
+        "opa",
+        "policy",
+        "security",
+        "write"
+      ],
+      "title": "Configure OPA"
+    },
+    {
+      "api_entrypoints": [
+        "/api/operations/execute"
+      ],
+      "name": "deploy_blueprint",
+      "nats_subject": "pocketlab.commands.operation.execute",
+      "safety": "Privileged write action. Must remain typed, auditable, and policy-guarded.",
+      "security": {},
+      "source": "operations/deploy_blueprint.yaml",
+      "tags": [
+        "app-catalog",
+        "blueprint",
+        "write"
+      ],
+      "title": "Deploy Blueprint"
+    },
+    {
+      "api_entrypoints": [
+        "/api/operations/execute"
+      ],
+      "name": "drift_apply",
+      "nats_subject": "pocketlab.commands.drift.apply",
+      "safety": "Write action. Requires healthy control plane and prior approval.",
+      "security": {},
+      "source": "operations/drift_apply.yaml",
+      "tags": [
+        "drift",
+        "remediation",
+        "write"
+      ],
+      "title": "Apply Drift Remediation"
+    },
+    {
+      "api_entrypoints": [
+        "/api/operations/execute"
+      ],
+      "name": "drift_approve",
+      "nats_subject": "pocketlab.commands.drift.approve",
+      "safety": "Approval action. Must be auditable.",
+      "security": {},
+      "source": "operations/drift_approve.yaml",
+      "tags": [
+        "approval",
+        "drift",
+        "write"
+      ],
+      "title": "Approve Drift Remediation"
+    },
+    {
+      "api_entrypoints": [
+        "/api/operations/execute"
+      ],
+      "name": "drift_ignore",
+      "nats_subject": "pocketlab.commands.drift.ignore",
+      "safety": "State mutation. Must be auditable.",
+      "security": {},
+      "source": "operations/drift_ignore.yaml",
+      "tags": [
+        "drift",
+        "exception",
+        "write"
+      ],
+      "title": "Ignore Drift Finding"
+    },
+    {
+      "api_entrypoints": [
+        "/api/operations/execute",
+        "/api/operations/preview"
+      ],
+      "name": "drift_preview",
+      "nats_subject": "pocketlab.commands.drift.preview",
+      "safety": "Preview-only. Must not mutate runtime state.",
+      "security": {},
+      "source": "operations/drift_preview.yaml",
+      "tags": [
+        "drift",
+        "preview",
+        "read"
+      ],
+      "title": "Preview Drift Remediation"
+    },
+    {
+      "api_entrypoints": [
+        "/api/operations/execute"
+      ],
+      "name": "drift_scan",
+      "nats_subject": "pocketlab.commands.drift.scan",
+      "safety": "Read/analysis workflow. Remediation must be a separate typed write operation.",
+      "security": {},
+      "source": "operations/drift_scan.yaml",
+      "tags": [
+        "drift",
+        "health",
+        "read"
+      ],
+      "title": "Run Drift Scan"
+    },
+    {
+      "api_entrypoints": [
+        "/api/operations/execute"
+      ],
+      "name": "fleet_join",
+      "nats_subject": "pocketlab.commands.fleet.join",
+      "safety": "Sensitive onboarding action. Join secrets must be redacted.",
+      "security": {},
+      "source": "operations/fleet_join.yaml",
+      "tags": [
+        "fleet",
+        "onboarding",
+        "secret"
+      ],
+      "title": "Join Fleet"
+    },
+    {
+      "api_entrypoints": [
+        "/api/operations/execute"
+      ],
+      "name": "git_sync",
+      "nats_subject": "pocketlab.commands.operation.execute",
+      "safety": "Must not reintroduce retired sync shell compatibility paths.",
+      "security": {},
+      "source": "operations/git_sync.yaml",
+      "tags": [
+        "gitops",
+        "sync",
+        "write"
+      ],
+      "title": "GitOps Sync"
+    },
+    {
+      "api_entrypoints": [
+        "/api/health/check"
+      ],
+      "name": "health_check",
+      "nats_subject": "pocketlab.commands.health.check",
+      "safety": "Operational check. Should be safe to run repeatedly.",
+      "security": {},
+      "source": "operations/health_check.yaml",
+      "tags": [
+        "health",
+        "noc",
+        "read"
+      ],
+      "title": "Run Health Check"
+    },
+    {
+      "api_entrypoints": [
+        "/api/release/self-update/apply"
+      ],
+      "name": "release_apply",
+      "nats_subject": "pocketlab.commands.release.apply",
+      "safety": "High-impact write. Must backup before apply and fail closed when degraded.",
+      "security": {},
+      "source": "operations/release_apply.yaml",
+      "tags": [
+        "release",
+        "upgrade",
+        "write"
+      ],
+      "title": "Apply Release"
+    },
+    {
+      "api_entrypoints": [
+        "/api/release/self-update/check"
+      ],
+      "name": "release_check",
+      "nats_subject": "pocketlab.commands.release.check",
+      "safety": "Read/check workflow. Must not apply changes.",
+      "security": {},
+      "source": "operations/release_check.yaml",
+      "tags": [
+        "read",
+        "release"
+      ],
+      "title": "Check Release"
+    },
+    {
+      "api_entrypoints": [
+        "/api/operations/execute",
+        "/api/operations/preview"
+      ],
+      "name": "restore_backup",
+      "nats_subject": "pocketlab.commands.operation.execute",
+      "safety": "Destructive write. Requires preview, confirmation, and healthy control plane.",
+      "security": {},
+      "source": "operations/restore_backup.yaml",
+      "tags": [
+        "backup",
+        "destructive",
+        "disaster-recovery"
+      ],
+      "title": "Restore Backup"
+    },
+    {
+      "api_entrypoints": [
+        "/api/operations/execute"
+      ],
+      "name": "rotate_secret",
+      "nats_subject": "pocketlab.commands.vault.rotate",
+      "safety": "High sensitivity. Secret values must never appear in logs/events.",
+      "security": {},
+      "source": "operations/rotate_secret.yaml",
+      "tags": [
+        "secret",
+        "vault",
+        "write"
+      ],
+      "title": "Rotate Secret"
+    },
+    {
+      "api_entrypoints": [
+        "/api/operations/execute"
+      ],
+      "name": "secret_read_dynamic",
+      "nats_subject": "pocketlab.commands.vault.dynamic_secret",
+      "safety": "Lease values must be redacted and not persisted in UI-visible events.",
+      "security": {},
+      "source": "operations/secret_read_dynamic.yaml",
+      "tags": [
+        "dynamic-secret",
+        "read",
+        "vault"
+      ],
+      "title": "Read Dynamic Secret"
+    },
+    {
+      "api_entrypoints": [
+        "/api/security/scan"
+      ],
+      "name": "security_scan",
+      "nats_subject": "pocketlab.commands.security.scan",
+      "safety": "Scan workflow. Must redact findings containing secrets.",
+      "security": {},
+      "source": "operations/security_scan.yaml",
+      "tags": [
+        "policy",
+        "read",
+        "security"
+      ],
+      "title": "Run Security Scan"
+    }
+  ],
+  "policies": [
+    {
+      "appliesTo": {
+        "operations": [
+          "drift_approve",
+          "drift_apply",
+          "release_apply",
+          "restore_backup",
+          "rotate_secret"
+        ],
+        "runbooks": [
+          "backup_restore_verify",
+          "drift_detect_approve_apply",
+          "recover_failed_install",
+          "release_rollback",
+          "rotate_secret_with_audit"
+        ]
+      },
+      "controls": [
+        "PL-CTRL-002",
+        "PL-CTRL-003"
+      ],
+      "evidenceEvents": [
+        "pocketlab.events.runbook.auto_approved",
+        "pocketlab.audit.runbook.auto_approved",
+        "pocketlab.audit.runbook.approved",
+        "pocketlab.audit.runbook.rejected"
+      ],
+      "id": "adaptive-runbook-approval",
+      "mode": "decision",
+      "package": "pocketlab.approval",
+      "severity": "high",
+      "simpleSummary": "Lets safe home-lab actions continue automatically, while Enterprise Mode requires a person to approve important changes.",
+      "source": "security/policies/pocketlab-policy-bundle.yaml",
+      "summary": "Preserves Personal Mode auto-approval evidence and Enterprise Mode strict human authorization for approval-gated runbooks.",
+      "title": "Adaptive Runbook Approval"
+    },
+    {
+      "appliesTo": {
+        "operations": [
+          "rotate_secret",
+          "secret_read_dynamic",
+          "deploy_blueprint",
+          "security_scan"
+        ],
+        "runbooks": [
+          "rotate_secret_with_audit"
+        ]
+      },
+      "controls": [
+        "PL-CTRL-001",
+        "PL-CTRL-003",
+        "PL-CTRL-004"
+      ],
+      "evidenceEvents": [
+        "pocketlab.events.vault.secret_rotated",
+        "pocketlab.audit.vault.secret_rotated",
+        "pocketlab.events.security.finding"
+      ],
+      "id": "hardcoded-secrets-prevention",
+      "mode": "enforceable",
+      "package": "pocketlab.security",
+      "rego": "package pocketlab.security\n\ndeny[msg] {\n    some key\n    val := input.playbook.vars[key]\n    contains(lower(key), \"password\")\n    not contains(val, \"lookup('hashi_vault'\")\n    msg := \"Hardcoded secrets detected. You must use the Vault AppRole lookup plugin.\"\n}\n",
+      "severity": "high",
+      "simpleSummary": "Keeps passwords and tokens out of app setup files.",
+      "source": "security/policies/pocketlab-policy-bundle.yaml",
+      "summary": "Requires secret handling through Vault / OpenBao lookup paths instead of plaintext playbook variables.",
+      "title": "Hardcoded Secrets Prevention"
+    },
+    {
+      "appliesTo": {
+        "operations": [
+          "deploy_blueprint",
+          "health_check",
+          "security_scan"
+        ],
+        "runbooks": [
+          "recover_failed_install"
+        ]
+      },
+      "controls": [
+        "PL-CTRL-001",
+        "PL-CTRL-004"
+      ],
+      "evidenceEvents": [
+        "pocketlab.events.security.finding",
+        "pocketlab.audit.security.policy_updated"
+      ],
+      "id": "privileged-port-restriction",
+      "mode": "enforceable",
+      "package": "pocketlab.network",
+      "rego": "package pocketlab.network\n\ndeny[msg] {\n    port := input.playbook.tasks[_].pm2_env.PORT\n    to_number(port) < 1024\n    msg := \"Android OS denies non-root binding to ports < 1024. Please use a port > 1023.\"\n}\n",
+      "severity": "critical",
+      "simpleSummary": "Keeps apps from using restricted phone ports that would fail on Android.",
+      "source": "security/policies/pocketlab-policy-bundle.yaml",
+      "summary": "Prevents workloads from binding to privileged ports below 1024 on Android / Termux targets.",
+      "title": "Privileged Port Restriction"
+    },
+    {
+      "appliesTo": {
+        "operations": [
+          "deploy_blueprint",
+          "release_apply",
+          "restore_backup"
+        ],
+        "runbooks": [
+          "recover_failed_install",
+          "release_rollback",
+          "backup_restore_verify"
+        ]
+      },
+      "controls": [
+        "PL-CTRL-001",
+        "PL-CTRL-004"
+      ],
+      "evidenceEvents": [
+        "pocketlab.events.security.finding"
+      ],
+      "id": "proot-isolation-enforcement",
+      "mode": "audit",
+      "package": "pocketlab.execution",
+      "rego": "package pocketlab.execution\n\ndeny[msg] {\n    task := input.playbook.tasks[_]\n    contains(task.command, \"apt-get\")\n    not contains(task.prefix, \"proot-distro login ubuntu\")\n    msg := \"Linux package managers must be executed inside the PRoot Ubuntu subsystem.\"\n}\n",
+      "severity": "medium",
+      "simpleSummary": "Keeps advanced Linux commands inside the safe Linux container area on Android.",
+      "source": "security/policies/pocketlab-policy-bundle.yaml",
+      "summary": "Ensures Linux package manager actions run inside the PRoot Ubuntu subsystem instead of native Termux.",
+      "title": "PRoot Isolation Enforcement"
+    }
+  ],
+  "policy_bundles": [
+    {
+      "path": "security/policies/pocketlab-policy-bundle.yaml",
+      "sha256": "8686aac68dc7d8fb60ad76cb9d90c64671f305d33b1a2530ba38e45fecabe32e"
+    }
+  ],
+  "rego_files": [],
+  "runbook_policy_map": [
+    {
+      "minimum_role": "operator",
+      "policies": [
+        "adaptive-runbook-approval",
+        "proot-isolation-enforcement"
+      ],
+      "requires_approval": true,
+      "runbook": "backup_restore_verify",
+      "source": "runbooks/backup_restore_verify.yaml"
+    },
+    {
+      "minimum_role": "operator",
+      "policies": [
+        "adaptive-runbook-approval"
+      ],
+      "requires_approval": true,
+      "runbook": "drift_detect_approve_apply",
+      "source": "runbooks/drift_detect_approve_apply.yaml"
+    },
+    {
+      "minimum_role": "operator",
+      "policies": [
+        "adaptive-runbook-approval",
+        "privileged-port-restriction",
+        "proot-isolation-enforcement"
+      ],
+      "requires_approval": true,
+      "runbook": "recover_failed_install",
+      "source": "runbooks/recover_failed_install.yaml"
+    },
+    {
+      "minimum_role": "release_manager",
+      "policies": [
+        "adaptive-runbook-approval",
+        "proot-isolation-enforcement"
+      ],
+      "requires_approval": true,
+      "runbook": "release_rollback",
+      "source": "runbooks/release_rollback.yaml"
+    },
+    {
+      "minimum_role": "security_reviewer",
+      "policies": [
+        "adaptive-runbook-approval",
+        "hardcoded-secrets-prevention"
+      ],
+      "requires_approval": true,
+      "runbook": "rotate_secret_with_audit",
+      "source": "runbooks/rotate_secret_with_audit.yaml"
+    }
+  ],
+  "runbooks": [
+    {
+      "approval_reason_required": true,
+      "evidence_required": true,
+      "minimum_role": "operator",
+      "name": "backup_restore_verify",
+      "operations": [
+        "backup_now",
+        "backup_verify",
+        "health_check",
+        "restore_backup"
+      ],
+      "policy": {
+        "approvalReason": "Restore validation can touch backup and recovery paths.",
+        "evidenceRequired": true,
+        "minimumRole": "operator"
+      },
+      "requires_approval": true,
+      "severity": "high",
+      "source": "runbooks/backup_restore_verify.yaml",
+      "title": "Backup Restore Verification"
+    },
+    {
+      "approval_reason_required": true,
+      "evidence_required": true,
+      "minimum_role": "operator",
+      "name": "drift_detect_approve_apply",
+      "operations": [
+        "drift_apply",
+        "drift_approve",
+        "drift_preview",
+        "drift_scan"
+      ],
+      "policy": {
+        "approvalReason": "Drift remediation changes desired or runtime state.",
+        "evidenceRequired": true,
+        "minimumRole": "operator"
+      },
+      "requires_approval": true,
+      "severity": "medium",
+      "source": "runbooks/drift_detect_approve_apply.yaml",
+      "title": "Drift Detect, Approve, and Apply"
+    },
+    {
+      "approval_reason_required": true,
+      "evidence_required": true,
+      "minimum_role": "operator",
+      "name": "recover_failed_install",
+      "operations": [
+        "backup_now",
+        "deploy_blueprint",
+        "drift_scan",
+        "health_check"
+      ],
+      "policy": {
+        "approvalReason": "Failed deployment recovery can change installed state.",
+        "evidenceRequired": true,
+        "minimumRole": "operator"
+      },
+      "requires_approval": true,
+      "severity": "high",
+      "source": "runbooks/recover_failed_install.yaml",
+      "title": "Recover Failed Install"
+    },
+    {
+      "approval_reason_required": true,
+      "evidence_required": true,
+      "minimum_role": "release_manager",
+      "name": "release_rollback",
+      "operations": [
+        "backup_now",
+        "health_check",
+        "release_check",
+        "restore_backup"
+      ],
+      "policy": {
+        "approvalReason": "Release rollback changes platform runtime state.",
+        "approvalRequired": true,
+        "approvalRoles": [
+          "release_manager"
+        ],
+        "evidenceRequired": true,
+        "minimumRole": "release_manager"
+      },
+      "requires_approval": true,
+      "severity": "critical",
+      "source": "runbooks/release_rollback.yaml",
+      "title": "Release Rollback"
+    },
+    {
+      "approval_reason_required": true,
+      "evidence_required": true,
+      "minimum_role": "security_reviewer",
+      "name": "rotate_secret_with_audit",
+      "operations": [
+        "health_check",
+        "health_check",
+        "rotate_secret",
+        "secret_read_dynamic"
+      ],
+      "policy": {
+        "approvalReason": "Secret rotation changes sensitive access material.",
+        "approvalRequired": true,
+        "approvalRoles": [
+          "security_reviewer"
+        ],
+        "evidenceRequired": true,
+        "minimumRole": "security_reviewer"
+      },
+      "requires_approval": true,
+      "severity": "critical",
+      "source": "runbooks/rotate_secret_with_audit.yaml",
+      "title": "Rotate Secret with Audit Evidence"
+    }
+  ],
+  "runtime_behavior_changed": false,
+  "schema": "pocketlab.policyEvidenceManifest.v1",
+  "source_files": [
+    {
+      "path": "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+      "sha256": "80b91f358f774e6e9ba795171a22444075b093c0a1d518f905652298dfcfff72"
+    },
+    {
+      "path": "contracts/generated/openapi.json",
+      "sha256": "c2aa4119d33c2616e85dbf9fb1ce23a1e24ce4e15d9cb13657bcb0c4681f4357"
+    },
+    {
+      "path": "contracts/operations/pocketlab-typed-operations.json",
+      "sha256": "740abf611e28ab291df95cd70f040e5bfca20e9d3849842774ce8c32aea6ec9d"
+    },
+    {
+      "path": "docs/security/generated/threat-model/drift-detection.md",
+      "sha256": "17d1871393382dd1f599c09c842f7eaf13eb47f5e57e3f98fb0350b93bdabfbf"
+    },
+    {
+      "path": "docs/security/generated/threat-model/index.md",
+      "sha256": "1f64fe7f0390803bb88ccc24751e43af903ce38f6bb6e20f50f7a1c254ca38e4"
+    },
+    {
+      "path": "docs/security/generated/threat-model/source-synchronization.md",
+      "sha256": "30e8b145d1a9e9d2a85581146e5d8fb63bcce0359e5d6ad35f6aa3ece3a6c2d0"
+    },
+    {
+      "path": "docs/security/security-architecture-threat-model.md",
+      "sha256": "5f603f2f7b5260b2008c809c859dd113cac3d78cbd6219d22c63b003021a3b88"
+    },
+    {
+      "path": "operations/backup_now.yaml",
+      "sha256": "acc49bf6bbfad8e4b9d757b92163aa42f893e289cdb57ba332920e284c7e549d"
+    },
+    {
+      "path": "operations/backup_verify.yaml",
+      "sha256": "39a033d38487384d4f3a6242449f71b2e5fb87bab4f6f8b16172af5cd7288540"
+    },
+    {
+      "path": "operations/catalog_refresh.yaml",
+      "sha256": "63a56f29313e31cc5abf2578b326b6b976d96c470a52db511eebf0075c9621e5"
+    },
+    {
+      "path": "operations/configure_opa.yaml",
+      "sha256": "a41c4134342e868d7935007fe10e21f4e7b8aca44aa4a9e2a086caa3bace740b"
+    },
+    {
+      "path": "operations/deploy_blueprint.yaml",
+      "sha256": "60590cbd7527d274351639823b0f5037a8f9e668015c0b0e0f77b37b425630f8"
+    },
+    {
+      "path": "operations/drift_apply.yaml",
+      "sha256": "f3e9f5f563d36063504ea44ffc5d185a9769987ec9dd78b4e0bafd57d0ac1be1"
+    },
+    {
+      "path": "operations/drift_approve.yaml",
+      "sha256": "ed8b54887c51e7239c41e52b14221b155451ae79501ba5f640515e9baff8aee1"
+    },
+    {
+      "path": "operations/drift_ignore.yaml",
+      "sha256": "a0773dd9ae0d95c86bb899fa76c370867ba543316829c916ab9b90f0b9e79c59"
+    },
+    {
+      "path": "operations/drift_preview.yaml",
+      "sha256": "75f4f18bd5cfbce4b8cf826af4487a43758e720f9e185fb7ca4b3a7c2fe6b542"
+    },
+    {
+      "path": "operations/drift_scan.yaml",
+      "sha256": "ac912127e123ed5bfab72d2d0a968d008c68012bb7fc2c51c7cb13db2a115667"
+    },
+    {
+      "path": "operations/fleet_join.yaml",
+      "sha256": "61d9653c389c98705edf930ca4733cfd2bbc5a73e689876024b70a4e7c5b8af0"
+    },
+    {
+      "path": "operations/git_sync.yaml",
+      "sha256": "d43f97a7c8f95ecda5161eb099980d0ce09b4004ef7779606daeb81f34299e43"
+    },
+    {
+      "path": "operations/health_check.yaml",
+      "sha256": "27208e976bb314a932e6daa1d26e4b45663c4d74e1d185d1af1cda93cc76c9a3"
+    },
+    {
+      "path": "operations/release_apply.yaml",
+      "sha256": "71aaec58b212e6ac08f010daee50bf74b48a8650038089246b4005672c456e8d"
+    },
+    {
+      "path": "operations/release_check.yaml",
+      "sha256": "6bdeb99f1aa5cc7d8a7f100df7e1d715d13fe0fac753ed45b65027e1d9043438"
+    },
+    {
+      "path": "operations/restore_backup.yaml",
+      "sha256": "60895eaa4c40ff6a7827dce5f69656cb9815880d7985d658d2f97d5db91bcb8b"
+    },
+    {
+      "path": "operations/rotate_secret.yaml",
+      "sha256": "237ca8464a4971a26fb57d9069570e288a7eb1ad65334ca019f631596a1bbb65"
+    },
+    {
+      "path": "operations/secret_read_dynamic.yaml",
+      "sha256": "c9c87767604577e05d32776d25d5f1121144034a8e893a0ef688b094ec59c5e7"
+    },
+    {
+      "path": "operations/security_scan.yaml",
+      "sha256": "aa98b073415206e46d30d9ddc3a8e458f36915277e8fd573e8d2a8fb7433ebcb"
+    },
+    {
+      "path": "pocket-lab-final-structure/runtime/api_fastapi/services/approval_policy.py",
+      "sha256": "dfa11d711b8b1e67f4847b419ba538f702e9de4e8e6fca4cce0830f40b9439d5"
+    },
+    {
+      "path": "pocket-lab-final-structure/runtime/api_fastapi/services/governance_settings.py",
+      "sha256": "62032d95bcc9945f13f60c8c337628442a7d6df5e10cee793f162e467e8e368f"
+    },
+    {
+      "path": "runbooks/backup_restore_verify.yaml",
+      "sha256": "86f93776f332e2b053b3a77a46d969ebf822a55b2d2e613d250c9c0f00bd2e0f"
+    },
+    {
+      "path": "runbooks/drift_detect_approve_apply.yaml",
+      "sha256": "88bdfa1c20889f64eb98802380c30b35e6094ac9fb12cf4d865c3311d6f6a96d"
+    },
+    {
+      "path": "runbooks/recover_failed_install.yaml",
+      "sha256": "d2562fae16a8b7547ea3aad36fd02e33b48fba6b5ee005ebd7adc39fa56d18b7"
+    },
+    {
+      "path": "runbooks/release_rollback.yaml",
+      "sha256": "06218a5faeb518a6114f90b04272ef3eb70a4c4b00c3985b61057b4dc1ad092b"
+    },
+    {
+      "path": "runbooks/rotate_secret_with_audit.yaml",
+      "sha256": "e686ec64a24a910442ce8a326dc1f0ef6fa325bfeb6deb4d2a258047ac4a26bd"
+    },
+    {
+      "path": "security/policies/pocketlab-policy-bundle.yaml",
+      "sha256": "8686aac68dc7d8fb60ad76cb9d90c64671f305d33b1a2530ba38e45fecabe32e"
+    },
+    {
+      "path": "src/tabs/PolicyGuardrailsTab.jsx",
+      "sha256": "2ea1ed4fe598fb841e86829781357446b14ebd25a5fbd88a660bfcaac34194ba"
+    }
+  ],
+  "summary": {
+    "control_count": 5,
+    "mapped_operation_count": 9,
+    "mapped_runbook_count": 5,
+    "operation_count": 19,
+    "policy_count": 4,
+    "runbook_count": 5,
+    "source_file_count": 35
+  },
+  "typed_operations_contract_names": [
+    "backup_now",
+    "backup_verify",
+    "catalog_refresh",
+    "configure_opa",
+    "deploy_blueprint",
+    "drift_apply",
+    "drift_approve",
+    "drift_ignore",
+    "drift_preview",
+    "drift_scan",
+    "fleet_join",
+    "git_sync",
+    "health_check",
+    "release_apply",
+    "release_check",
+    "restore_backup",
+    "rotate_secret",
+    "secret_read_dynamic",
+    "security_scan"
+  ],
+  "validation": {
+    "operations_without_policy_mapping": [
+      "backup_now",
+      "backup_verify",
+      "catalog_refresh",
+      "configure_opa",
+      "drift_ignore",
+      "drift_preview",
+      "drift_scan",
+      "fleet_join",
+      "git_sync",
+      "release_check"
+    ],
+    "runbooks_without_policy_mapping": [],
+    "unknown_policy_operations": [],
+    "unknown_policy_runbooks": []
+  }
+}

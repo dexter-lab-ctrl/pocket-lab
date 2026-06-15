@@ -1,0 +1,148 @@
+web:
+  port: {{ observability_gatus_port }}
+ui:
+  title: Pocket Lab Health Engine
+  description: Dependency-aware health dashboard for the Pocket Lab control plane.
+  dashboard-heading: Pocket Lab Health Engine
+  dashboard-subheading: Gatus-backed service health across control plane, drift, fleet, and GitOps
+
+endpoints:
+  - name: pocket-lab-api
+    group: core
+    url: http://127.0.0.1:8080/health
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+
+  - name: pocket-lab-ready
+    group: core
+    url: http://127.0.0.1:8080/ready
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+
+  - name: vault
+    group: platform
+    url: http://127.0.0.1:8200/v1/sys/health?standbyok=true
+    interval: 30s
+    conditions:
+      - "[STATUS] == any(200, 429)"
+
+  - name: gitea
+    group: platform
+    url: http://127.0.0.1:3030/api/healthz
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+
+  - name: loki
+    group: observability
+    url: http://127.0.0.1:3100/ready
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+
+  - name: prometheus
+    group: observability
+    url: http://127.0.0.1:9090/-/ready
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+
+  - name: grafana
+    group: observability
+    url: http://127.0.0.1:3050/api/health
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+
+  - name: gatus-self
+    group: observability
+    url: http://127.0.0.1:8081/health
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+
+  - name: opa
+    group: policy
+    url: http://127.0.0.1:8181/health
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+
+  - name: tailscale
+    group: platform
+    url: http://127.0.0.1:8080/api/config/tailscale.json
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+
+  - name: fleet-health
+    group: fleet
+    url: http://127.0.0.1:8080/api/fleet/health.json
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+
+  - name: fleet-nodes
+    group: fleet
+    url: http://127.0.0.1:8080/api/fleet.json
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+
+  - name: fleet-node-1
+    group: fleet
+    url: http://127.0.0.1:8080/api/fleet/nodes/node-1/health
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+
+  - name: fleet-node-2
+    group: fleet
+    url: http://127.0.0.1:8080/api/fleet/nodes/node-2/health
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+
+  - name: fleet-node-3
+    group: fleet
+    url: http://127.0.0.1:8080/api/fleet/nodes/node-3/health
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+
+  - name: drift-summary
+    group: drift
+    url: http://127.0.0.1:8080/api/drift/summary
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+
+  - name: drift-jobs
+    group: drift
+    url: http://127.0.0.1:8080/api/drift/jobs
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+
+  - name: drift-metrics
+    group: drift
+    url: http://127.0.0.1:8080/api/drift/metrics
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+
+  - name: gitops-health
+    group: gitops
+    url: http://127.0.0.1:8080/api/gitops/health.json
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+
+  - name: git-history
+    group: gitops
+    url: http://127.0.0.1:8080/api/git_history.json
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"

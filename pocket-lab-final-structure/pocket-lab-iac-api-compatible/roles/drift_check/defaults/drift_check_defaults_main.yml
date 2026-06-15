@@ -1,0 +1,12 @@
+---
+drift_check_report_dir: "{{ common_base_dir }}/drift"
+drift_check_jobs_dir: "{{ drift_check_report_dir }}/jobs"
+drift_check_history_dir: "{{ drift_check_report_dir }}/history"
+drift_report_path: "{{ common_base_dir }}/drift-report.json"
+drift_check_timeout_seconds: 15
+drift_check_command_timeout_seconds: 30
+drift_check_output_limit: 1200
+drift_check_fail_on_drift: false
+drift_check_write_history: true
+drift_check_endpoints: []
+drift_check_commands: []

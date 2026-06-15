@@ -1,24 +1,28 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, Filter, Play, Pause, AlertTriangle, AlertCircle, Info, Activity, Clock, AlignLeft, Download, ChevronDown } from 'lucide-react';
+import { queryLogs } from '../lib/operations.js';
 
 export default function LogExplorerTab() {
   const [logs, setLogs] = useState([]);
   const [isLive, setIsLive] = useState(true);
   const [searchQuery, setSearchQuery] = useState('{job="varlogs"}');
-  
+
   const [severityFilter, setSeverityFilter] = useState('ALL');
   const [showSeverityDropdown, setShowSeverityDropdown] = useState(false);
   const [timeRange, setTimeRange] = useState('15m');
-  
+  const [queryMeta, setQueryMeta] = useState(null);
+
   const logsEndRef = useRef(null);
+  const previousLogIdsRef = useRef(new Set());
+  const [newLogIds, setNewLogIds] = useState(new Set());
 
   // HTML-PROOF ENVIRONMENT DETECTION
   const [isLiveEnv, setIsLiveEnv] = useState(false);
   useEffect(() => {
-    fetch('/api/telemetry.json')
+    fetch('/ready')
       .then(res => res.text())
       .then(text => {
-        try { setIsLiveEnv(!JSON.parse(text).error); } 
+        try { const payload = JSON.parse(text); setIsLiveEnv(payload.status === 'ready' || payload.ready === true); }
         catch { setIsLiveEnv(false); }
       })
       .catch(() => setIsLiveEnv(false));
@@ -26,49 +30,13 @@ export default function LogExplorerTab() {
 
   useEffect(() => {
     let interval;
-    
+
     if (!isLiveEnv && isLive) {
-      // --- SIMULATOR MODE (Updated for PM2 / GitOps Architecture) ---
-      interval = setInterval(() => {
-        const levels = ['INFO', 'INFO', 'INFO', 'WARN', 'ERROR'];
-        const services = ['caddy-proxy', 'pocket-api', 'infra-runner', 'vault-kms', 'pocket-telemetry', 'pm2-daemon'];
-        
-        const service = services[Math.floor(Math.random() * services.length)];
-        let message = `[Simulated] Process heartbeat acknowledged.`;
-
-        // Generate context-aware mock logs matching the new infrastructure
-        if (service === 'infra-runner') {
-            message = `[act_runner] Polling Gitea repository for new declarative workflow jobs...`;
-        } else if (service === 'pocket-api') {
-            message = `[API] 200 OK - Intent 'telemetry_poll' processed in 12ms.`;
-        } else if (service === 'vault-kms') {
-            message = `[Vault] Ephemeral AppRole token generated for policy 'gitops-policy' (TTL: 1h).`;
-        } else if (service === 'pm2-daemon') {
-            message = `[PM2] Process 'photoprism' resource utilization nominal (CPU: 12%).`;
-        } else if (service === 'caddy-proxy') {
-            message = `[Caddy] HTTP/2.0 200 OK /api/telemetry - Handled TLS 1.3 request.`;
-        }
-
-        if (levels[Math.floor(Math.random() * levels.length)] === 'ERROR') {
-            message = `[CRITICAL] Connection timeout during reconciliation. Retrying via exponential backoff.`;
-        }
-
-        const newLog = {
-          id: Math.random().toString(36).substr(2, 9),
-          timestamp: new Date().toISOString(),
-          level: levels[Math.floor(Math.random() * levels.length)],
-          service: service,
-          message: message,
-        };
-
-        setLogs(prev => {
-          const updated = [...prev, newLog];
-          return updated.length > 200 ? updated.slice(updated.length - 200) : updated;
-        });
-      }, 1200);
+      setLogs([{ id: 'control-plane-degraded', timestamp: new Date().toISOString(), level: 'WARN', service: 'fastapi-nats', message: 'FastAPI/NATS control plane is not ready. Loki log streaming is paused; simulator logs are disabled in production mode.' }]);
+      setQueryMeta(null);
 
     } else if (isLiveEnv && isLive) {
-      // --- PRODUCTION MODE (Real Grafana Loki API) ---
+      // --- PRODUCTION MODE (FastAPI-owned log query API) ---
       const fetchLokiLogs = async () => {
         try {
           let query = searchQuery;
@@ -76,13 +44,8 @@ export default function LogExplorerTab() {
             query = `${searchQuery} |~ "(?i)${severityFilter}"`;
           }
 
-          // Queries Loki directly (Assumes Caddy/API routes this endpoint to Loki on port 3100)
-          const res = await fetch(`/loki/api/v1/query?query=${encodeURIComponent(query)}&limit=100`);
-          
-          const text = await res.text();
-          let data;
-          try { data = JSON.parse(text); } catch { throw new Error("Invalid Format"); }
-          
+          const data = await queryLogs({ query, limit: 100 });
+
           const parsedLogs = [];
           if (data.data && data.data.result) {
             data.data.result.forEach(stream => {
@@ -97,10 +60,12 @@ export default function LogExplorerTab() {
               });
             });
           }
-          parsedLogs.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+          parsedLogs.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
           setLogs(parsedLogs);
+          setQueryMeta(data.meta || null);
         } catch (err) {
-          setLogs([{ id: 'err', timestamp: new Date().toISOString(), level: 'ERROR', service: 'system', message: 'Connecting to Loki Log Aggregator API (Ensure Promtail is running via PM2)...' }]);
+          setLogs([{ id: 'err', timestamp: new Date().toISOString(), level: 'ERROR', service: 'system', message: 'Connecting to Pocket Lab FastAPI log query API. Live log data may be unavailable until the control plane and log pipeline are ready.' }]);
+          setQueryMeta(null);
         }
       };
 
@@ -111,15 +76,31 @@ export default function LogExplorerTab() {
     return () => clearInterval(interval);
   }, [isLive, isLiveEnv, searchQuery, severityFilter]);
 
+
+  useEffect(() => {
+    const currentIds = new Set(logs.slice(-3).map((log) => String(log.id)));
+    const fresh = [...currentIds].filter((id) => !previousLogIdsRef.current.has(id));
+    previousLogIdsRef.current = new Set(logs.map((log) => String(log.id)));
+    if (fresh.length > 0) {
+      setNewLogIds(new Set(fresh.slice(-3)));
+      const timeout = window.setTimeout(() => setNewLogIds(new Set()), 520);
+      return () => window.clearTimeout(timeout);
+    }
+    return undefined;
+  }, [logs]);
+
   useEffect(() => {
     if (isLive && logsEndRef.current) {
       logsEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [logs, isLive]);
 
-  const displayedLogs = logs.filter(log => {
+  const displayedLogs = logs.filter((log) => {
     if (!isLiveEnv && severityFilter !== 'ALL' && log.level !== severityFilter) return false;
-    if (!isLiveEnv && searchQuery !== '{job="varlogs"}' && !log.message.includes(searchQuery.replace(/[^a-zA-Z]/g, '')) && !log.service.includes(searchQuery.replace(/[^a-zA-Z]/g, ''))) return true;
+    if (!isLiveEnv && searchQuery !== '{job="varlogs"}') {
+      const needle = searchQuery.replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase();
+      if (needle && !log.message.toLowerCase().includes(needle) && !log.service.toLowerCase().includes(needle)) return false;
+    }
     return true;
   });
 
@@ -154,7 +135,7 @@ export default function LogExplorerTab() {
 
   return (
     <div className="max-w-7xl mx-auto p-4 animate-in fade-in duration-700 flex flex-col h-[85vh] gap-4">
-      
+
       {/* HEADER & SEARCH MODULE */}
       <div className="bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-3xl p-5 shadow-2xl shrink-0 z-20">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
@@ -164,33 +145,39 @@ export default function LogExplorerTab() {
             </div>
             <div>
               <h2 className="text-xl font-black text-white tracking-tight flex items-center">
-                Log Explorer <span className={`ml-2 text-[10px] px-2 py-0.5 rounded uppercase tracking-widest ${!isLiveEnv ? 'bg-orange-600' : 'bg-indigo-600'}`}>{!isLiveEnv ? 'Sandbox' : 'Loki'}</span>
+                Log Explorer <span className={`ml-2 rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-widest ${!isLiveEnv ? 'border-orange-400/30 bg-orange-500/15 text-orange-200' : 'border-indigo-400/30 bg-indigo-500/15 text-indigo-200'}`}>{!isLiveEnv ? 'Degraded' : 'FastAPI'}</span>
               </h2>
               <p className="text-slate-400 text-xs flex items-center mt-0.5">
                 <span className={`w-2 h-2 rounded-full mr-1.5 ${!isLiveEnv ? 'bg-orange-500 animate-pulse' : 'bg-green-500 animate-pulse'}`}></span>
-                {!isLiveEnv ? 'Simulator Data Stream' : 'Live Loki API Stream'}
+                {!isLiveEnv ? 'Control Plane Degraded' : 'FastAPI Log Query Stream'}
               </p>
             </div>
           </div>
 
           <div className="flex-1 w-full flex items-center relative">
             <div className="absolute left-4 text-slate-500 font-mono text-sm">LogQL</div>
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full bg-[#020617] border border-slate-700 rounded-xl py-3 pl-16 pr-4 font-mono text-sm focus:outline-none transition-colors shadow-inner ${!isLiveEnv ? 'text-orange-400 focus:border-orange-500' : 'text-emerald-400 focus:border-indigo-500'}`}
+              className={`pocket-input w-full pl-16 pr-4 font-mono ${!isLiveEnv ? 'text-orange-300 focus:border-orange-400/60' : 'text-emerald-300 focus:border-indigo-300/60'}`}
               placeholder='{job="varlogs"}'
             />
-            <button className={`absolute right-2 p-2 rounded-lg text-white transition-colors ${!isLiveEnv ? 'bg-orange-600 hover:bg-orange-500' : 'bg-indigo-600 hover:bg-indigo-500'}`}>
+            <button className={`absolute right-2 rounded-xl p-2 text-white transition-colors ${!isLiveEnv ? 'bg-orange-600 hover:bg-orange-500' : 'bg-indigo-600 hover:bg-indigo-500'}`}>
                <Search className="w-4 h-4" />
             </button>
           </div>
         </div>
 
+        {queryMeta && (
+          <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-2 text-[11px] text-slate-400">
+            {queryMeta.matched_count ?? 0} matches · {queryMeta.query_time_ms ?? 0} ms
+          </div>
+        )}
+
         <div className="flex flex-wrap items-end justify-between gap-2">
           <div className="flex space-x-2">
-            <button 
+            <button
               onClick={() => setIsLive(!isLive)}
               className={`flex items-center px-4 py-2 rounded-lg text-xs font-bold transition-all border ${isLive ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'}`}
             >
@@ -198,7 +185,7 @@ export default function LogExplorerTab() {
               {isLive ? 'Pause Stream' : 'Resume Live'}
             </button>
 
-            <button 
+            <button
               onClick={() => setTimeRange(prev => prev === '15m' ? '1h' : prev === '1h' ? '24h' : '15m')}
               className="flex items-center px-4 py-2 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 transition-all"
             >
@@ -206,19 +193,19 @@ export default function LogExplorerTab() {
             </button>
 
             <div className="relative">
-              <button 
+              <button
                 onClick={() => setShowSeverityDropdown(!showSeverityDropdown)}
                 className={`flex items-center px-4 py-2 rounded-lg text-xs font-bold transition-all border ${severityFilter !== 'ALL' ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-300' : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'}`}
               >
-                 <Filter className="w-3 h-3 mr-2" /> 
+                 <Filter className="w-3 h-3 mr-2" />
                  {severityFilter === 'ALL' ? 'Filter Severity' : `Severity: ${severityFilter}`}
                  <ChevronDown className="w-3 h-3 ml-2" />
               </button>
-              
+
               {showSeverityDropdown && (
                 <div className="absolute top-full left-0 mt-2 w-48 bg-[#05080f] border border-slate-700 rounded-xl shadow-2xl overflow-hidden z-50">
                   {['ALL', 'INFO', 'WARN', 'ERROR'].map(level => (
-                    <button 
+                    <button
                       key={level}
                       onClick={() => { setSeverityFilter(level); setShowSeverityDropdown(false); }}
                       className={`w-full text-left px-4 py-3 text-xs font-bold hover:bg-white/10 transition-colors ${severityFilter === level ? 'bg-indigo-600/20 text-indigo-400' : 'text-slate-300'}`}
@@ -242,15 +229,15 @@ export default function LogExplorerTab() {
               <span className="text-xs font-bold text-slate-400 uppercase tracking-widest w-36 hidden md:block">Service</span>
               <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Message</span>
             </div>
-            
-            <button 
+
+            <button
               onClick={handleExport}
-              className="flex items-center space-x-2 text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg transition-colors text-xs font-bold" 
+              className="flex items-center space-x-2 text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg transition-colors text-xs font-bold"
             >
               <Download className="w-4 h-4" /> <span className="hidden md:inline">Export</span>
             </button>
          </div>
-         
+
          <div className="flex-1 overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-slate-700 font-mono text-[11px] lg:text-xs">
            {displayedLogs.length === 0 ? (
              <div className="h-full flex flex-col items-center justify-center opacity-30 text-slate-400">
@@ -258,29 +245,32 @@ export default function LogExplorerTab() {
                <p>No logs match the current filter criteria.</p>
              </div>
            ) : (
-             displayedLogs.map((log, index) => (
-               <div key={`${log.id}-${index}`} className="flex flex-col md:flex-row items-start md:items-center p-2 hover:bg-white/5 rounded-lg group transition-colors cursor-pointer border-b border-white/5 md:border-transparent">
-                 <span className="text-slate-500 w-32 shrink-0 mb-1 md:mb-0 hidden md:block">
+             displayedLogs.map((log, index) => {
+               const isNewLog = newLogIds.has(String(log.id));
+               return (
+               <div key={`${log.id}-${index}`} className={`flex flex-col md:flex-row items-start md:items-center p-2 hover:bg-white/5 rounded-lg group transition-colors cursor-pointer border-b border-white/5 md:border-transparent ${isNewLog ? 'log-stream-row-new' : ''}`}>
+                 <span className={`text-slate-500 w-32 shrink-0 mb-1 md:mb-0 hidden md:block ${isNewLog ? 'log-timestamp-highlight' : ''}`}>
                    {log.timestamp.includes('T') ? log.timestamp.split('T')[1].replace('Z', '') : log.timestamp}
                  </span>
-                 
+
                  <div className="w-24 shrink-0 mb-1 md:mb-0">
-                   <span className={`px-2 py-0.5 rounded border ${getLevelColor(log.level)} font-bold flex items-center w-fit`}>
+                   <span className={`px-2 py-0.5 rounded border ${getLevelColor(log.level)} font-bold flex items-center w-fit ${isNewLog ? 'log-severity-pop' : ''}`}>
                      {getLevelIcon(log.level)} {log.level}
                    </span>
                  </div>
-                 
+
                  <span className={`w-36 shrink-0 truncate pr-2 mb-1 md:mb-0 hidden md:block ${!isLiveEnv ? 'text-orange-300' : 'text-indigo-300'}`}>
                    [{log.service}]
                  </span>
-                 
+
                  <span className={`flex-1 break-all ${log.level === 'ERROR' ? 'text-red-200' : 'text-slate-300'}`}>
                    <span className="md:hidden text-slate-500 mr-2">{log.timestamp.includes('T') ? log.timestamp.split('T')[1].substring(0,8) : ''}</span>
                    <span className="md:hidden text-indigo-300 mr-2">[{log.service}]</span>
                    {log.message}
                  </span>
                </div>
-             ))
+               );
+             })
            )}
            <div ref={logsEndRef} />
          </div>

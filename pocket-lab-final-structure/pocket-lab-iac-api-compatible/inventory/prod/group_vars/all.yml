@@ -6,25 +6,38 @@ common_log_dir: "{{ common_base_dir }}/logs"
 common_run_dir: "{{ common_base_dir }}/run"
 common_cache_dir: "{{ common_base_dir }}/cache"
 common_state_dir: "{{ common_base_dir }}/state"
-
-# Updated to remove legacy /dashboard and include /api & /pwa_dist
+common_iac_dir: "{{ common_base_dir }}/pocket_lab_iac"
+common_api_dir: "{{ common_base_dir }}/api"
+common_pwa_dir: "{{ common_base_dir }}/pwa_dist"
+common_policies_dir: "{{ common_base_dir }}/pocket_lab_policies"
+common_gitea_dir: "{{ common_base_dir }}/gitea"
+common_runner_dir: "{{ common_base_dir }}/gitea-runners"
+common_vault_dir: "{{ common_base_dir }}/vault"
+common_observability_dir: "{{ common_base_dir }}/observability_configs"
+common_backup_dir: "{{ common_base_dir }}/backups"
+common_nats_dir: "{{ common_state_dir }}/nats"
 common_manage_dirs:
   - "{{ common_base_dir }}"
   - "{{ common_log_dir }}"
   - "{{ common_run_dir }}"
   - "{{ common_cache_dir }}"
   - "{{ common_state_dir }}"
-  - "{{ common_base_dir }}/vault"
-  - "{{ common_base_dir }}/vault/data"
-  - "{{ common_base_dir }}/vault/audit"
+  - "{{ common_iac_dir }}"
+  - "{{ common_api_dir }}"
+  - "{{ common_pwa_dir }}"
+  - "{{ common_policies_dir }}"
+  - "{{ common_vault_dir }}"
+  - "{{ common_vault_dir }}/data"
+  - "{{ common_vault_dir }}/audit"
   - "{{ common_base_dir }}/mariadb"
-  - "{{ common_base_dir }}/gitea"
-  - "{{ common_base_dir }}/gitea/conf"
-  - "{{ common_base_dir }}/gitea-runners"	
-  - "{{ common_base_dir }}/api"
-  - "{{ common_base_dir }}/pwa_dist"
+  - "{{ common_gitea_dir }}"
+  - "{{ common_gitea_dir }}/conf"
+  - "{{ common_runner_dir }}"
+  - "{{ common_observability_dir }}"
   - "{{ common_base_dir }}/iac-catalog"
-  - "{{ common_base_dir }}/backups"
+  - "{{ common_backup_dir }}"
+  - "{{ common_nats_dir }}"
+  - "{{ common_nats_dir }}/store"
   - "{{ common_base_dir }}/tailscale"
   - "{{ common_base_dir }}/workloads"
 
@@ -34,6 +47,7 @@ common_required_commands:
   - jq
   - python3
   - bash
+  - nats-server
 
 vault_api_addr: http://127.0.0.1:8200
 vault_listener_addr: 127.0.0.1:8200
@@ -55,12 +69,9 @@ vault_export_approle_ids: false
 
 mariadb_service_host: 127.0.0.1
 mariadb_port: 3306
-# [FIXED] Aligned to native Termux socket path
 mariadb_socket: "/data/data/com.termux/files/usr/var/run/mysqld.sock"
 mariadb_datadir: "{{ common_base_dir }}/mariadb"
-
 mariadb_root_socket_login: false
-# [FIXED] Using secure admin user rather than passwordless root
 mariadb_admin_user: pocket_admin
 mariadb_admin_password: "{{ lookup('env', 'MARIADB_ADMIN_PASSWORD') | default('', true) }}"
 mariadb_databases:
@@ -81,33 +92,27 @@ gitea_api_url: http://127.0.0.1:3030
 gitea_admin_user: pocket_admin
 gitea_admin_email: admin@pocketlab.local
 gitea_vault_secret_path: secret/data/gitea
-gitea_app_dir: "{{ common_base_dir }}/gitea"
-gitea_conf_dir: "{{ common_base_dir }}/gitea/conf"
-gitea_state_dir: "{{ common_base_dir }}/gitea/state"
-gitea_runtime_ini: "{{ common_base_dir }}/gitea/conf/app.runtime.ini"
+gitea_app_dir: "{{ common_gitea_dir }}"
+gitea_conf_dir: "{{ common_gitea_dir }}/conf"
+gitea_state_dir: "{{ common_gitea_dir }}/state"
+gitea_runtime_ini: "{{ common_gitea_dir }}/conf/app.runtime.ini"
 gitea_repositories: []
 gitea_orgs: []
 gitea_branch_protections: []
 gitea_bootstrap_admin: true
-
 gitea_vault_token: "{{ lookup('env', 'GITEA_VAULT_TOKEN') | default('', true) }}"
 gitea_ui_password: "{{ lookup('env', 'GITEA_UI_PASSWORD') | default('', true) }}"
 gitea_service_password: "{{ lookup('env', 'GITEA_SERVICE_PASSWORD') | default('', true) }}"
 
-# Updated Caddy Block for Day-3 Architecture
 caddy_public_port: 8443
 caddy_config_path: "{{ common_base_dir }}/caddy/Caddyfile"
 caddy_state_dir: "{{ common_base_dir }}/caddy"
-
-# Day-3: Frontend static hosting directory
-caddy_pwa_dir: "{{ common_base_dir }}/pwa_dist"
-
-# Day-3: Optional Tailscale FQDN (e.g. pocket-lab.tailnet.ts.net)
+caddy_pwa_dir: "{{ common_pwa_dir }}"
 caddy_tailscale_fqdn: ""
-
 caddy_routes:
   api: 127.0.0.1:8080
-  loki: 127.0.0.1:3100
+  loki: 127.0.0.1:8080
+  gatus: 127.0.0.1:8081
 caddy_tls_mode: internal
 caddy_hsts_max_age: 31536000
 
@@ -121,17 +126,102 @@ catalog_seed_git_name: Pocket Lab Automation
 catalog_seed_push_enabled: false
 catalog_seed_templates: []
 
-backup_root: "{{ common_base_dir }}/backups"
+backup_root: "{{ common_backup_dir }}"
 backup_retention_days: 14
 backup_script_path: "{{ common_base_dir }}/backups/backup.sh"
 backup_restore_path: "{{ common_base_dir }}/backups/restore.sh"
 backup_manifest_path: "{{ common_base_dir }}/backups/manifest.json"
 backup_targets: []
 
-# Note: Renamed from observability_ to drift_check_ to match the role update
-drift_check_log_dir: "{{ common_log_dir }}"
+drift_check_report_dir: "{{ common_base_dir }}/drift"
+drift_check_jobs_dir: "{{ drift_check_report_dir }}/jobs"
+drift_check_history_dir: "{{ drift_check_report_dir }}/history"
 drift_report_path: "{{ common_base_dir }}/drift-report.json"
-drift_check_endpoints: []
+drift_check_timeout_seconds: 15
+drift_check_command_timeout_seconds: 30
+drift_check_output_limit: 1200
+drift_check_fail_on_drift: false
+drift_check_write_history: true
+drift_check_endpoints:
+  - name: nats_monitor
+    scope: service
+    target: nats
+    url: http://127.0.0.1:8222/varz
+    expected_status_codes: [200]
+    severity: critical
+    summary: NATS/JetStream monitor health
+  - name: gitea_api
+    scope: service
+    target: gitea
+    url: http://127.0.0.1:3030/health
+    expected_status_codes: [200]
+    severity: high
+    summary: Gitea API health
+  - name: dashboard_health
+    scope: service
+    target: fastapi_control_plane
+    url: http://127.0.0.1:8080/health
+    expected_status_codes: [200]
+    severity: high
+    summary: FastAPI/NATS control plane health
+  - name: loki_ready
+    scope: service
+    target: observability
+    url: http://127.0.0.1:3100/ready
+    expected_status_codes: [200]
+    severity: medium
+    summary: Loki readiness
+  - name: prometheus_ready
+    scope: service
+    target: observability
+    url: http://127.0.0.1:9090/-/ready
+    expected_status_codes: [200]
+    severity: medium
+    summary: Prometheus readiness
+  - name: grafana_health
+    scope: service
+    target: observability
+    url: http://127.0.0.1:3050/api/health
+    expected_status_codes: [200]
+    severity: medium
+    summary: Grafana health
+  - name: gatus_statuses
+    scope: service
+    target: health_engine
+    url: http://127.0.0.1:8081/api/v1/endpoints/statuses
+    expected_status_codes: [200]
+    severity: high
+    summary: Gatus status API
+
+drift_check_commands:
+  - name: vault_status
+    scope: service
+    target: vault
+    command: vault status -format=json
+    expected_rc: 0
+    severity: high
+    summary: Vault CLI status
+  - name: mariadb_socket_ping
+    scope: service
+    target: mariadb
+    command: mariadb --protocol=socket -S /data/data/com.termux/files/usr/var/run/mysqld.sock -e "SELECT 1;"
+    expected_rc: 0
+    severity: high
+    summary: MariaDB socket query
+  - name: tailscale_status
+    scope: node
+    target: tailscale
+    command: tailscale status --json
+    expected_rc: 0
+    severity: medium
+    summary: Tailscale status
+  - name: pm2_process_list
+    scope: node
+    target: pm2
+    command: pm2 jlist
+    expected_rc: 0
+    severity: medium
+    summary: PM2 process list
 
 photoprism_enabled: true
 photoprism_root: "{{ common_base_dir }}/workloads/photoprism"
@@ -142,11 +232,10 @@ photoprism_state_dir: "{{ common_base_dir }}/workloads/photoprism/state"
 photoprism_admin_password: "{{ lookup('env', 'PHOTOPRISM_ADMIN_PASSWORD') | default('', true) }}"
 photoprism_launcher_path: "{{ common_base_dir }}/workloads/photoprism/start-photoprism.sh"
 
-gitea_runner_base_dir: "{{ common_base_dir }}/gitea-runners"
+gitea_runner_base_dir: "{{ common_runner_dir }}"
 gitea_runner_api_url: "http://127.0.0.1:3030"
 gitea_runner_admin_user: "pocket_admin"
 gitea_runner_admin_password: "{{ lookup('env', 'GITEA_UI_PASSWORD') | default('', true) }}"
-
 gitea_runners:
   - name: infra-runner
     labels: "infra-runner:host"

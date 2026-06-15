@@ -1,0 +1,52 @@
+{
+  "description": "Recorded command completed successfully.",
+  "fullName": "Pocket Lab Validation::Test::pytest-backend",
+  "historyId": "295271cc381ba0df2eda094e3a9663c0",
+  "labels": [
+    {
+      "name": "epic",
+      "value": "Tier 8 Validation Documentation"
+    },
+    {
+      "name": "feature",
+      "value": "Test"
+    },
+    {
+      "name": "story",
+      "value": "pytest-backend"
+    },
+    {
+      "name": "owner",
+      "value": "Backend"
+    },
+    {
+      "name": "severity",
+      "value": "blocker"
+    },
+    {
+      "name": "tag",
+      "value": "PASS"
+    }
+  ],
+  "name": "Backend pytest evidence",
+  "parameters": [
+    {
+      "name": "command",
+      "value": "task test:backend"
+    },
+    {
+      "name": "evidence_state",
+      "value": "executed-command"
+    },
+    {
+      "name": "generated_at",
+      "value": "2026-06-14T19:32:50Z"
+    }
+  ],
+  "stage": "finished",
+  "start": 1781465570477,
+  "status": "passed",
+  "stop": 1781465570477,
+  "testCaseId": "pytest-backend",
+  "uuid": "4b56864a-83ea-53d8-bbf8-9f9c5ef1603c"
+}

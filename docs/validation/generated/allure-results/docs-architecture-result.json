@@ -1,0 +1,52 @@
+{
+  "description": "Repository artifact exists, but no recorded command outcome was found. Use the validation recorder for release-grade evidence.",
+  "fullName": "Pocket Lab Validation::Architecture::docs-architecture",
+  "historyId": "77ad54317647427c8f432efa14525245",
+  "labels": [
+    {
+      "name": "epic",
+      "value": "Tier 8 Validation Documentation"
+    },
+    {
+      "name": "feature",
+      "value": "Architecture"
+    },
+    {
+      "name": "story",
+      "value": "docs-architecture"
+    },
+    {
+      "name": "owner",
+      "value": "Architecture"
+    },
+    {
+      "name": "severity",
+      "value": "blocker"
+    },
+    {
+      "name": "tag",
+      "value": "WARNING"
+    }
+  ],
+  "name": "Structurizr architecture-as-code",
+  "parameters": [
+    {
+      "name": "command",
+      "value": "task docs:architecture"
+    },
+    {
+      "name": "evidence_state",
+      "value": "repository-artifact"
+    },
+    {
+      "name": "generated_at",
+      "value": "2026-06-14T19:32:50Z"
+    }
+  ],
+  "stage": "finished",
+  "start": 1781465570477,
+  "status": "skipped",
+  "stop": 1781465570477,
+  "testCaseId": "docs-architecture",
+  "uuid": "b959706e-7e50-5bde-a48d-4a5f8049ad82"
+}

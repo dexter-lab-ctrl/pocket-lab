@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  GitBranch, CheckCircle2, XCircle, Clock, Loader2, 
+import {
+  GitBranch, CheckCircle2, XCircle, Clock, Loader2,
   GitCommit, Activity, PlayCircle, ShieldCheck, ChevronDown
 } from 'lucide-react';
 
@@ -12,10 +12,10 @@ export default function GiteaRegistryTab() {
   // HTML-PROOF ENVIRONMENT DETECTION
   const [isLiveEnv, setIsLiveEnv] = useState(false);
   useEffect(() => {
-    fetch('/api/telemetry.json')
+    fetch('/ready')
       .then(res => res.text())
       .then(text => {
-        try { setIsLiveEnv(!JSON.parse(text).error); } 
+        try { const payload = JSON.parse(text); setIsLiveEnv(payload.status === 'ready' || payload.ready === true); }
         catch { setIsLiveEnv(false); }
       })
       .catch(() => setIsLiveEnv(false));
@@ -23,30 +23,25 @@ export default function GiteaRegistryTab() {
 
   const fetchPipelines = async () => {
     try {
-      // Actively attempt to hit the real Python API securely
+      // Actively attempt to hit the real FastAPI/NATS API securely
       // This seamlessly hits Gitea Actions API proxy
       const res = await fetch('/api/pipeline_status.json');
       const text = await res.text();
       let data;
-      try { 
-        data = JSON.parse(text); 
-      } catch { 
-        throw new Error("Invalid Array"); 
+      try {
+        data = JSON.parse(text);
+      } catch {
+        throw new Error("Invalid Array");
       }
-      
+
       if (Array.isArray(data)) {
         setPipelines(data);
-      } else { 
-        throw new Error("Not Array"); 
+      } else {
+        throw new Error("Not Array");
       }
     } catch (err) {
-      // Fallback to Sandbox Simulator if API is unreachable or returns HTML
-      setPipelines([
-        { id: 104, name: 'Workload Deployment', status: 'running', commit_msg: 'GitOps: Deploying photoprism via UI', time: new Date().toISOString() },
-        { id: 103, name: 'Maintenance Action', status: 'success', commit_msg: 'Ansible: MariaDB Backup', time: new Date(Date.now() - 60000).toISOString() },
-        { id: 102, name: 'Security Audit', status: 'success', commit_msg: 'Automated CRON Trigger', time: new Date(Date.now() - 3600000).toISOString() },
-        { id: 101, name: 'Workload Deployment', status: 'failure', commit_msg: 'GitOps: Deploying ubuntu_base (Blocked by OPA)', time: new Date(Date.now() - 86400000).toISOString() },
-      ]);
+      setPipelines([]);
+      setIsLiveEnv(false);
     } finally {
       setIsFetching(false);
     }
@@ -54,7 +49,7 @@ export default function GiteaRegistryTab() {
 
   useEffect(() => {
     fetchPipelines();
-    const interval = setInterval(fetchPipelines, 5000); 
+    const interval = setInterval(fetchPipelines, 5000);
     return () => clearInterval(interval);
   }, [isLiveEnv]);
 
@@ -74,7 +69,7 @@ export default function GiteaRegistryTab() {
 
   return (
     <div className="max-w-6xl mx-auto p-4 animate-in fade-in duration-700">
-      
+
       {/* HEADER */}
       <div className="bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-[2.5rem] p-8 shadow-2xl mb-8 relative overflow-hidden">
         <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none transform translate-x-4 -translate-y-4">
@@ -83,7 +78,7 @@ export default function GiteaRegistryTab() {
         <div className="relative z-10">
           <div className="flex items-center space-x-2 mb-2">
              <div className={`w-2 h-2 rounded-full ${isLiveEnv ? 'bg-emerald-500 animate-pulse' : 'bg-orange-500 animate-pulse'}`}></div>
-             <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest">{isLiveEnv ? 'Live API Connected' : 'Sandbox Simulator'}</h3>
+             <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest">{isLiveEnv ? 'FastAPI/NATS Connected' : 'Control Plane Degraded'}</h3>
           </div>
           <h2 className="text-4xl font-black text-white tracking-tight mb-2">Global Orchestration Pipelines</h2>
           <p className="text-slate-400 text-sm max-w-xl">Live execution logs from the Gitea Actions <code className="text-indigo-400">infra-runner</code> orchestrating state changes via Ansible and PM2.</p>
@@ -108,9 +103,9 @@ export default function GiteaRegistryTab() {
 
               return (
                 <div key={run.id} className="bg-slate-900/50 border border-white/5 rounded-2xl flex flex-col hover:bg-slate-900 transition-colors group overflow-hidden">
-                  
+
                   {/* CLICKABLE HEADER ROW */}
-                  <div 
+                  <div
                     onClick={() => toggleExpand(run.id)}
                     className="p-4 md:p-5 flex flex-row items-center justify-between gap-4 cursor-pointer"
                   >
@@ -127,6 +122,7 @@ export default function GiteaRegistryTab() {
                         <div className="flex items-center space-x-2 mt-0.5 md:mt-1 text-xs">
                           <GitCommit className="w-3 h-3 text-slate-500 shrink-0" />
                           <span className="font-mono text-slate-400 truncate">{run.commit_msg}</span>
+                          {run.commit_sha && <div className="mt-1 text-[10px] font-mono text-slate-500">SHA: {run.commit_sha}</div>}
                         </div>
                       </div>
                     </div>
@@ -149,11 +145,12 @@ export default function GiteaRegistryTab() {
                     <div className="bg-black/40 border-t border-white/5 p-4 text-[10px] md:text-xs font-mono text-slate-400 overflow-x-auto animate-in slide-in-from-top-2 duration-200">
                       <div className="text-indigo-400 mb-2">$ act_runner exec --job {run.name.replace(/\s+/g, '-').toLowerCase()}</div>
                       <div className="text-slate-500 mb-1">[00:00:00] Setting up job environment in Termux sub-shell...</div>
+                      {run.commit_sha && <div className="mb-1 text-slate-500">[00:00:00] commit {run.commit_sha}</div>}
                       <div className="mb-1"><span>[00:00:01]</span> <span className="text-emerald-400">✔</span> Checkout Workspace Repository</div>
-                      
+
                       {run.name.includes('Workload') && (
                         <>
-                          <div className="mb-1"><span>[00:00:02]</span> <span className="text-emerald-400">✔</span> Execute: <span className="text-white">opa eval -d ~/pocket_lab_policies "data.pocketlab.deny"</span></div>
+                          <div className="mb-1"><span>[00:00:02]</span> <span className="text-emerald-400">✔</span> Execute: <span className="text-white">opa eval -d ~/pocket-lab/pocket_lab_policies &quot;data.pocketlab.deny&quot;</span></div>
                           {run.status === 'failure' ? (
                             <>
                               <div className="mb-1 text-red-500 pl-4">Policy Violation Detected.</div>

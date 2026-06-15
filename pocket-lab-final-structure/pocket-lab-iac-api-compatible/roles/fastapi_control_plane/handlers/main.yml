@@ -1,0 +1,4 @@
+---
+- name: fastapi_control_plane configuration updated
+  ansible.builtin.debug:
+    msg: "fastapi_control_plane configuration changed. External service restarts are handled by the runtime launcher or supervisor."

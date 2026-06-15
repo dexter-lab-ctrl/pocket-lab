@@ -1,0 +1,61 @@
+{
+  "engine": "gatus",
+  "source": "fallback",
+  "status": "healthy",
+  "summary": {
+    "healthy": 2,
+    "warning": 0,
+    "degraded": 0,
+    "unhealthy": 0,
+    "unavailable": 0,
+    "maintenance": 0,
+    "unknown": 0,
+    "total": 2
+  },
+  "services": {
+    "gatus": {
+      "name": "gatus",
+      "status": "healthy",
+      "summary": "Fallback snapshot",
+      "url": "http://127.0.0.1:8081",
+      "last_checked_at": "2026-06-14T17:10:36Z",
+      "response_time_ms": null,
+      "results_count": null
+    },
+    "api": {
+      "name": "api",
+      "status": "healthy",
+      "summary": "Pocket Lab FastAPI/NATS control plane is serving",
+      "url": "http://127.0.0.1:8080",
+      "last_checked_at": "2026-06-14T17:10:36Z",
+      "response_time_ms": null,
+      "results_count": null
+    }
+  },
+  "checks": [
+    {
+      "name": "gatus",
+      "status": "healthy",
+      "summary": "Fallback snapshot",
+      "url": "http://127.0.0.1:8081",
+      "last_checked_at": "2026-06-14T17:10:36Z",
+      "response_time_ms": null,
+      "results_count": null
+    },
+    {
+      "name": "api",
+      "status": "healthy",
+      "summary": "Pocket Lab FastAPI/NATS control plane is serving",
+      "url": "http://127.0.0.1:8080",
+      "last_checked_at": "2026-06-14T17:10:36Z",
+      "response_time_ms": null,
+      "results_count": null
+    }
+  ],
+  "last_checked_at": "2026-06-14T17:10:36Z",
+  "gatus": {
+    "base_url": "http://127.0.0.1:8081",
+    "statuses_path": "/api/v1/endpoints/statuses",
+    "reachable": false
+  }
+}

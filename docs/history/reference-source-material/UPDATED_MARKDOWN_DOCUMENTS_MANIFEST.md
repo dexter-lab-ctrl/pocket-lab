@@ -1,0 +1,35 @@
+# Updated Pocket Lab Markdown Documents Manifest
+
+- `ENTERPRISE_NATS_HARDENING_REPORT.md`
+- `IAC_ARCHITECTURE_SYNC_REPORT.md`
+- `LEGACY_INTENT_REMOVAL_REPORT.md`
+- `PYTHON_API_RETIREMENT_REPORT.md`
+- `SANITIZATION_REPORT.md`
+- `SECOND_PASS_FASTAPI_NATS_ONLY_REPORT.md`
+- `UI_UX_ARCHITECTURE_SYNC_REPORT.md`
+- `pocket-lab-final-structure/ENTERPRISE_NATS_HARDENING_REPORT.md`
+- `pocket-lab-final-structure/README.md`
+- `pocket-lab-final-structure/docs/release-workflow.md`
+- `pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/BOOTSTRAP_IDEMPOTENCY_NOTES.md`
+- `pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/README.md`
+- `pocket-lab-final-structure/pocket-lab-iac-api-compatible/IAC_ARCHITECTURE_SYNC_REPORT.md`
+- `pocket-lab-final-structure/pocket-lab-iac-api-compatible/README.md`
+- `pocket-lab-final-structure/pocket-lab-iac-api-compatible/docs/architecture.md`
+- `pocket-lab-final-structure/pocket-lab-iac-api-compatible/docs/environments.md`
+- `pocket-lab-final-structure/pocket-lab-iac-api-compatible/docs/production-readiness.md`
+- `pocket-lab-final-structure/pocket-lab-iac-api-compatible/docs/secret-handling.md`
+- `pocket-lab-final-structure/pocket-lab-iac-api-compatible/iac-catalog/README.md`
+- `pocket-lab-final-structure/runtime/api_fastapi/PHASE10_NATS_BACKED_FLEET_AGENT.md`
+- `pocket-lab-final-structure/runtime/api_fastapi/PHASE11_JETSTREAM_DURABILITY_RETRIES_DLQ.md`
+- `pocket-lab-final-structure/runtime/api_fastapi/PHASE12_EVENT_SOURCED_WORKFLOW_ENGINE.md`
+- `pocket-lab-final-structure/runtime/api_fastapi/PHASE2_NATS_EVENT_BUS.md`
+- `pocket-lab-final-structure/runtime/api_fastapi/PHASE3_WORKER_PROCESS.md`
+- `pocket-lab-final-structure/runtime/api_fastapi/PHASE4_FRONTEND_LIVE_EVENT_STREAM.md`
+- `pocket-lab-final-structure/runtime/api_fastapi/PHASE5_NORMALIZED_WORKER_ACTIONS.md`
+- `pocket-lab-final-structure/runtime/api_fastapi/PHASE6_DOMAIN_WORKER_COMMAND_HANDLERS.md`
+- `pocket-lab-final-structure/runtime/api_fastapi/PHASE7_LIVE_OPERATION_RUNNER_LOGS.md`
+- `pocket-lab-final-structure/runtime/api_fastapi/PHASE8_RELEASE_WORKFLOW_ORCHESTRATION.md`
+- `pocket-lab-final-structure/runtime/api_fastapi/PHASE9_EVENT_NATIVE_HEALTH_TELEMETRY.md`
+- `pocket-lab-final-structure/runtime/api_fastapi/README.md`
+- `pocket_lab_iac/README.md`
+- `src/mocks/README.md`

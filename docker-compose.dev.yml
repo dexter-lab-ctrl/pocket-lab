@@ -1,0 +1,14 @@
+services:
+  nats:
+    image: nats:2.10-alpine
+    container_name: pocketlab-dev-nats
+    command: ["-js", "-m", "8222", "--name", "pocketlab-dev"]
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    volumes:
+      - pocketlab-dev-nats:/data
+    restart: unless-stopped
+
+volumes:
+  pocketlab-dev-nats:

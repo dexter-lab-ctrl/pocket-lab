@@ -1,6 +1,6 @@
 #!/data/data/com.termux/files/usr/bin/bash
 # Passed in by Python: The exact GitHub release asset URL
-DOWNLOAD_URL=$1 
+DOWNLOAD_URL=$1
 
 # ANSI Color Codes for Enterprise Log Formatting
 C_CYAN='\e[1;36m'

@@ -1,0 +1,9 @@
+---
+galaxy_info:
+  role_name: drift_check
+  author: OpenAI
+  description: Pocket Lab drift detection and reporting role
+  license: MIT
+  min_ansible_version: '2.15'
+dependencies:
+  - common

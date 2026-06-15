@@ -5,6 +5,14 @@ drift_check_endpoints:
   - name: vault
     url: http://127.0.0.1:8200/v1/sys/health
   - name: gitea
-    url: http://127.0.0.1:3030/api/healthz
+    url: http://127.0.0.1:3030/health
   - name: dashboard
-    url: http://127.0.0.1:8080/healthz
+    url: http://127.0.0.1:8080/health
+  - name: drift-summary
+    url: http://127.0.0.1:8080/api/drift/summary
+  - name: drift-jobs
+    url: http://127.0.0.1:8080/api/drift/jobs
+  - name: drift-metrics
+    url: http://127.0.0.1:8080/api/drift/metrics
+  - name: loki-query
+    url: http://127.0.0.1:8080/loki/api/v1/query?query=%7Bjob%3D%22varlogs%22%7D&limit=1

@@ -1,8 +1,7 @@
 ---
 - name: 99 drift check
-  # Changed from 'observability' to match the specific group for drift checks
   hosts: drift_check
   gather_facts: false
   roles:
     - common
-    - drift_check  # Changed from 'observability' to match the renamed role
+    - drift_check

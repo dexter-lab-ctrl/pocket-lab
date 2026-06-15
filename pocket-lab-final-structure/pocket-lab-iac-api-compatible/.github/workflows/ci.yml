@@ -10,12 +10,12 @@ jobs:
     runs-on: infra-runner
     steps:
       # Removed actions/checkout@v4 due to Android kernel permission issues
-      
+
       - name: Fix Local Permissions
         run: |
           # Ensure the script has proper execution rights in the PRoot environment
           chmod -R +r .
-          
+
       - name: Validate YAML files
         run: |
           python3 - <<'PY'

@@ -1,6 +1,6 @@
 # iac-catalog
 
-This repository is the Gitea catalog consumed by `pocket_lab_api_server.py`.
+This repository is the Gitea catalog consumed by `control_plane_core.py / FastAPI/NATS control plane`.
 
 Rules:
 - Each top-level directory is treated as a catalog item.

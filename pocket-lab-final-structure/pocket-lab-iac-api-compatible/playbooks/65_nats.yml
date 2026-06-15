@@ -1,0 +1,7 @@
+---
+- name: 65 enterprise nats jetstream
+  hosts: nats
+  gather_facts: false
+  roles:
+    - common
+    - nats

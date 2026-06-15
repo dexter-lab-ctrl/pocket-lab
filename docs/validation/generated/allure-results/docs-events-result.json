@@ -1,0 +1,52 @@
+{
+  "description": "Repository artifact exists, but no recorded command outcome was found. Use the validation recorder for release-grade evidence.",
+  "fullName": "Pocket Lab Validation::Contract::docs-events",
+  "historyId": "65416021df4ba32d58ee2243d171b406",
+  "labels": [
+    {
+      "name": "epic",
+      "value": "Tier 8 Validation Documentation"
+    },
+    {
+      "name": "feature",
+      "value": "Contract"
+    },
+    {
+      "name": "story",
+      "value": "docs-events"
+    },
+    {
+      "name": "owner",
+      "value": "Runtime"
+    },
+    {
+      "name": "severity",
+      "value": "blocker"
+    },
+    {
+      "name": "tag",
+      "value": "WARNING"
+    }
+  ],
+  "name": "NATS / JetStream AsyncAPI contract",
+  "parameters": [
+    {
+      "name": "command",
+      "value": "task docs:events"
+    },
+    {
+      "name": "evidence_state",
+      "value": "repository-artifact"
+    },
+    {
+      "name": "generated_at",
+      "value": "2026-06-14T19:32:50Z"
+    }
+  ],
+  "stage": "finished",
+  "start": 1781465570477,
+  "status": "skipped",
+  "stop": 1781465570477,
+  "testCaseId": "docs-events",
+  "uuid": "003f2e5e-0df9-5640-9259-6f100c0141be"
+}

@@ -1,0 +1,52 @@
+{
+  "description": "Recorded command completed successfully.",
+  "fullName": "Pocket Lab Validation::Accessibility::playwright-a11y",
+  "historyId": "0f8f2a5b3cb178989d7fe24e5391a84d",
+  "labels": [
+    {
+      "name": "epic",
+      "value": "Tier 8 Validation Documentation"
+    },
+    {
+      "name": "feature",
+      "value": "Accessibility"
+    },
+    {
+      "name": "story",
+      "value": "playwright-a11y"
+    },
+    {
+      "name": "owner",
+      "value": "Frontend"
+    },
+    {
+      "name": "severity",
+      "value": "blocker"
+    },
+    {
+      "name": "tag",
+      "value": "PASS"
+    }
+  ],
+  "name": "Accessibility evidence",
+  "parameters": [
+    {
+      "name": "command",
+      "value": "task test:a11y"
+    },
+    {
+      "name": "evidence_state",
+      "value": "executed-command"
+    },
+    {
+      "name": "generated_at",
+      "value": "2026-06-14T19:32:50Z"
+    }
+  ],
+  "stage": "finished",
+  "start": 1781465570478,
+  "status": "passed",
+  "stop": 1781465570478,
+  "testCaseId": "playwright-a11y",
+  "uuid": "5672d2a7-ad9e-5b19-aa5a-5a0f03cf4b8d"
+}

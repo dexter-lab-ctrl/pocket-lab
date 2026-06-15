@@ -1,233 +1,255 @@
-.github/
-  workflows/
-    ci.yml
+.
+.github
+.github/workflows
+.github/workflows/ci.yml
 .gitignore
 README.md
 TREE.txt
 ansible.cfg
-docs/
-  architecture.md
-  environments.md
-  production-readiness.md
-  secret-handling.md
-iac-catalog/
-  README.md
-  backup_restore/
-    maintenance.yml
-    metadata.json
-  cve_patcher/
-    playbook.yml
-  drift_check/
-    maintenance.yml
-    metadata.json
-  host_hardening/
-    playbook.yml
-  inventory.yml
-  observability/
-    maintenance.yml
-    metadata.json
-  photoprism/
-    metadata.json
-    playbook.yml
-  secret_rotation/
-    maintenance.yml
-    metadata.json
-  security_scanners/
-    playbook.yml
-  tailscale_ztp/
-    maintenance.yml
-    metadata.json
-  vault_rbac_day1/
-    maintenance.yml
-    metadata.json
-inventory/
-  dev/
-    group_vars/
-      all.yml
-      backups.yml
-      caddy.yml
-      catalog_seed.yml
-      dashboard_api.yml
-      gitea.yml
-      mariadb.yml
-      observability.yml
-      opa.yml
-      security.yml
-      tailscale.yml
-      vault.yml
-      workloads.yml
-    hosts.yml
-  prod/
-    group_vars/
-      all.yml
-      backups.yml
-      caddy.yml
-      catalog_seed.yml
-      dashboard_api.yml
-      gitea.yml
-      mariadb.yml
-      observability.yml
-      opa.yml
-      security.yml
-      tailscale.yml
-      vault.yml
-      workloads.yml
-    hosts.yml
-playbooks/
-  00_preflight.yml
-  10_vault.yml
-  20_mariadb.yml
-  30_gitea.yml
-  40_opa.yml
-  50_tailscale.yml
-  60_caddy.yml
-  70_dashboard_api.yml
-  80_catalog_seed.yml
-  90_workloads.yml
-  95_backup_restore.yml
-  97_gitea_runner.yml
-  99_drift_check.yml
+docs
+docs/architecture.md
+docs/environments.md
+docs/production-readiness.md
+docs/secret-handling.md
+iac-catalog
+iac-catalog/README.md
+iac-catalog/backup_restore
+iac-catalog/backup_restore/maintenance.yml
+iac-catalog/backup_restore/metadata.json
+iac-catalog/cve_patcher
+iac-catalog/cve_patcher/playbook.yml
+iac-catalog/drift_check
+iac-catalog/drift_check/maintenance.yml
+iac-catalog/drift_check/metadata.json
+iac-catalog/host_hardening
+iac-catalog/host_hardening/playbook.yml
+iac-catalog/observability
+iac-catalog/observability/maintenance.yml
+iac-catalog/observability/metadata.json
+iac-catalog/photoprism
+iac-catalog/photoprism/metadata.json
+iac-catalog/photoprism/playbook.yml
+iac-catalog/secret_rotation
+iac-catalog/secret_rotation/maintenance.yml
+iac-catalog/secret_rotation/metadata.json
+iac-catalog/security_scanners
+iac-catalog/security_scanners/playbook.yml
+iac-catalog/tailscale_ztp
+iac-catalog/tailscale_ztp/maintenance.yml
+iac-catalog/tailscale_ztp/metadata.json
+inventory
+inventory/dev
+inventory/dev/group_vars
+inventory/dev/group_vars/all.yml
+inventory/dev/group_vars/backups.yml
+inventory/dev/group_vars/caddy.yml
+inventory/dev/group_vars/catalog_seed.yml
+inventory/dev/group_vars/drift_check.yml
+inventory/dev/group_vars/fastapi_control_plane.yml
+inventory/dev/group_vars/gitea.yml
+inventory/dev/group_vars/gitea_runner.yml
+inventory/dev/group_vars/mariadb.yml
+inventory/dev/group_vars/nats.yml
+inventory/dev/group_vars/observability.yml
+inventory/dev/group_vars/opa.yml
+inventory/dev/group_vars/security.yml
+inventory/dev/group_vars/tailscale.yml
+inventory/dev/group_vars/vault.yml
+inventory/dev/group_vars/workloads.yml
+inventory/dev/hosts.yml
+inventory/prod
+inventory/prod/group_vars
+inventory/prod/group_vars/all.yml
+inventory/prod/group_vars/backups.yml
+inventory/prod/group_vars/caddy.yml
+inventory/prod/group_vars/catalog_seed.yml
+inventory/prod/group_vars/drift_check.yml
+inventory/prod/group_vars/fastapi_control_plane.yml
+inventory/prod/group_vars/gitea.yml
+inventory/prod/group_vars/gitea_runner.yml
+inventory/prod/group_vars/mariadb.yml
+inventory/prod/group_vars/nats.yml
+inventory/prod/group_vars/observability.yml
+inventory/prod/group_vars/opa.yml
+inventory/prod/group_vars/security.yml
+inventory/prod/group_vars/tailscale.yml
+inventory/prod/group_vars/vault.yml
+inventory/prod/group_vars/workloads.yml
+inventory/prod/hosts.yml
+playbooks
+playbooks/00_preflight.yml
+playbooks/10_vault.yml
+playbooks/20_mariadb.yml
+playbooks/30_gitea.yml
+playbooks/40_opa.yml
+playbooks/50_tailscale.yml
+playbooks/60_caddy.yml
+playbooks/65_nats.yml
+playbooks/70_fastapi_control_plane.yml
+playbooks/80_catalog_seed.yml
+playbooks/90_workloads.yml
+playbooks/95_backup_restore.yml
+playbooks/97_gitea_runner.yml
+playbooks/98_observability.yml
+playbooks/99_drift_check.yml
 requirements.yml
-roles/
-  backups/
-    defaults/
-      main.yml
-    handlers/
-      main.yml
-    meta/
-      main.yml
-    tasks/
-      main.yml
-    templates/
-      backup.sh.j2
-      restore.sh.j2
-  caddy/
-    defaults/
-      main.yml
-    handlers/
-      main.yml
-    meta/
-      main.yml
-    tasks/
-      main.yml
-    templates/
-      Caddyfile.j2
-  catalog_seed/
-    defaults/
-      main.yml
-    handlers/
-      main.yml
-    meta/
-      main.yml
-    tasks/
-      main.yml
-  common/
-    defaults/
-      main.yml
-    handlers/
-      main.yml
-    meta/
-      main.yml
-    tasks/
-      main.yml
-  dashboard_api/
-    defaults/
-      main.yml
-    handlers/
-      main.yml
-    meta/
-      main.yml
-    tasks/
-      main.yml
-    templates/
-      api_server.py.j2
-      index.html.j2
-      start_dashboard.sh.j2
-  gitea/
-    defaults/
-      main.yml
-    handlers/
-      main.yml
-    meta/
-      main.yml
-    tasks/
-      main.yml
-    templates/
-      app.ini.j2
-      start-gitea.sh.j2
-  gitea_runner/
-    defaults/
-      main.yml
-    handlers/
-      main.yml
-    meta/
-      main.yml
-    tasks/
-      main.yml
-  mariadb/
-    defaults/
-      main.yml
-    handlers/
-      main.yml
-    meta/
-      main.yml
-    tasks/
-      main.yml
-  observability/
-    defaults/
-      main.yml
-    handlers/
-      main.yml
-    meta/
-      main.yml
-    tasks/
-      main.yml
-    templates/
-      healthcheck.sh.j2
-      promtail-config.yaml.j2
-      prometheus.yml.j2
-      loki-config.yaml.j2
-      custom.ini.j2
-  opa/
-    defaults/
-      main.yml
-    tasks/
-      main.yml
-    templates/
-      ports.rego.j2
-      secrets.rego.j2
-      execution.rego.j2
-      opa_interceptor.py.j2
-  tailscale/
-    defaults/
-      main.yml
-    handlers/
-      main.yml
-    meta/
-      main.yml
-    tasks/
-      main.yml
-  vault/
-    defaults/
-      main.yml
-    handlers/
-      main.yml
-    meta/
-      main.yml
-    tasks/
-      main.yml
-    templates/
-      vault.hcl.j2
-  workloads/
-    photoprism/
-      defaults/
-        main.yml
-      handlers/
-        main.yml
-      meta/
-        main.yml
-      tasks/
-        main.yml
-      templates/
-        photoprism.sh.j2
+roles
+roles/backups
+roles/backups/defaults
+roles/backups/defaults/backups_defaults_main.yml
+roles/backups/handlers
+roles/backups/handlers/backups_handlers_main.yml
+roles/backups/meta
+roles/backups/meta/backups_meta_main.yml
+roles/backups/tasks
+roles/backups/tasks/backups_tasks_main.yml
+roles/backups/templates
+roles/backups/templates/backups_templates_backup.sh.j2
+roles/backups/templates/backups_templates_restore.sh.j2
+roles/caddy
+roles/caddy/defaults
+roles/caddy/defaults/main.yml
+roles/caddy/handlers
+roles/caddy/handlers/main.yml
+roles/caddy/meta
+roles/caddy/meta/main.yml
+roles/caddy/tasks
+roles/caddy/tasks/main.yml
+roles/caddy/templates
+roles/caddy/templates/Caddyfile.j2
+roles/catalog_seed
+roles/catalog_seed/defaults
+roles/catalog_seed/defaults/main.yml
+roles/catalog_seed/handlers
+roles/catalog_seed/handlers/main.yml
+roles/catalog_seed/meta
+roles/catalog_seed/meta/main.yml
+roles/catalog_seed/tasks
+roles/catalog_seed/tasks/main.yml
+roles/common
+roles/common/defaults
+roles/common/defaults/main.yml
+roles/common/handlers
+roles/common/handlers/main.yml
+roles/common/meta
+roles/common/meta/main.yml
+roles/common/tasks
+roles/common/tasks/main.yml
+roles/drift_check
+roles/drift_check/defaults
+roles/drift_check/defaults/drift_check_defaults_main.yml
+roles/drift_check/handlers
+roles/drift_check/handlers/drift_check_handler_main.yml
+roles/drift_check/meta
+roles/drift_check/meta/drift_check_meta_main.yml
+roles/drift_check/tasks
+roles/drift_check/tasks/drift_check_tasks_main.yml
+roles/drift_check/templates
+roles/drift_check/templates/drift_check_templates_healthcheck.sh.j2
+roles/fastapi_control_plane
+roles/fastapi_control_plane/defaults
+roles/fastapi_control_plane/defaults/main.yml
+roles/fastapi_control_plane/handlers
+roles/fastapi_control_plane/handlers/main.yml
+roles/fastapi_control_plane/meta
+roles/fastapi_control_plane/meta/main.yml
+roles/fastapi_control_plane/tasks
+roles/fastapi_control_plane/tasks/main.yml
+roles/gitea
+roles/gitea/defaults
+roles/gitea/defaults/main.yml
+roles/gitea/handlers
+roles/gitea/handlers/main.yml
+roles/gitea/meta
+roles/gitea/meta/main.yml
+roles/gitea/tasks
+roles/gitea/tasks/main.yml
+roles/gitea/templates
+roles/gitea/templates/app.ini.j2
+roles/gitea_runner
+roles/gitea_runner/defaults
+roles/gitea_runner/defaults/main.yml
+roles/gitea_runner/handlers
+roles/gitea_runner/handlers/main.yml
+roles/gitea_runner/meta
+roles/gitea_runner/meta/main.yml
+roles/gitea_runner/tasks
+roles/gitea_runner/tasks/main.yml
+roles/gitea_runner/templates
+roles/gitea_runner/templates/config.yaml.j2
+roles/mariadb
+roles/mariadb/defaults
+roles/mariadb/defaults/main.yml
+roles/mariadb/handlers
+roles/mariadb/handlers/main.yml
+roles/mariadb/meta
+roles/mariadb/meta/main.yml
+roles/mariadb/tasks
+roles/mariadb/tasks/main.yml
+roles/nats
+roles/nats/defaults
+roles/nats/defaults/main.yml
+roles/nats/handlers
+roles/nats/handlers/main.yml
+roles/nats/meta
+roles/nats/meta/main.yml
+roles/nats/tasks
+roles/nats/tasks/main.yml
+roles/nats/templates
+roles/nats/templates/nats-server.conf.j2
+roles/observability
+roles/observability/defaults
+roles/observability/defaults/main.yml
+roles/observability/meta
+roles/observability/meta/main.yml
+roles/observability/tasks
+roles/observability/tasks/main.yml
+roles/observability/templates
+roles/observability/templates/custom.ini.j2
+roles/observability/templates/gatus-config.yaml.j2
+roles/observability/templates/loki-config.yaml.j2
+roles/observability/templates/prometheus.yml.j2
+roles/observability/templates/promtail-config.yaml.j2
+roles/opa
+roles/opa/defaults
+roles/opa/defaults/main.yml
+roles/opa/tasks
+roles/opa/tasks/main.yml
+roles/opa/templates
+roles/opa/templates/execution.rego.j2
+roles/opa/templates/opa_interceptor.py.j2
+roles/opa/templates/ports.rego.j2
+roles/opa/templates/secrets.rego.j2
+roles/tailscale
+roles/tailscale/defaults
+roles/tailscale/defaults/main.yml
+roles/tailscale/handlers
+roles/tailscale/handlers/main.yml
+roles/tailscale/meta
+roles/tailscale/meta/main.yml
+roles/tailscale/tasks
+roles/tailscale/tasks/main.yml
+roles/vault
+roles/vault/defaults
+roles/vault/defaults/main.yml
+roles/vault/handlers
+roles/vault/handlers/main.yml
+roles/vault/meta
+roles/vault/meta/main.yml
+roles/vault/tasks
+roles/vault/tasks/main.yml
+roles/vault/templates
+roles/vault/templates/vault.hcl.j2
+roles/workloads
+roles/workloads/photoprism
+roles/workloads/photoprism/defaults
+roles/workloads/photoprism/defaults/main.yml
+roles/workloads/photoprism/handlers
+roles/workloads/photoprism/handlers/main.yml
+roles/workloads/photoprism/meta
+roles/workloads/photoprism/meta/main.yml
+roles/workloads/photoprism/tasks
+roles/workloads/photoprism/tasks/main.yml
+roles/workloads/photoprism/templates
+roles/workloads/photoprism/templates/photoprism.sh.j2
 site.yml

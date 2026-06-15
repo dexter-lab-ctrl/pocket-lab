@@ -1,322 +1,292 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { CloudCog, FileJson, TerminalSquare, RefreshCw, PlayCircle, Eye, UploadCloud, Lock, Globe, Server, AlertTriangle, FileDiff, TestTube2, CheckCircle2, GitBranch } from 'lucide-react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { executeOperation, previewOperation } from '../lib/operations';
+import { CloudCog, TerminalSquare, RefreshCw, PlayCircle, Eye, Lock, GitBranch, FileCode2, Activity, Layers3 } from 'lucide-react';
+import { simpleActionLabel, simpleOperationCopy, redactTechnicalText } from '../lib/simpleLabels';
+import JetStreamFlowLine from '../components/JetStreamFlowLine.jsx';
+import DesiredStateSnap from '../components/DesiredStateSnap.jsx';
+import LiveEventPanel from '../components/LiveEventPanel.jsx';
+import EvidenceReceipt from '../components/EvidenceReceipt.jsx';
+import SafeActionPreview from '../components/SafeActionPreview.jsx';
+import { useToast } from '../components/ToastProvider.jsx';
+import { createEvidenceReceipt } from '../lib/evidenceReceipts.js';
+import { useControlPlaneStatus, productionWriteBlockedMessage } from '../hooks/useControlPlaneStatus.js';
+import { GlassCard, PageShell, ProgressiveDisclosure, StandardList, StandardListItem, StatusBadge } from '../components/ui.jsx';
 
-const TEMPLATES = {
-  ansible_pm2: `---
-- name: Edge Workload Deployment
-  hosts: workloads
-  gather_facts: false
-  
-  tasks:
-    - name: Ensure PM2 is managing the Workload
-      command: pm2 start proot-distro --name photoprism -- login ubuntu -- bash -c '/opt/photoprism/bin/photoprism start'
-      ignore_errors: yes
+const TASKS = [
+  {
+    id: 'sync_repo',
+    name: 'Sync Repository',
+    operation: 'git_sync',
+    description: 'Save the approved setup so devices stay updated.',
+    mode: 'execute',
+    target: { type: 'repo', ref: 'pocket_lab_iac' },
+    params: { path: 'README.md', content: '# Pocket Lab\n', message: 'GitOps sync', branch: 'main' },
+    icon: GitBranch,
+  },
+  {
+    id: 'validate_blueprint',
+    name: 'Validate Blueprint',
+    operation: 'drift_scan',
+    description: 'Check what would change before anything is updated.',
+    mode: 'preview',
+    target: { type: 'repo', ref: 'pocket_lab_iac' },
+    params: { scope: 'gitops', source: 'pocket_lab_iac' },
+    icon: Eye,
+  },
+  {
+    id: 'deploy_blueprint',
+    name: 'Deploy Blueprint',
+    operation: 'deploy_blueprint',
+    description: 'Install the approved apps and services.',
+    mode: 'execute',
+    target: { type: 'repo', ref: 'pocket_lab_iac' },
+    params: { playbook: 'site.yml', source_type: 'repo', source: 'pocket_lab_iac' },
+    icon: PlayCircle,
+  },
+];
 
-    - name: Save PM2 process state
-      command: pm2 save
-`,
-  ansible_vault: `---
-- name: Vault Dynamic Secret Re-keying
-  hosts: localhost
-  connection: local
-  gather_facts: false
-
-  tasks:
-    - name: Authenticate with Vault AppRole
-      ansible.builtin.uri:
-        url: "http://127.0.0.1:8200/v1/auth/approle/login"
-        method: POST
-        body_format: json
-        body:
-          role_id: "{{ lookup('env', 'VAULT_ROLE_ID') }}"
-          secret_id: "{{ lookup('env', 'VAULT_SECRET_ID') }}"
-      register: vault_login
-      no_log: true
-
-    - name: Rotate Edge App Secret
-      ansible.builtin.uri:
-        url: "http://127.0.0.1:8200/v1/secret/data/photoprism"
-        method: POST
-        headers:
-          X-Vault-Token: "{{ vault_login.json.auth.client_token }}"
-        body_format: json
-        body:
-          data:
-            password: "{{ lookup('password', '/dev/null length=24') }}"
-`,
-  gitea_workflow: `name: Edge Deployment Pipeline
-on:
-  push:
-    branches:
-      - main
-      - feature/*
-
-jobs:
-  reconcile:
-    runs-on: infra-runner
-    steps:
-      - name: Fix Sandbox Permissions
-        run: chmod -R +r .
-
-      - name: Execute Ansible State Reconciler
-        run: ansible-playbook playbook.yml
-`
-};
-
-export default function GitOpsTab() {
-  const [activeTemplate, setActiveTemplate] = useState('ansible_pm2');
-  const [editorCode, setEditorCode] = useState(TEMPLATES.ansible_pm2);
-  const [engineState, setEngineState] = useState(null); 
-  const [logs, setLogs] = useState('');
+export default function GitOpsTab({ simpleMode = false }) {
+  const [activeTask, setActiveTask] = useState(TASKS[0]);
+  const [repoRef, setRepoRef] = useState('pocket_lab_iac');
+  const [manifestPath, setManifestPath] = useState('README.md');
+  const [taskLogs, setTaskLogs] = useState('');
+  const [jobId, setJobId] = useState('');
+  const [receipt, setReceipt] = useState(null);
+  const [running, setRunning] = useState(false);
+  const [dispatching, setDispatching] = useState(false);
+  const toast = useToast();
+  const { status: controlPlane } = useControlPlaneStatus(15000);
+  const isLiveEnv = controlPlane.ready;
   const logsEndRef = useRef(null);
 
-  const isWorkflow = activeTemplate === 'gitea_workflow';
-  const filename = isWorkflow ? '.gitea/workflows/deploy.yml' : (activeTemplate === 'ansible_vault' ? 'maintenance.yml' : 'playbook.yml');
-
-  // HTML-PROOF ENVIRONMENT DETECTION
-  const [isLiveEnv, setIsLiveEnv] = useState(false);
   useEffect(() => {
-    fetch('/api/telemetry.json')
-      .then(res => res.text())
-      .then(text => {
-        try { setIsLiveEnv(!JSON.parse(text).error); } 
-        catch { setIsLiveEnv(false); }
-      })
-      .catch(() => setIsLiveEnv(false));
-  }, []);
+    if (logsEndRef.current) logsEndRef.current.scrollIntoView({ behavior: 'smooth' });
+  }, [taskLogs]);
+
+  const tasks = useMemo(() => {
+    if (!simpleMode) return TASKS;
+    return TASKS.map((task) => ({
+      ...task,
+      name: simpleOperationCopy(task.operation, simpleActionLabel(task.operation, task.name)).title,
+      description: simpleOperationCopy(task.operation, task.name).description,
+    }));
+  }, [simpleMode]);
+
+  const resolvedTask = useMemo(() => ({
+    ...activeTask,
+    target: { ...activeTask.target, ref: repoRef || activeTask.target.ref },
+    params: {
+      ...activeTask.params,
+      path: manifestPath || activeTask.params.path,
+      source: repoRef || activeTask.params.source,
+    },
+  }), [activeTask, repoRef, manifestPath]);
 
   useEffect(() => {
-    if (logsEndRef.current) {
-      logsEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [logs]);
+    setActiveTask(tasks[0]);
+  }, [tasks]);
 
-  const loadTemplate = (key) => {
-    setActiveTemplate(key);
-    setEditorCode(TEMPLATES[key]);
-  };
-
-  const handleExecute = async (action) => {
-    if (typeof window !== 'undefined' && window.navigator && window.navigator.vibrate) window.navigator.vibrate(20);
-    setEngineState(action);
-    setLogs('');
-    
-    const toolName = isWorkflow ? 'Gitea Actions' : 'Ansible Engine';
-    
-    // Simulate CLI commands for local execution mapping
-    const cliCommand = action === 'validate' 
-      ? `python3 -c "import yaml; yaml.safe_load(open('${filename.split('/').pop()}'))" && echo "YAML syntax is valid."`
-      : (isWorkflow ? `echo "Workflows execute on push. Use Commit to GitOps."` : `ansible-playbook ${filename}`);
-
-    if (!isLiveEnv) {
-      // SIMULATOR MODE
-      setLogs(`[*] SIMULATOR: Initializing ${toolName}...\n`);
-      setTimeout(() => setLogs(prev => prev + `[system] Parsing YAML syntax definition...\n`), 500);
-      
-      if (action === 'validate') {
-        setTimeout(() => setLogs(prev => prev + `\nValidation successful. The declarative configuration is valid.\n`), 1500);
-      } else if (action === 'run') {
-        setTimeout(() => setLogs(prev => prev + `[engine] Executing locally...\n\n[SUCCESS] Local test complete. Resources configured.\n`), 2000);
-      } else {
-        setTimeout(() => setLogs(prev => prev + `[git] Committing to branch...\n[gitea] Push successful. CI/CD Pipeline Triggered!\n`), 1500);
+  const runTask = async () => {
+    if (navigator.vibrate) navigator.vibrate(20);
+    setDispatching(true);
+    window.setTimeout(() => setDispatching(false), 420);
+    setRunning(true);
+    setJobId('');
+    setReceipt(null);
+    setTaskLogs(simpleMode ? `Starting ${resolvedTask.name}...\n` : `[*] Task launcher: ${resolvedTask.name}\n`);
+    toast.info(`${resolvedTask.name} is being prepared.`, { title: simpleMode ? 'Getting ready' : 'Action queued' });
+    try {
+      if (resolvedTask.mode !== 'preview' && !isLiveEnv) {
+        const blockedMessage = productionWriteBlockedMessage(simpleMode);
+        setTaskLogs((prev) => prev + `\n${blockedMessage}`);
+        setReceipt(createEvidenceReceipt({ operation: resolvedTask.operation, status: 'blocked', mode: resolvedTask.mode, message: blockedMessage, simpleMode }));
+        toast.warning(blockedMessage, { title: simpleMode ? 'Paused for safety' : 'Control plane unavailable' });
+        return;
       }
-      setTimeout(() => setEngineState(null), 2500);
-
-    } else {
-      // PRODUCTION MODE (LIVE DEVICE EXECUTION)
-      setLogs(`[*] EDGE NODE: Processing ${action.toUpperCase()} intent...\n`);
-      
-      let executionScript = "";
-      
-      if (action === 'commit') {
-        // ACTUAL GITOPS COMMIT FLOW
-        executionScript = `
-cd ~/pocket_lab_iac || exit 1
-git checkout -b feature/ui-commit-$(date +%s)
-mkdir -p $(dirname ${filename})
-cat << 'EOF' > ${filename}
-${editorCode}
-EOF
-git add ${filename}
-git commit -m "GitOps IDE: Update ${filename}"
-git push -u origin HEAD || echo "[SUCCESS] Committed to local Gitea instance."
-echo "------------------------------------------------"
-echo "🚀 GitOps Pipeline Triggered Successfully!"
-echo "------------------------------------------------"
-`;
-      } else {
-        // LOCAL EXECUTION / VALIDATION FLOW
-        executionScript = `
-mkdir -p ~/pocket_lab_iac/custom_workspace
-cd ~/pocket_lab_iac/custom_workspace
-cat << 'EOF' > ${filename.split('/').pop()}
-${editorCode}
-EOF
-echo "------------------------------------------------"
-echo "⚙️  ${toolName.toUpperCase()}"
-echo "------------------------------------------------"
-${cliCommand}
-`;
-      }
-
-      try {
-        const res = await fetch('/api/action/update', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ intent: 'sync_bash', command: executionScript })
-        });
-        
-        // HTML-PROOF PARSING
-        const text = await res.text();
-        let data;
-        try { data = JSON.parse(text); } catch { throw new Error("Invalid Backend Response"); }
-        
-        if (!res.ok) throw new Error("API Execution Failed");
-        
-        setLogs(prev => prev + `\n` + data.output + `\n\n[SUCCESS] Intent execution completed.`);
-      } catch (err) {
-        setLogs(prev => prev + `\n[CRITICAL ERROR] Control Plane communication severed.`);
-      }
-      setEngineState(null);
+      const action = resolvedTask.mode === 'preview' ? previewOperation : executeOperation;
+      const result = await action(resolvedTask.operation, {
+        target: resolvedTask.target,
+        params: resolvedTask.params,
+      });
+      const nextJobId = result?.job_id || '';
+      setJobId(nextJobId);
+      const receiptMessage = simpleMode ? redactTechnicalText(result?.stdout || 'Completed successfully.') : (result?.stdout || 'Typed task completed.');
+      setTaskLogs((prev) => prev + (simpleMode ? `\n${receiptMessage}\n\nDone.` : `\n${result?.stdout || JSON.stringify(result, null, 2)}\n\n[SUCCESS] Typed task completed.`));
+      setReceipt(createEvidenceReceipt({ operation: resolvedTask.operation, jobId: nextJobId, status: 'succeeded', mode: resolvedTask.mode, message: receiptMessage, simpleMode }));
+      toast.success(nextJobId ? `${resolvedTask.name} started. Job: ${nextJobId}` : `${resolvedTask.name} completed.`, { title: simpleMode ? 'Started safely' : 'Typed operation accepted' });
+    } catch (err) {
+      const errorMessage = err.message || 'Task failed.';
+      const receiptMessage = simpleMode ? redactTechnicalText(errorMessage) : errorMessage;
+      setTaskLogs((prev) => prev + (simpleMode ? `\nNeeds attention: ${receiptMessage}` : `\n[ERROR] ${errorMessage}`));
+      setReceipt(createEvidenceReceipt({ operation: resolvedTask.operation, status: 'failed', mode: resolvedTask.mode, message: receiptMessage, simpleMode }));
+      toast.error(simpleMode ? redactTechnicalText(errorMessage) : errorMessage, { title: simpleMode ? 'Needs attention' : 'Operation failed' });
+    } finally {
+      setRunning(false);
     }
   };
+
+  const headingTitle = simpleMode ? 'Keep My Environment Updated' : 'GitOps Task Launcher';
+  const headingCopy = simpleMode
+    ? 'Keep Pocket Lab updated with safe, approved actions. Technical controls are available in advanced details.'
+    : 'Launch named typed operations through FastAPI. No freeform command editor, no direct shell execution, and no frontend access to NATS.';
 
   return (
-    <div className="max-w-7xl mx-auto p-4 animate-in fade-in duration-700 flex flex-col xl:flex-row gap-6">
-      
-      {/* LEFT COLUMN: Blueprint Catalog & IDE */}
-      <div className="flex-1 flex flex-col gap-6">
-        
-        {/* Header Module */}
-        <div className="bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-[2.5rem] p-8 flex flex-col md:flex-row items-center justify-between shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none transform translate-x-4 -translate-y-4">
-            <CloudCog className="w-48 h-48 text-pink-400" />
-          </div>
-          
-          <div className="relative z-10 flex-1">
-            <div className="flex items-center space-x-2 mb-4">
-              {isLiveEnv ? <FileDiff className="w-5 h-5 text-pink-400" /> : <TestTube2 className="w-5 h-5 text-orange-400" />}
-              <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest">{isLiveEnv ? 'Enterprise Orchestration (Live)' : 'Simulator Sandbox'}</h3>
+    <PageShell
+      eyebrow={simpleMode ? 'Updates' : (isLiveEnv ? 'Enterprise orchestration' : 'FastAPI/NATS degraded')}
+      title={headingTitle}
+      description={headingCopy}
+      actions={<StatusBadge status={isLiveEnv ? 'healthy' : 'degraded'}>{isLiveEnv ? 'Live control plane' : 'NATS required'}</StatusBadge>}
+    >
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_22rem]">
+        <div className="min-w-0 space-y-5">
+          <GlassCard className={`relative overflow-hidden p-5 sm:p-6 lg:p-8 ${dispatching ? 'command-dispatch-active' : ''}`}>
+            <div className="pointer-events-none absolute -right-16 -top-16 opacity-10">
+              <CloudCog className="h-56 w-56 text-indigo-300" />
             </div>
-            <h2 className="text-4xl font-black text-white tracking-tight mb-2">GitOps IDE</h2>
-            <p className="text-slate-400 text-sm max-w-lg">Manage edge resources entirely through code. Write Ansible Playbooks and Gitea Action workflows, test them locally, and commit them directly to trigger automated pipelines.</p>
-          </div>
+
+            <div className="relative z-10 space-y-5">
+              <div className="flex flex-wrap items-center gap-2">
+                <div className={`rounded-2xl border p-2 ${isLiveEnv ? 'border-indigo-300/25 bg-indigo-500/10 text-indigo-200' : 'border-amber-300/25 bg-amber-500/10 text-amber-200'}`}>
+                  {isLiveEnv ? <FileCode2 className="h-5 w-5" /> : <Lock className="h-5 w-5" />}
+                </div>
+                <div className="min-w-0">
+                  <p className="pocket-eyebrow">{simpleMode ? 'Choose an update action' : 'Named operation launcher'}</p>
+                  <p className="text-sm text-slate-400">Selected: <span className="font-semibold text-slate-200">{resolvedTask.name}</span></p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+                {tasks.map((task) => {
+                  const Icon = task.icon;
+                  const selected = activeTask.id === task.id;
+                  return (
+                    <button
+                      key={task.id}
+                      type="button"
+                      onClick={() => setActiveTask(task)}
+                      className={`min-h-40 rounded-3xl border p-4 text-left transition-all duration-200 ${selected ? 'border-indigo-300/35 bg-indigo-500/15 shadow-lg shadow-indigo-950/25' : 'border-white/10 bg-black/20 hover:border-white/20 hover:bg-white/5'}`}
+                    >
+                      <div className="flex min-w-0 items-start gap-3">
+                        <div className={`shrink-0 rounded-2xl border p-2 ${selected ? 'border-indigo-300/25 bg-indigo-500/10 text-indigo-200' : 'border-white/10 bg-white/5 text-slate-400'}`}>
+                          <Icon className="h-5 w-5" />
+                        </div>
+                        <div className="min-w-0">
+                          <div className="break-words text-base font-black leading-6 text-white">{task.name}</div>
+                          {!simpleMode && <div className="mt-1 break-all text-xs text-slate-500">{task.operation}</div>}
+                        </div>
+                      </div>
+                      <p className="mt-4 text-sm leading-6 text-slate-400">{task.description}</p>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <SafeActionPreview operation={resolvedTask.operation} simpleMode={simpleMode} defaultOpen={simpleMode} />
+              {['git_sync', 'deploy_blueprint', 'drift_scan', 'drift_apply'].includes(resolvedTask.operation) ? (
+                <DesiredStateSnap
+                  className="gitops-desired-state-snap"
+                  simpleMode={simpleMode}
+                  active={running}
+                  complete={receipt?.status === 'succeeded' || receipt?.status === 'success'}
+                />
+              ) : null}
+              {(running || jobId || taskLogs) ? <JetStreamFlowLine simpleMode={simpleMode} activeIndex={jobId ? 3 : running ? 2 : taskLogs ? 1 : 0} /> : null}
+              <EvidenceReceipt receipt={receipt} simpleMode={simpleMode} />
+
+              <ProgressiveDisclosure simpleMode={simpleMode} title={simpleMode ? 'Support settings' : 'Update source settings'}>
+                <div className="grid gap-3 lg:grid-cols-2">
+                  <label className="block min-w-0">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Repository ref</span>
+                    <input value={repoRef} onChange={(e) => setRepoRef(e.target.value)} className="pocket-input mt-2 w-full" />
+                  </label>
+                  <label className="block min-w-0">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Manifest path</span>
+                    <input value={manifestPath} onChange={(e) => setManifestPath(e.target.value)} className="pocket-input mt-2 w-full" />
+                  </label>
+                </div>
+              </ProgressiveDisclosure>
+
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                <div className="min-w-0 space-y-2">
+                  {dispatching ? <p className="command-dispatch-label">{simpleMode ? 'Sending request safely...' : 'Command queued via FastAPI'}</p> : null}
+                <button
+                  type="button"
+                  onClick={runTask}
+                  disabled={running || (resolvedTask.mode !== 'preview' && !isLiveEnv)}
+                  className={`pocket-button pocket-button-primary w-full lg:w-auto ${(resolvedTask.mode !== 'preview' && !isLiveEnv) ? 'write-blocked-action' : ''}`}
+                >
+                  {running ? <RefreshCw className="h-4 w-4 animate-spin" /> : <PlayCircle className="h-4 w-4" />}
+                  {!isLiveEnv && resolvedTask.mode !== 'preview' ? (simpleMode ? 'Unavailable' : 'NATS required') : (simpleMode ? resolvedTask.name : `Run ${resolvedTask.name}`)}
+                </button>
+                </div>
+                {!simpleMode && (
+                  <div className="min-w-0 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-xs leading-5 text-slate-300">
+                    <span className="font-semibold text-slate-200">Task:</span> {resolvedTask.id}
+                    <span className="mx-2 text-slate-600">•</span>
+                    <span className="font-semibold text-slate-200">Operation:</span> <span className="break-all">{resolvedTask.operation}</span>
+                    <span className="mx-2 text-slate-600">•</span>
+                    <span className="font-semibold text-slate-200">Job:</span> {jobId || 'queued'}
+                  </div>
+                )}
+              </div>
+            </div>
+          </GlassCard>
+
+          <GlassCard className="flex min-h-[22rem] flex-col overflow-hidden p-0">
+            <div className="flex items-center justify-between border-b border-white/10 bg-slate-950/45 px-4 py-3">
+              <div className="flex items-center gap-2">
+                <TerminalSquare className="h-4 w-4 text-indigo-300" />
+                <span className="text-sm font-black text-slate-200">{simpleMode ? 'Recent Activity' : 'Launcher Stream'}</span>
+              </div>
+              <StatusBadge status="pending">{simpleMode ? 'Guided' : 'Operation-aware'}</StatusBadge>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-5 font-mono text-[12px] leading-6 text-indigo-100/85">
+              {taskLogs ? (
+                <div className="whitespace-pre-wrap break-words">
+                  {taskLogs}
+                  <div ref={logsEndRef} />
+                </div>
+              ) : (
+                <div className="flex h-full min-h-56 flex-col items-center justify-center text-center text-slate-500">
+                  <Activity className="mb-3 h-12 w-12" />
+                  <p>{simpleMode ? 'Choose an update action to begin.' : 'Awaiting task selection.'}</p>
+                </div>
+              )}
+            </div>
+          </GlassCard>
         </div>
 
-        {/* Blueprint Catalog */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
-          <button onClick={() => loadTemplate('ansible_pm2')} className={`p-5 rounded-2xl border text-left transition-all ${activeTemplate === 'ansible_pm2' ? 'bg-slate-800 border-pink-500/50 shadow-[0_0_15px_rgba(236,72,153,0.2)]' : 'bg-[#05080f] border-white/5 hover:border-white/20'}`}>
-            <Server className={`w-6 h-6 mb-3 ${activeTemplate === 'ansible_pm2' ? 'text-pink-400' : 'text-slate-500'}`} />
-            <h4 className="font-bold text-white mb-1">Workload Playbook</h4>
-            <p className="text-xs text-slate-400">Deploy edge sub-systems via native PM2 daemons.</p>
-          </button>
-          
-          <button onClick={() => loadTemplate('ansible_vault')} className={`p-5 rounded-2xl border text-left transition-all ${activeTemplate === 'ansible_vault' ? 'bg-slate-800 border-pink-500/50 shadow-[0_0_15px_rgba(236,72,153,0.2)]' : 'bg-[#05080f] border-white/5 hover:border-white/20'}`}>
-            <Lock className={`w-6 h-6 mb-3 ${activeTemplate === 'ansible_vault' ? 'text-pink-400' : 'text-slate-500'}`} />
-            <h4 className="font-bold text-white mb-1">Vault AppRole Rotation</h4>
-            <p className="text-xs text-slate-400">Zero-Trust dynamic credential exchange example.</p>
-          </button>
+        <aside className="min-w-0 space-y-5">
+          <GlassCard className="p-0">
+            <StandardList
+              title={simpleMode ? 'Support Details' : 'Named task map'}
+              description={simpleMode ? 'These are the safe update actions Pocket Lab can run for you.' : 'Every launcher option maps to a named typed operation.'}
+            >
+              {tasks.map((task) => (
+                <StandardListItem
+                  key={task.id}
+                  icon={Layers3}
+                  title={task.name}
+                  description={task.description}
+                  status={task.mode === 'preview' ? 'queued' : 'ready'}
+                  simpleMode={simpleMode}
+                  metadata={!simpleMode ? [{ label: 'Operation', value: task.operation }, { label: 'Mode', value: task.mode }] : [{ label: 'Type', value: task.mode === 'preview' ? 'Check only' : 'Can make changes' }]}
+                />
+              ))}
+            </StandardList>
+          </GlassCard>
 
-          <button onClick={() => loadTemplate('gitea_workflow')} className={`p-5 rounded-2xl border text-left transition-all ${activeTemplate === 'gitea_workflow' ? 'bg-slate-800 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.2)]' : 'bg-[#05080f] border-white/5 hover:border-white/20'}`}>
-            <GitBranch className={`w-6 h-6 mb-3 ${activeTemplate === 'gitea_workflow' ? 'text-blue-400' : 'text-slate-500'}`} />
-            <h4 className="font-bold text-white mb-1">Gitea Action Pipeline</h4>
-            <p className="text-xs text-slate-400">Automate Playbook executions on the infra-runner.</p>
-          </button>
-        </div>
-
-        {/* Code Editor */}
-        <div className="bg-[#05080f] border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col flex-1 min-h-[400px] relative z-10">
-          <div className="bg-slate-900/80 px-4 py-3 border-b border-white/5 flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <FileJson className={`w-4 h-4 ${isWorkflow ? 'text-blue-400' : 'text-pink-400'}`} />
-              <span className="text-sm font-bold text-slate-300">{filename}</span>
-            </div>
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 bg-black/40 px-2 py-1 rounded">
-              {isWorkflow ? 'YAML Workflow Editor' : 'YAML Playbook Editor'}
-            </span>
-          </div>
-          
-          <textarea
-            value={editorCode}
-            onChange={(e) => setEditorCode(e.target.value)}
-            className={`flex-1 w-full bg-black/50 ${isWorkflow ? 'text-blue-200/90' : 'text-pink-200/90'} font-mono text-sm p-6 focus:outline-none resize-none leading-relaxed scrollbar-thin scrollbar-thumb-slate-700`}
-            spellCheck="false"
-            placeholder="# Write your configuration here..."
+          <LiveEventPanel
+            simpleMode={simpleMode}
+            title="Environment update activity"
+            description="GitOps and operation events appear here while Pocket Lab keeps the environment aligned."
+            subjectPrefixes={['pocketlab.events.operation.', 'pocketlab.events.gitops.', 'pocketlab.audit.']}
+            maxItems={4}
+            compact
           />
-        </div>
+        </aside>
       </div>
-
-      {/* RIGHT COLUMN: Execution Actions & Terminal */}
-      <div className="w-full xl:w-[450px] flex flex-col gap-6 shrink-0 z-10">
-        
-        {/* Action Buttons */}
-        <div className="bg-[#05080f] border border-white/10 rounded-3xl p-6 flex flex-col gap-3 shadow-xl">
-          <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest mb-2 flex items-center">
-             <AlertTriangle className="w-4 h-4 mr-2" /> Orchestration Controls
-          </h3>
-          
-          <button 
-            onClick={() => handleExecute('validate')}
-            disabled={engineState !== null}
-            className="w-full py-4 px-4 rounded-xl font-bold flex items-center justify-center transition-all bg-blue-900/40 hover:bg-blue-600 border border-blue-500/30 text-blue-200 hover:text-white disabled:opacity-50"
-          >
-            {engineState === 'validate' ? <RefreshCw className="w-5 h-5 mr-2 animate-spin" /> : <Eye className="w-5 h-5 mr-2" />} 
-            Validate Syntax
-          </button>
-          
-          <button 
-            onClick={() => handleExecute('run')}
-            disabled={engineState !== null}
-            className="w-full py-4 px-4 rounded-xl font-bold flex items-center justify-center transition-all bg-emerald-900/40 hover:bg-emerald-600 border border-emerald-500/30 text-emerald-200 hover:text-white disabled:opacity-50"
-          >
-            {engineState === 'run' ? <RefreshCw className="w-5 h-5 mr-2 animate-spin" /> : <PlayCircle className="w-5 h-5 mr-2" />} 
-            Test Playbook Locally
-          </button>
-
-          <button 
-            onClick={() => handleExecute('commit')}
-            disabled={engineState !== null}
-            className="w-full py-4 px-4 rounded-xl font-bold flex items-center justify-center transition-all bg-indigo-600 hover:bg-indigo-500 text-white shadow-[0_0_15px_rgba(79,70,229,0.4)] disabled:opacity-50 mt-2"
-          >
-            {engineState === 'commit' ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <UploadCloud className="w-4 h-4 mr-2" />} 
-            Commit to GitOps
-          </button>
-        </div>
-
-        {/* Terminal Execution Stream */}
-        <div className="bg-[#020617] border border-slate-700 rounded-3xl overflow-hidden shadow-[inset_0_0_50px_rgba(0,0,0,0.8)] flex flex-col flex-1 min-h-[400px]">
-           <div className="bg-black/80 px-4 py-4 border-b border-white/5 flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <TerminalSquare className={`w-4 h-4 ${isWorkflow ? 'text-blue-400' : 'text-pink-400'}`} />
-                <span className="text-sm font-bold text-slate-300">Engine Stream</span>
-              </div>
-              <div className="flex space-x-1.5"><div className="w-2 h-2 rounded-full bg-slate-600"></div><div className="w-2 h-2 rounded-full bg-slate-600"></div><div className="w-2 h-2 rounded-full bg-slate-600"></div></div>
-           </div>
-           
-           <div className="flex-1 overflow-y-auto p-5 font-mono text-[11px] whitespace-pre-wrap leading-relaxed text-pink-100/80 scrollbar-thin scrollbar-thumb-slate-700">
-             {logs ? (
-               <div className="animate-in fade-in">
-                 {logs}
-                 <div ref={logsEndRef} />
-               </div>
-             ) : (
-               <div className="h-full flex flex-col items-center justify-center text-center opacity-30">
-                  <CloudCog className="w-12 h-12 mb-3" />
-                  <p>Awaiting declarative<br/>state configurations...</p>
-               </div>
-             )}
-           </div>
-           
-           <div className="bg-black/80 px-4 py-2 border-t border-white/5 flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-slate-500">
-              <div className="flex items-center space-x-2">
-                <span className={`w-2 h-2 rounded-full ${engineState ? 'bg-pink-500 animate-pulse' : (isLiveEnv ? 'bg-emerald-500' : 'bg-yellow-500')}`}></span>
-                <span>{engineState ? `Running ${engineState.toUpperCase()}` : (isLiveEnv ? 'Live Engine Ready' : 'Simulator Idle')}</span>
-              </div>
-              <span className="flex items-center"><CheckCircle2 className="w-3 h-3 mr-1" /> {isWorkflow ? 'Gitea Mode' : 'Ansible Mode'}</span>
-           </div>
-        </div>
-
-      </div>
-    </div>
+    </PageShell>
   );
 }

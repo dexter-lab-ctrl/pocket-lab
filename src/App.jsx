@@ -1,8 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { Download, LayoutGrid, ShieldCheck, GitBranch, Activity, Map } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Download, LayoutGrid, ShieldCheck, GitBranch, Activity, Map, ShieldAlert, Workflow, Settings as SettingsIcon, Database, FileCheck, Fingerprint, AlignLeft, Network, Menu, WifiOff, X } from 'lucide-react';
 import { useDeviceMotion } from './hooks/useDeviceMotion';
+import { useOnlineStatus } from './hooks/useOnlineStatus.js';
 import Header from './components/Header';
 import OTAUpdater from './components/OTAUpdater';
+import ControlPlaneBanner from './components/ControlPlaneBanner.jsx';
+import ActivityDrawer from './components/ActivityDrawer.jsx';
+import PageGuidance from './components/PageGuidance.jsx';
+import FirstRunOnboarding from './components/FirstRunOnboarding.jsx';
+import SimpleDashboard from './tabs/SimpleDashboard.jsx';
+import SettingsTab from './tabs/SettingsTab.jsx';
+import { useExperienceMode } from './context/ExperienceModeContext.jsx';
+import { simpleTabLabel } from './lib/simpleLabels.js';
+import { groupedNavItems, productAreaForTab } from './lib/productAreas.js';
 import AppStoreTab from './tabs/AppStoreTab';
 import GitOpsTab from './tabs/GitOpsTab';
 import GiteaRegistryTab from './tabs/GiteaRegistryTab';
@@ -13,20 +23,39 @@ import LogExplorerTab from './tabs/LogExplorerTab';
 import PolicyGuardrailsTab from './tabs/PolicyGuardrailsTab';
 import NocTelemetryTab from './tabs/NocTelemetryTab';
 import SecurityPostureTab from './tabs/SecurityPostureTab';
-import FleetScalingTab from './tabs/FleetScalingTab'; // INJECTED: Fleet Scaling Tab
+import FleetScalingTab from './tabs/FleetScalingTab';
+import DriftCenterTab from './tabs/DriftCenterTab';
+import ReleaseWorkflowTab from './tabs/ReleaseWorkflowTab';
+
+const NAV_ITEMS = [
+  { id: 'appstore', label: 'App Catalog', compactLabel: 'Apps', icon: LayoutGrid },
+  { id: 'telemetry', label: 'NOC Telemetry', compactLabel: 'Status', icon: Activity },
+  { id: 'security', label: 'Security Posture', compactLabel: 'Safety', icon: ShieldCheck },
+  { id: 'gitops', label: 'GitOps Pipeline', compactLabel: 'GitOps', icon: GitBranch },
+  { id: 'release', label: 'Release Workflow', compactLabel: 'Release', icon: Workflow },
+  { id: 'drift', label: 'Drift Center', compactLabel: 'Drift', icon: ShieldAlert },
+  { id: 'blueprint', label: 'System Map', compactLabel: 'Map', icon: Map },
+  { id: 'fleet', label: 'Mesh Fleet', compactLabel: 'Fleet', icon: Network },
+  { id: 'vault', label: 'Identity Vault', compactLabel: 'Vault', icon: Fingerprint },
+  { id: 'logs', label: 'Log Explorer', compactLabel: 'Logs', icon: AlignLeft },
+  { id: 'opa', label: 'Policy Guardrails', compactLabel: 'Policy', icon: FileCheck },
+  { id: 'recovery', label: 'Disaster Recovery', compactLabel: 'Recover', icon: Database },
+  { id: 'settings', label: 'Settings', compactLabel: 'Settings', icon: SettingsIcon },
+];
 
 export default function App() {
+  const { experienceMode } = useExperienceMode();
   const [activeTab, setActiveTab] = useState('appstore');
   const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
   const { motionEnabled, getParallaxStyle, handleEnableMotion } = useDeviceMotion();
+  const online = useOnlineStatus();
+  const isSimpleMode = experienceMode === 'simple';
 
-  const isPhase1Complete = true;
-
-  // --- PWA INSTALLATION LOGIC ---
   useEffect(() => {
-    const handleBeforeInstallPrompt = (e) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
+    const handleBeforeInstallPrompt = (event) => {
+      event.preventDefault();
+      setDeferredPrompt(event);
     };
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -39,104 +68,169 @@ export default function App() {
     if (outcome === 'accepted') setDeferredPrompt(null);
   };
 
-  // --- MOBILE ERGONOMICS: HAPTIC FEEDBACK ---
   const handleTabChange = (tabId) => {
-    if (navigator.vibrate) {
-      navigator.vibrate(50); // 50ms pulse for physical click feel
-    }
+    if (navigator.vibrate) navigator.vibrate(35);
     setActiveTab(tabId);
+    setMobileMoreOpen(false);
   };
 
-  // The 5 Core "Quick Action" tabs for the mobile dock
-  const bottomNavItems = [
-    { id: 'appstore', label: 'Registry', icon: LayoutGrid },
-    { id: 'telemetry', label: 'Telemetry', icon: Activity },
-    { id: 'security', label: 'Posture', icon: ShieldCheck },
-    { id: 'gitops', label: 'Pipelines', icon: GitBranch },
-    { id: 'blueprint', label: 'Map', icon: Map },
-  ];
+  const renderActiveTab = () => (
+    <>
+      {activeTab === 'appstore' && <AppStoreTab />}
+      {activeTab === 'blueprint' && <BlueprintTab motionEnabled={motionEnabled} getParallaxStyle={getParallaxStyle} handleEnableMotion={handleEnableMotion} />}
+      {activeTab === 'gitops' && <GitOpsTab />}
+      {activeTab === 'registry' && <GiteaRegistryTab />}
+      {activeTab === 'recovery' && <DisasterRecoveryTab />}
+      {activeTab === 'vault' && <IdentityVaultTab />}
+      {activeTab === 'logs' && <LogExplorerTab />}
+      {activeTab === 'opa' && <PolicyGuardrailsTab />}
+      {activeTab === 'telemetry' && <NocTelemetryTab />}
+      {activeTab === 'security' && <SecurityPostureTab />}
+      {activeTab === 'fleet' && <FleetScalingTab />}
+      {activeTab === 'release' && <ReleaseWorkflowTab />}
+      {activeTab === 'drift' && <DriftCenterTab />}
+      {activeTab === 'settings' && <SettingsTab />}
+    </>
+  );
+
+  const navLabel = (item) => isSimpleMode ? simpleTabLabel(item.id, item.compactLabel) : item.compactLabel;
+  const navGroups = groupedNavItems(NAV_ITEMS);
+  const activeArea = navGroups.find((area) => area.key === productAreaForTab(activeTab));
+  const primaryMobileItems = NAV_ITEMS.slice(0, 6);
+  const secondaryMobileItems = NAV_ITEMS.slice(6);
+  const secondaryMobileIds = new Set(secondaryMobileItems.map((item) => item.id));
+  const secondaryMobileGroups = navGroups
+    .map((area) => ({ ...area, items: area.items.filter((item) => secondaryMobileIds.has(item.id)) }))
+    .filter((area) => area.items.length > 0);
 
   return (
-    <div className="relative min-h-screen bg-[#020617] text-slate-300 font-sans overflow-hidden selection:bg-indigo-500/30">
-      
-      {/* PARALLAX BACKGROUND BLOBS */}
-      <div className="fixed top-[-15%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-600/10 blur-[120px] z-0 pointer-events-none" style={getParallaxStyle(40)} />
-      <div className="fixed bottom-[-15%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-600/10 blur-[120px] z-0 pointer-events-none" style={getParallaxStyle(60)} />
-      
-      {/* MAIN CONTENT CONTAINER 
-        Notice the pb-32 (padding-bottom: 8rem). This ensures the bottom of your 
-        tabs isn't hidden behind the floating navigation bar!
-      */}
-      <div className="max-w-[1500px] mx-auto relative z-10 p-4 md:p-8 pb-32 md:pb-32">
-        
-        {/* Your existing top header is preserved for accessing the remaining tabs */}
-        <Header activeTab={activeTab} setActiveTab={handleTabChange} isPhase1Complete={isPhase1Complete} />
-        
-        <OTAUpdater />
+    <div className={`pocket-app-shell theme-control-plane-graphite ${isSimpleMode ? 'theme-midnight-saas-simple' : ''}`}>
+      <a href="#pocket-main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[80] focus:rounded-xl focus:bg-indigo-500 focus:px-4 focus:py-2 focus:text-sm focus:font-black focus:text-white">
+        Skip to Pocket Lab content
+      </a>
+      <div className="pocket-app-backdrop" aria-hidden="true" />
 
-        {/* NATIVE OS INSTALL PROMPT */}
-        {deferredPrompt && (
-          <div className="mb-8 p-4 bg-blue-900/40 border border-blue-500/50 rounded-2xl flex items-center justify-between backdrop-blur-md shadow-xl">
-            <div className="flex flex-col">
-              <strong className="text-white">Install Pocket Lab</strong>
-              <span className="text-sm text-blue-200">Native OS performance</span>
+      {!online && (
+        <div className="fixed left-1/2 top-4 z-[90] w-[calc(100vw-2rem)] max-w-2xl -translate-x-1/2 rounded-3xl border border-slate-300/20 bg-slate-950/95 px-4 py-3 text-slate-100 shadow-2xl shadow-black/40 backdrop-blur-xl" role="status">
+          <div className="flex items-start gap-3">
+            <div className="rounded-2xl border border-slate-300/20 bg-slate-500/10 p-2 text-slate-200"><WifiOff className="h-5 w-5" /></div>
+            <div className="min-w-0">
+              <p className="text-sm font-black text-white">{isSimpleMode ? 'You are offline' : 'Browser offline'}</p>
+              <p className="mt-1 text-sm text-slate-300">{isSimpleMode ? 'Pocket Lab will keep showing cached information where possible. Changes are paused until your connection returns.' : 'Live events and write flows are paused while the browser is offline.'}</p>
             </div>
-            <button onClick={handleInstallClick} className="px-4 py-2 bg-blue-600 hover:bg-blue-500 transition-colors text-white rounded-xl font-bold flex items-center shadow-lg">
-              <Download className="w-4 h-4 mr-2" /> Install
-            </button>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* TAB ROUTING AREA */}
-        <main className="animate-in fade-in duration-500">
-          {activeTab === 'appstore' && <AppStoreTab />}
-          {activeTab === 'blueprint' && <BlueprintTab motionEnabled={motionEnabled} getParallaxStyle={getParallaxStyle} handleEnableMotion={handleEnableMotion} />}
-          {activeTab === 'gitops' && <GitOpsTab />} 
-          {activeTab === 'registry' && <GiteaRegistryTab />} 
-          {activeTab === 'recovery' && <DisasterRecoveryTab />}
-          {activeTab === 'vault' && <IdentityVaultTab />}
-          {activeTab === 'logs' && <LogExplorerTab />}
-          {activeTab === 'opa' && <PolicyGuardrailsTab />}
-          {activeTab === 'telemetry' && <NocTelemetryTab />}
-          {activeTab === 'security' && <SecurityPostureTab />}
-          {activeTab === 'fleet' && <FleetScalingTab />} {/* INJECTED: Fleet Scaling Route */}
-        </main>
-      </div>
+      <FirstRunOnboarding onNavigate={handleTabChange} />
 
-      {/* --- FLOATING BOTTOM NAVIGATION BAR --- */}
-      <div className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-[400px]">
-        <nav className="bg-[#05080f]/90 backdrop-blur-2xl border border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.8)] rounded-3xl flex justify-between items-center p-2 relative overflow-hidden">
-          
-          {/* Subtle top glare effect for premium glass look */}
-          <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+      {deferredPrompt && (
+        <div className="fixed top-4 left-1/2 z-50 w-[calc(100vw-2rem)] max-w-xl -translate-x-1/2 rounded-3xl border border-indigo-300/30 bg-slate-950/95 px-4 py-3 shadow-2xl shadow-indigo-950/40 backdrop-blur-xl">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="flex items-start gap-3 min-w-0">
+              <div className="rounded-2xl border border-indigo-300/25 bg-indigo-500/10 p-2 text-indigo-200"><Download className="h-5 w-5" /></div>
+              <div className="min-w-0 text-sm">
+                <div className="font-black text-white">Install Pocket Lab</div>
+                <div className="text-slate-400">Add the control plane to your device for faster access and offline readiness.</div>
+              </div>
+            </div>
+            <button type="button" onClick={handleInstallClick} className="pocket-button pocket-button-primary sm:ml-auto">Install</button>
+          </div>
+        </div>
+      )}
 
-          {bottomNavItems.map((item) => {
-            const isActive = activeTab === item.id;
-            const Icon = item.icon;
-            
-            return (
-              <button
-                key={item.id}
-                onClick={() => handleTabChange(item.id)}
-                className={`relative flex flex-col items-center justify-center w-[4.5rem] h-14 rounded-2xl transition-all duration-300 outline-none ${
-                  isActive ? 'text-indigo-400' : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'
-                }`}
-              >
-                {/* Active Indicator Blob */}
-                {isActive && (
-                  <div className="absolute inset-0 bg-indigo-500/15 border border-indigo-500/20 rounded-2xl animate-in zoom-in duration-300" />
-                )}
-                
-                <Icon className={`w-5 h-5 mb-1 relative z-10 transition-transform duration-300 ${isActive ? 'scale-110 drop-shadow-[0_0_8px_rgba(99,102,241,0.8)]' : ''}`} />
-                <span className={`text-[9px] font-black uppercase tracking-widest relative z-10 transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0 translate-y-1'}`}>
-                  {item.label}
-                </span>
-              </button>
-            );
-          })}
-        </nav>
-      </div>
+      {isSimpleMode ? (
+        <>
+          <SimpleDashboard />
+          <ActivityDrawer />
+        </>
+      ) : (
+        <>
+          <div className="relative z-10">
+            <Header activeTab={activeTab} setActiveTab={handleTabChange} />
+            <div className="mx-auto w-full max-w-[1680px] px-4 sm:px-6 lg:px-8">
+              <ControlPlaneBanner />
+              <OTAUpdater />
+            </div>
+            <main id="pocket-main" key={activeTab} className="pocket-main nav-page-fade lg:pl-24 xl:pl-28">
+              {activeArea ? (
+                <div className="product-area-banner mb-5">
+                  <div>
+                    <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-200/80">{isSimpleMode ? activeArea.simpleLabel : activeArea.label}</p>
+                    <p className="mt-1 text-sm leading-6 text-slate-300">{activeArea.description}</p>
+                  </div>
+                </div>
+              ) : null}
+              <PageGuidance tabId={activeTab} className="mb-5" />
+              {renderActiveTab()}
+            </main>
+          </div>
 
+          <nav className="pocket-side-rail" aria-label="Pocket Lab primary sections">
+            {NAV_ITEMS.map((item) => {
+              const isActive = activeTab === item.id;
+              const Icon = item.icon;
+              return (
+                <button key={item.id} type="button" onClick={() => handleTabChange(item.id)} title={isSimpleMode ? simpleTabLabel(item.id, item.label) : item.label} aria-label={isSimpleMode ? simpleTabLabel(item.id, item.label) : item.label} aria-current={isActive ? 'page' : undefined} className={`pocket-side-button nav-active-rail-item ${isActive ? 'pocket-side-button-active' : ''}`}>
+                  <Icon className="nav-active-rail-icon h-5 w-5" />
+                </button>
+              );
+            })}
+          </nav>
+
+          <nav className="pocket-nav-dock scrollbar-none" aria-label="Pocket Lab mobile sections">
+            {primaryMobileItems.map((item) => {
+              const isActive = activeTab === item.id;
+              const Icon = item.icon;
+              return (
+                <button key={item.id} type="button" onClick={() => handleTabChange(item.id)} aria-current={isActive ? 'page' : undefined} className={`pocket-nav-button nav-active-rail-item ${isActive ? 'pocket-nav-button-active' : ''}`}>
+                  <Icon className="nav-active-rail-icon relative z-10 h-5 w-5" />
+                  <span className="relative z-10 mt-1 text-[0.68rem] font-bold tracking-wide">{navLabel(item)}</span>
+                </button>
+              );
+            })}
+            <button type="button" onClick={() => setMobileMoreOpen(true)} className="pocket-nav-button" aria-label="More Pocket Lab sections">
+              <Menu className="relative z-10 h-5 w-5" />
+              <span className="relative z-10 mt-1 text-[0.68rem] font-bold tracking-wide">More</span>
+            </button>
+          </nav>
+
+          {mobileMoreOpen && <div className="mobile-more-backdrop" onClick={() => setMobileMoreOpen(false)} aria-hidden="true" />}
+          <aside className={`mobile-more-sheet ${mobileMoreOpen ? 'mobile-more-sheet-open' : ''}`} aria-hidden={!mobileMoreOpen} aria-label="More Pocket Lab sections">
+            <div className="flex items-center justify-between gap-3 border-b border-white/10 p-4">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.18em] text-indigo-200">More sections</p>
+                <h2 className="text-lg font-black text-white">Open another Pocket Lab area</h2>
+              </div>
+              <button type="button" onClick={() => setMobileMoreOpen(false)} className="rounded-2xl border border-white/10 bg-white/5 p-2 text-slate-200 hover:bg-white/10" aria-label="Close more sections"><X className="h-5 w-5" /></button>
+            </div>
+            <div className="grid gap-4 p-4">
+              {secondaryMobileGroups.map((area) => (
+                <section key={area.key} className="mobile-more-group">
+                  <div className="mb-2 px-1">
+                    <p className="text-[10px] font-black uppercase tracking-[0.18em] text-cyan-200/75">{isSimpleMode ? area.simpleLabel : area.label}</p>
+                    <p className="mt-1 text-xs text-slate-500">{area.description}</p>
+                  </div>
+                  <div className="grid gap-2">
+                    {area.items.map((item) => {
+                      const isActive = activeTab === item.id;
+                      const Icon = item.icon;
+                      return (
+                        <button key={item.id} type="button" onClick={() => handleTabChange(item.id)} aria-current={isActive ? 'page' : undefined} className={`mobile-more-item nav-active-rail-item ${isActive ? 'mobile-more-item-active' : ''}`}>
+                          <Icon className="nav-active-rail-icon h-5 w-5" />
+                          <span>{isSimpleMode ? simpleTabLabel(item.id, item.label) : item.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </section>
+              ))}
+            </div>
+          </aside>
+
+          <ActivityDrawer />
+        </>
+      )}
     </div>
   );
 }

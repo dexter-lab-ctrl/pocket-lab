@@ -1,0 +1,225 @@
+{
+  "history": [
+    {
+      "generated_at": "2026-06-10T18:08:49Z",
+      "source_fingerprint": "087358dd09993367923d7d59c37e38a58952e87090839fe5af776e8b277f1045",
+      "state": "BLOCKED",
+      "status_counts": {
+        "BLOCKED": 12,
+        "FAIL": 0,
+        "PASS": 0,
+        "WARNING": 9
+      }
+    },
+    {
+      "generated_at": "2026-06-10T18:26:07Z",
+      "source_fingerprint": "087358dd09993367923d7d59c37e38a58952e87090839fe5af776e8b277f1045",
+      "state": "BLOCKED",
+      "status_counts": {
+        "BLOCKED": 6,
+        "FAIL": 0,
+        "PASS": 2,
+        "WARNING": 13
+      }
+    },
+    {
+      "generated_at": "2026-06-10T18:29:12Z",
+      "source_fingerprint": "087358dd09993367923d7d59c37e38a58952e87090839fe5af776e8b277f1045",
+      "state": "BLOCKED",
+      "status_counts": {
+        "BLOCKED": 6,
+        "FAIL": 0,
+        "PASS": 9,
+        "WARNING": 6
+      }
+    },
+    {
+      "generated_at": "2026-06-10T18:32:45Z",
+      "source_fingerprint": "087358dd09993367923d7d59c37e38a58952e87090839fe5af776e8b277f1045",
+      "state": "BLOCKED",
+      "status_counts": {
+        "BLOCKED": 6,
+        "FAIL": 0,
+        "PASS": 9,
+        "WARNING": 6
+      }
+    },
+    {
+      "generated_at": "2026-06-10T18:33:42Z",
+      "source_fingerprint": "087358dd09993367923d7d59c37e38a58952e87090839fe5af776e8b277f1045",
+      "state": "BLOCKED",
+      "status_counts": {
+        "BLOCKED": 6,
+        "FAIL": 0,
+        "PASS": 9,
+        "WARNING": 6
+      }
+    },
+    {
+      "generated_at": "2026-06-10T18:39:31Z",
+      "source_fingerprint": "087358dd09993367923d7d59c37e38a58952e87090839fe5af776e8b277f1045",
+      "state": "BLOCKED",
+      "status_counts": {
+        "BLOCKED": 6,
+        "FAIL": 0,
+        "PASS": 9,
+        "WARNING": 6
+      }
+    },
+    {
+      "generated_at": "2026-06-12T13:41:15Z",
+      "source_fingerprint": "a6502f889f7e78a08ae7130740853cd3f6992ac3ab23598c7a7aec97cd4de513",
+      "state": "FAIL",
+      "status_counts": {
+        "BLOCKED": 0,
+        "FAIL": 1,
+        "PASS": 12,
+        "WARNING": 8
+      }
+    },
+    {
+      "generated_at": "2026-06-12T13:49:29Z",
+      "source_fingerprint": "a6502f889f7e78a08ae7130740853cd3f6992ac3ab23598c7a7aec97cd4de513",
+      "state": "FAIL",
+      "status_counts": {
+        "BLOCKED": 0,
+        "FAIL": 1,
+        "PASS": 12,
+        "WARNING": 8
+      }
+    },
+    {
+      "generated_at": "2026-06-12T13:55:18Z",
+      "source_fingerprint": "8ccffde637583a3e6e52adada6391d11c4888b9312803fba20dcc656f0b7a4e2",
+      "state": "FAIL",
+      "status_counts": {
+        "BLOCKED": 0,
+        "FAIL": 1,
+        "PASS": 12,
+        "WARNING": 8
+      }
+    },
+    {
+      "generated_at": "2026-06-12T14:03:12Z",
+      "source_fingerprint": "f996ba65f2a7b054c349782c6a9f6cd5486a0d74d93714e8313742586186976e",
+      "state": "FAIL",
+      "status_counts": {
+        "BLOCKED": 0,
+        "FAIL": 1,
+        "PASS": 12,
+        "WARNING": 8
+      }
+    },
+    {
+      "generated_at": "2026-06-12T14:17:54Z",
+      "source_fingerprint": "026ed108c49e1124cb860ee062cd88da36b179a7c5eea0401e8200cc14f27e64",
+      "state": "FAIL",
+      "status_counts": {
+        "BLOCKED": 0,
+        "FAIL": 1,
+        "PASS": 12,
+        "WARNING": 8
+      }
+    },
+    {
+      "generated_at": "2026-06-12T14:40:03Z",
+      "source_fingerprint": "52d9bafc953b2a22be1aca6a7a8052596098fa0104eccf1f1a2000a4887db17f",
+      "state": "WARNING",
+      "status_counts": {
+        "BLOCKED": 0,
+        "FAIL": 0,
+        "PASS": 13,
+        "WARNING": 8
+      }
+    },
+    {
+      "generated_at": "2026-06-12T14:44:01Z",
+      "source_fingerprint": "52d9bafc953b2a22be1aca6a7a8052596098fa0104eccf1f1a2000a4887db17f",
+      "state": "WARNING",
+      "status_counts": {
+        "BLOCKED": 0,
+        "FAIL": 0,
+        "PASS": 13,
+        "WARNING": 8
+      }
+    },
+    {
+      "generated_at": "2026-06-12T14:56:21Z",
+      "source_fingerprint": "52d9bafc953b2a22be1aca6a7a8052596098fa0104eccf1f1a2000a4887db17f",
+      "state": "WARNING",
+      "status_counts": {
+        "BLOCKED": 0,
+        "FAIL": 0,
+        "PASS": 13,
+        "WARNING": 8
+      }
+    },
+    {
+      "generated_at": "2026-06-12T15:10:03Z",
+      "source_fingerprint": "52d9bafc953b2a22be1aca6a7a8052596098fa0104eccf1f1a2000a4887db17f",
+      "state": "WARNING",
+      "status_counts": {
+        "BLOCKED": 0,
+        "FAIL": 0,
+        "PASS": 13,
+        "WARNING": 8
+      }
+    },
+    {
+      "generated_at": "2026-06-12T15:22:23Z",
+      "source_fingerprint": "ee19d42edc157f94e63ede296cf927c6b7f4a9c61cd69757caf917642b004871",
+      "state": "WARNING",
+      "status_counts": {
+        "BLOCKED": 0,
+        "FAIL": 0,
+        "PASS": 13,
+        "WARNING": 8
+      }
+    },
+    {
+      "generated_at": "2026-06-12T15:27:27Z",
+      "source_fingerprint": "ee19d42edc157f94e63ede296cf927c6b7f4a9c61cd69757caf917642b004871",
+      "state": "WARNING",
+      "status_counts": {
+        "BLOCKED": 0,
+        "FAIL": 0,
+        "PASS": 13,
+        "WARNING": 8
+      }
+    },
+    {
+      "generated_at": "2026-06-13T17:24:08Z",
+      "source_fingerprint": "351b236293e022469d3a6f06fe653490d9d7134a781948c38e73b09227f4f742",
+      "state": "WARNING",
+      "status_counts": {
+        "BLOCKED": 0,
+        "FAIL": 0,
+        "PASS": 13,
+        "WARNING": 8
+      }
+    },
+    {
+      "generated_at": "2026-06-14T08:55:06Z",
+      "source_fingerprint": "d739d36bd00634f6b5920ebe01791e1e9ad95606bb17f8b9ae6b59b8348038d0",
+      "state": "WARNING",
+      "status_counts": {
+        "BLOCKED": 0,
+        "FAIL": 0,
+        "PASS": 13,
+        "WARNING": 8
+      }
+    },
+    {
+      "generated_at": "2026-06-14T19:32:50Z",
+      "source_fingerprint": "e0a45b1f1700a8f50f0b896b2bfe521e0d59a44b93c79c5a547a767e1cafa82f",
+      "state": "WARNING",
+      "status_counts": {
+        "BLOCKED": 0,
+        "FAIL": 0,
+        "PASS": 13,
+        "WARNING": 8
+      }
+    }
+  ],
+  "schemaVersion": "pocketlab.validation.history.v1"
+}
