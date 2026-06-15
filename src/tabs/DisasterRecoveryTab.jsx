@@ -57,7 +57,7 @@ export default function DisasterRecoveryTab({ simpleMode = false }) {
             <div className="flex items-center gap-2 text-slate-400 text-xs font-black uppercase tracking-widest">
               <HardDrive className="h-4 w-4" /> {simpleMode ? 'Backups' : 'Disaster recovery'}
             </div>
-            <h2 className="mt-2 text-4xl font-black text-white tracking-tight">{simpleMode ? 'Back up and restore safely' : 'Typed backup_now and restore_backup'}</h2>
+            <h2 className="mt-2 text-4xl font-black text-white tracking-tight">{simpleMode ? 'Back up and restore safely' : 'Recovery Management'}</h2>
             <p className="mt-2 text-sm text-slate-400 max-w-2xl">
               {simpleMode ? 'Create safe restore points and recover your environment without dealing with scripts or backend commands.' : 'Backups and restores are submitted as backend operations. There is no shell payload editor in this flow.'}
             </p>
@@ -98,7 +98,7 @@ export default function DisasterRecoveryTab({ simpleMode = false }) {
             <div className="backup-seal-icon" aria-hidden="true">▣</div>
             <div>
               <strong>{simpleMode ? 'Backup safety check' : 'Backup verification seal'}</strong>
-              <span>{status.phase === 'restore_backup' ? (simpleMode ? 'Confirmation required before restore' : 'Restore preview requires approval gate') : (verification ? (simpleMode ? 'Verification saved' : 'Backup verification recorded') : (simpleMode ? 'Ready to verify' : 'Awaiting verification evidence'))}</span>
+              <span>{status.phase === 'restore_backup' ? (simpleMode ? 'Confirmation required before restore' : 'Restore preview requires approval') : (verification ? (simpleMode ? 'Verification saved' : 'Backup verification recorded') : (simpleMode ? 'Ready to verify' : 'Awaiting verification evidence'))}</span>
             </div>
             <span className="backup-seal-badge">{verification ? (simpleMode ? 'Safe' : 'Verified') : (simpleMode ? 'Check' : 'Pending')}</span>
           </div>
@@ -144,7 +144,7 @@ export default function DisasterRecoveryTab({ simpleMode = false }) {
               {simpleMode ? 'Create Backup saves a restore point for your environment.' : 'Use the typed `backup_now` operation for snapshots.'}
             </div>
             <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-              {simpleMode ? 'Restore recovers your environment from the selected restore point.' : 'Use the typed `restore_backup` operation to request recovery from a stored backup reference.'}
+              {simpleMode ? 'Restore recovers your environment from the selected restore point.' : 'Use governed recovery actions to request restoration from a stored backup reference.'}
             </div>
             <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
               {simpleMode ? 'Pocket Lab runs these safely in the background using approved workflows.' : 'Recovery tasks are shown as operation jobs, not ad hoc shell scripts.'}

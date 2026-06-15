@@ -6,7 +6,7 @@ export default function DesiredStateSnap({ active = false, complete = false, sim
   return (
     <div className={`desired-state-snap ${activeClass} ${className}`} aria-label={simpleMode ? 'What should be installed is being matched' : 'Desired state reconciliation preview'}>
       <div className="desired-state-card desired-state-card-target">
-        <span>{simpleMode ? 'What Should Be Installed' : 'Desired State'}</span>
+        <span>{simpleMode ? 'What Should Be Installed' : 'Target Configuration'}</span>
         <strong>{simpleMode ? 'Ready' : 'declared'}</strong>
       </div>
       <div className="desired-state-rail" aria-hidden="true" />

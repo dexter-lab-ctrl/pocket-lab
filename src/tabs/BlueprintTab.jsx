@@ -3,6 +3,7 @@ import { executeOperation } from '../lib/operations';
 import { Compass, Layers, UploadCloud, PlayCircle, RotateCcw, Package, ClipboardList } from 'lucide-react';
 import { AdvancedDetails, SimpleStatus } from '../components/SimpleModeControls.jsx';
 import { simpleActionLabel, redactTechnicalText } from '../lib/simpleLabels';
+import { enterpriseDisplayText } from '../lib/enterpriseLabels.js';
 import LiveEventPanel from '../components/LiveEventPanel.jsx';
 import DesiredStateSnap from '../components/DesiredStateSnap.jsx';
 
@@ -22,21 +23,21 @@ const blueprints = [
     name: 'PhotoPrism',
     mode: 'repo',
     ref: 'pocket_lab_iac',
-    description: 'Deploy the gallery workload blueprint.',
+    description: 'Install the approved gallery service package.',
   },
   {
     id: 'security_scanners',
     name: 'Security Scanners',
     mode: 'oci',
     ref: 'oci://ghcr.io/pocket-lab/security-scanners:latest',
-    description: 'Import an OCI artifact and deploy it.',
+    description: 'Import an approved artifact and install it.',
   },
   {
     id: 'host_hardening',
     name: 'Host Hardening',
     mode: 'repo',
     ref: 'pocket_lab_iac',
-    description: 'Rollback and re-apply the hardening blueprint.',
+    description: 'Roll back and re-apply the hardening service package.',
   },
 ];
 
@@ -56,7 +57,7 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
 
   const submit = async (action) => {
     if (navigator.vibrate) navigator.vibrate(15);
-    setStatus({ phase: action, jobId: '', message: simpleMode ? `Starting ${simpleActionLabel(action === 'deploy' ? 'deploy_blueprint' : action, action).toLowerCase()}...` : `Submitting ${action}...` });
+    setStatus({ phase: action, jobId: '', message: simpleMode ? `Starting ${simpleActionLabel(action === 'deploy' ? 'deploy_blueprint' : action, action).toLowerCase()}...` : `Submitting ${action} request...` });
 
     try {
       const params =
@@ -76,14 +77,14 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
         stdout: result?.stdout || '',
       };
       setHistory((prev) => [item, ...prev].slice(0, 8));
-      setStatus({ phase: result?.status || 'succeeded', jobId: result?.job_id || '', message: action === 'rollback' ? 'Rollback intent recorded.' : 'Blueprint operation completed.' });
+      setStatus({ phase: result?.status || 'succeeded', jobId: result?.job_id || '', message: action === 'rollback' ? 'Rollback intent recorded.' : 'Service package request completed.' });
     } catch (err) {
       setStatus({ phase: 'error', jobId: '', message: err.message || 'Operation failed.' });
     }
   };
 
   const parallaxStyle = typeof getParallaxStyle === 'function' ? getParallaxStyle(0.15) : undefined;
-  const title = simpleMode ? 'Apps & Services' : 'Blueprint Package Controls';
+  const title = simpleMode ? 'Apps & Services' : 'Service Package Controls';
   const installLabel = simpleMode ? 'Install' : 'Deploy Package';
 
   const blueprintItems = normalizeBlueprintItems(blueprints);
@@ -98,11 +99,11 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
             <div>
               <h2 className="text-4xl font-black text-white tracking-tight">{title}</h2>
               <p className="text-slate-400 text-sm mt-2 max-w-2xl">
-                {simpleMode ? 'Choose approved apps or services, then install or roll back using guided safe actions.' : 'Import a package, deploy it, or send a rollback intent through the typed operation layer.'}
+                {simpleMode ? 'Choose approved apps or services, then install or roll back using guided safe actions.' : 'Import a package, install it, or send a rollback request through governed operation contracts.'}
               </p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-slate-300">
-              {simpleMode ? `Status: ${status.message || 'Ready'}` : `Current task: ${status.phase} · ${status.jobId || 'no job id yet'}`}
+              {simpleMode ? `Status: ${status.message || 'Ready'}` : `Current request: ${status.phase} · ${status.jobId || 'no reference yet'}`}
             </div>
           </div>
 
@@ -167,7 +168,7 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
 
           <div className={`rounded-2xl border p-4 ${status.phase === 'error' ? 'border-red-500/30 bg-red-500/10 text-red-100' : 'border-white/10 bg-black/20 text-slate-200'}`}>
             <div className="font-semibold">{simpleMode ? redactTechnicalText(status.message || 'Ready.') : (status.message || 'Ready.')}</div>
-            {!simpleMode && <div className="mt-1 text-xs uppercase tracking-widest text-slate-400">Task id: {status.jobId || 'queued'}</div>}
+            {!simpleMode && <div className="mt-1 text-xs uppercase tracking-widest text-slate-400">Reference: {status.jobId || 'queued'}</div>}
           </div>
           <DesiredStateSnap className="blueprint-desired-state-snap" simpleMode={simpleMode} active={['deploy', 'rollback'].includes(status.phase)} complete={/completed|succeeded|deployed|created/i.test(status.message || '')} />
         </div>
@@ -181,7 +182,7 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
           </div>
           <div className="space-y-3 text-sm">
             <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-              <div className="text-xs uppercase tracking-widest text-slate-500">Selected blueprint</div>
+              <div className="text-xs uppercase tracking-widest text-slate-500">Selected package</div>
               <div className="mt-1 font-semibold text-white">{selected.name}</div>
             </div>
             <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
@@ -198,25 +199,25 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
         <div className="bg-[#05080f] border border-white/10 rounded-[2rem] p-6 shadow-xl">
           <div className="flex items-center gap-2 mb-4">
             <ClipboardList className="h-4 w-4 text-slate-400" />
-            <h3 className="text-xs font-black uppercase tracking-widest text-slate-500">{simpleMode ? 'Recent Activity' : 'Operation history'}</h3>
+            <h3 className="text-xs font-black uppercase tracking-widest text-slate-500">{simpleMode ? 'Recent Activity' : 'Request history'}</h3>
           </div>
           <div className="space-y-3">
             {history.length === 0 ? (
               <div className="rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-slate-400">
-                No blueprint operations yet.
+                No service package requests yet.
               </div>
             ) : history.map((item) => (
               <div key={`${item.at}-${item.jobId}`} className="rounded-2xl border border-white/10 bg-black/20 p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <div className="font-semibold text-white">{simpleMode ? simpleActionLabel(item.action === 'deploy' ? 'deploy_blueprint' : item.action, item.action) : item.action}</div>
+                    <div className="font-semibold text-white">{simpleMode ? simpleActionLabel(item.action === 'deploy' ? 'deploy_blueprint' : item.action, item.action) : enterpriseDisplayText(item.action)}</div>
                     <div className="text-xs text-slate-400">{item.at}</div>
                   </div>
                   <span className="rounded-full border border-white/10 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-slate-400">
                     {item.jobId || 'queued'}
                   </span>
                 </div>
-                {!simpleMode && <pre className="mt-3 overflow-auto rounded-xl bg-black/30 p-3 text-[11px] text-slate-300">{item.stdout}</pre>}
+                {!simpleMode && <pre className="mt-3 overflow-auto rounded-xl bg-black/30 p-3 text-[11px] text-slate-300">{enterpriseDisplayText(item.stdout)}</pre>}
               </div>
             ))}
           </div>
@@ -224,8 +225,8 @@ export default function BlueprintTab({ motionEnabled, getParallaxStyle, handleEn
       </div>
       <LiveEventPanel
         simpleMode={simpleMode}
-        title="Blueprint deployment activity"
-        description="Package import, install, rollback, and operation progress is streamed here."
+        title="Service package activity"
+        description="Package import, install, rollback, and request progress appears here."
         subjectPrefixes={['pocketlab.events.blueprint.', 'pocketlab.events.operation.']}
         maxItems={4}
         compact

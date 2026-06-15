@@ -32,11 +32,11 @@ export default function LogExplorerTab() {
     let interval;
 
     if (!isLiveEnv && isLive) {
-      setLogs([{ id: 'control-plane-degraded', timestamp: new Date().toISOString(), level: 'WARN', service: 'fastapi-nats', message: 'FastAPI/NATS control plane is not ready. Loki log streaming is paused; simulator logs are disabled in production mode.' }]);
+      setLogs([{ id: 'control-plane-degraded', timestamp: new Date().toISOString(), level: 'WARN', service: 'control-plane', message: 'control plane is not ready. Log streaming is paused; simulator logs are disabled in production mode.' }]);
       setQueryMeta(null);
 
     } else if (isLiveEnv && isLive) {
-      // --- PRODUCTION MODE (FastAPI-owned log query API) ---
+      // --- PRODUCTION MODE (Control API-owned log query API) ---
       const fetchLokiLogs = async () => {
         try {
           let query = searchQuery;
@@ -64,7 +64,7 @@ export default function LogExplorerTab() {
           setLogs(parsedLogs);
           setQueryMeta(data.meta || null);
         } catch (err) {
-          setLogs([{ id: 'err', timestamp: new Date().toISOString(), level: 'ERROR', service: 'system', message: 'Connecting to Pocket Lab FastAPI log query API. Live log data may be unavailable until the control plane and log pipeline are ready.' }]);
+          setLogs([{ id: 'err', timestamp: new Date().toISOString(), level: 'ERROR', service: 'system', message: 'Connecting to Pocket Lab Control API log query API. Live log data may be unavailable until the control plane and log pipeline are ready.' }]);
           setQueryMeta(null);
         }
       };
@@ -145,17 +145,17 @@ export default function LogExplorerTab() {
             </div>
             <div>
               <h2 className="text-xl font-black text-white tracking-tight flex items-center">
-                Log Explorer <span className={`ml-2 rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-widest ${!isLiveEnv ? 'border-orange-400/30 bg-orange-500/15 text-orange-200' : 'border-indigo-400/30 bg-indigo-500/15 text-indigo-200'}`}>{!isLiveEnv ? 'Degraded' : 'FastAPI'}</span>
+                Activity & Evidence <span className={`ml-2 rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-widest ${!isLiveEnv ? 'border-orange-400/30 bg-orange-500/15 text-orange-200' : 'border-indigo-400/30 bg-indigo-500/15 text-indigo-200'}`}>{!isLiveEnv ? 'Degraded' : 'Control API'}</span>
               </h2>
               <p className="text-slate-400 text-xs flex items-center mt-0.5">
                 <span className={`w-2 h-2 rounded-full mr-1.5 ${!isLiveEnv ? 'bg-orange-500 animate-pulse' : 'bg-green-500 animate-pulse'}`}></span>
-                {!isLiveEnv ? 'Control Plane Degraded' : 'FastAPI Log Query Stream'}
+                {!isLiveEnv ? 'Control Plane Degraded' : 'Control API Log Query Stream'}
               </p>
             </div>
           </div>
 
           <div className="flex-1 w-full flex items-center relative">
-            <div className="absolute left-4 text-slate-500 font-mono text-sm">LogQL</div>
+            <div className="absolute left-4 text-slate-500 font-mono text-sm">Query</div>
             <input
               type="text"
               value={searchQuery}

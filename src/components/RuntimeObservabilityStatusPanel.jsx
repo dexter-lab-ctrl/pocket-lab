@@ -194,7 +194,7 @@ export default function RuntimeObservabilityStatusPanel({ snapshot, summary, isL
   const headline = simpleMode ? 'Monitoring Health' : 'Runtime Observability Health';
   const description = simpleMode
     ? 'Pocket Lab groups monitoring into metrics, logs, dashboards, and health checks so it is easier to see what needs attention.'
-    : 'FastAPI performs bounded local probes for Prometheus, Loki, Grafana, Gatus, Prometheus targets, and inferred Promtail log shipping.';
+    : 'Control API performs bounded local probes for Prometheus, Loki, Grafana, Gatus, Prometheus targets, and inferred Promtail log shipping.';
 
   return (
     <section className="runtime-observability-panel mt-4 rounded-[2rem] border border-white/10 bg-slate-900/60 p-5 shadow-xl">
@@ -245,7 +245,7 @@ export default function RuntimeObservabilityStatusPanel({ snapshot, summary, isL
 
       <ProgressiveDisclosure simpleMode={simpleMode} title={simpleMode ? 'Show monitoring details' : 'Probe details'} className="mt-4">
         <div className="space-y-3 text-xs leading-6 text-slate-400">
-          <p>{simpleMode ? 'Pocket Lab checks these tools through its own control API so the app can show a simple status view.' : 'The frontend receives this summary from FastAPI. It does not call Prometheus, Loki, Grafana, Gatus, or Promtail directly.'}</p>
+          <p>{simpleMode ? 'Pocket Lab checks these tools through its own control API so the app can show a simple status view.' : 'The frontend receives this summary from Control API. It does not call Prometheus, Loki, Grafana, Gatus, or Promtail directly.'}</p>
           {!simpleMode && Array.isArray(targets.down_targets) && targets.down_targets.length > 0 ? (
             <div className="rounded-2xl border border-amber-400/20 bg-amber-500/10 p-4">
               <p className="text-sm font-black text-amber-100">Down Prometheus targets</p>

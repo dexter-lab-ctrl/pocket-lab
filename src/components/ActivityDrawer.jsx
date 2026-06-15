@@ -4,6 +4,7 @@ import { useExperienceMode } from '../context/ExperienceModeContext.jsx';
 import { usePocketLabEvents } from '../hooks/usePocketLabEvents.js';
 import { useOnlineStatus } from '../hooks/useOnlineStatus.js';
 import { eventTone, formatEventTime, friendlyEvent } from '../lib/pocketLabEvents.js';
+import { enterpriseDisplayText, enterpriseSubjectLabel } from '../lib/enterpriseLabels.js';
 import { animatedEventClass, animatedEventStatus, eventIdentity } from '../lib/eventMotion.js';
 import { ProgressiveDisclosure, StandardList, StandardListItem, StateSurface, StatusBadge } from './ui.jsx';
 
@@ -53,7 +54,7 @@ export default function ActivityDrawer() {
     <>
       <button type="button" onClick={() => setOpen(true)} className="activity-drawer-button" aria-label="Open recent Pocket Lab activity">
         <Activity className="h-5 w-5" />
-        <span className="hidden sm:inline">{simpleMode ? 'Activity' : 'Events'}</span>
+        <span className="hidden sm:inline">{simpleMode ? 'Activity' : 'Activity'}</span>
         <StatusBadge status={status === 'offline' ? 'degraded' : status} className="scale-90">{label}</StatusBadge>
       </button>
 
@@ -63,8 +64,8 @@ export default function ActivityDrawer() {
         <div className="flex items-start justify-between gap-3 border-b border-white/10 p-5">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-200/80">{simpleMode ? 'Recent activity' : 'Activity stream'}</p>
-            <h2 className="mt-1 text-xl font-black text-white">{simpleMode ? 'What Pocket Lab is doing' : 'Pocket Lab events'}</h2>
-            <p className="mt-1 text-sm leading-6 text-slate-400">{simpleMode ? 'Installs, updates, backups, device invites, and safety checks appear here.' : 'FastAPI, worker, runbook, and audit lifecycle events are summarized here.'}</p>
+            <h2 className="mt-1 text-xl font-black text-white">{simpleMode ? 'What Pocket Lab is doing' : 'Pocket Lab activity'}</h2>
+            <p className="mt-1 text-sm leading-6 text-slate-400">{simpleMode ? 'Installs, updates, backups, device invites, and safety checks appear here.' : 'Control-plane activity, approvals, execution progress, and audit records are summarized here.'}</p>
           </div>
           <button type="button" onClick={() => setOpen(false)} className="rounded-2xl border border-white/10 bg-white/5 p-2 text-slate-200 hover:bg-white/10" aria-label="Close activity drawer"><X className="h-5 w-5" /></button>
         </div>
@@ -81,7 +82,7 @@ export default function ActivityDrawer() {
           {online && !isLive && (
             <StateSurface
               tone="degraded"
-              title={simpleMode ? 'Live updates are reconnecting' : 'Event stream degraded'}
+              title={simpleMode ? 'Live updates are reconnecting' : 'Activity stream degraded'}
               description={simpleMode ? 'Pocket Lab is checking periodically until live updates return.' : `Connection mode: ${connection.mode}. ${connection.error || 'Recent event polling is active.'}`}
             />
           )}
@@ -94,11 +95,11 @@ export default function ActivityDrawer() {
           {visible.length === 0 ? (
             <StateSurface
               tone="empty"
-              title={simpleMode ? 'No recent activity yet' : 'No matching events yet'}
-              description={simpleMode ? 'Start an install, update, backup, or safety check and progress will appear here.' : 'Waiting for /ws/events or /api/events/recent activity from the control plane.'}
+              title={simpleMode ? 'No recent activity yet' : 'No matching activity yet'}
+              description={simpleMode ? 'Start an install, update, backup, or safety check and progress will appear here.' : 'Waiting for live or recent control-plane activity.'}
             />
           ) : (
-            <StandardList title={simpleMode ? 'Recent activity' : 'Recent event records'} description={simpleMode ? 'Newest Pocket Lab updates are listed first.' : 'A normalized event list using the shared Pocket Lab list pattern.'}>
+            <StandardList title={simpleMode ? 'Recent activity' : 'Recent activity records'} description={simpleMode ? 'Newest Pocket Lab updates are listed first.' : 'A normalized activity list using the shared Pocket Lab list pattern.'}>
               {visible.map((event) => {
                 const tone = eventTone(event);
                 const Icon = toneIcon(tone);
@@ -117,10 +118,10 @@ export default function ActivityDrawer() {
                     metadata={[{ label: 'Time', value: formatEventTime(event) }]}
                   >
                     {!simpleMode && (
-                      <ProgressiveDisclosure title="Technical event details">
+                      <ProgressiveDisclosure title="Advanced activity evidence">
                         <div className="space-y-2">
-                          <div>Subject: <span className="break-all font-mono">{event.subject || event.type}</span></div>
-                          <pre className="max-h-64 overflow-auto whitespace-pre-wrap break-words rounded-2xl bg-black/25 p-3 font-mono text-[11px]">{JSON.stringify(event, null, 2)}</pre>
+                          <div>Activity channel: <span className="break-all font-mono">{enterpriseSubjectLabel(event.subject || event.type)}</span></div>
+                          <pre className="max-h-64 overflow-auto whitespace-pre-wrap break-words rounded-2xl bg-black/25 p-3 font-mono text-[11px]">{enterpriseDisplayText(JSON.stringify(event, null, 2))}</pre>
                         </div>
                       </ProgressiveDisclosure>
                     )}

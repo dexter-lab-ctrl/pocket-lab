@@ -1,3 +1,4 @@
+import { enterpriseDisplayText, enterpriseOperationLabel, enterpriseStatusLabel } from './enterpriseLabels.js';
 const DEFAULT_LIMIT = 50;
 
 export function eventSocketUrl(path = '/ws/events') {
@@ -58,6 +59,7 @@ export function friendlyEvent(event, simpleMode = false) {
   const subject = String(event?.subject || '');
   const type = String(event?.type || '');
   const operation = String(data.operation || event?.operation || '');
+  const operationLabel = enterpriseOperationLabel(operation, 'Operation');
   const status = String(data.status || '');
   const jobId = String(data.job_id || event?.job_id || '');
 
@@ -65,10 +67,10 @@ export function friendlyEvent(event, simpleMode = false) {
     const step = String(data.step || data.stream || '').replace(/_/g, ' ');
     const message = String(data.message || data.event?.message || type || 'Progress update');
     return {
-      title: simpleMode ? 'Action progress updated' : `Operation log${operation ? `: ${operation}` : ''}`,
+      title: simpleMode ? 'Action progress updated' : `Operation activity${operation ? `: ${operationLabel}` : ''}`,
       detail: simpleMode
         ? message
-        : `${jobId ? `Job ${jobId}: ` : ''}${step ? `[${step}] ` : ''}${message}`,
+        : enterpriseDisplayText(`${jobId ? `Reference ${jobId}: ` : ''}${step ? `[${step}] ` : ''}${message}`),
     };
   }
 
@@ -99,7 +101,7 @@ export function friendlyEvent(event, simpleMode = false) {
       };
     }
     return {
-      title: simpleMode ? 'Recovery workflow updated' : 'Workflow event received',
+      title: simpleMode ? 'Recovery workflow updated' : 'Workflow activity received',
       detail: simpleMode
         ? 'Pocket Lab updated its saved action recovery state.'
         : (data.workflow_id || data.status || type || subject),
@@ -108,7 +110,7 @@ export function friendlyEvent(event, simpleMode = false) {
 
   if (subjectIncludes(event, 'command.retry_scheduled')) {
     return {
-      title: simpleMode ? 'Action will retry' : 'Command retry scheduled',
+      title: simpleMode ? 'Action will retry' : 'Retry scheduled',
       detail: simpleMode
         ? 'Pocket Lab hit a temporary problem and will try the action again safely.'
         : `${data.command_subject || data.subject || 'command'} retry ${data.attempt || 'next'} in ${data.retry_delay_seconds || 'a few'}s: ${data.error || ''}`,
@@ -116,7 +118,7 @@ export function friendlyEvent(event, simpleMode = false) {
   }
   if (subjectIncludes(event, 'command.dead_lettered') || subject.startsWith('pocketlab.dlq.')) {
     return {
-      title: simpleMode ? 'Action paused for review' : 'Command moved to dead-letter queue',
+      title: simpleMode ? 'Action paused for review' : 'Action moved to recovery queue',
       detail: simpleMode
         ? 'Pocket Lab stopped retrying this action to avoid unsafe repeated changes.'
         : `${data.original_subject || data.command_subject || subject} failed after ${data.attempt || 'several'} attempts: ${data.error || 'unknown error'}`,
@@ -125,26 +127,26 @@ export function friendlyEvent(event, simpleMode = false) {
 
   if (subjectIncludes(event, 'operation.failed')) {
     return {
-      title: simpleMode ? 'Action needs attention' : `Operation failed${operation ? `: ${operation}` : ''}`,
-      detail: simpleMode ? 'The requested action could not finish. Open advanced details or try again.' : (data.error || data.stderr || `Job ${jobId || 'unknown'} failed.`),
+      title: simpleMode ? 'Action needs attention' : `Operation needs attention${operation ? `: ${operationLabel}` : ''}`,
+      detail: simpleMode ? 'The requested action could not finish. Open advanced details or try again.' : enterpriseDisplayText(data.error || data.stderr || `Reference ${jobId || 'unknown'} failed.`),
     };
   }
   if (subjectIncludes(event, 'operation.succeeded')) {
     return {
-      title: simpleMode ? 'Action completed' : `Operation succeeded${operation ? `: ${operation}` : ''}`,
-      detail: simpleMode ? 'The requested change finished successfully.' : `Job ${jobId || 'unknown'} completed successfully.`,
+      title: simpleMode ? 'Action completed' : `Operation completed${operation ? `: ${operationLabel}` : ''}`,
+      detail: simpleMode ? 'The requested change finished successfully.' : `Reference ${jobId || 'unknown'} completed successfully.`,
     };
   }
   if (subjectIncludes(event, 'operation.started') || subjectIncludes(event, 'operation.worker_claimed')) {
     return {
-      title: simpleMode ? 'Action is running' : `Operation running${operation ? `: ${operation}` : ''}`,
-      detail: simpleMode ? 'Pocket Lab is applying the requested change now.' : `Worker is processing job ${jobId || 'unknown'}.`,
+      title: simpleMode ? 'Action is running' : `Operation in progress${operation ? `: ${operationLabel}` : ''}`,
+      detail: simpleMode ? 'Pocket Lab is applying the requested change now.' : `Executor is processing reference ${jobId || 'unknown'}.`,
     };
   }
   if (subjectIncludes(event, 'operation.created') || subjectIncludes(event, 'operation.execute')) {
     return {
-      title: simpleMode ? 'Action queued' : `Operation queued${operation ? `: ${operation}` : ''}`,
-      detail: simpleMode ? 'Pocket Lab accepted the request and is preparing it.' : `Queued job ${jobId || 'unknown'} for worker execution.`,
+      title: simpleMode ? 'Action queued' : `Operation queued${operation ? `: ${operationLabel}` : ''}`,
+      detail: simpleMode ? 'Pocket Lab accepted the request and is preparing it.' : `Queued reference ${jobId || 'unknown'} for governed execution.`,
     };
   }
   if (subject.includes('pocketlab.events.health')) {
@@ -165,7 +167,7 @@ export function friendlyEvent(event, simpleMode = false) {
       };
     }
     return {
-      title: simpleMode ? 'System health updated' : 'Health event received',
+      title: simpleMode ? 'System health updated' : 'Health activity received',
       detail: simpleMode ? `Overall status: ${healthStatus || 'unknown'}.` : (JSON.stringify(data.summary || snapshot.summary || {}) || type || subject),
     };
   }
@@ -183,19 +185,19 @@ export function friendlyEvent(event, simpleMode = false) {
   }
   if (subject.includes('pocketlab.events.live_status')) {
     return {
-      title: simpleMode ? 'Live monitoring updated' : 'Live status sampler event',
+      title: simpleMode ? 'Live monitoring updated' : 'Live monitoring activity',
       detail: simpleMode ? 'Pocket Lab live monitoring is running.' : (data.component || data.error || status || type),
     };
   }
   if (subject.includes('pocketlab.events.drift')) {
     return {
-      title: simpleMode ? 'Change check updated' : 'Drift event received',
+      title: simpleMode ? 'Change check updated' : 'Configuration health activity received',
       detail: simpleMode ? 'Pocket Lab updated what changed versus what should be installed.' : (data.summary || status || type),
     };
   }
   if (subject.includes('pocketlab.events.fleet.node_command_result')) {
     return {
-      title: simpleMode ? 'Device check completed' : 'Fleet node command result',
+      title: simpleMode ? 'Device check completed' : 'Device command result',
       detail: simpleMode
         ? `${data.name || data.hostname || data.node_id || 'A device'} responded to a device check.`
         : `${data.node_id || 'node'} · ${data.command || 'command'} · ${data.status || status || 'completed'}`,
@@ -203,7 +205,7 @@ export function friendlyEvent(event, simpleMode = false) {
   }
   if (subject.includes('pocketlab.events.fleet.node_heartbeat') || subject.includes('pocketlab.events.fleet.node_seen')) {
     return {
-      title: simpleMode ? 'Device checked in' : 'Fleet agent heartbeat',
+      title: simpleMode ? 'Device checked in' : 'Device heartbeat',
       detail: simpleMode
         ? `${data.name || data.hostname || data.node_id || 'A device'} is connected.`
         : `${data.node_id || 'node'} · ${data.role || 'role'} · ${data.agent_version || 'agent'}`,
@@ -212,7 +214,7 @@ export function friendlyEvent(event, simpleMode = false) {
   if (subject.includes('pocketlab.events.fleet.node_telemetry')) {
     const t = data.telemetry || {};
     return {
-      title: simpleMode ? 'Device status updated' : 'Fleet node telemetry',
+      title: simpleMode ? 'Device status updated' : 'Device telemetry',
       detail: simpleMode
         ? `${data.name || data.node_id || 'A device'} sent a live status update.`
         : `${data.node_id || 'node'} CPU ${t.cpu_usage_percent ?? '—'}%, temp ${t.cpu_temp_c ?? '—'}°C`,
@@ -221,7 +223,7 @@ export function friendlyEvent(event, simpleMode = false) {
   if (subject.includes('pocketlab.events.fleet.node_health')) {
     const h = data.health || {};
     return {
-      title: simpleMode ? 'Device health updated' : 'Fleet node health',
+      title: simpleMode ? 'Device health updated' : 'Device health',
       detail: simpleMode
         ? `${data.name || data.node_id || 'A device'} is ${h.status || data.status || 'updated'}.`
         : `${data.node_id || 'node'} health=${h.status || 'unknown'}`,
@@ -229,7 +231,7 @@ export function friendlyEvent(event, simpleMode = false) {
   }
   if (subject.includes('pocketlab.events.fleet')) {
     return {
-      title: simpleMode ? 'Device status changed' : 'Fleet event received',
+      title: simpleMode ? 'Device status changed' : 'Device fleet activity received',
       detail: simpleMode ? 'A device invite, device agent, or device health state changed.' : (data.hostname || data.node_id || data.role || status || type),
     };
   }
@@ -278,31 +280,31 @@ export function friendlyEvent(event, simpleMode = false) {
   }
   if (subject.includes('pocketlab.events.security') || subject.includes('pocketlab.audit')) {
     return {
-      title: simpleMode ? 'Safety status changed' : 'Security/audit event received',
+      title: simpleMode ? 'Safety status changed' : 'Security and audit activity received',
       detail: simpleMode ? 'A safety check or policy event was recorded.' : (data.rule || data.policy || status || type),
     };
   }
   if (subject.includes('pocketlab.events.catalog') || subject.includes('pocketlab.events.blueprint')) {
     return {
-      title: simpleMode ? 'Apps & Services updated' : 'Catalog/blueprint event received',
+      title: simpleMode ? 'Apps & Services updated' : 'Catalog and service package activity received',
       detail: simpleMode ? 'App list or install progress changed.' : (data.name || data.ref || status || type),
     };
   }
   if (subject.includes('pocketlab.events.worker')) {
     return {
-      title: simpleMode ? 'Helper service updated' : 'Worker event received',
+      title: simpleMode ? 'Helper service updated' : 'Execution activity received',
       detail: simpleMode ? 'The background helper service reported its status.' : (status || data.worker || type),
     };
   }
   if (type === 'bus.status') {
     return {
-      title: simpleMode ? 'Live updates connected' : 'Event bus status',
-      detail: simpleMode ? 'Pocket Lab can stream progress updates.' : `Bus mode: ${data?.mode || event?.data?.mode || 'unknown'}`,
+      title: simpleMode ? 'Live updates connected' : 'Activity stream status',
+      detail: simpleMode ? 'Pocket Lab can stream progress updates.' : `Activity mode: ${data?.mode || event?.data?.mode || 'unknown'}`,
     };
   }
   return {
-    title: simpleMode ? 'Pocket Lab update' : (type || subject || 'Pocket Lab event'),
-    detail: simpleMode ? 'A background update was received.' : subject,
+    title: simpleMode ? 'Pocket Lab update' : enterpriseDisplayText(type || subject || 'Pocket Lab activity'),
+    detail: simpleMode ? 'A background update was received.' : enterpriseDisplayText(subject),
   };
 }
 

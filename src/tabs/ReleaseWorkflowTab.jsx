@@ -3,6 +3,7 @@ import { CheckCircle2, CloudDownload, RefreshCw, ShieldCheck, GitBranch, Databas
 import { executeOperation, fetchReleaseWorkflow, refreshCatalog, checkReleaseUpdate, applyReleaseUpdate, fetchReleaseUpdateStatus } from '../lib/operations';
 import { AdvancedDetails } from '../components/SimpleModeControls.jsx';
 import { simpleActionLabel, redactTechnicalText } from '../lib/simpleLabels';
+import { enterpriseDisplayText, enterpriseOperationLabel } from '../lib/enterpriseLabels.js';
 import LiveEventPanel from '../components/LiveEventPanel.jsx';
 import ReleaseConveyor from '../components/ReleaseConveyor.jsx';
 
@@ -43,15 +44,15 @@ const OPERATION_CONTEXT = {
 
 const SUBSYSTEM_ICONS = {
   'Frontend PWA': Workflow,
-  'Pocket Lab FastAPI/NATS control plane': Server,
-  'GitOps subsystem': GitBranch,
-  'Blueprint engine': CloudDownload,
+  'Pocket Lab Control Plane': Server,
+  'Environment updates': GitBranch,
+  'Service package engine': CloudDownload,
   'App Store': CloudDownload,
   'Catalog store': Database,
   'Security guardrails': ShieldCheck,
-  'Drift Center': RefreshCw,
+  'Configuration Health': RefreshCw,
   'Health engine': CheckCircle2,
-  'Vault': Database,
+  'Identity & Access': Database,
   'Ansible runner': PlayCircle,
 };
 
@@ -106,7 +107,7 @@ export default function ReleaseWorkflowTab({ simpleMode = false }) {
 
   const runOperation = async (operation) => {
     setRunning(operation);
-    setStatusLine(simpleMode ? `Starting ${simpleActionLabel(operation, operation).toLowerCase()}...` : `Running ${operation}...`);
+    setStatusLine(simpleMode ? `Starting ${simpleActionLabel(operation, operation).toLowerCase()}...` : `Running ${enterpriseOperationLabel(operation, operation)}...`);
     try {
       if (operation === 'catalog_refresh') {
         const result = await refreshCatalog();
@@ -120,10 +121,10 @@ export default function ReleaseWorkflowTab({ simpleMode = false }) {
         params: {},
       };
       const result = await executeOperation(operation, context);
-      logResult(simpleMode ? simpleActionLabel(operation, redactTechnicalText(operation)) : operation, simpleMode ? 'Completed successfully.' : `${result?.status || 'succeeded'} · ${result?.job_id || 'no job id'}`);
-      setStatusLine(simpleMode ? `${simpleActionLabel(operation, 'Action')} completed.` : `${operation} completed.`);
+      logResult(simpleMode ? simpleActionLabel(operation, redactTechnicalText(operation)) : enterpriseOperationLabel(operation, operation), simpleMode ? 'Completed successfully.' : `${result?.status || 'succeeded'} · ${result?.job_id || 'no reference'}`);
+      setStatusLine(simpleMode ? `${simpleActionLabel(operation, 'Action')} completed.` : `${enterpriseOperationLabel(operation, operation)} completed.`);
     } catch (err) {
-      logResult(simpleMode ? simpleActionLabel(operation, redactTechnicalText(operation)) : operation, simpleMode ? redactTechnicalText(err?.message || 'Action failed') : (err?.message || 'Operation failed'));
+      logResult(simpleMode ? simpleActionLabel(operation, redactTechnicalText(operation)) : enterpriseOperationLabel(operation, operation), simpleMode ? redactTechnicalText(err?.message || 'Action failed') : enterpriseDisplayText(err?.message || 'Operation failed'));
       setStatusLine(simpleMode ? redactTechnicalText(err?.message || 'Action failed.') : (err?.message || 'Operation failed.'));
     } finally {
       setRunning('');
@@ -163,7 +164,7 @@ export default function ReleaseWorkflowTab({ simpleMode = false }) {
               <p className="text-xs font-black uppercase tracking-[0.35em] text-indigo-300/80">{simpleMode ? 'Updates' : 'Release control plane'}</p>
               <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight mt-2">{simpleMode ? 'Update Pocket Lab' : 'Pocket Lab release workflow'}</h2>
               <p className="text-slate-400 text-sm max-w-3xl mt-3">
-                {simpleMode ? 'Apply approved updates safely. Pocket Lab backs up, updates, checks health, and verifies that everything still works.' : 'This view binds the public GitHub release path to the existing Pocket Lab subsystems: typed operations, GitOps sync, catalog refresh, blueprint deploy, drift checks, health checks, and PWA auto-update.'}
+                {simpleMode ? 'Apply approved updates safely. Pocket Lab backs up, updates, checks health, and verifies that everything still works.' : 'This view connects release intake, validation, service package installation, configuration health checks, system checks, and app update readiness into one governed workflow.'}
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -241,7 +242,7 @@ export default function ReleaseWorkflowTab({ simpleMode = false }) {
             <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
               <div>
                 <div className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold ${stageBadge(stage.operations?.[0]?.operation)}`}>
-                  {simpleMode ? 'Safe update step' : (stage.operations?.[0]?.operation || 'workflow')}
+                  {simpleMode ? 'Safe update step' : enterpriseOperationLabel(stage.operations?.[0]?.operation, 'Workflow')}
                 </div>
                 <h3 className="mt-3 text-2xl font-black text-white">{stage.title}</h3>
                 <p className="mt-2 text-sm text-slate-400 max-w-2xl">{stage.purpose}</p>
@@ -249,7 +250,7 @@ export default function ReleaseWorkflowTab({ simpleMode = false }) {
               <div className="flex flex-wrap gap-2">
                 {(stage.operations || []).map((op) => (
                   <button
-                    key={simpleMode ? simpleActionLabel(op.operation, op.name) : op.name}
+                    key={simpleMode ? simpleActionLabel(op.operation, op.name) : enterpriseDisplayText(op.name)}
                     type="button"
                     disabled={running === op.operation}
                     onClick={() => runOperation(op.operation)}
@@ -260,7 +261,7 @@ export default function ReleaseWorkflowTab({ simpleMode = false }) {
                     }`}
                   >
                     <PlayCircle className="h-3.5 w-3.5" />
-                    {simpleMode ? simpleActionLabel(op.operation, op.name) : op.name}
+                    {simpleMode ? simpleActionLabel(op.operation, op.name) : enterpriseDisplayText(op.name)}
                   </button>
                 ))}
               </div>
@@ -347,10 +348,10 @@ export default function ReleaseWorkflowTab({ simpleMode = false }) {
             {history.length ? history.map((item) => (
               <div key={`${item.at}-${item.label}`} className="rounded-2xl border border-white/10 bg-black/20 p-4">
                 <div className="flex items-center justify-between gap-2">
-                  <div className="font-semibold text-white">{simpleMode ? redactTechnicalText(item.label) : item.label}</div>
+                  <div className="font-semibold text-white">{simpleMode ? redactTechnicalText(item.label) : enterpriseDisplayText(item.label)}</div>
                   <div className="text-xs text-slate-500">{item.at}</div>
                 </div>
-                <div className="mt-2 text-sm text-slate-400">{simpleMode ? redactTechnicalText(item.detail) : item.detail}</div>
+                <div className="mt-2 text-sm text-slate-400">{simpleMode ? redactTechnicalText(item.detail) : enterpriseDisplayText(item.detail)}</div>
               </div>
             )) : (
               <div className="rounded-2xl border border-dashed border-white/10 bg-black/10 p-4 text-sm text-slate-500">

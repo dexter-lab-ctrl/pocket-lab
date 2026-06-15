@@ -28,7 +28,7 @@ export default function SettingsTab() {
             </div>
           </div>
           <SegmentedControl label="UI language" value={experienceMode} onChange={setExperienceMode} options={[{ value: 'professional', label: 'Professional', description: 'Technical labels and diagnostics' }, { value: 'simple', label: 'Simple', description: 'Plain language for daily use' }]} />
-          <div className="mt-4 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm leading-6 text-slate-300">Simple labels preserve mappings such as GitOps → Keep My Environment Updated, Drift Center → Health & Issues, and NOC Telemetry → System Status.</div>
+          <div className="mt-4 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm leading-6 text-slate-300">Simple labels preserve plain-language mappings such as environment updates, health checks, and system status for non-technical users.</div>
         </GlassCard>
 
         <GlassCard className={enterpriseEnabled ? 'border-amber-300/30 bg-amber-950/20' : 'border-emerald-300/25 bg-emerald-950/10'}>
@@ -37,7 +37,7 @@ export default function SettingsTab() {
               <div className={`rounded-2xl border p-3 ${enterpriseEnabled ? 'border-amber-300/25 bg-amber-500/10 text-amber-200' : 'border-emerald-300/25 bg-emerald-500/10 text-emerald-200'}`}><ShieldCheck className="h-5 w-5" /></div>
               <div>
                 <h3 className="text-xl font-black text-white">Enterprise Governance</h3>
-                <p className="mt-1 text-sm leading-6 text-slate-400">Choose how approval-gated runbooks proceed after FastAPI queues them for worker-owned execution.</p>
+                <p className="mt-1 text-sm leading-6 text-slate-400">Choose how approval-gated runbooks proceed after Control API queues them for worker-owned execution.</p>
               </div>
             </div>
             <StatusBadge status={enterpriseEnabled ? 'warning' : 'healthy'}>{enterpriseEnabled ? 'Strict' : 'Personal'}</StatusBadge>

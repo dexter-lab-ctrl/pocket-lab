@@ -118,7 +118,7 @@ export default function OTAUpdater() {
               </div>
               <h2 className="text-xl md:text-2xl font-black text-white tracking-tight">Pocket Lab auto-update</h2>
               <p className="text-slate-400 text-sm max-w-3xl leading-relaxed mt-2">
-                The backend release agent watches GitHub Releases, applies the typed release workflow, and refreshes the UI once the new bundle is ready.
+                The release coordinator watches approved releases, runs the governed release workflow, and refreshes the UI once the new bundle is ready.
               </p>
             </div>
 

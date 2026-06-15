@@ -22,7 +22,7 @@ export default function PageGuidance({ tabId, className = '' }) {
         <ProgressiveDisclosure simpleMode={experienceMode === 'simple'} title={experienceMode === 'simple' ? 'Why this is safe' : 'Control-plane boundary'} className="mt-3">
           <div className="flex items-start gap-2">
             <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-200" />
-            <p>{experienceMode === 'simple' ? 'Pocket Lab sends safe requests to the control plane and shows progress here. It does not ask your browser to run commands.' : 'The frontend stays inside the FastAPI contract. NATS, workers, runbook execution, and audit events remain backend-owned.'}</p>
+            <p>{experienceMode === 'simple' ? 'Pocket Lab sends safe requests to the control plane and shows progress here. It does not ask your browser to run commands.' : 'The frontend stays inside the control API contract. Execution, approvals, recovery, and audit evidence remain backend-owned.'}</p>
           </div>
         </ProgressiveDisclosure>
       </div>

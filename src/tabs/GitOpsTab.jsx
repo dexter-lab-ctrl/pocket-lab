@@ -11,21 +11,22 @@ import { useToast } from '../components/ToastProvider.jsx';
 import { createEvidenceReceipt } from '../lib/evidenceReceipts.js';
 import { useControlPlaneStatus, productionWriteBlockedMessage } from '../hooks/useControlPlaneStatus.js';
 import { GlassCard, PageShell, ProgressiveDisclosure, StandardList, StandardListItem, StatusBadge } from '../components/ui.jsx';
+import { enterpriseDisplayText, enterpriseOperationLabel } from '../lib/enterpriseLabels.js';
 
 const TASKS = [
   {
     id: 'sync_repo',
-    name: 'Sync Repository',
+    name: 'Update Environment',
     operation: 'git_sync',
     description: 'Save the approved setup so devices stay updated.',
     mode: 'execute',
     target: { type: 'repo', ref: 'pocket_lab_iac' },
-    params: { path: 'README.md', content: '# Pocket Lab\n', message: 'GitOps sync', branch: 'main' },
+    params: { path: 'README.md', content: '# Pocket Lab\n', message: 'Environment update', branch: 'main' },
     icon: GitBranch,
   },
   {
     id: 'validate_blueprint',
-    name: 'Validate Blueprint',
+    name: 'Validate Service Package',
     operation: 'drift_scan',
     description: 'Check what would change before anything is updated.',
     mode: 'preview',
@@ -35,7 +36,7 @@ const TASKS = [
   },
   {
     id: 'deploy_blueprint',
-    name: 'Deploy Blueprint',
+    name: 'Install Service',
     operation: 'deploy_blueprint',
     description: 'Install the approved apps and services.',
     mode: 'execute',
@@ -110,12 +111,12 @@ export default function GitOpsTab({ simpleMode = false }) {
       });
       const nextJobId = result?.job_id || '';
       setJobId(nextJobId);
-      const receiptMessage = simpleMode ? redactTechnicalText(result?.stdout || 'Completed successfully.') : (result?.stdout || 'Typed task completed.');
-      setTaskLogs((prev) => prev + (simpleMode ? `\n${receiptMessage}\n\nDone.` : `\n${result?.stdout || JSON.stringify(result, null, 2)}\n\n[SUCCESS] Typed task completed.`));
+      const receiptMessage = simpleMode ? redactTechnicalText(result?.stdout || 'Completed successfully.') : (enterpriseDisplayText(result?.stdout || 'Task completed.'));
+      setTaskLogs((prev) => prev + (simpleMode ? `\n${receiptMessage}\n\nDone.` : `\n${enterpriseDisplayText(result?.stdout || JSON.stringify(result, null, 2))}\n\n[SUCCESS] Task completed.`));
       setReceipt(createEvidenceReceipt({ operation: resolvedTask.operation, jobId: nextJobId, status: 'succeeded', mode: resolvedTask.mode, message: receiptMessage, simpleMode }));
-      toast.success(nextJobId ? `${resolvedTask.name} started. Job: ${nextJobId}` : `${resolvedTask.name} completed.`, { title: simpleMode ? 'Started safely' : 'Typed operation accepted' });
+      toast.success(nextJobId ? `${resolvedTask.name} started. Job: ${nextJobId}` : `${resolvedTask.name} completed.`, { title: simpleMode ? 'Started safely' : 'Operation contract accepted' });
     } catch (err) {
-      const errorMessage = err.message || 'Task failed.';
+      const errorMessage = enterpriseDisplayText(err.message || 'Task failed.');
       const receiptMessage = simpleMode ? redactTechnicalText(errorMessage) : errorMessage;
       setTaskLogs((prev) => prev + (simpleMode ? `\nNeeds attention: ${receiptMessage}` : `\n[ERROR] ${errorMessage}`));
       setReceipt(createEvidenceReceipt({ operation: resolvedTask.operation, status: 'failed', mode: resolvedTask.mode, message: receiptMessage, simpleMode }));
@@ -125,17 +126,17 @@ export default function GitOpsTab({ simpleMode = false }) {
     }
   };
 
-  const headingTitle = simpleMode ? 'Keep My Environment Updated' : 'GitOps Task Launcher';
+  const headingTitle = simpleMode ? 'Keep My Environment Updated' : 'Environment Update Launcher';
   const headingCopy = simpleMode
     ? 'Keep Pocket Lab updated with safe, approved actions. Technical controls are available in advanced details.'
-    : 'Launch named typed operations through FastAPI. No freeform command editor, no direct shell execution, and no frontend access to NATS.';
+    : 'Launch governed environment actions through the control plane. No freeform command editor, no direct shell execution, and no browser access to backend messaging.';
 
   return (
     <PageShell
-      eyebrow={simpleMode ? 'Updates' : (isLiveEnv ? 'Enterprise orchestration' : 'FastAPI/NATS degraded')}
+      eyebrow={simpleMode ? 'Updates' : (isLiveEnv ? 'Enterprise orchestration' : 'control plane degraded')}
       title={headingTitle}
       description={headingCopy}
-      actions={<StatusBadge status={isLiveEnv ? 'healthy' : 'degraded'}>{isLiveEnv ? 'Live control plane' : 'NATS required'}</StatusBadge>}
+      actions={<StatusBadge status={isLiveEnv ? 'healthy' : 'degraded'}>{isLiveEnv ? 'Live control plane' : 'Control plane required'}</StatusBadge>}
     >
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="min-w-0 space-y-5">
@@ -150,7 +151,7 @@ export default function GitOpsTab({ simpleMode = false }) {
                   {isLiveEnv ? <FileCode2 className="h-5 w-5" /> : <Lock className="h-5 w-5" />}
                 </div>
                 <div className="min-w-0">
-                  <p className="pocket-eyebrow">{simpleMode ? 'Choose an update action' : 'Named operation launcher'}</p>
+                  <p className="pocket-eyebrow">{simpleMode ? 'Choose an update action' : 'Named action launcher'}</p>
                   <p className="text-sm text-slate-400">Selected: <span className="font-semibold text-slate-200">{resolvedTask.name}</span></p>
                 </div>
               </div>
@@ -172,7 +173,7 @@ export default function GitOpsTab({ simpleMode = false }) {
                         </div>
                         <div className="min-w-0">
                           <div className="break-words text-base font-black leading-6 text-white">{task.name}</div>
-                          {!simpleMode && <div className="mt-1 break-all text-xs text-slate-500">{task.operation}</div>}
+                          {!simpleMode && <div className="mt-1 break-all text-xs text-slate-500">{enterpriseOperationLabel(task.operation)}</div>}
                         </div>
                       </div>
                       <p className="mt-4 text-sm leading-6 text-slate-400">{task.description}</p>
@@ -208,7 +209,7 @@ export default function GitOpsTab({ simpleMode = false }) {
 
               <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                 <div className="min-w-0 space-y-2">
-                  {dispatching ? <p className="command-dispatch-label">{simpleMode ? 'Sending request safely...' : 'Command queued via FastAPI'}</p> : null}
+                  {dispatching ? <p className="command-dispatch-label">{simpleMode ? 'Sending request safely...' : 'Action queued through the control plane'}</p> : null}
                 <button
                   type="button"
                   onClick={runTask}
@@ -216,14 +217,14 @@ export default function GitOpsTab({ simpleMode = false }) {
                   className={`pocket-button pocket-button-primary w-full lg:w-auto ${(resolvedTask.mode !== 'preview' && !isLiveEnv) ? 'write-blocked-action' : ''}`}
                 >
                   {running ? <RefreshCw className="h-4 w-4 animate-spin" /> : <PlayCircle className="h-4 w-4" />}
-                  {!isLiveEnv && resolvedTask.mode !== 'preview' ? (simpleMode ? 'Unavailable' : 'NATS required') : (simpleMode ? resolvedTask.name : `Run ${resolvedTask.name}`)}
+                  {!isLiveEnv && resolvedTask.mode !== 'preview' ? (simpleMode ? 'Unavailable' : 'Control plane required') : (simpleMode ? resolvedTask.name : `Run ${resolvedTask.name}`)}
                 </button>
                 </div>
                 {!simpleMode && (
                   <div className="min-w-0 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-xs leading-5 text-slate-300">
                     <span className="font-semibold text-slate-200">Task:</span> {resolvedTask.id}
                     <span className="mx-2 text-slate-600">•</span>
-                    <span className="font-semibold text-slate-200">Operation:</span> <span className="break-all">{resolvedTask.operation}</span>
+                    <span className="font-semibold text-slate-200">Action:</span> <span className="break-all">{enterpriseOperationLabel(resolvedTask.operation)}</span>
                     <span className="mx-2 text-slate-600">•</span>
                     <span className="font-semibold text-slate-200">Job:</span> {jobId || 'queued'}
                   </div>
@@ -238,7 +239,7 @@ export default function GitOpsTab({ simpleMode = false }) {
                 <TerminalSquare className="h-4 w-4 text-indigo-300" />
                 <span className="text-sm font-black text-slate-200">{simpleMode ? 'Recent Activity' : 'Launcher Stream'}</span>
               </div>
-              <StatusBadge status="pending">{simpleMode ? 'Guided' : 'Operation-aware'}</StatusBadge>
+              <StatusBadge status="pending">{simpleMode ? 'Guided' : 'Action-aware'}</StatusBadge>
             </div>
 
             <div className="flex-1 overflow-y-auto p-5 font-mono text-[12px] leading-6 text-indigo-100/85">
@@ -261,7 +262,7 @@ export default function GitOpsTab({ simpleMode = false }) {
           <GlassCard className="p-0">
             <StandardList
               title={simpleMode ? 'Support Details' : 'Named task map'}
-              description={simpleMode ? 'These are the safe update actions Pocket Lab can run for you.' : 'Every launcher option maps to a named typed operation.'}
+              description={simpleMode ? 'These are the safe update actions Pocket Lab can run for you.' : 'Every launcher option maps to a governed operation contract.'}
             >
               {tasks.map((task) => (
                 <StandardListItem
@@ -271,7 +272,7 @@ export default function GitOpsTab({ simpleMode = false }) {
                   description={task.description}
                   status={task.mode === 'preview' ? 'queued' : 'ready'}
                   simpleMode={simpleMode}
-                  metadata={!simpleMode ? [{ label: 'Operation', value: task.operation }, { label: 'Mode', value: task.mode }] : [{ label: 'Type', value: task.mode === 'preview' ? 'Check only' : 'Can make changes' }]}
+                  metadata={!simpleMode ? [{ label: 'Action', value: enterpriseOperationLabel(task.operation) }, { label: 'Mode', value: task.mode }] : [{ label: 'Type', value: task.mode === 'preview' ? 'Check only' : 'Can make changes' }]}
                 />
               ))}
             </StandardList>
@@ -280,7 +281,7 @@ export default function GitOpsTab({ simpleMode = false }) {
           <LiveEventPanel
             simpleMode={simpleMode}
             title="Environment update activity"
-            description="GitOps and operation events appear here while Pocket Lab keeps the environment aligned."
+            description="Environment update activity appears here while Pocket Lab keeps the environment aligned."
             subjectPrefixes={['pocketlab.events.operation.', 'pocketlab.events.gitops.', 'pocketlab.audit.']}
             maxItems={4}
             compact

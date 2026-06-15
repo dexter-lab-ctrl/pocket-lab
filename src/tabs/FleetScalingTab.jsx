@@ -33,8 +33,8 @@ export default function FleetScalingTab({ simpleMode = false }) {
   // alternatives.  They are defined here to avoid inline conditional
   // expressions throughout the JSX below.
   const tagline = simpleMode ? 'My Devices' : 'Fleet scaling';
-  const headingTitle = simpleMode ? 'Add Device' : 'Typed fleet_join onboarding';
-  const generateButtonLabel = simpleMode ? 'Add Device' : 'Generate fleet_join';
+  const headingTitle = simpleMode ? 'Add Device' : 'Device Fleet Onboarding';
+  const generateButtonLabel = simpleMode ? 'Add Device' : 'Generate Device Invite';
 
 
   const fetchFleet = async () => {
@@ -79,7 +79,7 @@ export default function FleetScalingTab({ simpleMode = false }) {
         body: JSON.stringify({ command: 'health.check' }),
       });
       if (!res.ok) throw new Error('Fleet broadcast rejected');
-      setLogs((prev) => prev + (simpleMode ? 'Asked devices to check in.\n' : '[fleet-agent] Broadcast health.check command queued through NATS.\n'));
+      setLogs((prev) => prev + (simpleMode ? 'Asked devices to check in.\n' : '[device-fleet] Device health check requested.\n'));
       setTimeout(() => { fetchFleet(); fetchAgents(); }, 1500);
     } catch (err) {
       setLogs((prev) => prev + (simpleMode ? 'Could not ask devices to check in.\n' : `[ERROR] ${err.message || 'Failed to broadcast node command.'}\n`));
@@ -96,7 +96,7 @@ export default function FleetScalingTab({ simpleMode = false }) {
         body: JSON.stringify({ command: 'health.check' }),
       });
       if (!res.ok) throw new Error('Device command rejected');
-      setLogs((prev) => prev + (simpleMode ? 'Device check requested.\n' : `[fleet-agent] health.check queued for ${nodeId} through NATS.\n`));
+      setLogs((prev) => prev + (simpleMode ? 'Device check requested.\n' : `[device-fleet] Health check requested for ${nodeId}.\n`));
       setTimeout(fetchAgents, 1500);
     } catch (err) {
       setLogs((prev) => prev + (simpleMode ? 'Device check could not be requested.\n' : `[ERROR] ${err.message || 'Failed to queue device command.'}\n`));
@@ -124,7 +124,7 @@ export default function FleetScalingTab({ simpleMode = false }) {
         return;
       }
       await executeOperation('rotate_secret', { target: { type: 'secret', ref: 'tailscale' }, params: { target: 'tailscale', value: apiInputValue } });
-      setLogs((prev) => prev + (simpleMode ? 'Network key saved.\n' : '[vault] Tailscale API key rotation queued through NATS.\n'));
+      setLogs((prev) => prev + (simpleMode ? 'Network key saved.\n' : '[identity-access] Network credential update requested.\n'));
     } finally {
       setIsSavingKey(false);
     }
@@ -133,7 +133,7 @@ export default function FleetScalingTab({ simpleMode = false }) {
   const handleGenerateZTP = async () => {
     setIsGenerating(true);
     setHandshakeStage('invite');
-    setLogs(simpleMode ? 'Preparing device invite...\n' : '[*] Preparing fleet join payload...\n');
+    setLogs(simpleMode ? 'Preparing device invite...\n' : '[*] Preparing device invite...\n');
     try {
       if (!isLiveEnv) {
         const message = productionWriteBlockedMessage(simpleMode);
@@ -151,7 +151,7 @@ export default function FleetScalingTab({ simpleMode = false }) {
       const artifact = result?.artifacts || {};
       setJoinPayload({ role: artifact.role || selectedRole, token: artifact.token, hostname: artifact.hostname || hostname || `pocket-${selectedRole}` });
       setPendingJoin(artifact.pending_state || null);
-      setLogs((prev) => prev + (simpleMode ? 'Device invite created.\n' : '[fleet] Typed join payload created through FastAPI/NATS.\n'));
+      setLogs((prev) => prev + (simpleMode ? 'Device invite created.\n' : '[device-fleet] Device invite created through the control plane.\n'));
       setHandshakeStage('connected');
       window.setTimeout(() => setHandshakeStage('idle'), 1600);
     } catch (err) {
@@ -193,7 +193,7 @@ export default function FleetScalingTab({ simpleMode = false }) {
             </div>
             <h2 className="mt-2 text-4xl font-black text-white tracking-tight">{headingTitle}</h2>
             <p className="mt-2 text-sm text-slate-400 max-w-2xl">
-              {simpleMode ? 'Add a phone, tablet, server, or storage device using a guided invite. Advanced network settings are hidden unless needed.' : 'No shell payload editor. Generate the join artifact with the typed operation and copy the output for provisioning.'}
+              {simpleMode ? 'Add a phone, tablet, server, or storage device using a guided invite. Advanced network settings are hidden unless needed.' : 'No shell payload editor. Generate a governed device invite and copy the output for provisioning.'}
             </p>
           </div>
 
@@ -223,7 +223,7 @@ export default function FleetScalingTab({ simpleMode = false }) {
             <div className="device-handshake-dot" />
             <div className="device-handshake-line" />
             <div className="device-handshake-card">
-              <span>{simpleMode ? 'Invite generated' : 'fleet_join invite generated'}</span>
+              <span>{simpleMode ? 'Invite generated' : 'Device invite generated'}</span>
               <strong>{handshakeStage === 'connected' ? (simpleMode ? 'Device connected' : 'mesh handshake ready') : (simpleMode ? 'Waiting for device' : 'pending node')}</strong>
             </div>
           </div>
@@ -244,7 +244,7 @@ export default function FleetScalingTab({ simpleMode = false }) {
         <div className="bg-[#05080f] border border-white/10 rounded-[2rem] p-6 shadow-xl">
           <h3 className="text-xs font-black uppercase tracking-widest text-slate-500">{simpleMode ? 'Device Invite' : 'Join artifact'}</h3>
           <pre className="mt-4 min-h-40 overflow-auto rounded-2xl border border-white/10 bg-black/30 p-4 text-[11px] text-slate-300">
-{joinPayload ? (simpleMode ? `Invite ready for ${joinPayload.hostname || 'new device'}. Use Copy Invite when setting up the device.` : JSON.stringify(joinPayload, null, 2)) : (simpleMode ? 'No device invite created yet.' : 'No join payload generated yet.')}
+{joinPayload ? (simpleMode ? `Invite ready for ${joinPayload.hostname || 'new device'}. Use Copy Invite when setting up the device.` : JSON.stringify(joinPayload, null, 2)) : (simpleMode ? 'No device invite created yet.' : 'No device invite generated yet.')}
           </pre>
           {ztpCommand && !simpleMode && (
             <div className="mt-4 text-xs text-slate-400 break-all">{ztpCommand}</div>
@@ -255,7 +255,7 @@ export default function FleetScalingTab({ simpleMode = false }) {
             </div>
           )}
           <button onClick={copyToClipboard} className="mt-4 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-black/20 px-4 py-2.5 text-sm font-semibold text-slate-200 hover:bg-black/30">
-            <Copy className="h-4 w-4" /> {copied ? 'Copied' : (simpleMode ? 'Copy Invite' : 'Copy payload')}
+            <Copy className="h-4 w-4" /> {copied ? 'Copied' : (simpleMode ? 'Copy Invite' : 'Copy Invite Details')}
           </button>
         </div>
 
@@ -281,9 +281,9 @@ export default function FleetScalingTab({ simpleMode = false }) {
               </div>
             ))}
           </div>
-          <AdvancedDetails simpleMode={simpleMode} title={simpleMode ? 'Connected device agents' : 'NATS-backed fleet agents'}>
+          <AdvancedDetails simpleMode={simpleMode} title={simpleMode ? 'Connected device agents' : 'event-backed fleet agents'}>
             <div className="space-y-3">
-              {agents.length === 0 && <div className="text-sm text-slate-400">{simpleMode ? 'No live device agents have checked in yet.' : 'No NATS-backed fleet agents have checked in yet.'}</div>}
+              {agents.length === 0 && <div className="text-sm text-slate-400">{simpleMode ? 'No live device agents have checked in yet.' : 'No event-backed fleet agents have checked in yet.'}</div>}
               {agents.map((agent) => (
                 <div key={agent.node_id || agent.id} className="rounded-2xl border border-white/10 bg-black/20 p-4">
                   <div className="flex items-center justify-between gap-3">

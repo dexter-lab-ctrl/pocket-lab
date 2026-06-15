@@ -23,7 +23,7 @@ export default function GiteaRegistryTab() {
 
   const fetchPipelines = async () => {
     try {
-      // Actively attempt to hit the real FastAPI/NATS API securely
+      // Actively attempt to hit the real control plane API securely
       // This seamlessly hits Gitea Actions API proxy
       const res = await fetch('/api/pipeline_status.json');
       const text = await res.text();
@@ -78,7 +78,7 @@ export default function GiteaRegistryTab() {
         <div className="relative z-10">
           <div className="flex items-center space-x-2 mb-2">
              <div className={`w-2 h-2 rounded-full ${isLiveEnv ? 'bg-emerald-500 animate-pulse' : 'bg-orange-500 animate-pulse'}`}></div>
-             <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest">{isLiveEnv ? 'FastAPI/NATS Connected' : 'Control Plane Degraded'}</h3>
+             <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest">{isLiveEnv ? 'control plane Connected' : 'Control Plane Degraded'}</h3>
           </div>
           <h2 className="text-4xl font-black text-white tracking-tight mb-2">Global Orchestration Pipelines</h2>
           <p className="text-slate-400 text-sm max-w-xl">Live execution logs from the Gitea Actions <code className="text-indigo-400">infra-runner</code> orchestrating state changes via Ansible and PM2.</p>
@@ -158,7 +158,7 @@ export default function GiteaRegistryTab() {
                             </>
                           ) : (
                             <>
-                              <div className="mb-1 text-emerald-500 pl-4">Policy Guardrails Passed. No violations detected.</div>
+                              <div className="mb-1 text-emerald-500 pl-4">Policy & Compliance checks passed. No violations detected.</div>
                               <div className="mb-1"><span>[00:00:03]</span> <span className="text-yellow-400">⚙</span> Execute: <span className="text-white">ansible-playbook playbook.yml</span></div>
                               {run.status === 'success' ? (
                                 <div className="mt-2 text-emerald-400 font-bold">State reconciliation successful. PM2 daemon natively bound to port.</div>

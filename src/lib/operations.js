@@ -3,7 +3,7 @@ const JSON_HEADERS = { 'Content-Type': 'application/json' };
 export function controlPlaneErrorMessage(data, fallback = 'Control plane request failed') {
   const text = String(data?.detail || data?.error || data?.message || fallback);
   if (/nats|jetstream|worker|control plane|unavailable|required/i.test(text)) {
-    return `${text} FastAPI/NATS production mode does not allow local fallback execution.`;
+    return `${text} Control plane production mode does not allow local fallback execution.`;
   }
   return text;
 }

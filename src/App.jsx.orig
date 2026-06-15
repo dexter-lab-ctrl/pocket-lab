@@ -31,18 +31,18 @@ import DriftCenterTab from './tabs/DriftCenterTab';
 import ReleaseWorkflowTab from './tabs/ReleaseWorkflowTab';
 
 const NAV_ITEMS = [
-  { id: 'appstore', label: 'Service Catalog', compactLabel: 'Services', icon: LayoutGrid },
-  { id: 'telemetry', label: 'System Operations', compactLabel: 'Ops', icon: Activity },
+  { id: 'appstore', label: 'App Catalog', compactLabel: 'Apps', icon: LayoutGrid },
+  { id: 'telemetry', label: 'NOC Telemetry', compactLabel: 'Status', icon: Activity },
   { id: 'security', label: 'Security Posture', compactLabel: 'Safety', icon: ShieldCheck },
-  { id: 'gitops', label: 'Environment Updates', compactLabel: 'Updates', icon: GitBranch },
+  { id: 'gitops', label: 'GitOps Pipeline', compactLabel: 'GitOps', icon: GitBranch },
   { id: 'release', label: 'Release Workflow', compactLabel: 'Release', icon: Workflow },
-  { id: 'drift', label: 'Configuration Health', compactLabel: 'Health', icon: ShieldAlert },
+  { id: 'drift', label: 'Drift Center', compactLabel: 'Drift', icon: ShieldAlert },
   { id: 'blueprint', label: 'System Map', compactLabel: 'Map', icon: Map },
-  { id: 'fleet', label: 'Device Fleet', compactLabel: 'Devices', icon: Network },
-  { id: 'vault', label: 'Identity & Access', compactLabel: 'Access', icon: Fingerprint },
-  { id: 'logs', label: 'Activity & Evidence', compactLabel: 'Evidence', icon: AlignLeft },
-  { id: 'opa', label: 'Policy & Compliance', compactLabel: 'Policy', icon: FileCheck },
-  { id: 'recovery', label: 'Recovery Management', compactLabel: 'Recover', icon: Database },
+  { id: 'fleet', label: 'Mesh Fleet', compactLabel: 'Fleet', icon: Network },
+  { id: 'vault', label: 'Identity Vault', compactLabel: 'Vault', icon: Fingerprint },
+  { id: 'logs', label: 'Log Explorer', compactLabel: 'Logs', icon: AlignLeft },
+  { id: 'opa', label: 'Policy Guardrails', compactLabel: 'Policy', icon: FileCheck },
+  { id: 'recovery', label: 'Disaster Recovery', compactLabel: 'Recover', icon: Database },
   { id: 'settings', label: 'Settings', compactLabel: 'Settings', icon: SettingsIcon },
 ];
 
