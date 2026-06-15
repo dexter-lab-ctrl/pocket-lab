@@ -43,3 +43,14 @@ site/
 *.tar.gz
 .env.*
 !.env.example
+
+# Lighthouse local validation artifacts
+.lighthouseci/
+.lighthouseci/**
+**/.lighthouseci/
+**/.lighthouseci/**
+
+# Lighthouse / Chrome temporary browser profiles
+lighthouse.*/
+**/lighthouse.*/
+*C:\\Users\\*\\AppData\\Local\\lighthouse.*

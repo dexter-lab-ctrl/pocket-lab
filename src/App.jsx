@@ -6,12 +6,15 @@ import Header from './components/Header';
 import OTAUpdater from './components/OTAUpdater';
 import ControlPlaneBanner from './components/ControlPlaneBanner.jsx';
 import ActivityDrawer from './components/ActivityDrawer.jsx';
+import LiveEventPanel from './components/LiveEventPanel.jsx';
+import SimpleBottomNavigation from './components/SimpleBottomNavigation.jsx';
 import PageGuidance from './components/PageGuidance.jsx';
 import FirstRunOnboarding from './components/FirstRunOnboarding.jsx';
 import SimpleDashboard from './tabs/SimpleDashboard.jsx';
 import SettingsTab from './tabs/SettingsTab.jsx';
 import { useExperienceMode } from './context/ExperienceModeContext.jsx';
 import { simpleTabLabel } from './lib/simpleLabels.js';
+import { SIMPLE_ACTIVITY_TARGET, SIMPLE_HOME_TARGET, simpleMoreItemForTarget, simplePrimaryItemForTarget } from './lib/simpleNavigation.js';
 import { groupedNavItems, productAreaForTab } from './lib/productAreas.js';
 import AppStoreTab from './tabs/AppStoreTab';
 import GitOpsTab from './tabs/GitOpsTab';
@@ -46,6 +49,7 @@ const NAV_ITEMS = [
 export default function App() {
   const { experienceMode } = useExperienceMode();
   const [activeTab, setActiveTab] = useState('appstore');
+  const [simpleActiveTarget, setSimpleActiveTarget] = useState(SIMPLE_HOME_TARGET);
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
   const { motionEnabled, getParallaxStyle, handleEnableMotion } = useDeviceMotion();
@@ -74,24 +78,75 @@ export default function App() {
     setMobileMoreOpen(false);
   };
 
-  const renderActiveTab = () => (
+  const handleSimpleTargetChange = (target) => {
+    if (navigator.vibrate) navigator.vibrate(35);
+    setSimpleActiveTarget(target);
+    if (target !== SIMPLE_HOME_TARGET && target !== SIMPLE_ACTIVITY_TARGET) {
+      setActiveTab(target);
+    }
+  };
+
+  const handleOnboardingNavigate = (tabId) => {
+    if (isSimpleMode) {
+      handleSimpleTargetChange(tabId);
+      return;
+    }
+    handleTabChange(tabId);
+  };
+
+  const renderTabById = (tabId, simpleMode = false) => (
     <>
-      {activeTab === 'appstore' && <AppStoreTab />}
-      {activeTab === 'blueprint' && <BlueprintTab motionEnabled={motionEnabled} getParallaxStyle={getParallaxStyle} handleEnableMotion={handleEnableMotion} />}
-      {activeTab === 'gitops' && <GitOpsTab />}
-      {activeTab === 'registry' && <GiteaRegistryTab />}
-      {activeTab === 'recovery' && <DisasterRecoveryTab />}
-      {activeTab === 'vault' && <IdentityVaultTab />}
-      {activeTab === 'logs' && <LogExplorerTab />}
-      {activeTab === 'opa' && <PolicyGuardrailsTab />}
-      {activeTab === 'telemetry' && <NocTelemetryTab />}
-      {activeTab === 'security' && <SecurityPostureTab />}
-      {activeTab === 'fleet' && <FleetScalingTab />}
-      {activeTab === 'release' && <ReleaseWorkflowTab />}
-      {activeTab === 'drift' && <DriftCenterTab />}
-      {activeTab === 'settings' && <SettingsTab />}
+      {tabId === 'appstore' && <AppStoreTab simpleMode={simpleMode} />}
+      {tabId === 'blueprint' && <BlueprintTab simpleMode={simpleMode} motionEnabled={motionEnabled} getParallaxStyle={getParallaxStyle} handleEnableMotion={handleEnableMotion} />}
+      {tabId === 'gitops' && <GitOpsTab simpleMode={simpleMode} />}
+      {tabId === 'registry' && <GiteaRegistryTab simpleMode={simpleMode} />}
+      {tabId === 'recovery' && <DisasterRecoveryTab simpleMode={simpleMode} />}
+      {tabId === 'vault' && <IdentityVaultTab simpleMode={simpleMode} />}
+      {tabId === 'logs' && <LogExplorerTab simpleMode={simpleMode} />}
+      {tabId === 'opa' && <PolicyGuardrailsTab simpleMode={simpleMode} />}
+      {tabId === 'telemetry' && <NocTelemetryTab simpleMode={simpleMode} />}
+      {tabId === 'security' && <SecurityPostureTab simpleMode={simpleMode} />}
+      {tabId === 'fleet' && <FleetScalingTab simpleMode={simpleMode} />}
+      {tabId === 'release' && <ReleaseWorkflowTab simpleMode={simpleMode} />}
+      {tabId === 'drift' && <DriftCenterTab simpleMode={simpleMode} />}
+      {tabId === 'settings' && <SettingsTab simpleMode={simpleMode} />}
     </>
   );
+
+  const renderActiveTab = () => renderTabById(activeTab, false);
+
+  const renderSimpleContent = () => {
+    if (simpleActiveTarget === SIMPLE_HOME_TARGET) {
+      return <SimpleDashboard onNavigate={handleSimpleTargetChange} />;
+    }
+
+    if (simpleActiveTarget === SIMPLE_ACTIVITY_TARGET) {
+      return (
+        <div className="mx-auto w-full max-w-[1500px] px-4 pb-28 pt-6 sm:px-6 lg:px-8">
+          <ControlPlaneBanner simpleMode />
+          <section className="simple-content-card rounded-[2rem] border border-white/10 bg-slate-900/55 p-5 shadow-2xl shadow-blue-950/20 backdrop-blur-xl sm:p-6">
+            <LiveEventPanel simpleMode title="Activity" description="Review recent installs, updates, backups, device invites, safety checks, and system health updates." subjectPrefixes={['pocketlab.events.', 'pocketlab.audit.']} maxItems={20} />
+          </section>
+        </div>
+      );
+    }
+
+    const simpleItem = simplePrimaryItemForTarget(simpleActiveTarget) || simpleMoreItemForTarget(simpleActiveTarget);
+    return (
+      <div className="mx-auto w-full max-w-[1500px] px-4 pb-28 pt-6 sm:px-6 lg:px-8">
+        <ControlPlaneBanner simpleMode />
+        <section className="mb-5 rounded-[2rem] border border-blue-300/20 bg-blue-500/10 p-5 shadow-2xl shadow-blue-950/20 sm:p-6">
+          <p className="text-xs font-black uppercase tracking-[0.22em] text-blue-200">Simple Mode</p>
+          <h1 className="mt-2 text-2xl font-black text-white">{simpleItem?.label || simpleTabLabel(simpleActiveTarget, 'Pocket Lab')}</h1>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">{simpleItem?.description || 'Use this area with safe defaults and plain-language guidance.'}</p>
+        </section>
+        <PageGuidance tabId={simpleActiveTarget} className="mb-5" />
+        <section className="simple-content-card rounded-[2rem] border border-white/10 bg-slate-900/55 p-5 shadow-2xl shadow-blue-950/20 backdrop-blur-xl sm:p-6">
+          {renderTabById(simpleActiveTarget, true)}
+        </section>
+      </div>
+    );
+  };
 
   const navLabel = (item) => isSimpleMode ? simpleTabLabel(item.id, item.compactLabel) : item.compactLabel;
   const navGroups = groupedNavItems(NAV_ITEMS);
@@ -122,7 +177,7 @@ export default function App() {
         </div>
       )}
 
-      <FirstRunOnboarding onNavigate={handleTabChange} />
+      <FirstRunOnboarding onNavigate={handleOnboardingNavigate} />
 
       {deferredPrompt && (
         <div className="fixed top-4 left-1/2 z-50 w-[calc(100vw-2rem)] max-w-xl -translate-x-1/2 rounded-3xl border border-indigo-300/30 bg-slate-950/95 px-4 py-3 shadow-2xl shadow-indigo-950/40 backdrop-blur-xl">
@@ -141,7 +196,10 @@ export default function App() {
 
       {isSimpleMode ? (
         <>
-          <SimpleDashboard />
+          <main id="pocket-main" key={`simple-${simpleActiveTarget}`} className="relative z-10 nav-page-fade">
+            {renderSimpleContent()}
+          </main>
+          <SimpleBottomNavigation currentTarget={simpleActiveTarget} onSelectTarget={handleSimpleTargetChange} />
           <ActivityDrawer />
         </>
       ) : (
