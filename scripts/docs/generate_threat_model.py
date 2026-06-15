@@ -190,7 +190,7 @@ def baseline_threats() -> list[dict[str, Any]]:
     ]
 
 
-def validate_no_legacy_text(model: dict[str, Any]) -> None:
+def validate_no_retired_terms(model: dict[str, Any]) -> None:
     rendered = json.dumps(model, sort_keys=True)
     found = [token for token in LEGACY_TOKENS if token in rendered]
     if found:
@@ -206,7 +206,7 @@ def build_model() -> dict[str, Any]:
     workspace_text = WORKSPACE.read_text(encoding="utf-8")
     missing_views = [view for view in TIER5B_VIEWS if view not in workspace_text]
     if missing_views:
-        raise SystemExit("Tier 5B views missing from Structurizr workspace: " + ", ".join(missing_views))
+        raise SystemExit("enterprise security-review views missing from Structurizr workspace: " + ", ".join(missing_views))
 
     openapi = load_json(OPENAPI)
     asyncapi = load_yaml(ASYNCAPI)
@@ -280,7 +280,7 @@ def build_model() -> dict[str, Any]:
             {
                 "type": "structurizr",
                 "path": str(WORKSPACE.relative_to(ROOT)),
-                "notes": "C4 architecture model and Tier 5B security views.",
+                "notes": "C4 architecture model and enterprise security-review views.",
             },
             {
                 "type": "openapi",
@@ -308,10 +308,10 @@ def build_model() -> dict[str, Any]:
             {"name": "NATS / JetStream", "classification": "command and event backbone", "evidence": "AsyncAPI channels"},
             {"name": "Pocket Lab Worker", "classification": "typed operation executor", "evidence": "Structurizr worker container"},
             {"name": "Typed Operations Catalog", "classification": "execution contract", "evidence": "operations/*.yaml"},
-            {"name": "Event Journal / Workflow Store", "classification": "workflow recovery evidence", "evidence": "Tier 5B audit view"},
-            {"name": "Audit Trail / Evidence Store", "classification": "audit evidence", "evidence": "Tier 5B audit view"},
-            {"name": "Vault / OpenBao Runtime", "classification": "secret backend", "evidence": "Tier 5B security view"},
-            {"name": "OPA Runtime", "classification": "policy decision point", "evidence": "Tier 5B security view"},
+            {"name": "Event Journal / Workflow Store", "classification": "workflow recovery evidence", "evidence": "enterprise security-review audit view"},
+            {"name": "Audit Trail / Evidence Store", "classification": "audit evidence", "evidence": "enterprise security-review audit view"},
+            {"name": "Vault / OpenBao Runtime", "classification": "secret backend", "evidence": "enterprise security-review view"},
+            {"name": "OPA Runtime", "classification": "policy decision point", "evidence": "enterprise security-review view"},
         ],
         "trust_boundaries": [
             {
@@ -367,7 +367,7 @@ def build_model() -> dict[str, Any]:
         "residual_risks": residual_risks,
     }
 
-    validate_no_legacy_text(model)
+    validate_no_retired_terms(model)
     return model
 
 

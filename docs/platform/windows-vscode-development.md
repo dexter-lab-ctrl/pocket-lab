@@ -2,7 +2,7 @@
 
 This page documents the Pocket Lab Windows host script that prepares Visual Studio Code for the WSL2 Ubuntu development workflow.
 
-This is still a Phase 1 host-side capability. It prepares the editor and debugging experience, but it does not install Ubuntu packages or bootstrap the Pocket Lab runtime inside Ubuntu. Ubuntu-side package installation belongs to the Phase 2 WSL2 Ubuntu bootstrap.
+This is still a Windows host preflight capability. It prepares the editor and debugging experience, but it does not install Ubuntu packages or bootstrap the Pocket Lab runtime inside Ubuntu. Ubuntu-side package installation belongs to the WSL2 Ubuntu bootstrap capability.
 
 ## Purpose
 

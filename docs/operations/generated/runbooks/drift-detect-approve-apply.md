@@ -83,6 +83,6 @@ Guided drift remediation using preview, approval, and typed apply operations.
 - Impact: `medium`
 - Notes: Preview and approval steps are required before apply.
 
-## Tier 7B Scope
+## Scope
 
-This page documents metadata only. Runtime execution through FastAPI, NATS / JetStream, and workers is planned for later Tier 7 phases.
+This page documents metadata only. Runtime execution through FastAPI, NATS / JetStream, and workers is planned for later native runbook capability steps.

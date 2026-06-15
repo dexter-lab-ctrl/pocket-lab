@@ -1,6 +1,6 @@
 # Enterprise Security Review Views
 
-Tier 5B adds dedicated Structurizr views for security and operations review.
+enterprise security-review adds dedicated Structurizr views for security and operations review.
 
 These views make the most sensitive runtime boundaries explicit:
 

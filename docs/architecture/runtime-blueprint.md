@@ -2,7 +2,7 @@
 
 # Pocket Lab Runtime Blueprint
 
-This Tier 11 runtime blueprint is generated from deployment evidence and preserves the existing Pocket Lab runtime architecture.
+This deployment evidence runtime blueprint is generated from deployment evidence and preserves the existing Pocket Lab runtime architecture.
 
 ## Runtime flow
 
@@ -23,7 +23,7 @@ React / Vite PWA
 | Ansible bases | 4 |
 | Playbooks | 25 |
 | Roles | 14 |
-| Bootstrap scripts | 48 |
+| Bootstrap scripts | 49 |
 | Platform docs | 7 |
 | Environment/runtime files | 4 |
 
@@ -39,4 +39,4 @@ React / Vite PWA
 
 ## Platform compatibility
 
-Tier 11 links existing Android / Termux / ARM64 and Ubuntu / WSL2 evidence where present. It does not claim a platform is implemented unless a source file exists in the evidence manifest.
+deployment evidence links existing Android / Termux / ARM64 and Ubuntu / WSL2 evidence where present. It does not claim a platform is implemented unless a source file exists in the evidence manifest.

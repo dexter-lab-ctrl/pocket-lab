@@ -1,6 +1,6 @@
 {
   "gate_count": 21,
-  "generated_at": "2026-06-14T19:32:50Z",
+  "generated_at": "2026-06-15T17:02:58Z",
   "generated_files": [
     "docs/validation/generated/validation-manifest.json",
     "docs/validation/generated/validation-evidence.json",
@@ -152,12 +152,12 @@
     "runbooks/release_rollback.yaml",
     "runbooks/rotate_secret_with_audit.yaml"
   ],
-  "source_fingerprint": "e0a45b1f1700a8f50f0b896b2bfe521e0d59a44b93c79c5a547a767e1cafa82f",
+  "source_fingerprint": "077d27a15fbd95f49411c131347d47f4a1136675e13ea7d448335c4b67e6c7b2",
   "status_counts": {
     "BLOCKED": 0,
     "FAIL": 0,
-    "PASS": 13,
-    "WARNING": 8
+    "PASS": 20,
+    "WARNING": 1
   },
-  "tier": "Tier 8 \u2014 Validation Documentation with Allure"
+  "tier": "validation evidence and release readiness \u2014 Validation Documentation with Allure"
 }

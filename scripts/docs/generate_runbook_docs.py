@@ -100,7 +100,7 @@ def write_catalog_index(catalog: dict[str, Any]) -> Path:
     parts: list[str] = []
     parts.append("# Generated Runbook Catalog\n")
     parts.append(
-        '!!! note "Generated Tier 7B runbook documentation"\n'
+        '!!! note "Generated runbook documentation capability runbook documentation"\n'
         "    This page is generated from `runbooks/*.yaml`. Runbooks orchestrate typed operations only. They do not introduce shell execution or any external automation control plane.\n"
     )
     parts.append("## Summary\n")
@@ -133,7 +133,7 @@ def write_catalog_index(catalog: dict[str, Any]) -> Path:
     parts.append("- Runbook steps must reference typed operations from `operations/*.yaml`.")
     parts.append("- Runbook documentation is generated and must not be manually edited under `docs/operations/generated/runbooks/`.")
     parts.append("- Runbooks preserve FastAPI as the control API, NATS / JetStream as the event backbone, and workers as the execution boundary.")
-    parts.append("- Tier 7B is documentation generation only. Runtime execution is intentionally deferred to later Tier 7 phases.\n")
+    parts.append("- runbook documentation capability is documentation generation only. Runtime execution is intentionally deferred to later native runbook capability steps.\n")
 
     CATALOG_MD.parent.mkdir(parents=True, exist_ok=True)
     CATALOG_MD.write_text("\n".join(parts).rstrip() + "\n", encoding="utf-8")
@@ -234,8 +234,8 @@ def write_runbook_page(runbook: dict[str, Any]) -> Path:
     safety = runbook.get("safety", {})
     parts.append(f"- Impact: `{safety.get('impact', '')}`")
     parts.append(f"- Notes: {safety.get('notes', '')}\n")
-    parts.append("## Tier 7B Scope\n")
-    parts.append("This page documents metadata only. Runtime execution through FastAPI, NATS / JetStream, and workers is planned for later Tier 7 phases.\n")
+    parts.append("## Scope\n")
+    parts.append("This page documents metadata only. Runtime execution through FastAPI, NATS / JetStream, and workers is planned for later native runbook capability steps.\n")
 
     path.write_text("\n".join(parts).rstrip() + "\n", encoding="utf-8")
     return path
@@ -292,7 +292,7 @@ def write_evidence_matrix(catalog: dict[str, Any]) -> Path:
     parts = ["# Runbook Evidence Matrix\n"]
     parts.append(
         '!!! note "Generated evidence matrix"\n'
-        "    Evidence requirements prepare Tier 7 runbooks for auditability, workflow recovery, and later event-sourced execution.\n"
+        "    Evidence requirements prepare native runbook capability runbooks for auditability, workflow recovery, and later event-sourced execution.\n"
     )
     parts.append(table(["Runbook", "Severity", *[f"`{item}`" for item in all_evidence]], rows))
     EVIDENCE_MATRIX_MD.write_text("\n".join(parts).rstrip() + "\n", encoding="utf-8")
@@ -331,7 +331,7 @@ def write_overview(catalog: dict[str, Any]) -> Path:
     parts = []
     parts.append("# Runbook Automation\n")
     parts.append(
-        "Tier 7B provides enterprise-grade generated runbook documentation from the native Pocket Lab runbook catalog. This remains metadata and documentation only; runtime execution is intentionally deferred to later Tier 7 phases.\n"
+        "This capability provides enterprise-grade generated runbook documentation from the native Pocket Lab runbook catalog. This remains metadata and documentation only; runtime execution is intentionally deferred to later native runbook capability steps.\n"
     )
     parts.append("## Architecture\n")
     parts.append(
@@ -368,13 +368,13 @@ def write_overview(catalog: dict[str, Any]) -> Path:
     parts.append("## Current Scope\n")
     parts.append(
         table(
-            ["Capability", "Tier", "Status"],
+            ["Capability", "Evidence Area", "Status"],
             [
-                ["Runbook metadata catalog", "7A", "Implemented"],
-                ["Generated runbook documentation", "7B", "Implemented"],
-                ["Runbook validation gates", "7C", "Planned"],
-                ["FastAPI / NATS runbook execution", "7D", "Planned"],
-                ["Runbook audit and DLQ events", "7E", "Planned"],
+                ["Runbook metadata catalog", "Metadata evidence", "Implemented"],
+                ["Generated runbook documentation", "Documentation evidence", "Implemented"],
+                ["Runbook validation gates", "Validation evidence", "Implemented"],
+                ["FastAPI / NATS runbook execution", "Runtime capability", "Implemented where validated"],
+                ["Runbook audit and DLQ events", "Audit evidence", "Implemented where validated"],
             ],
         )
     )

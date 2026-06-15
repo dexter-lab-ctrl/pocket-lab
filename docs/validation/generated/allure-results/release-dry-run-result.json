@@ -5,7 +5,7 @@
   "labels": [
     {
       "name": "epic",
-      "value": "Tier 8 Validation Documentation"
+      "value": "validation evidence and release readiness Validation Documentation"
     },
     {
       "name": "feature",
@@ -32,7 +32,7 @@
   "parameters": [
     {
       "name": "command",
-      "value": "timeout --kill-after=30s 900s task release:dry-run"
+      "value": "task release:dry-run"
     },
     {
       "name": "evidence_state",
@@ -40,13 +40,13 @@
     },
     {
       "name": "generated_at",
-      "value": "2026-06-14T19:32:50Z"
+      "value": "2026-06-15T17:02:58Z"
     }
   ],
   "stage": "finished",
-  "start": 1781465570479,
+  "start": 1781542978819,
   "status": "passed",
-  "stop": 1781465570479,
+  "stop": 1781542978819,
   "testCaseId": "release-dry-run",
   "uuid": "3fbeb504-4271-59a7-b42d-abbbb7dff11c"
 }

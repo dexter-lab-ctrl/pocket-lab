@@ -2,7 +2,7 @@
 
 # Pocket Lab Deployment Guide
 
-This Tier 11 page is generated from repository deployment evidence. It documents what exists in this repository; it does not add a new deployment platform or change runtime behavior.
+This deployment evidence page is generated from repository deployment evidence. It documents what exists in this repository; it does not add a new deployment platform or change runtime behavior.
 
 ## Deployment model
 
@@ -18,7 +18,7 @@ React / Vite PWA
 → UI
 ```
 
-The deployment automation inspected by Tier 11 is source evidence for installing, validating, and operating that runtime. Frontend code does not execute shell commands and does not talk directly to NATS.
+The deployment automation inspected by deployment evidence is source evidence for installing, validating, and operating that runtime. Frontend code does not execute shell commands and does not talk directly to NATS.
 
 ## Source evidence summary
 
@@ -27,9 +27,9 @@ The deployment automation inspected by Tier 11 is source evidence for installing
 | Ansible / IaC bases | 4 |
 | Ansible playbooks | 25 |
 | Ansible roles | 14 |
-| Inventory / group vars files | 37 |
+| Inventory / group vars files | 35 |
 | IaC catalog entries | 0 |
-| Bootstrap / platform scripts | 48 |
+| Bootstrap / platform scripts | 49 |
 | Platform source docs | 7 |
 | Environment/runtime files | 4 |
 

@@ -1,11 +1,11 @@
 {
-  "description": "Repository artifact exists, but no recorded command outcome was found. Use the validation recorder for release-grade evidence.",
+  "description": "Recorded command completed successfully.",
   "fullName": "Pocket Lab Validation::Contract::docs-api",
   "historyId": "14e9cd8ca75dc80896d8c8d07cbe1a21",
   "labels": [
     {
       "name": "epic",
-      "value": "Tier 8 Validation Documentation"
+      "value": "validation evidence and release readiness Validation Documentation"
     },
     {
       "name": "feature",
@@ -25,7 +25,7 @@
     },
     {
       "name": "tag",
-      "value": "WARNING"
+      "value": "PASS"
     }
   ],
   "name": "OpenAPI backend contract",
@@ -36,17 +36,17 @@
     },
     {
       "name": "evidence_state",
-      "value": "repository-artifact"
+      "value": "executed-command"
     },
     {
       "name": "generated_at",
-      "value": "2026-06-14T19:32:50Z"
+      "value": "2026-06-15T17:02:58Z"
     }
   ],
   "stage": "finished",
-  "start": 1781465570477,
-  "status": "skipped",
-  "stop": 1781465570477,
+  "start": 1781542978817,
+  "status": "passed",
+  "stop": 1781542978817,
   "testCaseId": "docs-api",
   "uuid": "1c5bd175-362f-5e84-b70d-8fb2d79efa7d"
 }

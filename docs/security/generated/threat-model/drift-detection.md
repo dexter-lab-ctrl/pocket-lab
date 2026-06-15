@@ -1,6 +1,6 @@
 # Threat Model Drift Detection
 
-This page documents Tier 6.8 — Threat Drift Detection for Pocket Lab.
+This page documents threat drift detection — Threat Drift Detection for Pocket Lab.
 
 !!! note "Generated page"
     This page is generated from `threat-model/pocketlab-threat-model-drift-manifest.json` and current repository fingerprints.
@@ -16,7 +16,7 @@ Threat drift detection fails the build when architecture, API contracts, event c
 | Source fingerprint | PASS |
 | Generated output fingerprint | PASS |
 | Manifest | `threat-model/pocketlab-threat-model-drift-manifest.json` |
-| Page generated at | 2026-06-15T15:47:38.656370+00:00 |
+| Page generated at | 2026-06-15T16:49:51.315888+00:00 |
 
 ## Sources tracked
 
@@ -50,9 +50,9 @@ Threat drift detection fails the build when architecture, API contracts, event c
 
 | Output | Size bytes | SHA-256 prefix |
 |---|---:|---|
-| threat-model/pocketlab-threat-model.yaml | 83328 | 1dbf915cad8104e9... |
-| docs/security/security-architecture-threat-model.md | 62656 | 469e2a266a426975... |
-| docs/security/generated/threat-model/pocketlab-threat-model.json | 154230 | 6b0939829ea5566f... |
+| threat-model/pocketlab-threat-model.yaml | 83396 | 405d00bd1bee20f5... |
+| docs/security/security-architecture-threat-model.md | 62743 | 5bcfd22dd88344c0... |
+| docs/security/generated/threat-model/pocketlab-threat-model.json | 154298 | c51a4b9196e633c0... |
 | docs/security/generated/threat-model/index.md | 328 | 1f64fe7f0390803b... |
 
 ## Commands
@@ -79,7 +79,7 @@ mkdocs build --strict
 
 ## Enterprise value
 
-Tier 6.8 protects against silent security documentation drift. If a developer changes `Structurizr`, `OpenAPI`, `AsyncAPI`, typed operations, or operation-level security metadata, the drift gate fails until the generated threat model is regenerated, reviewed, and resealed.
+threat drift detection protects against silent security documentation drift. If a developer changes `Structurizr`, `OpenAPI`, `AsyncAPI`, typed operations, or operation-level security metadata, the drift gate fails until the generated threat model is regenerated, reviewed, and resealed.
 
 ## Raw manifest summary
 
@@ -88,6 +88,6 @@ Tier 6.8 protects against silent security documentation drift. If a developer ch
   "apiVersion": "pocketlab.io/v1alpha1",
   "kind": "ThreatModelDriftManifest",
   "source_fingerprint": "a546fa674ec6848f66ecaf7fb85dd87da4b9801346125635279d050c44913855",
-  "generated_output_fingerprint": "174198aabaee33c4f5af2be20bb49192f4f72dd2c22e896beb85f37048f245bf"
+  "generated_output_fingerprint": "8e392a750f8cc016755858aa7f2dee9251629f7498535c46b50657988c1ad23f"
 }
 ```

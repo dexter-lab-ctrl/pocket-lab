@@ -13,7 +13,7 @@ This generated page documents repository-native bootstrap, validation, runtime, 
 | scripts/dev/check-bootstrap.sh | ubuntu_shell | Ubuntu / WSL2 / Linux / Termux where compatible | !/usr/bin/env bash | — | efb2e41629e7 |
 | scripts/dev/check-faults.sh | ubuntu_shell | Ubuntu / WSL2 / Linux / Termux where compatible | !/usr/bin/env bash | POCKETLAB_FAULTS_WORKERS | 679704a773f2 |
 | scripts/dev/check-frontend.sh | ubuntu_shell | Ubuntu / WSL2 / Linux / Termux where compatible | !/usr/bin/env bash | — | 5157e7949d0b |
-| scripts/dev/check-iac.sh | ubuntu_shell | Ubuntu / WSL2 / Linux / Termux where compatible | !/usr/bin/env bash | ANSIBLE_COLLECTIONS_PATH, ANSIBLE_CONFIG, ANSIBLE_LOCAL_TEMP, ANSIBLE_REMOTE_TEMP, ANSIBLE_ROLES_PATH, POCKETLAB_ACTIVE_CODE_SCAN_EXCLUDES | 446068eef2cc |
+| scripts/dev/check-iac.sh | ubuntu_shell | Ubuntu / WSL2 / Linux / Termux where compatible | !/usr/bin/env bash | ANSIBLE_COLLECTIONS_PATH, ANSIBLE_CONFIG, ANSIBLE_LOCAL_TEMP, ANSIBLE_REMOTE_TEMP, ANSIBLE_ROLES_PATH, POCKETLAB_ACTIVE_CODE_SCAN_EXCLUDES | efea8342568a |
 | scripts/dev/check-lighthouse.sh | ubuntu_shell | Windows WSL2 Ubuntu | !/usr/bin/env bash | CHROME_PATH, LHCI_CHROME_PATH, POCKETLAB_LIGHTHOUSE_CHROME_FLAGS, POCKETLAB_LIGHTHOUSE_CHROME_PATH, POCKETLAB_LIGHTHOUSE_WSL_CHROME_FIX | dcfb0f49d4ec |
 | scripts/dev/check-nats-permissions.sh | ubuntu_shell | Ubuntu / WSL2 / Linux / Termux where compatible | !/usr/bin/env bash | — | e7e5cc8a1712 |
 | scripts/dev/check-schemas.sh | ubuntu_shell | Ubuntu / WSL2 / Linux / Termux where compatible | !/usr/bin/env bash | — | 4f34a088371d |
@@ -30,6 +30,7 @@ This generated page documents repository-native bootstrap, validation, runtime, 
 | scripts/dev/implement-documentation-placement.sh | ubuntu_shell | Ubuntu / WSL2 / Linux / Termux where compatible | !/usr/bin/env bash | — | 4b0f35e572f1 |
 | scripts/dev/install-playwright-browser.sh | ubuntu_shell | Windows WSL2 Ubuntu | !/usr/bin/env bash | POCKETLAB_PLAYWRIGHT_CHANNEL, POCKETLAB_PLAYWRIGHT_REPORT_PATH | 708aff02237d |
 | scripts/dev/logs.sh | ubuntu_shell | Ubuntu / WSL2 / Linux / Termux where compatible | !/usr/bin/env bash | — | 7d115a63c433 |
+| scripts/dev/observability-runtime-status.py | python_script | Ubuntu / WSL2 / Linux / Termux where compatible | !/usr/bin/env python3 | POCKETLAB_API_TOKEN, POCKETLAB_API_URL | 1f2bc9e940bb |
 | scripts/dev/observability-snapshot.sh | ubuntu_shell | Ubuntu / WSL2 / Linux / Termux where compatible | !/usr/bin/env bash | POCKETLAB_API_URL | 49bd9d28a053 |
 | scripts/dev/organize-mkdocs-docs.sh | ubuntu_shell | Ubuntu / WSL2 / Linux / Termux where compatible | !/usr/bin/env bash | — | b20fbef199c4 |
 | scripts/dev/populate-pocketlab-docs.py | python_script | Android / Termux / ARM64 | !/usr/bin/env python3 | POCKETLAB_AUTH_TOKEN, POCKETLAB_LOG_LEVEL, POCKETLAB_NATS_REQUIRED, POCKETLAB_NATS_REQUIRE_JETSTREAM, POCKETLAB_NATS_URL, POCKETLAB_RELEASE_CHANNEL, POCKETLAB_STATE_DIR, POCKETLAB_WRITE_TOKEN | ced45318770d |
@@ -51,8 +52,8 @@ This generated page documents repository-native bootstrap, validation, runtime, 
 | scripts/dev/trace-operation.sh | ubuntu_shell | Ubuntu / WSL2 / Linux / Termux where compatible | !/usr/bin/env bash | POCKETLAB_API_URL | 5721d248320c |
 | scripts/dev/up.sh | ubuntu_shell | Ubuntu / WSL2 / Linux / Termux where compatible | !/usr/bin/env bash | — | b51c1a636f90 |
 | scripts/dev/wait-http.sh | ubuntu_shell | Ubuntu / WSL2 / Linux / Termux where compatible | !/usr/bin/env bash | — | 2572f60cf011 |
-| scripts/windows/bootstrap-wsl2-ubuntu.ps1 | windows_powershell | Windows WSL2 Ubuntu | bootstrap-wsl2-ubuntu.ps1 | POCKETLAB_WSL_CHECK_ONLY, POCKETLAB_WSL_DISTRO, POCKETLAB_WSL_REPO_PATH, POCKETLAB_WSL_SKIP_REPO_SYNC, POCKETLAB_WSL_SOURCE_ROOT | 854e082ea793 |
-| scripts/windows/check-wsl2-host.ps1 | windows_powershell | Windows WSL2 Ubuntu | Windows host version | POCKETLAB_WSL_DISTRO | 827d0dfdf370 |
+| scripts/windows/bootstrap-wsl2-ubuntu.ps1 | windows_powershell | Windows WSL2 Ubuntu | bootstrap-wsl2-ubuntu.ps1 | POCKETLAB_WSL_CHECK_ONLY, POCKETLAB_WSL_DISTRO, POCKETLAB_WSL_REPO_PATH, POCKETLAB_WSL_SKIP_REPO_SYNC, POCKETLAB_WSL_SOURCE_ROOT | 6f6f16151ae6 |
+| scripts/windows/check-wsl2-host.ps1 | windows_powershell | Windows WSL2 Ubuntu | Windows host version | POCKETLAB_WSL_DISTRO | 0d57b08ae391 |
 | scripts/windows/configure-vscode.ps1 | windows_powershell | Windows WSL2 Ubuntu | Attempt Remote WSL extension install for extensions that must execute in the Linux workspace. | POCKETLAB_ENV, POCKETLAB_NATS_REQUIRED, POCKETLAB_NATS_REQUIRE_JETSTREAM, POCKETLAB_NATS_URL, POCKETLAB_STATE_DIR, POCKETLAB_WSL_DISTRO | ff5ea1f63628 |
 
 

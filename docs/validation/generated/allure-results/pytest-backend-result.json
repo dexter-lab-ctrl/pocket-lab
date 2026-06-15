@@ -5,7 +5,7 @@
   "labels": [
     {
       "name": "epic",
-      "value": "Tier 8 Validation Documentation"
+      "value": "validation evidence and release readiness Validation Documentation"
     },
     {
       "name": "feature",
@@ -40,13 +40,13 @@
     },
     {
       "name": "generated_at",
-      "value": "2026-06-14T19:32:50Z"
+      "value": "2026-06-15T17:02:58Z"
     }
   ],
   "stage": "finished",
-  "start": 1781465570477,
+  "start": 1781542978818,
   "status": "passed",
-  "stop": 1781465570477,
+  "stop": 1781542978818,
   "testCaseId": "pytest-backend",
   "uuid": "4b56864a-83ea-53d8-bbf8-9f9c5ef1603c"
 }

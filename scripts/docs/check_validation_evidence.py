@@ -26,7 +26,7 @@ def fail(message: str) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Validate generated Pocket Lab Tier 8 validation evidence")
+    parser = argparse.ArgumentParser(description="Validate generated Pocket Lab validation evidence")
     parser.add_argument("--enforce-ready", action="store_true", help="Fail if release readiness is FAIL or BLOCKED")
     args = parser.parse_args()
 

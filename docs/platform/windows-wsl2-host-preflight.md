@@ -1,8 +1,8 @@
 # Windows WSL2 Host Preflight
 
-This page documents **Phase 1** of the Windows 10 development environment plan for Pocket Lab.
+This page documents **Windows host preflight capability** of the Windows 10 development environment plan for Pocket Lab.
 
-Phase 1 does **not** install Pocket Lab dependencies inside Ubuntu. It verifies that the Windows host can safely support the later WSL2 Ubuntu development environment.
+Windows host preflight capability does **not** install Pocket Lab dependencies inside Ubuntu. It verifies that the Windows host can safely support the later WSL2 Ubuntu development environment.
 
 ## Objective
 
@@ -90,7 +90,7 @@ This report is useful for enterprise onboarding evidence and troubleshooting.
 A successful run ends with:
 
 ```text
-Windows host preflight passed. This host is ready for the Phase 2 Ubuntu WSL bootstrap.
+Windows host preflight passed. This host is ready for the WSL2 Ubuntu bootstrap capability.
 ```
 
 The JSON report should contain:
@@ -142,9 +142,9 @@ Install the extension from VS Code or run:
 code --install-extension ms-vscode-remote.remote-wsl
 ```
 
-## What Phase 1 does not do
+## What Windows host preflight capability does not do
 
-Phase 1 intentionally does not:
+Windows host preflight capability intentionally does not:
 
 ```text
 Install Ubuntu packages
@@ -157,4 +157,4 @@ Start the Pocket Lab runtime stack
 Run docs, tests, runbooks, Structurizr or Threat Dragon
 ```
 
-Those belong to Phase 2 and later WSL2 Ubuntu bootstrap phases.
+Those belong to WSL2 Ubuntu bootstrap capability and later WSL2 Ubuntu bootstrap steps.

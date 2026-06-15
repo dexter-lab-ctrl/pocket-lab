@@ -1,6 +1,6 @@
 # Runbook Approval and Resume Lifecycle
 
-!!! note "Tier 7E native runbook workflow"
+!!! note "native runbook approval and controlled resume native runbook workflow"
     This page documents Pocket Lab's native runbook approval and controlled resume workflow. FastAPI remains the control API. NATS / JetStream remains the command and event backbone. Workers remain the execution owner. The frontend never talks directly to NATS.
 
 ## Lifecycle

@@ -5,7 +5,7 @@
   "labels": [
     {
       "name": "epic",
-      "value": "Tier 8 Validation Documentation"
+      "value": "validation evidence and release readiness Validation Documentation"
     },
     {
       "name": "feature",
@@ -32,7 +32,7 @@
   "parameters": [
     {
       "name": "command",
-      "value": "timeout --kill-after=15s 180s task test:redaction"
+      "value": "task test:redaction"
     },
     {
       "name": "evidence_state",
@@ -40,13 +40,13 @@
     },
     {
       "name": "generated_at",
-      "value": "2026-06-14T19:32:50Z"
+      "value": "2026-06-15T17:02:58Z"
     }
   ],
   "stage": "finished",
-  "start": 1781465570478,
+  "start": 1781542978819,
   "status": "passed",
-  "stop": 1781465570478,
+  "stop": 1781542978819,
   "testCaseId": "redaction",
   "uuid": "cb1d4386-e885-527d-a142-bea1b67ce511"
 }

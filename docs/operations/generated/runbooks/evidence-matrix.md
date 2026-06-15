@@ -1,7 +1,7 @@
 # Runbook Evidence Matrix
 
 !!! note "Generated evidence matrix"
-    Evidence requirements prepare Tier 7 runbooks for auditability, workflow recovery, and later event-sourced execution.
+    Evidence requirements prepare native runbook capability runbooks for auditability, workflow recovery, and later event-sourced execution.
 
 | Runbook | Severity | `approval_record` | `audit_events` | `backup_manifest` | `drift_report` | `health_snapshot` | `operation_events` | `policy_decision` | `redaction_check` | `release_evidence` | `workflow_journal` |
 |---|---|---|---|---|---|---|---|---|---|---|---|

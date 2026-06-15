@@ -5,7 +5,7 @@
     "name": "pocketlab-threat-model-drift-manifest",
     "tier": "6.8",
     "description": "Detects stale threat-model artifacts when architecture, contracts, or operation metadata change.",
-    "sealedAt": "2026-06-15T15:47:38.598038+00:00"
+    "sealedAt": "2026-06-15T16:49:51.264314+00:00"
   },
   "source_patterns": [
     "architecture/structurizr/workspace.dsl",
@@ -140,18 +140,18 @@
   "generated_output_files": [
     {
       "path": "threat-model/pocketlab-threat-model.yaml",
-      "sha256": "1dbf915cad8104e9fb63bc7baf8163c9a3d6d7bc742544c0d9620645b9feec2e",
-      "bytes": 83328
+      "sha256": "405d00bd1bee20f555e159d081d73df0c136916eb82493781b4a506e252a1eb4",
+      "bytes": 83396
     },
     {
       "path": "docs/security/security-architecture-threat-model.md",
-      "sha256": "469e2a266a4269758412d193de5cb461df5eaa1373d529f7e077259d068ed9de",
-      "bytes": 62656
+      "sha256": "5bcfd22dd88344c0a0e56905300163fa6495d0eef10bd6865b0931b94afc0833",
+      "bytes": 62743
     },
     {
       "path": "docs/security/generated/threat-model/pocketlab-threat-model.json",
-      "sha256": "6b0939829ea5566f4d904acb1ab281a5092a8cb5c48aac5bde94bb8050182f48",
-      "bytes": 154230
+      "sha256": "c51a4b9196e633c0779ed07835b687737006f87078d271715876476d49064fd4",
+      "bytes": 154298
     },
     {
       "path": "docs/security/generated/threat-model/index.md",
@@ -160,7 +160,7 @@
     }
   ],
   "source_fingerprint": "a546fa674ec6848f66ecaf7fb85dd87da4b9801346125635279d050c44913855",
-  "generated_output_fingerprint": "174198aabaee33c4f5af2be20bb49192f4f72dd2c22e896beb85f37048f245bf",
+  "generated_output_fingerprint": "8e392a750f8cc016755858aa7f2dee9251629f7498535c46b50657988c1ad23f",
   "validation_commands": [
     "task docs:threat-model:drift",
     "task docs:threat-model:check",

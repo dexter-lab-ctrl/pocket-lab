@@ -48,8 +48,8 @@ This generated page distinguishes the real Loki service, the Promtail log pipeli
 
 | Consumer | Purpose | Endpoints / tokens | Source |
 | --- | --- | --- | --- |
-| LogExplorerTab | Log Explorer queries Loki-compatible log data through FastAPI. | /loki/api/v1/query?query=${encodeURIComponent(query)}&limit=100, /ready | `src/tabs/LogExplorerTab.jsx` |
-| SecurityPostureTab | Security Posture surfaces safety scans and security log activity. | /loki/api/v1/query?query={job="pm2_logs"} \|= "security_audit"&limit=5 | `src/tabs/SecurityPostureTab.jsx` |
+| LogExplorerTab | Log Explorer queries Loki-compatible log data through FastAPI. | /ready | `src/tabs/LogExplorerTab.jsx` |
+| SecurityPostureTab | Security Posture surfaces safety scans and security log activity. | — | `src/tabs/SecurityPostureTab.jsx` |
 
 ## Redaction and access notes
 

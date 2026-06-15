@@ -73,7 +73,7 @@ OPERATIONS = [
             "targetShape": {"type": "git", "ref": "repo-or-branch"},
             "paramsShape": {"branch": "string", "strategy": "safe-sync"},
             "safety": "Must not reintroduce retired sync shell compatibility paths.",
-            "notes": "Replaces legacy command-style sync flows with typed operation execution.",
+            "notes": "Replaces retired command-style sync flows with typed operation execution.",
         },
     },
     {

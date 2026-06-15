@@ -1,11 +1,11 @@
 # Threat Model Source Synchronization
 
-!!! note "Generated Tier 6.9A evidence"
+!!! note "Generated threat-model source synchronization evidence"
     This page is generated from Structurizr, OpenAPI, AsyncAPI, Typed Operations, and `operations/*.yaml`. It verifies that security architecture and threat-model metadata stay synchronized with contract-first engineering artifacts.
 
 ## Objective
 
-Tier 6.9A automatically synchronizes Pocket Lab threat-model evidence with the architecture and contract sources that define the control plane.
+threat-model source synchronization automatically synchronizes Pocket Lab threat-model evidence with the architecture and contract sources that define the control plane.
 
 ```text
 Structurizr + OpenAPI + AsyncAPI + Typed Operations + operations/*.yaml
@@ -19,8 +19,8 @@ Security Architecture & Threat Model validation
 
 | Source | Path | Count | Purpose |
 |---|---|---|---|
-| Structurizr | architecture/structurizr/workspace.dsl | 26 | C4 architecture elements and Tier 5B security views |
-| OpenAPI | contracts/generated/openapi.json | 80 | FastAPI HTTP control-plane surface |
+| Structurizr | architecture/structurizr/workspace.dsl | 26 | C4 architecture elements and enterprise security-review views |
+| OpenAPI | contracts/generated/openapi.json | 82 | FastAPI HTTP control-plane surface |
 | AsyncAPI | contracts/asyncapi/pocketlab-nats-jetstream.yaml | 56 | NATS / JetStream command and event channels |
 | Typed Operations | contracts/operations/pocketlab-typed-operations.json | 19 | Execution contract |
 | Operation metadata | operations | 19 | Threat Modeling as Code source |
@@ -146,7 +146,7 @@ mkdocs build --strict
 ## Enterprise value
 
 - New typed operations cannot silently bypass threat-model metadata.
-- Structurizr Tier 5B views remain a required architecture evidence source.
+- Structurizr enterprise security-review views remain a required architecture evidence source.
 - OpenAPI mutating surfaces are visible for security review.
 - AsyncAPI NATS / JetStream channels are visible for command/event boundary review.
 - Operation metadata links STRIDE, trust boundaries, attack surfaces, mitigations, and residual risks to generated contracts.

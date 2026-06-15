@@ -60,7 +60,7 @@ Pocket Lab backend APIs follow these rules:
 
 1. **Pocket Lab owns the frontend contract.** The frontend calls `/api/*` endpoints implemented by FastAPI, not raw Gatus, NATS, Vault, Gitea, Loki, or tool-native APIs.
 2. **Writes are typed operations.** Mutating actions must flow through typed operations, domain commands, or approved POST endpoints that submit domain commands.
-3. **No legacy compatibility paths.** The current architecture does not use `/api/action/update`, `legacy_intent`, `sync_bash`, or `tofu_deploy` as user-facing or frontend write contracts.
+3. **No retired compatibility paths.** The current architecture does not use `/api/action/update`, `legacy_intent`, `sync_bash`, or `tofu_deploy` as user-facing or frontend write contracts.
 4. **Fail closed.** If FastAPI, NATS, JetStream, or the worker cannot safely accept a write, the API must reject the write instead of running an unsafe local fallback.
 5. **Read endpoints degrade gracefully.** Read endpoints should return degraded snapshots or fallback summaries where safe.
 6. **Events are redacted.** Event payloads, journals, logs, and WebSocket streams must not expose secrets.
@@ -794,7 +794,7 @@ Expected normalized response:
 
 Frontend compatibility rule:
 
-The UI may defensively support old camelCase fields, but the backend contract should prefer snake_case fields:
+The UI may defensively support superseded camelCase fields, but the backend contract should prefer snake_case fields:
 
 | Current field | Meaning |
 |---|---|

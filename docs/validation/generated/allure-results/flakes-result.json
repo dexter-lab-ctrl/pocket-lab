@@ -5,7 +5,7 @@
   "labels": [
     {
       "name": "epic",
-      "value": "Tier 8 Validation Documentation"
+      "value": "validation evidence and release readiness Validation Documentation"
     },
     {
       "name": "feature",
@@ -32,7 +32,7 @@
   "parameters": [
     {
       "name": "command",
-      "value": "bash scripts/dev/run-validation-gate.sh 300 env POCKETLAB_FLAKES_WORKERS=1 POCKETLAB_FLAKES_REPEAT=1 task test:flakes"
+      "value": "task test:flakes"
     },
     {
       "name": "evidence_state",
@@ -40,13 +40,13 @@
     },
     {
       "name": "generated_at",
-      "value": "2026-06-14T19:32:50Z"
+      "value": "2026-06-15T17:02:58Z"
     }
   ],
   "stage": "finished",
-  "start": 1781465570478,
+  "start": 1781542978819,
   "status": "passed",
-  "stop": 1781465570478,
+  "stop": 1781542978819,
   "testCaseId": "flakes",
   "uuid": "90813c9a-3726-5b33-8e1f-b93c391fbcc2"
 }

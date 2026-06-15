@@ -5,14 +5,14 @@
     "name": "pocketlab-threat-model",
     "title": "Pocket Lab Security Architecture & Threat Model",
     "tier": "6.5",
-    "generatedAt": "2026-06-15T15:47:37.885213+00:00",
+    "generatedAt": "2026-06-15T16:49:50.556469+00:00",
     "sourceOfTruth": "Repository-generated metadata. Operation-level security blocks in operations/*.yaml are required for new features."
   },
   "evidence_sources": [
     {
       "type": "structurizr",
       "path": "architecture/structurizr/workspace.dsl",
-      "notes": "C4 architecture model and Tier 5B security views."
+      "notes": "C4 architecture model and enterprise security-review views."
     },
     {
       "type": "openapi",
@@ -83,22 +83,22 @@
     {
       "name": "Event Journal / Workflow Store",
       "classification": "workflow recovery evidence",
-      "evidence": "Tier 5B audit view"
+      "evidence": "enterprise security-review audit view"
     },
     {
       "name": "Audit Trail / Evidence Store",
       "classification": "audit evidence",
-      "evidence": "Tier 5B audit view"
+      "evidence": "enterprise security-review audit view"
     },
     {
       "name": "Vault / OpenBao Runtime",
       "classification": "secret backend",
-      "evidence": "Tier 5B security view"
+      "evidence": "enterprise security-review view"
     },
     {
       "name": "OPA Runtime",
       "classification": "policy decision point",
-      "evidence": "Tier 5B security view"
+      "evidence": "enterprise security-review view"
     }
   ],
   "trust_boundaries": [

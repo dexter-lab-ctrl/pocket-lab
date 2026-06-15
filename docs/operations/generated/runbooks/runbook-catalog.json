@@ -5,7 +5,7 @@
     "name": "pocketlab-runbook-catalog",
     "title": "Pocket Lab Runbook Metadata Catalog",
     "tier": "7A",
-    "generatedAt": "2026-06-15T15:47:37.420442+00:00",
+    "generatedAt": "2026-06-15T16:49:53.664746+00:00",
     "sourceOfTruth": "runbooks/*.yaml"
   },
   "summary": {

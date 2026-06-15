@@ -1,6 +1,6 @@
 # Security Architecture & Threat Model
 
-!!! note "Generated Tier 6.5 threat-model page"
+!!! note "Generated threat-model-as-code threat-model page"
     This page is generated from repository metadata. Operation-level `security` blocks in `operations/*.yaml` are required for new features. OWASP Threat Dragon is a local review/editing tool, not the source of truth.
 
 ## Objective
@@ -12,21 +12,21 @@ Pocket Lab uses Threat Modeling as Code to document trust boundaries, data flows
 | Field | Value |
 |---|---|
 | Model | pocketlab-threat-model |
-| Tier | 6.5 |
-| Generated at | 2026-06-15T15:47:37.885213+00:00 |
+| Documentation track | 6.5 |
+| Generated at | 2026-06-15T16:49:50.556469+00:00 |
 | Source rule | Repository-generated metadata. Operation-level security blocks in operations/*.yaml are required for new features. |
 
 ## Evidence Sources
 
 | Type | Path / sample | Count | Notes |
 |---|---|---|---|
-| structurizr | architecture/structurizr/workspace.dsl |  | C4 architecture model and Tier 5B security views. |
+| structurizr | architecture/structurizr/workspace.dsl |  | C4 architecture model and enterprise security-review views. |
 | openapi | contracts/generated/openapi.json | 79 |  |
 | asyncapi | contracts/asyncapi/pocketlab-nats-jetstream.yaml | 56 |  |
 | typed_operations | contracts/operations/pocketlab-typed-operations.json | 19 |  |
 | operation_security_metadata | operations/backup_now.yaml, operations/backup_verify.yaml, operations/catalog_refresh.yaml, operations/configure_opa.yaml, operations/deploy_blueprint.yaml, operations/drift_apply.yaml ... (19 total) |  |  |
 
-## Tier 5B Architecture Views Used
+## Architecture Views Used
 
 - `security-review`
 - `nats-command-event-boundaries`
@@ -64,10 +64,10 @@ Pocket Lab uses Threat Modeling as Code to document trust boundaries, data flows
 | NATS / JetStream | command and event backbone | AsyncAPI channels |
 | Pocket Lab Worker | typed operation executor | Structurizr worker container |
 | Typed Operations Catalog | execution contract | operations/*.yaml |
-| Event Journal / Workflow Store | workflow recovery evidence | Tier 5B audit view |
-| Audit Trail / Evidence Store | audit evidence | Tier 5B audit view |
-| Vault / OpenBao Runtime | secret backend | Tier 5B security view |
-| OPA Runtime | policy decision point | Tier 5B security view |
+| Event Journal / Workflow Store | workflow recovery evidence | enterprise security-review audit view |
+| Audit Trail / Evidence Store | audit evidence | enterprise security-review audit view |
+| Vault / OpenBao Runtime | secret backend | enterprise security-review view |
+| OPA Runtime | policy decision point | enterprise security-review view |
 
 ## Trust Boundaries
 

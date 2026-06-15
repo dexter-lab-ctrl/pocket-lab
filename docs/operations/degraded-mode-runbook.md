@@ -96,7 +96,7 @@ task test:websockets
 
 Recovery:
 
-1. Remove old logs or stale artifacts.
+1. Remove stale logs or stale artifacts.
 2. Verify backup destination capacity.
 3. Recheck telemetry.
 4. Retry operation.

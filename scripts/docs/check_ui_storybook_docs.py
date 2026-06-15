@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate Tier 9 / Tier 9A UI Storybook documentation freshness.
+"""Validate Storybook UI documentation and screenshot evidence freshness.
 
 This checker treats screenshot evidence as part of the generated documentation
 when docs/product/generated/ui-screenshot-manifest.json exists.
@@ -9,7 +9,7 @@ Expected generated UI docs:
     generate_ui_storybook_docs.build_markdown(...)
     + embed_ui_storybook_screenshots.inject(...)
 
-This prevents Tier 9A screenshot evidence from being mistaken for manual drift.
+This prevents Storybook screenshot evidence from being mistaken for manual drift.
 """
 
 from __future__ import annotations
@@ -47,7 +47,7 @@ def read_json(path: Path) -> dict:
 def build_expected_generated_doc(metadata: dict, expected_manifest: dict) -> str:
     expected = gen.build_markdown(metadata, expected_manifest)
 
-    # Tier 9A: if screenshot evidence exists, it is part of generated docs.
+    # Storybook screenshot evidence: if screenshot evidence exists, it is part of generated docs.
     if embedder.SCREENSHOT_MANIFEST.exists():
         screenshot_manifest = embedder.load_json(embedder.SCREENSHOT_MANIFEST)
         by_screen = embedder.group_screenshots(screenshot_manifest)
@@ -55,7 +55,7 @@ def build_expected_generated_doc(metadata: dict, expected_manifest: dict) -> str
 
         if injected_screen_count <= 0 or image_link_count <= 0:
             fail(
-                "Tier 9A screenshot evidence exists but expected generated docs "
+                "Storybook screenshot evidence exists but expected generated docs "
                 "could not embed screenshot links"
             )
 
@@ -100,7 +100,7 @@ def main() -> None:
 
     if screenshot_manifest_exists and screenshot_links <= 0:
         fail(
-            "Tier 9A screenshot manifest exists, but generated UI docs contain no screenshot links"
+            "Storybook screenshot evidence screenshot manifest exists, but generated UI docs contain no screenshot links"
         )
 
     screens = metadata.get("screens", [])
@@ -111,13 +111,13 @@ def main() -> None:
         screenshot_manifest = read_json(embedder.SCREENSHOT_MANIFEST)
         screenshot_count = len(screenshot_manifest.get("screenshots", []))
         print(
-            "Tier 9A UI Storybook docs check passed: "
+            "Storybook screenshot evidence UI Storybook docs check passed: "
             f"screens={len(screens)} required={len(required)} stories={stories} "
             f"screenshot_links={screenshot_links} screenshots={screenshot_count}"
         )
     else:
         print(
-            "Tier 9 UI Storybook docs check passed: "
+            "Storybook UI documentation UI Storybook docs check passed: "
             f"screens={len(screens)} required={len(required)} stories={stories}"
         )
 
