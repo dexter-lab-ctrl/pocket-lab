@@ -2,6 +2,7 @@
   "app": "Pocket Lab",
   "architecture": "FastAPI + NATS / JetStream + Worker + Event-Sourced Workflow Engine",
   "catalog_model": "Backstage-style per-operation metadata files",
+  "forbidden_patterns": [],
   "operations": [
     {
       "api_entrypoints": [

@@ -13,7 +13,7 @@ Pocket Lab uses Threat Modeling as Code to document trust boundaries, data flows
 |---|---|
 | Model | pocketlab-threat-model |
 | Tier | 6.5 |
-| Generated at | 2026-06-13T23:15:29.689084+00:00 |
+| Generated at | 2026-06-15T15:35:04.106013+00:00 |
 | Source rule | Repository-generated metadata. Operation-level security blocks in operations/*.yaml are required for new features. |
 
 ## Evidence Sources
@@ -21,7 +21,7 @@ Pocket Lab uses Threat Modeling as Code to document trust boundaries, data flows
 | Type | Path / sample | Count | Notes |
 |---|---|---|---|
 | structurizr | architecture/structurizr/workspace.dsl |  | C4 architecture model and Tier 5B security views. |
-| openapi | contracts/generated/openapi.json | 77 |  |
+| openapi | contracts/generated/openapi.json | 79 |  |
 | asyncapi | contracts/asyncapi/pocketlab-nats-jetstream.yaml | 56 |  |
 | typed_operations | contracts/operations/pocketlab-typed-operations.json | 19 |  |
 | operation_security_metadata | operations/backup_now.yaml, operations/backup_verify.yaml, operations/catalog_refresh.yaml, operations/configure_opa.yaml, operations/deploy_blueprint.yaml, operations/drift_apply.yaml ... (19 total) |  |  |

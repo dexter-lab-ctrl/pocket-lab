@@ -135,11 +135,7 @@ flowchart LR
 
 These patterns must not be reintroduced:
 
-- `legacy_intent`
-- `sync_bash`
-- `tofu_deploy`
-- `/api/action/update`
-- `dashboard_api`
+_No forbidden patterns documented._
 
 ## Operation Governance Rules
 

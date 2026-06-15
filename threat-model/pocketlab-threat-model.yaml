@@ -4,7 +4,7 @@ metadata:
   name: pocketlab-threat-model
   title: Pocket Lab Security Architecture & Threat Model
   tier: '6.5'
-  generatedAt: '2026-06-13T23:15:29.689084+00:00'
+  generatedAt: '2026-06-15T15:35:04.106013+00:00'
   sourceOfTruth: Repository-generated metadata. Operation-level security blocks in operations/*.yaml are required for new
     features.
 evidence_sources:
@@ -13,7 +13,7 @@ evidence_sources:
   notes: C4 architecture model and Tier 5B security views.
 - type: openapi
   path: contracts/generated/openapi.json
-  api_path_count: 77
+  api_path_count: 79
 - type: asyncapi
   path: contracts/asyncapi/pocketlab-nats-jetstream.yaml
   channel_count: 56
