@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tier 9B freshness checks for UI screenshot, visual, a11y, and release evidence."""
+"""UI evidence freshness freshness checks for UI screenshot, visual, a11y, and release evidence."""
 
 from __future__ import annotations
 
@@ -115,7 +115,7 @@ def main() -> None:
 
     fail_all(errors)
     print(
-        "Tier 9B UI evidence freshness check passed: "
+        "UI evidence freshness check passed: "
         f"screens={len(metadata.get('screens', []))} screenshots={len(screenshots)} image_links={image_links}"
     )
 

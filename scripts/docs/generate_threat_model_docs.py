@@ -41,7 +41,7 @@ def main() -> None:
 
     parts.append("# Security Architecture & Threat Model\n")
     parts.append(
-        '!!! note "Generated Tier 6.5 threat-model page"\n'
+        '!!! note "Generated threat-model-as-code threat-model page"\n'
         "    This page is generated from repository metadata. Operation-level `security` blocks in `operations/*.yaml` are required for new features. OWASP Threat Dragon is a local review/editing tool, not the source of truth.\n"
     )
 
@@ -56,7 +56,7 @@ def main() -> None:
             ["Field", "Value"],
             [
                 ["Model", metadata.get("name", "")],
-                ["Tier", metadata.get("tier", "")],
+                ["Documentation track", metadata.get("tier", "").replace("Tier", "Capability")],
                 ["Generated at", metadata.get("generatedAt", "")],
                 ["Source rule", metadata.get("sourceOfTruth", "")],
             ],
@@ -76,7 +76,7 @@ def main() -> None:
         evidence_rows.append([item.get("type", ""), value, count, item.get("notes", "")])
     parts.append(table(["Type", "Path / sample", "Count", "Notes"], evidence_rows))
 
-    parts.append("\n## Tier 5B Architecture Views Used\n")
+    parts.append("\n## Architecture Views Used\n")
     parts.append("\n".join(f"- `{view}`" for view in model.get("tier5b_views", [])) + "\n")
 
     parts.append("## Operation Security Metadata Coverage\n")

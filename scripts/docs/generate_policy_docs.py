@@ -99,7 +99,7 @@ def render_reference(manifest: dict[str, Any]) -> str:
     ]
     if not manifest.get("formal_opa_bundle_found"):
         lines.extend([
-            "> No standalone `.rego` bundle was found in this repository snapshot. Tier 10 therefore uses `security/policies/*.yaml` as a minimal repository-native policy metadata layer and records embedded UI guardrail evidence without changing runtime behavior.",
+            "> No standalone `.rego` bundle was found in this repository snapshot. policy and security evidence therefore uses `security/policies/*.yaml` as a minimal repository-native policy metadata layer and records embedded UI guardrail evidence without changing runtime behavior.",
             "",
         ])
     for p in manifest.get("policies") or []:

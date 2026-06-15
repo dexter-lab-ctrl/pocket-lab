@@ -86,6 +86,6 @@ Controlled rollback path when release validation or apply fails.
 - Impact: `critical`
 - Notes: Rollback must preserve evidence and correlation IDs for post-incident review.
 
-## Tier 7B Scope
+## Scope
 
-This page documents metadata only. Runtime execution through FastAPI, NATS / JetStream, and workers is planned for later Tier 7 phases.
+This page documents metadata only. Runtime execution through FastAPI, NATS / JetStream, and workers is planned for later native runbook capability steps.

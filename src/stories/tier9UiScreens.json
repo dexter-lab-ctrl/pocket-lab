@@ -1,5 +1,4 @@
 {
-  "tier": "Tier 9 \u2014 UI Documentation with Storybook",
   "source": "src/stories/PocketLabTabs.stories.jsx",
   "generatedDocs": {
     "primary": "docs/product/ui-screen-reference.md",
@@ -52,7 +51,7 @@
       "simpleLabel": "Apps & Services",
       "status": "required",
       "purpose": "Discover apps and services, refresh the catalog, choose install sources, and submit blueprint installs as typed operations.",
-      "storybookTitle": "Pocket Lab/Tier 9 UI Screens/App Store",
+      "storybookTitle": "Pocket Lab/UI Evidence Screens/App Store",
       "storyExports": [
         "AppStoreNormal",
         "AppStoreSimpleMode",
@@ -94,7 +93,7 @@
       "simpleLabel": "Keep My Environment Updated",
       "status": "required",
       "purpose": "Launch named update and validation tasks without exposing a command editor.",
-      "storybookTitle": "Pocket Lab/Tier 9 UI Screens/GitOps",
+      "storybookTitle": "Pocket Lab/UI Evidence Screens/GitOps",
       "storyExports": [
         "GitOpsProfessional",
         "GitOpsSimpleMode",
@@ -136,7 +135,7 @@
       "simpleLabel": "My Devices",
       "status": "required",
       "purpose": "Add and monitor edge devices through typed fleet join and NATS-backed agent status views.",
-      "storybookTitle": "Pocket Lab/Tier 9 UI Screens/Fleet Scaling",
+      "storybookTitle": "Pocket Lab/UI Evidence Screens/Fleet Scaling",
       "storyExports": [
         "FleetNormal",
         "FleetSimpleMode",
@@ -178,7 +177,7 @@
       "simpleLabel": "Passwords & Access",
       "status": "required",
       "purpose": "Rotate managed secrets and request short-lived access while keeping secret values hidden behind typed operations.",
-      "storybookTitle": "Pocket Lab/Tier 9 UI Screens/Identity & Vault",
+      "storybookTitle": "Pocket Lab/UI Evidence Screens/Identity & Vault",
       "storyExports": [
         "IdentityVaultNormal",
         "IdentityVaultSimpleMode",
@@ -218,7 +217,7 @@
       "simpleLabel": "Release",
       "status": "required",
       "purpose": "Show release stages, update checks, release apply flow, and subsystem evidence for safe self-update behavior.",
-      "storybookTitle": "Pocket Lab/Tier 9 UI Screens/Release Workflow",
+      "storybookTitle": "Pocket Lab/UI Evidence Screens/Release Workflow",
       "storyExports": [
         "ReleaseWorkflowNormal",
         "ReleaseWorkflowSimpleMode",
@@ -264,7 +263,7 @@
       "simpleLabel": "Health & Issues",
       "status": "required",
       "purpose": "Detect, preview, approve, apply, or ignore drift using typed operation status and policy guardrails.",
-      "storybookTitle": "Pocket Lab/Tier 9 UI Screens/Drift Center",
+      "storybookTitle": "Pocket Lab/UI Evidence Screens/Drift Center",
       "storyExports": [
         "DriftCenterNormal",
         "DriftCenterSimpleMode",
@@ -314,7 +313,7 @@
       "simpleLabel": "Safety Center",
       "status": "additional",
       "purpose": "Document safety checks and approved remediation actions.",
-      "storybookTitle": "Pocket Lab/Tier 9 UI Screens/Security Posture",
+      "storybookTitle": "Pocket Lab/UI Evidence Screens/Security Posture",
       "storyExports": [
         "SecurityPostureSimple"
       ],
@@ -343,7 +342,7 @@
       "simpleLabel": "System Status",
       "status": "additional",
       "purpose": "Document device resource and event-stream status.",
-      "storybookTitle": "Pocket Lab/Tier 9 UI Screens/NOC Telemetry",
+      "storybookTitle": "Pocket Lab/UI Evidence Screens/NOC Telemetry",
       "storyExports": [
         "NocTelemetryDegraded"
       ],
@@ -370,7 +369,7 @@
       "simpleLabel": "Backups",
       "status": "additional",
       "purpose": "Document backup, restore, and verification states.",
-      "storybookTitle": "Pocket Lab/Tier 9 UI Screens/Disaster Recovery",
+      "storybookTitle": "Pocket Lab/UI Evidence Screens/Disaster Recovery",
       "storyExports": [
         "DisasterRecoveryNormal"
       ],
@@ -400,7 +399,7 @@
       "simpleLabel": "Enterprise policy guardrails",
       "status": "additional",
       "purpose": "Document OPA policy deployment, evaluation, and guardrail states.",
-      "storybookTitle": "Pocket Lab/Tier 9 UI Screens/Policy Guardrails",
+      "storybookTitle": "Pocket Lab/UI Evidence Screens/Policy Guardrails",
       "storyExports": [
         "PolicyGuardrailsNormal"
       ],
@@ -427,7 +426,7 @@
       "simpleLabel": "Settings / Enterprise Governance",
       "status": "additional",
       "purpose": "Document the opt-in Enterprise Mode governance switch and Personal Mode auto-approval explanation.",
-      "storybookTitle": "Pocket Lab/Tier 9 UI Screens/Settings",
+      "storybookTitle": "Pocket Lab/UI Evidence Screens/Settings",
       "storyExports": [
         "SettingsEnterpriseGovernance"
       ],
@@ -447,5 +446,6 @@
         "PUT /api/settings/governance"
       ]
     }
-  ]
+  ],
+  "capability": "Storybook UI documentation and evidence"
 }

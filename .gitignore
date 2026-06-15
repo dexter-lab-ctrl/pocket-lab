@@ -43,3 +43,31 @@ site/
 *.tar.gz
 .env.*
 !.env.example
+
+# Local Lighthouse / Chrome temporary artifacts
+# Windows host examples:
+#   C:\Users\<user>\AppData\Local\lighthouse.<id>
+# WSL/repo-copy examples:
+#   Users/<user>/AppData/Local/lighthouse.<id>
+#   AppData/Local/lighthouse.<id>
+lighthouse.*/
+**/lighthouse.*/
+AppData/Local/lighthouse.*/
+**/AppData/Local/lighthouse.*/
+Users/*/AppData/Local/lighthouse.*/
+**/Users/*/AppData/Local/lighthouse.*/
+
+# Lighthouse local artifacts
+.lighthouseci/
+.lighthouseci/**
+**/.lighthouseci/
+**/.lighthouseci/**
+lighthouse.*
+lighthouse.*/
+**/lighthouse.*
+**/lighthouse.*/
+
+# Literal Windows-path folder names accidentally created inside the repo by tools
+C:\\Users\\*\\AppData\\Local\\lighthouse.*/
+"C:\\Users\\*\\AppData\\Local\\lighthouse.*/"
+*C:\\Users\\*\\AppData\\Local\\lighthouse.*

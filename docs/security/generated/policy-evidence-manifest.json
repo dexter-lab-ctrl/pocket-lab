@@ -818,15 +818,15 @@
     },
     {
       "path": "contracts/generated/openapi.json",
-      "sha256": "c2aa4119d33c2616e85dbf9fb1ce23a1e24ce4e15d9cb13657bcb0c4681f4357"
+      "sha256": "5537faeb280109c49b20a8e5288e6d972fa281527113e9f73a28fd3c6b090f9a"
     },
     {
       "path": "contracts/operations/pocketlab-typed-operations.json",
-      "sha256": "740abf611e28ab291df95cd70f040e5bfca20e9d3849842774ce8c32aea6ec9d"
+      "sha256": "f55ee241411a7caec7b450f7d9d8571ed4350f0ed0150d5f2e50d1b23b30b9c2"
     },
     {
       "path": "docs/security/generated/threat-model/drift-detection.md",
-      "sha256": "17d1871393382dd1f599c09c842f7eaf13eb47f5e57e3f98fb0350b93bdabfbf"
+      "sha256": "7ac8d07179986a9f9c33ffd77a300308cfa40c07095fbf4d1d267eb037d00b52"
     },
     {
       "path": "docs/security/generated/threat-model/index.md",
@@ -834,11 +834,11 @@
     },
     {
       "path": "docs/security/generated/threat-model/source-synchronization.md",
-      "sha256": "30e8b145d1a9e9d2a85581146e5d8fb63bcce0359e5d6ad35f6aa3ece3a6c2d0"
+      "sha256": "9c5d602ddb481fc071cc312ca0cbfc7554264ab7092a36955107ba07d9f4d74b"
     },
     {
       "path": "docs/security/security-architecture-threat-model.md",
-      "sha256": "5f603f2f7b5260b2008c809c859dd113cac3d78cbd6219d22c63b003021a3b88"
+      "sha256": "d5f342ba0a99686d233d9e50ad78da29986b943143e16b3d4521af579df38455"
     },
     {
       "path": "operations/backup_now.yaml",
@@ -950,7 +950,7 @@
     },
     {
       "path": "src/tabs/PolicyGuardrailsTab.jsx",
-      "sha256": "2ea1ed4fe598fb841e86829781357446b14ebd25a5fbd88a660bfcaac34194ba"
+      "sha256": "638f51060d57a4e164287299c26b99e04b20102c4fe09f6ac7e1a96c7010c6e3"
     }
   ],
   "summary": {

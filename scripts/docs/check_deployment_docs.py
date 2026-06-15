@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check Tier 11 generated deployment docs freshness and MkDocs nav coverage."""
+"""Check deployment evidence generated deployment docs freshness and MkDocs nav coverage."""
 from __future__ import annotations
 
 import subprocess

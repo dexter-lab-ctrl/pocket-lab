@@ -26,7 +26,7 @@ function params(screenId, state, scenario = 'normal') {
   return {
     layout: 'fullscreen',
     pocketlab: {
-      tier: metadata.tier,
+      tier: metadata.capability || metadata.tier,
       screenId,
       scenario,
       state,
@@ -44,12 +44,12 @@ function params(screenId, state, scenario = 'normal') {
 }
 
 export default {
-  title: 'Pocket Lab/Tier 9 UI Screens',
+  title: 'Pocket Lab/UI Evidence Screens',
   parameters: {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'Generated Tier 9 UI documentation stories for Pocket Lab tabs. Stories use a deterministic FastAPI mock and never talk directly to NATS or execute shell commands.',
+        component: 'Generated Storybook UI documentation stories for Pocket Lab tabs. Stories use a deterministic FastAPI mock and never talk directly to NATS or execute shell commands.',
       },
     },
   },

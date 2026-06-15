@@ -1,5 +1,13 @@
 import { expect, test } from '@playwright/test';
 
+async function seedPocketLabTestState(page) {
+  await page.addInitScript(() => {
+    window.localStorage.setItem('pocketlab_first_run_onboarding_completed_v1', 'true');
+    window.localStorage.setItem('pocketlab_experience_mode', 'professional');
+    window.localStorage.setItem('pocketlab_governance_mode', 'personal');
+  });
+}
+
 test('App Catalog action uses typed non-legacy operation path only', async ({ page }) => {
   const requests: Array<{ url: string; method: string; body: string | null }> = [];
   const allRequests: Array<{ url: string; method: string; body: string | null }> = [];
@@ -65,6 +73,7 @@ test('App Catalog action uses typed non-legacy operation path only', async ({ pa
     });
   });
 
+  await seedPocketLabTestState(page);
   await page.goto('/');
   await expect(page.locator('body')).toBeVisible();
 

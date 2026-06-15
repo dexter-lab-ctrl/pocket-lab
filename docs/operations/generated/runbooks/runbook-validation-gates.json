@@ -3,9 +3,9 @@
   "kind": "RunbookValidationGatesReport",
   "metadata": {
     "name": "pocketlab-runbook-validation-gates",
-    "title": "Pocket Lab Tier 7C Runbook Validation Gates",
+    "title": "Pocket Lab Runbook Validation Gates",
     "tier": "7C",
-    "generatedAt": "2026-06-15T15:47:37.500990+00:00",
+    "generatedAt": "2026-06-15T16:49:53.756115+00:00",
     "sourceOfTruth": "runbooks/*.yaml and operations/*.yaml"
   },
   "summary": {
@@ -22,7 +22,7 @@
       "title": "Runbook schema and catalog validation",
       "severity": "blocking",
       "status": "pass",
-      "message": "All runbooks satisfy the Tier 7A schema and typed-operation catalog validation.",
+      "message": "All runbooks satisfy the runbook metadata catalog schema and typed-operation catalog validation.",
       "evidence": [
         "runbooks/*.yaml",
         "operations/*.yaml"
@@ -79,7 +79,7 @@
       "title": "Timeout and bounded execution gate",
       "severity": "warning",
       "status": "pass",
-      "message": "Runbook timeout metadata is bounded within Tier 7C guidance.",
+      "message": "Runbook timeout metadata is bounded within runbook validation gates guidance.",
       "evidence": [
         "runbooks/*.yaml"
       ],
@@ -112,7 +112,7 @@
       "title": "Retired architecture token gate",
       "severity": "blocking",
       "status": "pass",
-      "message": "No retired architecture tokens were found in Tier 7 runbook paths.",
+      "message": "No retired architecture tokens were found in native runbook capability runbook paths.",
       "evidence": [
         "runbooks/",
         "scripts/docs/",

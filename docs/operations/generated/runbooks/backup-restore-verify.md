@@ -82,6 +82,6 @@ Prove backup integrity and controlled restore readiness without bypassing typed 
 - Impact: `high`
 - Notes: Restore execution requires explicit approval and auditable evidence.
 
-## Tier 7B Scope
+## Scope
 
-This page documents metadata only. Runtime execution through FastAPI, NATS / JetStream, and workers is planned for later Tier 7 phases.
+This page documents metadata only. Runtime execution through FastAPI, NATS / JetStream, and workers is planned for later native runbook capability steps.

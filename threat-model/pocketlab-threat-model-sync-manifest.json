@@ -4,10 +4,10 @@
   "metadata": {
     "name": "pocketlab-threat-model-source-sync",
     "tier": "6.9A",
-    "generatedAt": "2026-06-13T23:15:29.957182+00:00",
+    "generatedAt": "2026-06-15T16:21:32.990549+00:00",
     "description": "Synchronizes threat-model evidence from Structurizr, OpenAPI, AsyncAPI, Typed Operations, and operation metadata."
   },
-  "source_fingerprint": "3145a6785d9b330ad02fb689e0dbb9d924890c7a634b7312e3afec887435d0a1",
+  "source_fingerprint": "0be004e682f85a8d7d9e8b62242cf45d410eec13bbcee642f1bdae510d575882",
   "sources": {
     "structurizr": {
       "path": "architecture/structurizr/workspace.dsl",
@@ -436,8 +436,8 @@
     "openapi": {
       "path": "contracts/generated/openapi.json",
       "title": "Pocket Lab FastAPI/NATS Control API",
-      "version": "2.3.0-phase12",
-      "endpoint_count": 80,
+      "version": "2.4.0-tier13",
+      "endpoint_count": 82,
       "mutating_endpoint_count": 23,
       "endpoints": [
         {
@@ -823,6 +823,18 @@
           "security_defined": false
         },
         {
+          "key": "GET /api/logs/query",
+          "method": "GET",
+          "path": "/api/logs/query",
+          "operationId": "loki_query_api_logs_query_get",
+          "summary": "Loki Query",
+          "tags": [
+            "security"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
           "key": "GET /api/nats/status",
           "method": "GET",
           "path": "/api/nats/status",
@@ -830,6 +842,18 @@
           "summary": "Event Bus Status",
           "tags": [
             "events"
+          ],
+          "mutating": false,
+          "security_defined": false
+        },
+        {
+          "key": "GET /api/observability/status",
+          "method": "GET",
+          "path": "/api/observability/status",
+          "operationId": "observability_status_api_observability_status_get",
+          "summary": "Observability Status",
+          "tags": [
+            "observability"
           ],
           "mutating": false,
           "security_defined": false
@@ -1401,8 +1425,8 @@
       ],
       "digest": {
         "path": "contracts/generated/openapi.json",
-        "sha256": "c2aa4119d33c2616e85dbf9fb1ce23a1e24ce4e15d9cb13657bcb0c4681f4357",
-        "bytes": 198396
+        "sha256": "5537faeb280109c49b20a8e5288e6d972fa281527113e9f73a28fd3c6b090f9a",
+        "bytes": 203344
       }
     },
     "asyncapi": {
@@ -2314,8 +2338,8 @@
       ],
       "digest": {
         "path": "contracts/operations/pocketlab-typed-operations.json",
-        "sha256": "740abf611e28ab291df95cd70f040e5bfca20e9d3849842774ce8c32aea6ec9d",
-        "bytes": 22222
+        "sha256": "f55ee241411a7caec7b450f7d9d8571ed4350f0ed0150d5f2e50d1b23b30b9c2",
+        "bytes": 22116
       }
     },
     "operation_metadata": {

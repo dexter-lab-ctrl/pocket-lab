@@ -19,7 +19,8 @@ This generated page documents environment variables and runtime/dependency files
 | NATS_HEALTH_URL | scripts/dev/check-wsl-docker-desktop.sh |
 | NATS_SERVICE | scripts/dev/check-wsl-docker-desktop.sh |
 | POCKETLAB_ACTIVE_CODE_SCAN_EXCLUDES | scripts/dev/check-iac.sh |
-| POCKETLAB_API_URL | scripts/dev/observability-snapshot.sh, scripts/dev/status.sh, scripts/dev/test-nats-stack.sh, scripts/dev/trace-operation.sh |
+| POCKETLAB_API_TOKEN | scripts/dev/observability-runtime-status.py |
+| POCKETLAB_API_URL | scripts/dev/observability-runtime-status.py, scripts/dev/observability-snapshot.sh, scripts/dev/status.sh, scripts/dev/test-nats-stack.sh, scripts/dev/trace-operation.sh |
 | POCKETLAB_AUTH_TOKEN | scripts/dev/populate-pocketlab-docs.py |
 | POCKETLAB_DOCKER_CHECK_CLEANUP | scripts/dev/check-wsl-docker-desktop.sh |
 | POCKETLAB_DOCKER_COMPOSE_FILE | scripts/dev/check-wsl-docker-desktop.sh |
@@ -106,20 +107,23 @@ This generated page documents environment variables and runtime/dependency files
 | dev:worker | Start Pocket Lab worker locally |
 | docs:architecture:serve | Serve Structurizr architecture workspace locally with Docker |
 | docs:check | Generate and validate Pocket Lab documentation |
-| docs:deployment | Generate Tier 11 deployment documentation from repository-native deployment sources |
-| docs:deployment:ansible | Generate Tier 11 Ansible playbook and role/task deployment reference docs |
-| docs:deployment:ansible:check | Validate Tier 11 Ansible deployment docs and evidence freshness |
-| docs:deployment:check | Validate Tier 11 generated deployment documentation freshness |
-| docs:deployment:evidence | Generate Tier 11 deployment evidence manifest from Ansible, bootstrap, platform, Taskfile, and environment sources |
-| docs:deployment:evidence:check | Validate Tier 11 deployment evidence manifest fingerprints and source integrity |
-| docs:deployment:full-check | Run all Tier 11 deployment documentation generation and freshness checks |
-| docs:deployment:platform | Generate Tier 11 platform, bootstrap, environment, and runtime blueprint docs |
-| docs:deployment:platform:check | Validate Tier 11 platform deployment docs and MkDocs navigation coverage |
-| docs:validation:full-check | Run Tier 8 validation evidence checks and enforce release readiness from recorded evidence |
-| docs:validation:release-gates | Record high-signal release validation gates for Tier 8 evidence |
+| docs:deployment | Generate deployment documentation from repository-native deployment sources |
+| docs:deployment:ansible | Generate deployment evidence Ansible playbook and role/task deployment reference docs |
+| docs:deployment:ansible:check | Validate deployment evidence Ansible deployment docs and evidence freshness |
+| docs:deployment:check | Validate generated deployment documentation freshness |
+| docs:deployment:evidence | Generate deployment evidence manifest from Ansible, bootstrap, platform, Taskfile, and environment sources |
+| docs:deployment:evidence:check | Validate deployment evidence manifest fingerprints and source integrity |
+| docs:deployment:full-check | Run all deployment documentation generation and freshness checks |
+| docs:deployment:platform | Generate deployment evidence platform, bootstrap, environment, and runtime blueprint docs |
+| docs:deployment:platform:check | Validate deployment evidence platform deployment docs and MkDocs navigation coverage |
+| docs:observability:runtime-snapshot | Capture optional runtime observability status runtime observability evidence separately from observability evidence static docs |
+| docs:validation:full-check | Run validation evidence checks and enforce release readiness from recorded evidence |
+| docs:validation:record-docs | Record documentation validation command results for validation evidence and release readiness evidence |
+| docs:validation:release-gates | Record high-signal release validation gates for validation evidence and release readiness evidence |
 | fault:bad-health |  |
 | fault:nats-down |  |
 | fault:worker-down |  |
+| observability:status | Capture runtime observability status runtime observability health from FastAPI |
 | release:dry-run | Build release artifacts locally without publishing |
 | setup | Install Python/npm dependencies |
 | test:backend | Backend compile, FastAPI tests and runtime tests |

@@ -65,7 +65,8 @@ def main() -> None:
         validate_no_retired_text(path)
 
     generated_pages = {path.name for path in GENERATED_DIR.glob("*.md")}
-    stale_pages = sorted(generated_pages - expected_pages)
+    allowed_auxiliary_pages = {"validation-gates.md"}
+    stale_pages = sorted(generated_pages - expected_pages - allowed_auxiliary_pages)
     if stale_pages:
         fail("stale generated runbook docs found: " + ", ".join(stale_pages))
 

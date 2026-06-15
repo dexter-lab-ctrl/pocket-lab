@@ -32,7 +32,7 @@ def main() -> None:
 
     doc = f"""# Threat Model Drift Detection
 
-This page documents Tier 6.8 — Threat Drift Detection for Pocket Lab.
+This page documents threat drift detection — Threat Drift Detection for Pocket Lab.
 
 !!! note "Generated page"
     This page is generated from `threat-model/pocketlab-threat-model-drift-manifest.json` and current repository fingerprints.
@@ -86,7 +86,7 @@ mkdocs build --strict
 
 ## Enterprise value
 
-Tier 6.8 protects against silent security documentation drift. If a developer changes `Structurizr`, `OpenAPI`, `AsyncAPI`, typed operations, or operation-level security metadata, the drift gate fails until the generated threat model is regenerated, reviewed, and resealed.
+threat drift detection protects against silent security documentation drift. If a developer changes `Structurizr`, `OpenAPI`, `AsyncAPI`, typed operations, or operation-level security metadata, the drift gate fails until the generated threat model is regenerated, reviewed, and resealed.
 
 ## Raw manifest summary
 

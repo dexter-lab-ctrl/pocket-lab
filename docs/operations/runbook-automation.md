@@ -1,6 +1,6 @@
 # Runbook Automation
 
-Tier 7B provides enterprise-grade generated runbook documentation from the native Pocket Lab runbook catalog. This remains metadata and documentation only; runtime execution is intentionally deferred to later Tier 7 phases.
+This capability provides enterprise-grade generated runbook documentation from the native Pocket Lab runbook catalog. This remains metadata and documentation only; runtime execution is intentionally deferred to later native runbook capability steps.
 
 ## Architecture
 
@@ -39,13 +39,13 @@ runbooks/*.yaml
 
 ## Current Scope
 
-| Capability | Tier | Status |
+| Capability | Evidence Area | Status |
 |---|---|---|
-| Runbook metadata catalog | 7A | Implemented |
-| Generated runbook documentation | 7B | Implemented |
-| Runbook validation gates | 7C | Planned |
-| FastAPI / NATS runbook execution | 7D | Planned |
-| Runbook audit and DLQ events | 7E | Planned |
+| Runbook metadata catalog | Metadata evidence | Implemented |
+| Generated runbook documentation | Documentation evidence | Implemented |
+| Runbook validation gates | Validation evidence | Implemented |
+| FastAPI / NATS runbook execution | Runtime capability | Implemented where validated |
+| Runbook audit and DLQ events | Audit evidence | Implemented where validated |
 
 ## Validation
 

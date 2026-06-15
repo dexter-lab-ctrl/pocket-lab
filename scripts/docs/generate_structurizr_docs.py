@@ -96,7 +96,7 @@ structurizr-cli export \\
 - All major runtime components must be represented in the DSL.
 - Every new major domain service must update the `container-view` and `domain-services` view.
 - Every major runtime flow must have a dynamic view.
-- Security, policy, secret-management, audit, retry, and DLQ changes must update the Tier 5B security-review views.
+- Security, policy, secret-management, audit, retry, and DLQ changes must update the enterprise security-review views.
 - Deployment topology changes must update deployment views.
 - Architecture docs should stay aligned with OpenAPI, AsyncAPI, and Typed Operations tiers.
 

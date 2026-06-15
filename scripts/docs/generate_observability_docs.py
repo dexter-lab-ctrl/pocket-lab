@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate Tier 12 observability documentation from the evidence manifest."""
+"""Generate observability evidence documentation from the evidence manifest."""
 from __future__ import annotations
 
 import json
@@ -290,7 +290,7 @@ This page is a generated gap and roadmap reference unless alert/SLO source files
 ## Current limitations
 
 - Static source inspection does not prove services are running or alerting is active.
-- Alertmanager, SLO burn-rate rules, and notification routing are not part of the Tier 12 baseline unless implemented separately with validation.
+- Alertmanager, SLO burn-rate rules, and notification routing are not part of the observability evidence baseline unless implemented separately with validation.
 - Do not expose observability endpoints broadly without access-control guidance.
 """
     return page("Alerting / SLO Reference", body)
@@ -330,8 +330,8 @@ def runtime_map_page(m: dict[str, Any]) -> str:
 
 ## Validation boundary
 
-- Tier 12 static validation proves generated evidence and documentation freshness from repository sources.
-- Tier 13 runtime health is exposed through FastAPI at `/api/observability/status` and must be validated separately from Tier 12 static evidence.
+- observability evidence static validation proves generated evidence and documentation freshness from repository sources.
+- runtime observability status runtime health is exposed through FastAPI at `/api/observability/status` and must be validated separately from observability evidence static evidence.
 - Runtime health can also be cross-checked with service checks such as Prometheus `/-/ready`, Loki `/ready`, Grafana `/api/health`, Gatus `/health`, and bounded Loki `pm2_logs` queries.
 """
     return page("Observability Runtime Map", body)

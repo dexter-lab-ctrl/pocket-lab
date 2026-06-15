@@ -18,7 +18,7 @@
       "status": "healthy",
       "summary": "Fallback snapshot",
       "url": "http://127.0.0.1:8081",
-      "last_checked_at": "2026-06-14T17:10:36Z",
+      "last_checked_at": "2026-06-15T17:06:53Z",
       "response_time_ms": null,
       "results_count": null
     },
@@ -27,7 +27,7 @@
       "status": "healthy",
       "summary": "Pocket Lab FastAPI/NATS control plane is serving",
       "url": "http://127.0.0.1:8080",
-      "last_checked_at": "2026-06-14T17:10:36Z",
+      "last_checked_at": "2026-06-15T17:06:53Z",
       "response_time_ms": null,
       "results_count": null
     }
@@ -38,7 +38,7 @@
       "status": "healthy",
       "summary": "Fallback snapshot",
       "url": "http://127.0.0.1:8081",
-      "last_checked_at": "2026-06-14T17:10:36Z",
+      "last_checked_at": "2026-06-15T17:06:53Z",
       "response_time_ms": null,
       "results_count": null
     },
@@ -47,12 +47,12 @@
       "status": "healthy",
       "summary": "Pocket Lab FastAPI/NATS control plane is serving",
       "url": "http://127.0.0.1:8080",
-      "last_checked_at": "2026-06-14T17:10:36Z",
+      "last_checked_at": "2026-06-15T17:06:53Z",
       "response_time_ms": null,
       "results_count": null
     }
   ],
-  "last_checked_at": "2026-06-14T17:10:36Z",
+  "last_checked_at": "2026-06-15T17:06:53Z",
   "gatus": {
     "base_url": "http://127.0.0.1:8081",
     "statuses_path": "/api/v1/endpoints/statuses",

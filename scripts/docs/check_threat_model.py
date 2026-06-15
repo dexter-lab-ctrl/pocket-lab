@@ -83,7 +83,7 @@ def validate_operation_security() -> None:
             fail(f"{path.relative_to(ROOT)} missing security metadata fields: {', '.join(missing)}")
 
 
-def validate_no_legacy(paths: list[Path]) -> None:
+def validate_no_retired_terms(paths: list[Path]) -> None:
     for path in paths:
         if path.is_dir():
             files = [p for p in path.rglob("*") if p.is_file()]
@@ -100,7 +100,7 @@ def main() -> None:
     workspace_text = WORKSPACE.read_text(encoding="utf-8")
     missing_views = [view for view in REQUIRED_VIEWS if view not in workspace_text]
     if missing_views:
-        fail("Tier 5B Structurizr views missing: " + ", ".join(missing_views))
+        fail("enterprise security-review Structurizr views missing: " + ", ".join(missing_views))
 
     validate_operation_security()
 
@@ -125,7 +125,7 @@ def main() -> None:
     if json_model.get("metadata", {}).get("name") != model.get("metadata", {}).get("name"):
         fail("generated JSON does not match YAML metadata name")
 
-    validate_no_legacy(
+    validate_no_retired_terms(
         [
             MODEL,
             DOC,

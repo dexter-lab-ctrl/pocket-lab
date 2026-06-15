@@ -84,6 +84,6 @@ Rotate a managed secret with policy approval, audit evidence, and post-change ve
 - Impact: `critical`
 - Notes: Secret values must never be written to runbook logs, audit events, docs, or DLQ payloads.
 
-## Tier 7B Scope
+## Scope
 
-This page documents metadata only. Runtime execution through FastAPI, NATS / JetStream, and workers is planned for later Tier 7 phases.
+This page documents metadata only. Runtime execution through FastAPI, NATS / JetStream, and workers is planned for later native runbook capability steps.

@@ -1,5 +1,13 @@
 import { expect, test } from '@playwright/test';
 
+async function seedPocketLabTestState(page) {
+  await page.addInitScript(() => {
+    window.localStorage.setItem('pocketlab_first_run_onboarding_completed_v1', 'true');
+    window.localStorage.setItem('pocketlab_experience_mode', 'professional');
+    window.localStorage.setItem('pocketlab_governance_mode', 'personal');
+  });
+}
+
 const professionalAreas = [
   /App Catalog|Apps & Services|Blueprint Catalog|App Store/i,
   /System Map|Map/i,
@@ -32,6 +40,7 @@ const primaryNavigationTabs = [
 ];
 
 test('Professional navigation exposes major architecture areas', async ({ page }) => {
+  await seedPocketLabTestState(page);
   await page.goto('/');
   await expect(page.locator('body')).toBeVisible();
 
@@ -51,6 +60,7 @@ test('Every primary navigation tab can be clicked without crashing', async ({ pa
     pageErrors.push(error.message);
   });
 
+  await seedPocketLabTestState(page);
   await page.goto('/');
   await expect(page.locator('body')).toBeVisible();
 

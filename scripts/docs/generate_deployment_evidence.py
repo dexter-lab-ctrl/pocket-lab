@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Generate Pocket Lab Tier 11 deployment evidence from repository sources.
+"""Generate Pocket Lab deployment evidence deployment evidence from repository sources.
 
 This script is documentation-only. It inspects existing Ansible, bootstrap,
 platform, Taskfile, Docker, and environment files and emits a deterministic
-manifest consumed by Tier 11 generated docs and freshness checks.
+manifest consumed by deployment evidence generated docs and freshness checks.
 """
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ from typing import Any
 try:
     import yaml
 except Exception as exc:  # pragma: no cover
-    print(f"PyYAML is required for Tier 11 deployment docs: {exc}", file=sys.stderr)
+    print(f"PyYAML is required for deployment evidence deployment docs: {exc}", file=sys.stderr)
     raise SystemExit(2)
 
 ROOT = Path(__file__).resolve().parents[2]

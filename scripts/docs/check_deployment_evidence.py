@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check Tier 11 deployment evidence manifest integrity."""
+"""Check deployment evidence deployment evidence manifest integrity."""
 from __future__ import annotations
 
 import hashlib

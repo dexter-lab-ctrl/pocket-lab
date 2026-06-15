@@ -14,6 +14,7 @@
     "Write actions remain represented as Typed Operations submitted through FastAPI endpoints.",
     "Approval, rejection, resume, auto-approval, operation status, and audit behavior are documented as UI states rather than bypassed."
   ],
+  "capability": "Storybook UI documentation and evidence",
   "documented_states": [
     "backend_sync_behavior",
     "button_action_behavior",
@@ -49,7 +50,6 @@
     "src/stories/tier9UiScreens.json",
     "src/stories/PocketLabTabs.stories.jsx"
   ],
-  "source_fingerprint": "cb03a89c8f92cb8d80229d072a3ed3b87d77994282d60df2bd65220f2f2935db",
-  "story_export_count": 29,
-  "tier": "Tier 9 \u2014 UI Documentation with Storybook"
+  "source_fingerprint": "de873ae119c91f19c89e37237ed62a03ddfa93e1facbb0fd08be6e4f5e17b0d1",
+  "story_export_count": 29
 }

@@ -27,7 +27,7 @@ def main() -> None:
     summary = manifest.get("finding_summary", {})
 
     source_rows = [
-        ["Structurizr", sources.get("structurizr", {}).get("path", ""), len(sources.get("structurizr", {}).get("elements", [])), "C4 architecture elements and Tier 5B security views"],
+        ["Structurizr", sources.get("structurizr", {}).get("path", ""), len(sources.get("structurizr", {}).get("elements", [])), "C4 architecture elements and enterprise security-review views"],
         ["OpenAPI", sources.get("openapi", {}).get("path", ""), sources.get("openapi", {}).get("endpoint_count", 0), "FastAPI HTTP control-plane surface"],
         ["AsyncAPI", sources.get("asyncapi", {}).get("path", ""), sources.get("asyncapi", {}).get("channel_count", 0), "NATS / JetStream command and event channels"],
         ["Typed Operations", sources.get("typed_operations", {}).get("path", ""), sources.get("typed_operations", {}).get("operation_count", 0), "Execution contract"],
@@ -62,12 +62,12 @@ def main() -> None:
     doc = [
         "# Threat Model Source Synchronization",
         "",
-        '!!! note "Generated Tier 6.9A evidence"',
+        '!!! note "Generated threat-model source synchronization evidence"',
         "    This page is generated from Structurizr, OpenAPI, AsyncAPI, Typed Operations, and `operations/*.yaml`. It verifies that security architecture and threat-model metadata stay synchronized with contract-first engineering artifacts.",
         "",
         "## Objective",
         "",
-        "Tier 6.9A automatically synchronizes Pocket Lab threat-model evidence with the architecture and contract sources that define the control plane.",
+        "threat-model source synchronization automatically synchronizes Pocket Lab threat-model evidence with the architecture and contract sources that define the control plane.",
         "",
         "```text",
         "Structurizr + OpenAPI + AsyncAPI + Typed Operations + operations/*.yaml",
@@ -120,7 +120,7 @@ def main() -> None:
         "## Enterprise value",
         "",
         "- New typed operations cannot silently bypass threat-model metadata.",
-        "- Structurizr Tier 5B views remain a required architecture evidence source.",
+        "- Structurizr enterprise security-review views remain a required architecture evidence source.",
         "- OpenAPI mutating surfaces are visible for security review.",
         "- AsyncAPI NATS / JetStream channels are visible for command/event boundary review.",
         "- Operation metadata links STRIDE, trust boundaries, attack surfaces, mitigations, and residual risks to generated contracts.",

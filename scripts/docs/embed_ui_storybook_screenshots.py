@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Enterprise-grade Tier 9A screenshot evidence embedder for MkDocs."""
+"""Enterprise-grade Storybook screenshot evidence embedder for MkDocs."""
 
 from __future__ import annotations
 
@@ -253,7 +253,7 @@ def main() -> None:
     GENERATED_DOC.write_text(updated, encoding="utf-8")
 
     print(
-        f"Embedded Tier 9A screenshot evidence: screens={injected_screen_count} "
+        f"Embedded Storybook screenshot evidence: screens={injected_screen_count} "
         f"image_links={image_link_count} into {GENERATED_DOC}"
     )
 

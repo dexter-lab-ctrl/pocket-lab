@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate Pocket Lab Tier 12 observability evidence from repository sources.
+"""Generate Pocket Lab observability evidence observability evidence from repository sources.
 
 This script is documentation-only. It inspects the existing Pocket Lab
 observability implementation (Prometheus, Grafana, Loki, Promtail, Gatus,
@@ -19,7 +19,7 @@ from typing import Any
 try:
     import yaml
 except Exception as exc:  # pragma: no cover
-    print(f"PyYAML is required for Tier 12 observability docs: {exc}", file=sys.stderr)
+    print(f"PyYAML is required for observability evidence observability docs: {exc}", file=sys.stderr)
     raise SystemExit(2)
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -556,7 +556,7 @@ def main() -> int:
         missing_enterprise_features.append("Grafana datasource provisioning as code for Prometheus and Loki.")
     alert_files = [rel(p) for p in sorted((ROOT / "observability").rglob("*") if (ROOT / "observability").exists() else []) if p.is_file() and ("alert" in p.name.lower() or "slo" in p.name.lower())]
     if not alert_files:
-        warnings.append("Alert/SLO source files were not verified; Tier 12 generates a gap/reference page only.")
+        warnings.append("Alert/SLO source files were not verified; observability evidence generates a gap/reference page only.")
         missing_enterprise_features.append("Alert rules and SLO metadata as committed source files.")
 
     manifest = {

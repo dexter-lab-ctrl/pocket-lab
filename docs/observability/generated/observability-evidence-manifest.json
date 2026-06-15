@@ -91,6 +91,28 @@
     {
       "kind": "bootstrap_observability_scripts",
       "observability_tokens": [
+        "observability"
+      ],
+      "path": "scripts/dev/__pycache__/observability-runtime-status.cpython-314.pyc",
+      "sha256": "4d8fc2439403ca53f87074d9c025b6e05678a261e2ec7dfeab63f5fbf8ee2bc4",
+      "size_bytes": 3760,
+      "summary": "observability-runtime-status.cpython-314.pyc"
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "observability_tokens": [
+        "health-engine",
+        "observability",
+        "telemetry"
+      ],
+      "path": "scripts/dev/__pycache__/populate-pocketlab-docs.cpython-314.pyc",
+      "sha256": "dcdda55f7125fab2765e9382e1826860d7fdf3d2d208499ee720f41e7273737e",
+      "size_bytes": 54396,
+      "summary": "Pocket Lab Product Overview / Operator Guide"
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "observability_tokens": [
         "telemetry"
       ],
       "path": "scripts/dev/check-faults.sh",
@@ -127,30 +149,6 @@
       "sha256": "4b0f35e572f1d904489999c9ee19a55228263dcdd2e109656720488584206ccb",
       "size_bytes": 17792,
       "summary": "=============================================================================="
-    },
-    {
-      "kind": "bootstrap_observability_scripts",
-      "observability_tokens": [
-        "gatus"
-      ],
-      "path": "scripts/dev/migrations/pocketlab_bootstrap_scripts_shellcheck_fix.sh",
-      "sha256": "f5741acdbab255655e5aea4e9d9ee23b04164fd07182e3c6962a9477e328aac9",
-      "size_bytes": 9576,
-      "summary": "Pocket Lab bootstrap script fixer"
-    },
-    {
-      "kind": "bootstrap_observability_scripts",
-      "observability_tokens": [
-        "gatus",
-        "health-engine",
-        "loki",
-        "observability",
-        "telemetry"
-      ],
-      "path": "scripts/dev/migrations/pocketlab_ubuntu_dev_env_setup_v3_architecture_plus_contract_fix.sh",
-      "sha256": "252f247d340ded02de2bb009ccb9469452f6503c6719be967663bb8f56979b43",
-      "size_bytes": 110290,
-      "summary": "pocketlab_ubuntu_dev_env_setup_v3_architecture_plus.sh"
     },
     {
       "kind": "bootstrap_observability_scripts",
@@ -316,7 +314,6 @@
   "frontend_observability_consumers": [
     {
       "endpoints_or_tokens": [
-        "/loki/api/v1/query?query=${encodeURIComponent(query)}&limit=100",
         "/ready"
       ],
       "hooks": [],
@@ -325,9 +322,7 @@
       "screen": "LogExplorerTab"
     },
     {
-      "endpoints_or_tokens": [
-        "/loki/api/v1/query?query={job=\"pm2_logs\"} |= \"security_audit\"&limit=5"
-      ],
+      "endpoints_or_tokens": [],
       "hooks": [
         "useHealthEngine"
       ],
@@ -609,7 +604,7 @@
       "url": "http://127.0.0.1:8080/api/git_history.json"
     }
   ],
-  "generated_at": "2026-06-14T17:07:43.576236Z",
+  "generated_at": "2026-06-15T16:39:22.280162Z",
   "generated_by": "scripts/docs/generate_observability_evidence.py",
   "grafana_config": {
     "dashboard_json_files": [],
@@ -969,14 +964,14 @@
     {
       "kind": "runtime_contracts",
       "path": "contracts/generated/openapi.json",
-      "sha256": "84c20e572205a5f61781322e1f0e9fa9e00da14ac8bf1ccb90e3701f032b7282",
-      "size_bytes": 200550
+      "sha256": "5537faeb280109c49b20a8e5288e6d972fa281527113e9f73a28fd3c6b090f9a",
+      "size_bytes": 203344
     },
     {
       "kind": "runtime_contracts",
       "path": "contracts/operations/pocketlab-typed-operations.json",
-      "sha256": "740abf611e28ab291df95cd70f040e5bfca20e9d3849842774ce8c32aea6ec9d",
-      "size_bytes": 22222
+      "sha256": "f55ee241411a7caec7b450f7d9d8571ed4350f0ed0150d5f2e50d1b23b30b9c2",
+      "size_bytes": 22116
     },
     {
       "kind": "runtime_contracts",
@@ -999,8 +994,8 @@
     {
       "kind": "runtime_contracts",
       "path": "docs/runtime/typed-operations-catalog.md",
-      "sha256": "ecb064f074846ac4409b1b2d2a37718c41d6e1558ac09d46f33b40a68788b7d9",
-      "size_bytes": 8042
+      "sha256": "953ae1fefd141f72c2051a034bda7c1d32295b2ebe270c3bce4cd19115ef0628",
+      "size_bytes": 7989
     },
     {
       "kind": "bootstrap_observability_scripts",
@@ -1173,8 +1168,8 @@
     {
       "kind": "fastapi_runtime_observability",
       "path": "pocket-lab-final-structure/runtime/api_fastapi/routers/security.py",
-      "sha256": "0e689910071ec06a4f31f19f0fca8e007a6a2ff01c4bc91e8ebe6dc217fc3ee8",
-      "size_bytes": 1976
+      "sha256": "dcb14521299bdcde1df9e7ec266d1da51e77216f336f94564d9e251d1d141f28",
+      "size_bytes": 2007
     },
     {
       "kind": "fastapi_runtime_observability",
@@ -1208,6 +1203,18 @@
     },
     {
       "kind": "bootstrap_observability_scripts",
+      "path": "scripts/dev/__pycache__/observability-runtime-status.cpython-314.pyc",
+      "sha256": "4d8fc2439403ca53f87074d9c025b6e05678a261e2ec7dfeab63f5fbf8ee2bc4",
+      "size_bytes": 3760
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "path": "scripts/dev/__pycache__/populate-pocketlab-docs.cpython-314.pyc",
+      "sha256": "dcdda55f7125fab2765e9382e1826860d7fdf3d2d208499ee720f41e7273737e",
+      "size_bytes": 54396
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
       "path": "scripts/dev/check-faults.sh",
       "sha256": "679704a773f21384d3212c8d628c3dc340c137a3c55c1058cac6c75acb2c66d1",
       "size_bytes": 758
@@ -1229,18 +1236,6 @@
       "path": "scripts/dev/implement-documentation-placement.sh",
       "sha256": "4b0f35e572f1d904489999c9ee19a55228263dcdd2e109656720488584206ccb",
       "size_bytes": 17792
-    },
-    {
-      "kind": "bootstrap_observability_scripts",
-      "path": "scripts/dev/migrations/pocketlab_bootstrap_scripts_shellcheck_fix.sh",
-      "sha256": "f5741acdbab255655e5aea4e9d9ee23b04164fd07182e3c6962a9477e328aac9",
-      "size_bytes": 9576
-    },
-    {
-      "kind": "bootstrap_observability_scripts",
-      "path": "scripts/dev/migrations/pocketlab_ubuntu_dev_env_setup_v3_architecture_plus_contract_fix.sh",
-      "sha256": "252f247d340ded02de2bb009ccb9469452f6503c6719be967663bb8f56979b43",
-      "size_bytes": 110290
     },
     {
       "kind": "bootstrap_observability_scripts",
@@ -1287,8 +1282,8 @@
     {
       "kind": "frontend_observability_consumers",
       "path": "src/components/RuntimeObservabilityStatusPanel.jsx",
-      "sha256": "fd5e019b41479eb2f6cf6512a32b8e1bdf4053215ecd2e844f160a1a5feb58ad",
-      "size_bytes": 7453
+      "sha256": "9288fb99b33b21c038f6786eedb4d5d5c78e6353ac18a518137becd86be15277",
+      "size_bytes": 11029
     },
     {
       "kind": "frontend_observability_consumers",
@@ -1317,20 +1312,20 @@
     {
       "kind": "frontend_observability_consumers",
       "path": "src/tabs/LogExplorerTab.jsx",
-      "sha256": "631c68b69c0523e97fed88ec5f3032ddc4263bfd7a86ae2c54c9430b3315fc9e",
-      "size_bytes": 13432
+      "sha256": "047037c852ff2961bfe3f1e3ec979550f4cc1fa509602cdb6fcddccac56c51fd",
+      "size_bytes": 14103
     },
     {
       "kind": "frontend_observability_consumers",
       "path": "src/tabs/NocTelemetryTab.jsx",
-      "sha256": "996dabfe540fbe7193b17280887b3e5ead610905e383ec2955ccdc23ab1ebc51",
-      "size_bytes": 13309
+      "sha256": "b0b3037f6c18a153c8885d305d8a6a9be0323d6ba3f546711d00bcef547963e8",
+      "size_bytes": 13582
     },
     {
       "kind": "frontend_observability_consumers",
       "path": "src/tabs/SecurityPostureTab.jsx",
-      "sha256": "718ee416da34463d55a5220c81dceff477240aed060d9a6da2d24bcbefe34404",
-      "size_bytes": 15013
+      "sha256": "ef06c120d2d8d695cff460725183850d79e2fe31e85a189fabcf43087b732477",
+      "size_bytes": 14978
     }
   ],
   "source_groups": {
@@ -1361,12 +1356,12 @@
       "pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/scripts/lib/common.sh",
       "pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/scripts/smoke-test.sh",
       "pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/scripts/start-dashboard.sh",
+      "scripts/dev/__pycache__/observability-runtime-status.cpython-314.pyc",
+      "scripts/dev/__pycache__/populate-pocketlab-docs.cpython-314.pyc",
       "scripts/dev/check-faults.sh",
       "scripts/dev/check-schemas.sh",
       "scripts/dev/fault-inject.sh",
       "scripts/dev/implement-documentation-placement.sh",
-      "scripts/dev/migrations/pocketlab_bootstrap_scripts_shellcheck_fix.sh",
-      "scripts/dev/migrations/pocketlab_ubuntu_dev_env_setup_v3_architecture_plus_contract_fix.sh",
       "scripts/dev/observability-runtime-status.py",
       "scripts/dev/observability-snapshot.sh",
       "scripts/dev/organize-mkdocs-docs.sh",
@@ -1417,6 +1412,6 @@
     "FastAPI /metrics endpoint was not verified in the current repository snapshot.",
     "Grafana directories/config exist, but dashboard JSON files were not verified.",
     "Grafana datasource provisioning YAML was not verified.",
-    "Alert/SLO source files were not verified; Tier 12 generates a gap/reference page only."
+    "Alert/SLO source files were not verified; observability evidence generates a gap/reference page only."
   ]
 }
