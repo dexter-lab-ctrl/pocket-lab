@@ -16,7 +16,7 @@ Threat drift detection fails the build when architecture, API contracts, event c
 | Source fingerprint | PASS |
 | Generated output fingerprint | PASS |
 | Manifest | `threat-model/pocketlab-threat-model-drift-manifest.json` |
-| Page generated at | 2026-06-15T15:35:04.865905+00:00 |
+| Page generated at | 2026-06-15T15:47:38.656370+00:00 |
 
 ## Sources tracked
 
@@ -50,9 +50,9 @@ Threat drift detection fails the build when architecture, API contracts, event c
 
 | Output | Size bytes | SHA-256 prefix |
 |---|---:|---|
-| threat-model/pocketlab-threat-model.yaml | 83328 | 396e1ef855a958ab... |
-| docs/security/security-architecture-threat-model.md | 62656 | 41b8b804010189bd... |
-| docs/security/generated/threat-model/pocketlab-threat-model.json | 154230 | 3713f1988e11e59a... |
+| threat-model/pocketlab-threat-model.yaml | 83328 | 1dbf915cad8104e9... |
+| docs/security/security-architecture-threat-model.md | 62656 | 469e2a266a426975... |
+| docs/security/generated/threat-model/pocketlab-threat-model.json | 154230 | 6b0939829ea5566f... |
 | docs/security/generated/threat-model/index.md | 328 | 1f64fe7f0390803b... |
 
 ## Commands
@@ -88,6 +88,6 @@ Tier 6.8 protects against silent security documentation drift. If a developer ch
   "apiVersion": "pocketlab.io/v1alpha1",
   "kind": "ThreatModelDriftManifest",
   "source_fingerprint": "a546fa674ec6848f66ecaf7fb85dd87da4b9801346125635279d050c44913855",
-  "generated_output_fingerprint": "b9e06c35ea47a977ed2fd2857b2758b9a665291e5b93c0dad168e7b499d9ca39"
+  "generated_output_fingerprint": "174198aabaee33c4f5af2be20bb49192f4f72dd2c22e896beb85f37048f245bf"
 }
 ```

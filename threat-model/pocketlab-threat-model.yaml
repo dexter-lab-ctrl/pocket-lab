@@ -4,7 +4,7 @@ metadata:
   name: pocketlab-threat-model
   title: Pocket Lab Security Architecture & Threat Model
   tier: '6.5'
-  generatedAt: '2026-06-15T15:35:04.106013+00:00'
+  generatedAt: '2026-06-15T15:47:37.885213+00:00'
   sourceOfTruth: Repository-generated metadata. Operation-level security blocks in operations/*.yaml are required for new
     features.
 evidence_sources:
