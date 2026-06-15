@@ -1,6 +1,6 @@
 # Generated Runbook Catalog
 
-!!! note "Generated Tier 7B runbook documentation"
+!!! note "Generated runbook documentation capability runbook documentation"
     This page is generated from `runbooks/*.yaml`. Runbooks orchestrate typed operations only. They do not introduce shell execution or any external automation control plane.
 
 ## Summary
@@ -36,4 +36,4 @@
 - Runbook steps must reference typed operations from `operations/*.yaml`.
 - Runbook documentation is generated and must not be manually edited under `docs/operations/generated/runbooks/`.
 - Runbooks preserve FastAPI as the control API, NATS / JetStream as the event backbone, and workers as the execution boundary.
-- Tier 7B is documentation generation only. Runtime execution is intentionally deferred to later Tier 7 phases.
+- runbook documentation capability is documentation generation only. Runtime execution is intentionally deferred to later native runbook capability steps.

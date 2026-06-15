@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate Tier 11 Pocket Lab deployment documentation from evidence manifest."""
+"""Generate deployment evidence Pocket Lab deployment documentation from evidence manifest."""
 from __future__ import annotations
 
 import json
@@ -48,7 +48,7 @@ def deployment_guide(m: dict[str, Any]) -> str:
     s = m["source_summary"]
     return f"""# Pocket Lab Deployment Guide
 
-This Tier 11 page is generated from repository deployment evidence. It documents what exists in this repository; it does not add a new deployment platform or change runtime behavior.
+This deployment evidence page is generated from repository deployment evidence. It documents what exists in this repository; it does not add a new deployment platform or change runtime behavior.
 
 ## Deployment model
 
@@ -64,7 +64,7 @@ React / Vite PWA
 → UI
 ```
 
-The deployment automation inspected by Tier 11 is source evidence for installing, validating, and operating that runtime. Frontend code does not execute shell commands and does not talk directly to NATS.
+The deployment automation inspected by deployment evidence is source evidence for installing, validating, and operating that runtime. Frontend code does not execute shell commands and does not talk directly to NATS.
 
 ## Source evidence summary
 
@@ -111,11 +111,11 @@ This generated page links the platform-specific deployment and development evide
 
 ## Android / Termux / ARM64 evidence
 
-Tier 11 found {len(compat.get('android_termux_arm64', []))} Android / Termux / ARM64-related evidence entries. Use the existing Android / Termux operations guide and smoke scripts where present; this generator only links and fingerprints existing sources.
+deployment evidence found {len(compat.get('android_termux_arm64', []))} Android / Termux / ARM64-related evidence entries. Use the existing Android / Termux operations guide and smoke scripts where present; this generator only links and fingerprints existing sources.
 
 ## Ubuntu / WSL2 evidence
 
-Tier 11 found {len(compat.get('ubuntu_wsl2', []))} Ubuntu / WSL2-related evidence entries. Daily development and validation should run from the Linux filesystem repo, not from a Windows-mounted path.
+deployment evidence found {len(compat.get('ubuntu_wsl2', []))} Ubuntu / WSL2-related evidence entries. Daily development and validation should run from the Linux filesystem repo, not from a Windows-mounted path.
 
 ## Governance wording
 
@@ -218,7 +218,7 @@ def runtime_blueprint(m: dict[str, Any]) -> str:
     s = m["source_summary"]
     return f"""# Pocket Lab Runtime Blueprint
 
-This Tier 11 runtime blueprint is generated from deployment evidence and preserves the existing Pocket Lab runtime architecture.
+This deployment evidence runtime blueprint is generated from deployment evidence and preserves the existing Pocket Lab runtime architecture.
 
 ## Runtime flow
 
@@ -247,7 +247,7 @@ React / Vite PWA
 
 ## Platform compatibility
 
-Tier 11 links existing Android / Termux / ARM64 and Ubuntu / WSL2 evidence where present. It does not claim a platform is implemented unless a source file exists in the evidence manifest.
+deployment evidence links existing Android / Termux / ARM64 and Ubuntu / WSL2 evidence where present. It does not claim a platform is implemented unless a source file exists in the evidence manifest.
 """
 
 

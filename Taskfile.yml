@@ -95,10 +95,10 @@ tasks:
     desc: Generate local observability HTML snapshot
     cmds: [bash scripts/dev/observability-snapshot.sh]
   observability:status:
-    desc: Capture Tier 13 runtime observability health from FastAPI
+    desc: Capture runtime observability status runtime observability health from FastAPI
     cmds: ['{{.PYTHON}} scripts/dev/observability-runtime-status.py']
   docs:observability:runtime-snapshot:
-    desc: Capture optional Tier 13 runtime observability evidence separately from Tier 12 static docs
+    desc: Capture optional runtime observability status runtime observability evidence separately from observability evidence static docs
     cmds: ['{{.PYTHON}} scripts/dev/observability-runtime-status.py']
 
   android:smoke:
@@ -276,13 +276,13 @@ tasks:
       - docker logs -f pocketlab-threat-dragon
 
   docs:threat-model:
-    desc: Generate Pocket Lab Tier 6 threat-model metadata and documentation
+    desc: Generate Pocket Lab threat-modeling capability threat-model metadata and documentation
     cmds:
       - python3 scripts/docs/generate_threat_model_docs.py
       - task docs:threat-model:drift:seal
 
   docs:threat-model:check:
-    desc: Validate generated Pocket Lab Tier 6 threat-model metadata and documentation
+    desc: Validate generated Pocket Lab threat-modeling capability threat-model metadata and documentation
     cmds:
       - python3 scripts/docs/generate_threat_model_docs.py
       - python3 scripts/docs/check_threat_model.py
@@ -306,57 +306,57 @@ tasks:
       - python3 scripts/docs/check_threat_model_drift.py
 
   docs:threat-model:drift:docs:
-    desc: Generate the Tier 6.8 threat drift detection documentation page
+    desc: Generate the threat drift detection documentation page
     cmds:
       - python3 scripts/docs/generate_threat_model_drift_docs.py
 
   docs:threat-model:sync:
-    desc: Generate Tier 6.9A threat-model source synchronization manifest and docs
+    desc: Generate threat-model source synchronization manifest and docs
     cmds:
       - python3 scripts/docs/generate_threat_model_source_sync_docs.py
 
   docs:threat-model:sync:check:
-    desc: Validate Tier 6.9A threat-model source synchronization across Structurizr, OpenAPI, AsyncAPI, and Typed Operations
+    desc: Validate threat-model source synchronization across Structurizr, OpenAPI, AsyncAPI, and Typed Operations
     cmds:
       - python3 scripts/docs/generate_threat_model_source_sync_docs.py
       - python3 scripts/docs/check_threat_model_source_sync.py
 
   docs:security:policies:
-    desc: Generate Tier 10 security policy documentation and evidence from policy metadata, operations, runbooks, and security sources
+    desc: Generate policy and security evidence security policy documentation and evidence from policy metadata, operations, runbooks, and security sources
     cmds:
       - python3 scripts/docs/generate_policy_evidence.py
       - python3 scripts/docs/generate_policy_docs.py
 
   docs:security:policies:check:
-    desc: Validate Tier 10 generated policy documentation and evidence freshness
+    desc: Validate policy and security evidence generated policy documentation and evidence freshness
     cmds:
       - python3 scripts/docs/check_policy_evidence.py
       - python3 scripts/docs/check_policy_docs.py
 
   docs:security:controls:
-    desc: Generate Tier 10 compliance controls reference from policy evidence
+    desc: Generate policy and security evidence compliance controls reference from policy evidence
     cmds:
       - task docs:security:policies
 
   docs:security:controls:check:
-    desc: Validate Tier 10 compliance controls reference freshness
+    desc: Validate policy and security evidence compliance controls reference freshness
     cmds:
       - python3 scripts/docs/check_policy_docs.py
 
   docs:security:full-check:
-    desc: Run complete Tier 10 security policy documentation generation and freshness checks
+    desc: Run complete policy and security evidence security policy documentation generation and freshness checks
     cmds:
       - task docs:security:policies
       - task docs:security:policies:check
       - task docs:security:controls:check
 
   docs:runbooks:catalog:
-    desc: Generate Pocket Lab Tier 7A runbook metadata catalog JSON
+    desc: Generate Pocket Lab runbook metadata catalog runbook metadata catalog JSON
     cmds:
       - python3 scripts/docs/generate_runbook_catalog.py
 
   docs:runbooks:
-    desc: Generate Pocket Lab Tier 7B runbook documentation from native runbook metadata
+    desc: Generate Pocket Lab runbook documentation capability runbook documentation from native runbook metadata
     cmds:
       - python3 scripts/docs/generate_runbook_docs.py
 
@@ -368,23 +368,23 @@ tasks:
       - python3 scripts/docs/check_runbook_docs.py
 
   docs:runbooks:docs:
-    desc: Generate Tier 7B runbook documentation pages and manifest
+    desc: Generate runbook documentation capability runbook documentation pages and manifest
     cmds:
       - python3 scripts/docs/generate_runbook_docs.py
 
   docs:runbooks:docs:check:
-    desc: Validate Tier 7B generated runbook documentation pages and manifest
+    desc: Validate runbook documentation capability generated runbook documentation pages and manifest
     cmds:
       - python3 scripts/docs/generate_runbook_docs.py
       - python3 scripts/docs/check_runbook_docs.py
 
   docs:runbooks:gates:
-    desc: Generate Pocket Lab Tier 7C runbook validation gate report
+    desc: Generate Pocket Lab runbook validation gates runbook validation gate report
     cmds:
       - python3 scripts/docs/runbook_validation_gates.py --write
 
   docs:runbooks:gates:check:
-    desc: Validate Pocket Lab Tier 7C runbook validation gates
+    desc: Validate Pocket Lab runbook validation gates runbook validation gates
     cmds:
       - python3 scripts/docs/runbook_validation_gates.py --check
 
@@ -401,22 +401,22 @@ tasks:
       - pytest tests/backend/test_runbook_execution.py -q
 
   docs:validation:evidence:
-    desc: Generate Tier 8 validation manifest, evidence bundle, readiness matrix, and Allure result files
+    desc: Generate validation manifest, evidence bundle, readiness matrix, and Allure result files
     cmds:
       - python3 scripts/docs/generate_validation_evidence.py
 
   docs:validation:check:
-    desc: Validate generated Tier 8 validation evidence and freshness
+    desc: Validate generated validation evidence and freshness
     cmds:
       - python3 scripts/docs/check_validation_evidence.py
 
   docs:validation:allure:
-    desc: Generate a local static Allure report from Tier 8 validation evidence
+    desc: Generate a local static Allure report from validation evidence
     cmds:
       - bash scripts/docs/generate_allure_report.sh
 
   docs:validation:record-docs:
-    desc: Record documentation validation command results for Tier 8 evidence
+    desc: Record documentation validation command results for validation evidence and release readiness evidence
     cmds:
       - python3 scripts/docs/record_validation_result.py docs-api -- task docs:api
       - python3 scripts/docs/record_validation_result.py docs-events -- task docs:events
@@ -429,12 +429,12 @@ tasks:
       - task docs:validation:evidence
 
   docs:validation:release-gates:
-    desc: Record high-signal release validation gates for Tier 8 evidence
+    desc: Record high-signal release validation gates for validation evidence and release readiness evidence
     cmds:
       - python3 scripts/docs/run_validation_release_gates.py
       - task docs:validation:evidence
   docs:validation:full-check:
-    desc: Run Tier 8 validation evidence checks and enforce release readiness from recorded evidence
+    desc: Run validation evidence checks and enforce release readiness from recorded evidence
     cmds:
       - task docs:validation:record-docs
       - task docs:validation:evidence
@@ -483,82 +483,82 @@ tasks:
       - npm run build-storybook
 
   docs:ui:
-    desc: Generate Tier 9 Storybook UI screen reference documentation
+    desc: Generate Storybook UI documentation Storybook UI screen reference documentation
     cmds:
       - python3 scripts/docs/generate_ui_storybook_docs.py
       - python3 scripts/docs/embed_ui_storybook_screenshots.py
 
   docs:ui:check:
-    desc: Validate Tier 9 Storybook UI documentation, required stories, Simple Mode labels, and freshness
+    desc: Validate Storybook UI documentation, required stories, Simple Mode labels, and freshness
     cmds:
       - python3 scripts/docs/check_ui_storybook_docs.py
 
   storybook:screenshots:
-    desc: Capture Tier 9A Storybook screenshot evidence for MkDocs
+    desc: Capture Storybook screenshot evidence for MkDocs
     cmds:
       - npm run build-storybook
       - node scripts/docs/capture_ui_storybook_screenshots.mjs
 
   docs:ui:screenshots:
-    desc: Capture Tier 9A UI screenshots and regenerate MkDocs UI documentation
+    desc: Capture Storybook UI screenshots and regenerate MkDocs UI documentation
     cmds:
       - task: storybook:screenshots
       - task: docs:ui
 
   docs:ui:screenshots:check:
-    desc: Validate Tier 9A UI screenshot evidence and generated UI documentation freshness
+    desc: Validate Storybook screenshot evidence and generated UI documentation freshness
     cmds:
       - python3 scripts/docs/check_ui_storybook_screenshots.py
       - task: docs:ui:check
 
   docs:deployment:evidence:
-    desc: Generate Tier 11 deployment evidence manifest from Ansible, bootstrap, platform, Taskfile, and environment sources
+    desc: Generate deployment evidence manifest from Ansible, bootstrap, platform, Taskfile, and environment sources
     cmds:
       - python3 scripts/docs/generate_deployment_evidence.py
 
   docs:deployment:evidence:check:
-    desc: Validate Tier 11 deployment evidence manifest fingerprints and source integrity
+    desc: Validate deployment evidence manifest fingerprints and source integrity
     cmds:
       - python3 scripts/docs/check_deployment_evidence.py
 
   docs:deployment:ansible:
-    desc: Generate Tier 11 Ansible playbook and role/task deployment reference docs
+    desc: Generate deployment evidence Ansible playbook and role/task deployment reference docs
     cmds:
       - python3 scripts/docs/generate_deployment_evidence.py
       - python3 scripts/docs/generate_deployment_docs.py
 
   docs:deployment:ansible:check:
-    desc: Validate Tier 11 Ansible deployment docs and evidence freshness
+    desc: Validate deployment evidence Ansible deployment docs and evidence freshness
     cmds:
       - python3 scripts/docs/check_deployment_evidence.py
       - python3 scripts/docs/check_deployment_docs.py
 
   docs:deployment:platform:
-    desc: Generate Tier 11 platform, bootstrap, environment, and runtime blueprint docs
+    desc: Generate deployment evidence platform, bootstrap, environment, and runtime blueprint docs
     cmds:
       - python3 scripts/docs/generate_deployment_evidence.py
       - python3 scripts/docs/generate_deployment_docs.py
 
   docs:deployment:platform:check:
-    desc: Validate Tier 11 platform deployment docs and MkDocs navigation coverage
+    desc: Validate deployment evidence platform deployment docs and MkDocs navigation coverage
     cmds:
       - python3 scripts/docs/check_deployment_evidence.py
       - python3 scripts/docs/check_deployment_docs.py
 
   docs:deployment:
-    desc: Generate Tier 11 deployment documentation from repository-native deployment sources
+    desc: Generate deployment documentation from repository-native deployment sources
     cmds:
       - task docs:deployment:evidence
       - python3 scripts/docs/generate_deployment_docs.py
 
   docs:deployment:check:
-    desc: Validate Tier 11 generated deployment documentation freshness
+    desc: Validate generated deployment documentation freshness
     cmds:
       - task docs:deployment:evidence:check
       - python3 scripts/docs/check_deployment_docs.py
 
   docs:deployment:full-check:
-    desc: Run all Tier 11 deployment documentation generation and freshness checks
+    desc: Run all deployment documentation generation and freshness checks
     cmds:
       - task docs:deployment
       - task docs:deployment:check
@@ -566,36 +566,36 @@ tasks:
       - task docs:deployment:platform:check
 
   docs:observability:evidence:
-    desc: Generate Tier 12 observability evidence manifest
+    desc: Generate observability evidence manifest
     cmds:
       - python3 scripts/docs/generate_observability_evidence.py
 
   docs:observability:
-    desc: Generate Tier 12 observability documentation
+    desc: Generate observability evidence documentation
     cmds:
       - task docs:observability:evidence
       - python3 scripts/docs/generate_observability_docs.py
 
   docs:observability:check:
-    desc: Check Tier 12 observability evidence and generated docs freshness
+    desc: Check observability evidence and generated docs freshness
     cmds:
       - python3 scripts/docs/check_observability_evidence.py
       - python3 scripts/docs/check_observability_docs.py
 
   docs:observability:full-check:
-    desc: Generate and validate Tier 12 observability documentation
+    desc: Generate and validate observability evidence documentation
     cmds:
       - task docs:observability
       - task docs:observability:check
 
   docs:ui:evidence:
-    desc: Generate Tier 9 / 9A UI documentation and screenshot evidence
+    desc: Generate Storybook UI documentation / 9A UI documentation and screenshot evidence
     cmds:
       - task docs:ui
       - task docs:ui:screenshots
 
   docs:ui:evidence:check:
-    desc: Validate Tier 9 / 9A UI documentation and screenshot evidence freshness
+    desc: Validate Storybook UI documentation / 9A UI documentation and screenshot evidence freshness
     cmds:
       - task docs:ui:check
       - task docs:ui:screenshots:check

@@ -1,8 +1,8 @@
 # Windows WSL2 Ubuntu Bootstrap
 
-This page documents Phase 2 of the Windows development environment work for Pocket Lab.
+This page documents WSL2 Ubuntu bootstrap capability of the Windows development environment work for Pocket Lab.
 
-Phase 2 creates the real Pocket Lab development environment inside WSL2 Ubuntu. Windows remains the host and editor surface, while Ubuntu runs the Linux tooling, Taskfile workflows, Python virtual environment, Node dependencies, Docker CLI, documentation tooling, and validation commands.
+WSL2 Ubuntu bootstrap capability creates the real Pocket Lab development environment inside WSL2 Ubuntu. Windows remains the host and editor surface, while Ubuntu runs the Linux tooling, Taskfile workflows, Python virtual environment, Node dependencies, Docker CLI, documentation tooling, and validation commands.
 
 ## Target model
 

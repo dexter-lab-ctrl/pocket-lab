@@ -1,11 +1,11 @@
 {
-  "description": "Repository artifact exists, but no recorded command outcome was found. Use the validation recorder for release-grade evidence.",
+  "description": "Recorded command completed successfully.",
   "fullName": "Pocket Lab Validation::Documentation::mkdocs-build",
   "historyId": "770592e9e508999bbdae0abfbc8182b2",
   "labels": [
     {
       "name": "epic",
-      "value": "Tier 8 Validation Documentation"
+      "value": "validation evidence and release readiness Validation Documentation"
     },
     {
       "name": "feature",
@@ -25,7 +25,7 @@
     },
     {
       "name": "tag",
-      "value": "WARNING"
+      "value": "PASS"
     }
   ],
   "name": "MkDocs strict documentation build",
@@ -36,17 +36,17 @@
     },
     {
       "name": "evidence_state",
-      "value": "repository-artifact"
+      "value": "executed-command"
     },
     {
       "name": "generated_at",
-      "value": "2026-06-14T19:32:50Z"
+      "value": "2026-06-15T17:02:58Z"
     }
   ],
   "stage": "finished",
-  "start": 1781465570477,
-  "status": "skipped",
-  "stop": 1781465570477,
+  "start": 1781542978818,
+  "status": "passed",
+  "stop": 1781542978818,
   "testCaseId": "mkdocs-build",
   "uuid": "40afc591-db42-5879-9fc9-a7022a7a370f"
 }

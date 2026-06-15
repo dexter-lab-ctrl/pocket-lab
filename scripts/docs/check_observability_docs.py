@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check Tier 12 generated observability docs freshness and MkDocs nav coverage."""
+"""Check observability evidence generated observability docs freshness and MkDocs nav coverage."""
 from __future__ import annotations
 
 import subprocess

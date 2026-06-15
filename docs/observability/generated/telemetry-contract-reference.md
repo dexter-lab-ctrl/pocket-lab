@@ -89,8 +89,8 @@ React / Vite PWA
 
 | Consumer | Purpose | Hooks | Endpoints | Source |
 | --- | --- | --- | --- | --- |
-| LogExplorerTab | Log Explorer queries Loki-compatible log data through FastAPI. | — | /loki/api/v1/query?query=${encodeURIComponent(query)}&limit=100, /ready | `src/tabs/LogExplorerTab.jsx` |
-| SecurityPostureTab | Security Posture surfaces safety scans and security log activity. | useHealthEngine | /loki/api/v1/query?query={job="pm2_logs"} \|= "security_audit"&limit=5 | `src/tabs/SecurityPostureTab.jsx` |
+| LogExplorerTab | Log Explorer queries Loki-compatible log data through FastAPI. | — | /ready | `src/tabs/LogExplorerTab.jsx` |
+| SecurityPostureTab | Security Posture surfaces safety scans and security log activity. | useHealthEngine | — | `src/tabs/SecurityPostureTab.jsx` |
 | NocTelemetryTab | NOC Telemetry / System Status consumes health, telemetry, and runtime observability snapshots. | useHealthEngine, useTelemetry, useObservabilityStatus | — | `src/tabs/NocTelemetryTab.jsx` |
 | RuntimeObservabilityStatusPanel | UI card for live Prometheus, Loki, Grafana, Gatus, Promtail, and Prometheus target status through FastAPI. | — | — | `src/components/RuntimeObservabilityStatusPanel.jsx` |
 | useObservabilityStatus | Shared hook that polls FastAPI runtime observability health status. | useObservabilityStatus | /api/observability/status | `src/hooks/useObservabilityStatus.js` |

@@ -44,13 +44,41 @@ site/
 .env.*
 !.env.example
 
+<<<<<<< HEAD
 # Lighthouse local validation artifacts
+=======
+# Local Lighthouse / Chrome temporary artifacts
+# Windows host examples:
+#   C:\Users\<user>\AppData\Local\lighthouse.<id>
+# WSL/repo-copy examples:
+#   Users/<user>/AppData/Local/lighthouse.<id>
+#   AppData/Local/lighthouse.<id>
+lighthouse.*/
+**/lighthouse.*/
+AppData/Local/lighthouse.*/
+**/AppData/Local/lighthouse.*/
+Users/*/AppData/Local/lighthouse.*/
+**/Users/*/AppData/Local/lighthouse.*/
+
+# Lighthouse local artifacts
+>>>>>>> origin/main
 .lighthouseci/
 .lighthouseci/**
 **/.lighthouseci/
 **/.lighthouseci/**
+<<<<<<< HEAD
 
 # Lighthouse / Chrome temporary browser profiles
 lighthouse.*/
 **/lighthouse.*/
+=======
+lighthouse.*
+lighthouse.*/
+**/lighthouse.*
+**/lighthouse.*/
+
+# Literal Windows-path folder names accidentally created inside the repo by tools
+C:\\Users\\*\\AppData\\Local\\lighthouse.*/
+"C:\\Users\\*\\AppData\\Local\\lighthouse.*/"
+>>>>>>> origin/main
 *C:\\Users\\*\\AppData\\Local\\lighthouse.*

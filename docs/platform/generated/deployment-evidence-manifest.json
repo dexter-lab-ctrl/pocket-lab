@@ -39,13 +39,6 @@
       },
       {
         "kind": "ansible_inventory_or_vars",
-        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/dashboard_api.yml",
-        "sha256": "91acdc5d861018934c9f68507b375d9430a7eefe2b6f1ad40162a5c2ee62f88d",
-        "size_bytes": 217,
-        "yaml_error": null
-      },
-      {
-        "kind": "ansible_inventory_or_vars",
         "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/drift_check.yml",
         "sha256": "2b823b20c780ddddb77ab6b0bbb1c765c59eda5c882eace3a42c8c7df0a3838f",
         "size_bytes": 628,
@@ -161,13 +154,6 @@
         "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/catalog_seed.yml",
         "sha256": "30f2b2281aeb97d82a994d8672dacc288862c36f9daff5653a6d73c7ee9b6cf9",
         "size_bytes": 497,
-        "yaml_error": null
-      },
-      {
-        "kind": "ansible_inventory_or_vars",
-        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/dashboard_api.yml",
-        "sha256": "91acdc5d861018934c9f68507b375d9430a7eefe2b6f1ad40162a5c2ee62f88d",
-        "size_bytes": 217,
         "yaml_error": null
       },
       {
@@ -2926,8 +2912,8 @@
       "kind": "ubuntu_shell",
       "path": "scripts/dev/check-iac.sh",
       "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
-      "sha256": "446068eef2ccb7c3506cf3fa1258de9b10de7c715fd1c980e718dcd30951f83b",
-      "size_bytes": 4721,
+      "sha256": "efea8342568a5ed9271bdbeac03ea7a98c763f2010c863b6f8a2f4be84221dae",
+      "size_bytes": 4731,
       "summary": "!/usr/bin/env bash"
     },
     {
@@ -3099,6 +3085,18 @@
       "sha256": "7d115a63c433ee43df6dc6f034efdf908f40c322ef669a538b5be34c5ac07b42",
       "size_bytes": 108,
       "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [
+        "POCKETLAB_API_TOKEN",
+        "POCKETLAB_API_URL"
+      ],
+      "kind": "python_script",
+      "path": "scripts/dev/observability-runtime-status.py",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "1f2bc9e940bb8dcc06d9794ecef578f780546c3f8b64cdb1ee903e0b89f66e73",
+      "size_bytes": 1901,
+      "summary": "!/usr/bin/env python3"
     },
     {
       "environment_variables": [
@@ -3358,8 +3356,8 @@
       "kind": "windows_powershell",
       "path": "scripts/windows/bootstrap-wsl2-ubuntu.ps1",
       "platform": "Windows WSL2 Ubuntu",
-      "sha256": "854e082ea793923f172124d595e960911365cff9e45143bf88698c4fa12755b5",
-      "size_bytes": 4819,
+      "sha256": "6f6f16151ae636afcbbce465c6f31970803932cdb91c9b326b38fc518631e29e",
+      "size_bytes": 4815,
       "summary": "bootstrap-wsl2-ubuntu.ps1"
     },
     {
@@ -3369,8 +3367,8 @@
       "kind": "windows_powershell",
       "path": "scripts/windows/check-wsl2-host.ps1",
       "platform": "Windows WSL2 Ubuntu",
-      "sha256": "827d0dfdf3706ee9dbf987556060b5c5a53e18dd654b6162978e25f9f1e9ad5d",
-      "size_bytes": 16131,
+      "sha256": "0d57b08ae3915b258e8ab6e75ef4f14f15309c184aec8251f72510bcd3938f47",
+      "size_bytes": 16129,
       "summary": "Windows host version"
     },
     {
@@ -3469,8 +3467,8 @@
         "kind": "ubuntu_shell",
         "path": "scripts/dev/check-iac.sh",
         "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
-        "sha256": "446068eef2ccb7c3506cf3fa1258de9b10de7c715fd1c980e718dcd30951f83b",
-        "size_bytes": 4721,
+        "sha256": "efea8342568a5ed9271bdbeac03ea7a98c763f2010c863b6f8a2f4be84221dae",
+        "size_bytes": 4731,
         "summary": "!/usr/bin/env bash"
       },
       {
@@ -3571,6 +3569,18 @@
         "sha256": "7d115a63c433ee43df6dc6f034efdf908f40c322ef669a538b5be34c5ac07b42",
         "size_bytes": 108,
         "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_API_TOKEN",
+          "POCKETLAB_API_URL"
+        ],
+        "kind": "python_script",
+        "path": "scripts/dev/observability-runtime-status.py",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "1f2bc9e940bb8dcc06d9794ecef578f780546c3f8b64cdb1ee903e0b89f66e73",
+        "size_bytes": 1901,
+        "summary": "!/usr/bin/env python3"
       },
       {
         "environment_variables": [
@@ -3877,8 +3887,8 @@
         "kind": "ubuntu_shell",
         "path": "scripts/dev/check-iac.sh",
         "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
-        "sha256": "446068eef2ccb7c3506cf3fa1258de9b10de7c715fd1c980e718dcd30951f83b",
-        "size_bytes": 4721,
+        "sha256": "efea8342568a5ed9271bdbeac03ea7a98c763f2010c863b6f8a2f4be84221dae",
+        "size_bytes": 4731,
         "summary": "!/usr/bin/env bash"
       },
       {
@@ -4050,6 +4060,18 @@
         "sha256": "7d115a63c433ee43df6dc6f034efdf908f40c322ef669a538b5be34c5ac07b42",
         "size_bytes": 108,
         "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_API_TOKEN",
+          "POCKETLAB_API_URL"
+        ],
+        "kind": "python_script",
+        "path": "scripts/dev/observability-runtime-status.py",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "1f2bc9e940bb8dcc06d9794ecef578f780546c3f8b64cdb1ee903e0b89f66e73",
+        "size_bytes": 1901,
+        "summary": "!/usr/bin/env python3"
       },
       {
         "environment_variables": [
@@ -4291,8 +4313,8 @@
         "kind": "windows_powershell",
         "path": "scripts/windows/bootstrap-wsl2-ubuntu.ps1",
         "platform": "Windows WSL2 Ubuntu",
-        "sha256": "854e082ea793923f172124d595e960911365cff9e45143bf88698c4fa12755b5",
-        "size_bytes": 4819,
+        "sha256": "6f6f16151ae636afcbbce465c6f31970803932cdb91c9b326b38fc518631e29e",
+        "size_bytes": 4815,
         "summary": "bootstrap-wsl2-ubuntu.ps1"
       },
       {
@@ -4302,8 +4324,8 @@
         "kind": "windows_powershell",
         "path": "scripts/windows/check-wsl2-host.ps1",
         "platform": "Windows WSL2 Ubuntu",
-        "sha256": "827d0dfdf3706ee9dbf987556060b5c5a53e18dd654b6162978e25f9f1e9ad5d",
-        "size_bytes": 16131,
+        "sha256": "0d57b08ae3915b258e8ab6e75ef4f14f15309c184aec8251f72510bcd3938f47",
+        "size_bytes": 16129,
         "summary": "Windows host version"
       },
       {
@@ -4325,15 +4347,15 @@
       {
         "kind": "platform_or_architecture_doc",
         "path": "docs/platform/windows-wsl2-host-preflight.md",
-        "sha256": "a56dbb0fcd27c484c88768458617c9f8de87ddf33bc8f9fcbee82b77d3f37aee",
-        "size_bytes": 4230,
+        "sha256": "9068cc29fd6ff63641a066884ba45aa7e2e765858bd67e82523d54e37e74b75f",
+        "size_bytes": 4362,
         "title": "Windows WSL2 Host Preflight"
       },
       {
         "kind": "platform_or_architecture_doc",
         "path": "docs/platform/windows-wsl2-ubuntu-bootstrap.md",
-        "sha256": "32b1fb2ac87ca51286cf84758f86d4b32b899eb594d3821e8b900b481b026285",
-        "size_bytes": 2196,
+        "sha256": "9eadda51cd9c7f06a89bdb67f0e26084784350437eb2965817f6797c5ebb4709",
+        "size_bytes": 2246,
         "title": "Windows WSL2 Ubuntu Bootstrap"
       }
     ]
@@ -4398,7 +4420,11 @@
     "POCKETLAB_ACTIVE_CODE_SCAN_EXCLUDES": [
       "scripts/dev/check-iac.sh"
     ],
+    "POCKETLAB_API_TOKEN": [
+      "scripts/dev/observability-runtime-status.py"
+    ],
     "POCKETLAB_API_URL": [
+      "scripts/dev/observability-runtime-status.py",
       "scripts/dev/observability-snapshot.sh",
       "scripts/dev/status.sh",
       "scripts/dev/test-nats-stack.sh",
@@ -4580,22 +4606,22 @@
     {
       "kind": "platform_or_architecture_doc",
       "path": "docs/platform/windows-vscode-development.md",
-      "sha256": "f60bc6f07a4d81368ff803f598584408b2786a1c247b3c850986cc106e8bfe67",
-      "size_bytes": 4249,
+      "sha256": "fbe30eee295aa283f5e75c547e096fd62fdb98eae1513087f5b19dc5b8efc164",
+      "size_bytes": 4257,
       "title": "Windows VS Code Development Configuration"
     },
     {
       "kind": "platform_or_architecture_doc",
       "path": "docs/platform/windows-wsl2-host-preflight.md",
-      "sha256": "a56dbb0fcd27c484c88768458617c9f8de87ddf33bc8f9fcbee82b77d3f37aee",
-      "size_bytes": 4230,
+      "sha256": "9068cc29fd6ff63641a066884ba45aa7e2e765858bd67e82523d54e37e74b75f",
+      "size_bytes": 4362,
       "title": "Windows WSL2 Host Preflight"
     },
     {
       "kind": "platform_or_architecture_doc",
       "path": "docs/platform/windows-wsl2-ubuntu-bootstrap.md",
-      "sha256": "32b1fb2ac87ca51286cf84758f86d4b32b899eb594d3821e8b900b481b026285",
-      "size_bytes": 2196,
+      "sha256": "9eadda51cd9c7f06a89bdb67f0e26084784350437eb2965817f6797c5ebb4709",
+      "size_bytes": 2246,
       "title": "Windows WSL2 Ubuntu Bootstrap"
     },
     {
@@ -4615,8 +4641,8 @@
     {
       "kind": "platform_or_architecture_doc",
       "path": "docs/architecture/structurizr-architecture.md",
-      "sha256": "59ddc84119a45f37596d65605ecec6d789ccee12641c3e63b8c001f867198655",
-      "size_bytes": 2993,
+      "sha256": "94075480daeafa0cb19db95a7e2bed3618e2aab89788b35c699e9cd2f9fa560b",
+      "size_bytes": 2996,
       "title": "Structurizr Architecture"
     }
   ],
@@ -4629,10 +4655,10 @@
       "pocket-lab-final-structure/pocket_lab_iac",
       "pocket-lab-final-structure/runtime/core/ansible"
     ],
-    "bootstrap_script_count": 48,
+    "bootstrap_script_count": 49,
     "environment_file_count": 4,
     "iac_catalog_count": 0,
-    "inventory_or_vars_count": 37,
+    "inventory_or_vars_count": 35,
     "platform_doc_count": 7,
     "playbook_count": 25,
     "role_count": 14
@@ -4735,47 +4761,55 @@
       "name": "docs:check"
     },
     {
-      "description": "Generate Tier 11 deployment documentation from repository-native deployment sources",
+      "description": "Generate deployment documentation from repository-native deployment sources",
       "name": "docs:deployment"
     },
     {
-      "description": "Generate Tier 11 Ansible playbook and role/task deployment reference docs",
+      "description": "Generate deployment evidence Ansible playbook and role/task deployment reference docs",
       "name": "docs:deployment:ansible"
     },
     {
-      "description": "Validate Tier 11 Ansible deployment docs and evidence freshness",
+      "description": "Validate deployment evidence Ansible deployment docs and evidence freshness",
       "name": "docs:deployment:ansible:check"
     },
     {
-      "description": "Validate Tier 11 generated deployment documentation freshness",
+      "description": "Validate generated deployment documentation freshness",
       "name": "docs:deployment:check"
     },
     {
-      "description": "Generate Tier 11 deployment evidence manifest from Ansible, bootstrap, platform, Taskfile, and environment sources",
+      "description": "Generate deployment evidence manifest from Ansible, bootstrap, platform, Taskfile, and environment sources",
       "name": "docs:deployment:evidence"
     },
     {
-      "description": "Validate Tier 11 deployment evidence manifest fingerprints and source integrity",
+      "description": "Validate deployment evidence manifest fingerprints and source integrity",
       "name": "docs:deployment:evidence:check"
     },
     {
-      "description": "Run all Tier 11 deployment documentation generation and freshness checks",
+      "description": "Run all deployment documentation generation and freshness checks",
       "name": "docs:deployment:full-check"
     },
     {
-      "description": "Generate Tier 11 platform, bootstrap, environment, and runtime blueprint docs",
+      "description": "Generate deployment evidence platform, bootstrap, environment, and runtime blueprint docs",
       "name": "docs:deployment:platform"
     },
     {
-      "description": "Validate Tier 11 platform deployment docs and MkDocs navigation coverage",
+      "description": "Validate deployment evidence platform deployment docs and MkDocs navigation coverage",
       "name": "docs:deployment:platform:check"
     },
     {
-      "description": "Run Tier 8 validation evidence checks and enforce release readiness from recorded evidence",
+      "description": "Capture optional runtime observability status runtime observability evidence separately from observability evidence static docs",
+      "name": "docs:observability:runtime-snapshot"
+    },
+    {
+      "description": "Run validation evidence checks and enforce release readiness from recorded evidence",
       "name": "docs:validation:full-check"
     },
     {
-      "description": "Record high-signal release validation gates for Tier 8 evidence",
+      "description": "Record documentation validation command results for validation evidence and release readiness evidence",
+      "name": "docs:validation:record-docs"
+    },
+    {
+      "description": "Record high-signal release validation gates for validation evidence and release readiness evidence",
       "name": "docs:validation:release-gates"
     },
     {
@@ -4789,6 +4823,10 @@
     {
       "description": "",
       "name": "fault:worker-down"
+    },
+    {
+      "description": "Capture runtime observability status runtime observability health from FastAPI",
+      "name": "observability:status"
     },
     {
       "description": "Build release artifacts locally without publishing",

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate Tier 9B UI evidence manifest and MkDocs validation page."""
+"""Generate UI evidence manifest and MkDocs validation page."""
 
 from __future__ import annotations
 
@@ -72,7 +72,7 @@ def build_manifest() -> dict[str, Any]:
     image_links = generated_doc.count("/product/generated/ui-screenshots/")
 
     return {
-        "tier": "Tier 9B — UI Evidence Freshness, Visual, Accessibility, and Release Evidence",
+        "tier": "UI evidence freshness — UI Evidence Freshness, Visual, Accessibility, and Release Evidence",
         "generated_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "source_files": [
             METADATA.as_posix(),
@@ -93,7 +93,7 @@ def build_manifest() -> dict[str, Any]:
                 "status": "tracked",
                 "checks": [
                     "source_fingerprint matches current UI metadata, Storybook stories, screenshot manifest, and generated UI docs",
-                    "screenshot count matches Tier 9 story export count",
+                    "screenshot count matches Storybook UI documentation story export count",
                     "generated MkDocs page references every screenshot evidence item",
                     "screenshot file SHA-256 values match the manifest",
                 ],
@@ -126,7 +126,7 @@ def md_table(headers: list[str], rows: list[list[str]]) -> str:
 
 def build_doc(manifest: dict[str, Any]) -> str:
     rows = [
-        ["Tier", manifest["tier"]],
+        ["Capability", manifest["tier"]],
         ["Screens", manifest["screen_count"]],
         ["Story exports", manifest["story_export_count"]],
         ["Screenshots", manifest["screenshot_count"]],
@@ -145,9 +145,9 @@ def build_doc(manifest: dict[str, Any]) -> str:
         command_rows.append([section, item.get("status", "tracked"), result_summary])
 
     return "\n".join([
-        "# Tier 9B UI Evidence",
+        "# UI evidence freshness UI Evidence",
         "",
-        "This page is generated from Tier 9A Storybook screenshot evidence and validation command metadata.",
+        "This page is generated from Storybook screenshot evidence Storybook screenshot evidence and validation command metadata.",
         "",
         "## Evidence summary",
         "",
@@ -205,7 +205,7 @@ def main() -> None:
             for error in errors:
                 print(f"ERROR: {error}")
             raise SystemExit(1)
-        print("Tier 9B UI evidence generation check passed")
+        print("UI evidence generation check passed")
         return
 
     EVIDENCE_MANIFEST.write_text(manifest_text, encoding="utf-8")
@@ -213,7 +213,7 @@ def main() -> None:
     print(f"Wrote {EVIDENCE_MANIFEST.as_posix()}")
     print(f"Wrote {EVIDENCE_DOC.as_posix()}")
     print(
-        "Tier 9B UI evidence generated: "
+        "UI evidence generated: "
         f"screens={manifest['screen_count']} screenshots={manifest['screenshot_count']} "
         f"image_links={manifest['mkdocs_image_link_count']}"
     )

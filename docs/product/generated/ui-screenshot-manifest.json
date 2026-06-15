@@ -1,5 +1,5 @@
 {
-  "tier": "Tier 9A — Automated Storybook Screenshot Evidence for MkDocs",
+  "tier": "Storybook Screenshot Evidence for MkDocs",
   "capture_mode": "storybook-static iframe screenshot with deterministic FastAPI mocks",
   "runtime_scope": "documentation-only Storybook iframe capture; deterministic mock FastAPI data; no direct NATS access; no frontend shell execution",
   "generated_at_utc": "2026-06-15T11:11:45.528Z",

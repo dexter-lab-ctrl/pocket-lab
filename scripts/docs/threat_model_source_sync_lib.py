@@ -393,8 +393,8 @@ def build_findings(
                     severity="error",
                     source="structurizr",
                     code="TIER5B_VIEW_MISSING",
-                    message=f"Structurizr Tier 5B view is missing: {view}",
-                    remediation="Restore Tier 5B Structurizr security views before regenerating threat model sync evidence.",
+                    message=f"Structurizr enterprise security-review view is missing: {view}",
+                    remediation="Restore enterprise security-review Structurizr security views before regenerating threat model sync evidence.",
                 )
             )
 

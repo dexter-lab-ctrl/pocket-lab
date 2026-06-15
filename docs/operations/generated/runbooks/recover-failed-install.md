@@ -86,6 +86,6 @@ Guided recovery path for a failed Apps & Services / Blueprint installation.
 - Impact: `high`
 - Notes: Must preserve typed operation boundaries, audit events, and rollback evidence.
 
-## Tier 7B Scope
+## Scope
 
-This page documents metadata only. Runtime execution through FastAPI, NATS / JetStream, and workers is planned for later Tier 7 phases.
+This page documents metadata only. Runtime execution through FastAPI, NATS / JetStream, and workers is planned for later native runbook capability steps.

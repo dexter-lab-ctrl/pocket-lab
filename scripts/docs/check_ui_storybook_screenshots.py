@@ -92,7 +92,7 @@ def main() -> None:
         raise SystemExit(1)
 
     print(
-        "Tier 9A UI screenshot evidence check passed: "
+        "Storybook screenshot evidence UI screenshot evidence check passed: "
         f"screens={manifest.get('screen_count')} screenshots={manifest.get('screenshot_count')}"
     )
 

@@ -38,5 +38,5 @@ This page is a generated gap and roadmap reference unless alert/SLO source files
 ## Current limitations
 
 - Static source inspection does not prove services are running or alerting is active.
-- Alertmanager, SLO burn-rate rules, and notification routing are not part of the Tier 12 baseline unless implemented separately with validation.
+- Alertmanager, SLO burn-rate rules, and notification routing are not part of the observability evidence baseline unless implemented separately with validation.
 - Do not expose observability endpoints broadly without access-control guidance.

@@ -245,7 +245,7 @@ It is designed around a modern control-plane pattern:
 UI → FastAPI → NATS / JetStream → Worker → Events → UI
 ```
 
-The system intentionally avoids legacy shell-command compatibility paths for control-plane writes. Typed operations, NATS subjects, generated API contracts, and event-sourced workflow state form the main architectural backbone.
+The system intentionally avoids retired shell-command compatibility paths for control-plane writes. Typed operations, NATS subjects, generated API contracts, and event-sourced workflow state form the main architectural backbone.
 
 ![](embed:system-context)
 """,
@@ -296,7 +296,7 @@ The Android / Termux target is the key production-like edge deployment path. The
 """,
     "05-security-review-views.md": """# Enterprise Security Review Views
 
-Tier 5B adds dedicated Structurizr views for security and operations review.
+enterprise security-review adds dedicated Structurizr views for security and operations review.
 
 These views make the most sensitive runtime boundaries explicit:
 

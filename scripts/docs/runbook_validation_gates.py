@@ -179,7 +179,7 @@ def gate_schema_validation() -> GateResult:
         "Runbook schema and catalog validation",
         "blocking",
         "pass",
-        "All runbooks satisfy the Tier 7A schema and typed-operation catalog validation.",
+        "All runbooks satisfy the runbook metadata catalog schema and typed-operation catalog validation.",
         ["runbooks/*.yaml", "operations/*.yaml"],
     )
 
@@ -380,7 +380,7 @@ def gate_timeout_controls(runbooks: list[dict[str, Any]]) -> GateResult:
         "Timeout and bounded execution gate",
         "warning",
         "pass",
-        "Runbook timeout metadata is bounded within Tier 7C guidance.",
+        "Runbook timeout metadata is bounded within runbook validation gates guidance.",
         ["runbooks/*.yaml"],
     )
 
@@ -496,7 +496,7 @@ def gate_no_retired_tokens() -> GateResult:
         "Retired architecture token gate",
         "blocking",
         "pass",
-        "No retired architecture tokens were found in Tier 7 runbook paths.",
+        "No retired architecture tokens were found in native runbook capability runbook paths.",
         ["runbooks/", "scripts/docs/", "docs/operations/generated/runbooks/"],
     )
 
@@ -562,7 +562,7 @@ def build_report() -> dict[str, Any]:
         "kind": "RunbookValidationGatesReport",
         "metadata": {
             "name": "pocketlab-runbook-validation-gates",
-            "title": "Pocket Lab Tier 7C Runbook Validation Gates",
+            "title": "Pocket Lab Runbook Validation Gates",
             "tier": "7C",
             "generatedAt": datetime.now(timezone.utc).isoformat(),
             "sourceOfTruth": "runbooks/*.yaml and operations/*.yaml",
@@ -614,7 +614,7 @@ def write_report(report: dict[str, Any]) -> None:
     parts: list[str] = []
     parts.append("# Runbook Validation Gates\n")
     parts.append(
-        '!!! note "Generated Tier 7C validation report"\n'
+        '!!! note "Generated runbook validation report"\n'
         "    This page is generated from `runbooks/*.yaml`, `operations/*.yaml`, and the generated runbook catalog. Update source metadata, not this generated page.\n"
     )
     parts.append("## Summary\n")
@@ -637,7 +637,7 @@ def write_report(report: dict[str, Any]) -> None:
     parts.append("- `blocking` gates fail CI/release readiness when their status is `fail`.")
     parts.append("- `warning` gates do not block generation yet, but they identify enterprise-readiness improvements.")
     parts.append("- Runbooks must orchestrate typed operations only and must not introduce direct script execution or an external automation control plane.")
-    parts.append("- Runtime execution remains deferred to later Tier 7 phases. Tier 7C validates metadata, documentation, safety, approval, and evidence readiness.\n")
+    parts.append("- Runbook validation gates verify metadata, documentation, safety, approval, and evidence readiness. Runtime execution remains worker-owned and governed by typed operations.\n")
     parts.append("## Validation Commands\n")
     parts.append("```bash\ntask docs:runbooks:gates:check\ntask docs:runbooks:docs:check\nmkdocs build --strict\n```\n")
 
@@ -645,7 +645,7 @@ def write_report(report: dict[str, Any]) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Validate Pocket Lab Tier 7C runbook validation gates.")
+    parser = argparse.ArgumentParser(description="Validate Pocket Lab runbook validation gates.")
     parser.add_argument("--write", action="store_true", help="Write JSON and Markdown validation gate reports.")
     parser.add_argument("--check", action="store_true", help="Write reports and fail on blocking gate failures.")
     args = parser.parse_args()

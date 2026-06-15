@@ -113,7 +113,7 @@ function buildStoryIndex(indexJson) {
   return entries.filter((entry) => {
     const importPath = entry.importPath || '';
     const title = entry.title || '';
-    return importPath.includes('PocketLabTabs.stories.jsx') || title.includes('Tier 9 UI Screens');
+    return importPath.includes('PocketLabTabs.stories.jsx') || title.includes('UI Evidence Screens');
   });
 }
 
@@ -207,7 +207,7 @@ async function capture() {
   const entries = buildStoryIndex(indexJson);
 
   if (!entries.length) {
-    throw new Error('No Tier 9 Storybook entries found in storybook-static/index.json.');
+    throw new Error('No Storybook UI documentation Storybook entries found in storybook-static/index.json.');
   }
 
   rmSync(OUT_DIR, { recursive: true, force: true });
@@ -298,7 +298,7 @@ async function capture() {
   }
 
   const manifest = {
-    tier: 'Tier 9A — Automated Storybook Screenshot Evidence for MkDocs',
+    tier: 'Storybook Screenshot Evidence for MkDocs',
     capture_mode: 'storybook-static iframe screenshot with deterministic FastAPI mocks',
     runtime_scope:
       'documentation-only Storybook iframe capture; deterministic mock FastAPI data; no direct NATS access; no frontend shell execution',
@@ -314,7 +314,7 @@ async function capture() {
 
   console.log(`Wrote ${relative(ROOT, MANIFEST_PATH)}`);
   console.log(
-    `Captured ${manifest.screenshot_count} Tier 9A Storybook screenshots across ${manifest.screen_count} screens.`,
+    `Captured ${manifest.screenshot_count} Storybook screenshot evidence Storybook screenshots across ${manifest.screen_count} screens.`,
   );
 }
 

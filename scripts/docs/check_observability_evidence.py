@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check Tier 12 observability evidence manifest integrity and freshness."""
+"""Check observability evidence observability evidence manifest integrity and freshness."""
 from __future__ import annotations
 
 import hashlib

@@ -5,7 +5,7 @@
 
 ## Why this exists
 
-Tier 7E introduced governed approval and resume. Tier 7F makes that governance adaptive:
+native runbook approval and controlled resume introduced governed approval and resume. adaptive approval policy capability makes that governance adaptive:
 
 - Personal Mode: auto-approve approval-gated runbooks and log evidence.
 - Enterprise Mode: pause approval-gated runbooks until an authorized role approves or rejects them.

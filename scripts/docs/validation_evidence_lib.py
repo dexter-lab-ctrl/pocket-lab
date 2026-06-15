@@ -660,7 +660,7 @@ def build_validation_artifacts() -> dict[str, Any]:
 
     manifest = {
         "schemaVersion": "pocketlab.validation.v1",
-        "tier": "Tier 8 — Validation Documentation with Allure",
+        "tier": "validation evidence and release readiness — Validation Documentation with Allure",
         "generated_at": generated_at,
         "source_fingerprint": fp,
         "source_files": [rel(path) for path in sources],
@@ -738,7 +738,7 @@ def write_index_md(bundle: dict[str, Any]) -> None:
     parts: list[str] = []
     parts.append("# Generated Validation Evidence\n")
     parts.append(
-        '!!! note "Generated Tier 8 validation evidence"\n'
+        '!!! note "Generated validation evidence"\n'
         "    This page is generated from validation command results, repository contracts, generated documentation artifacts, and local test outputs. Update validation sources and rerun `task docs:validation:evidence`; do not manually edit generated files.\n"
     )
     parts.append("## Release Readiness\n")
@@ -814,7 +814,7 @@ def write_readiness_md(bundle: dict[str, Any]) -> None:
     parts: list[str] = []
     parts.append("# Validation / Release Gate Matrix\n")
     parts.append(
-        '!!! note "Generated Tier 8 readiness matrix"\n'
+        '!!! note "Generated validation readiness matrix"\n'
         "    This page is generated from validation evidence. Update the source gate definitions or run validation commands; do not manually maintain this matrix.\n"
     )
     parts.append("## Current Release Readiness\n")
@@ -901,8 +901,8 @@ def write_strategy_md(bundle: dict[str, Any]) -> None:
     parts: list[str] = []
     parts.append("# Test Strategy & Quality Gates Guide\n")
     parts.append(
-        '!!! note "Generated Tier 8 test strategy"\n'
-        "    This guide is generated from the Tier 8 validation gate catalog. Update `scripts/docs/validation_evidence_lib.py` when a gate is added, removed, or changes scope.\n"
+        '!!! note "Generated validation evidence and release readiness test strategy"\n'
+        "    This guide is generated from the validation gate catalog. Update `scripts/docs/validation_evidence_lib.py` when a gate is added, removed, or changes scope.\n"
     )
     parts.append("## Strategy\n")
     parts.append(
@@ -936,7 +936,7 @@ def write_strategy_md(bundle: dict[str, Any]) -> None:
     )
     parts.append("\n## Allure Integration\n")
     parts.append(
-        "Tier 8 writes Allure-compatible result files under `docs/validation/generated/allure-results/`. "
+        "The validation evidence workflow writes Allure-compatible result files under `docs/validation/generated/allure-results/`. "
         "Run `task docs:validation:allure` to turn those local result files into a static Allure HTML report when the Allure command line is available. Pocket Lab does not require a centralized Allure server.\n"
     )
     parts.append("## Evidence Recording\n")
@@ -971,7 +971,7 @@ def allure_result_for_gate(item: dict[str, Any], generated_at: str) -> dict[str,
         "start": start_ms,
         "stop": start_ms,
         "labels": [
-            {"name": "epic", "value": "Tier 8 Validation Documentation"},
+            {"name": "epic", "value": "validation evidence and release readiness Validation Documentation"},
             {"name": "feature", "value": item["category"]},
             {"name": "story", "value": item["id"]},
             {"name": "owner", "value": item["owner"]},
@@ -999,8 +999,8 @@ def write_allure_results(bundle: dict[str, Any]) -> None:
     history_file = ALLURE_HISTORY_DIR / "history.json"
     if history_file.exists():
         try:
-            old = json.loads(history_file.read_text(encoding="utf-8"))
-            history_rows = list(old.get("history", []))[-19:]
+            existing_history = json.loads(history_file.read_text(encoding="utf-8"))
+            history_rows = list(existing_history.get("history", []))[-19:]
         except Exception:
             history_rows = []
     history_rows.append(
@@ -1013,7 +1013,7 @@ def write_allure_results(bundle: dict[str, Any]) -> None:
     )
     history = {"schemaVersion": "pocketlab.validation.history.v1", "history": history_rows}
     write_json(history_file, history)
-    write_json(ALLURE_RESULTS_DIR / "executor.json", {"name": "Pocket Lab local validation", "type": "local", "buildName": "Tier 8 evidence"})
+    write_json(ALLURE_RESULTS_DIR / "executor.json", {"name": "Pocket Lab local validation", "type": "local", "buildName": "validation evidence and release readiness evidence"})
     write_json(ALLURE_RESULTS_DIR / "environment.properties.json", {"Pocket Lab": "edge-first self-hostable control plane"})
     (ALLURE_RESULTS_DIR / "history").mkdir(parents=True, exist_ok=True)
     write_json(ALLURE_RESULTS_DIR / "history/history.json", history)

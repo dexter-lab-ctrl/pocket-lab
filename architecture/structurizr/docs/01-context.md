@@ -8,6 +8,6 @@ It is designed around a modern control-plane pattern:
 UI → FastAPI → NATS / JetStream → Worker → Events → UI
 ```
 
-The system intentionally avoids legacy shell-command compatibility paths for control-plane writes. Typed operations, NATS subjects, generated API contracts, and event-sourced workflow state form the main architectural backbone.
+The system intentionally avoids retired shell-command compatibility paths for control-plane writes. Typed operations, NATS subjects, generated API contracts, and event-sourced workflow state form the main architectural backbone.
 
 ![](embed:system-context)

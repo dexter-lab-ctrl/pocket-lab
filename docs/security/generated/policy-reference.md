@@ -4,7 +4,7 @@
 
 This generated reference describes OPA-style policy guardrails and repository-native policy metadata found in the current Pocket Lab source tree.
 
-> No standalone `.rego` bundle was found in this repository snapshot. Tier 10 therefore uses `security/policies/*.yaml` as a minimal repository-native policy metadata layer and records embedded UI guardrail evidence without changing runtime behavior.
+> No standalone `.rego` bundle was found in this repository snapshot. policy and security evidence therefore uses `security/policies/*.yaml` as a minimal repository-native policy metadata layer and records embedded UI guardrail evidence without changing runtime behavior.
 
 ## Adaptive Runbook Approval
 
@@ -102,3 +102,4 @@ deny[msg] {
     msg := "Linux package managers must be executed inside the PRoot Ubuntu subsystem."
 }
 ```
+

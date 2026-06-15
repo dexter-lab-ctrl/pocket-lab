@@ -38,7 +38,7 @@ This generated map connects operator-facing UI surfaces to FastAPI endpoints, ru
 | FastAPI /metrics endpoint was not verified in the current repository snapshot. |
 | Grafana directories/config exist, but dashboard JSON files were not verified. |
 | Grafana datasource provisioning YAML was not verified. |
-| Alert/SLO source files were not verified; Tier 12 generates a gap/reference page only. |
+| Alert/SLO source files were not verified; observability evidence generates a gap/reference page only. |
 
 ## Missing enterprise hardening features
 
@@ -51,6 +51,6 @@ This generated map connects operator-facing UI surfaces to FastAPI endpoints, ru
 
 ## Validation boundary
 
-- Tier 12 static validation proves generated evidence and documentation freshness from repository sources.
-- Tier 13 runtime health is exposed through FastAPI at `/api/observability/status` and must be validated separately from Tier 12 static evidence.
+- observability evidence static validation proves generated evidence and documentation freshness from repository sources.
+- runtime observability status runtime health is exposed through FastAPI at `/api/observability/status` and must be validated separately from observability evidence static evidence.
 - Runtime health can also be cross-checked with service checks such as Prometheus `/-/ready`, Loki `/ready`, Grafana `/api/health`, Gatus `/health`, and bounded Loki `pm2_logs` queries.

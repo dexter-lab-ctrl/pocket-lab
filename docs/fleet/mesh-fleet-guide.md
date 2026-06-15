@@ -31,7 +31,7 @@ flowchart LR
 | State | UI Behavior |
 |---|---|
 | Online | Agent healthy and recently seen. |
-| Stale | Agent has missed heartbeat threshold. |
+| Stale | Agent has missed heartbeat limit. |
 | Offline | Agent unavailable. |
 | Unknown | Agent has incomplete status. |
 
