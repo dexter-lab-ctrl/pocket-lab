@@ -13,7 +13,7 @@ Pocket Lab uses Threat Modeling as Code to document trust boundaries, data flows
 |---|---|
 | Model | pocketlab-threat-model |
 | Tier | 6.5 |
-| Generated at | 2026-06-15T15:35:04.106013+00:00 |
+| Generated at | 2026-06-15T15:47:37.885213+00:00 |
 | Source rule | Repository-generated metadata. Operation-level security blocks in operations/*.yaml are required for new features. |
 
 ## Evidence Sources

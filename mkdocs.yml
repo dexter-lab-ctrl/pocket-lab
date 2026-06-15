@@ -148,8 +148,6 @@ nav:
   - Fleet:
       - Fleet Agent / Mesh Fleet Guide: fleet/mesh-fleet-guide.md
 
-  - ADR:
-      - Overview: adr/README.md
 
 
   - Observability:
