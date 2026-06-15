@@ -16,7 +16,7 @@ Threat drift detection fails the build when architecture, API contracts, event c
 | Source fingerprint | PASS |
 | Generated output fingerprint | PASS |
 | Manifest | `threat-model/pocketlab-threat-model-drift-manifest.json` |
-| Page generated at | 2026-06-13T23:15:28.756630+00:00 |
+| Page generated at | 2026-06-15T15:35:04.865905+00:00 |
 
 ## Sources tracked
 
@@ -24,8 +24,8 @@ Threat drift detection fails the build when architecture, API contracts, event c
 |---|---:|---|
 | architecture/structurizr/workspace.dsl | 13185 | 80659057feb60cff... |
 | contracts/asyncapi/pocketlab-nats-jetstream.yaml | 36658 | 80b91f358f774e6e... |
-| contracts/generated/openapi.json | 198396 | c2aa4119d33c2616... |
-| contracts/operations/pocketlab-typed-operations.json | 22222 | 740abf611e28ab29... |
+| contracts/generated/openapi.json | 203344 | 5537faeb280109c4... |
+| contracts/operations/pocketlab-typed-operations.json | 22116 | f55ee241411a7cae... |
 | operations/backup_now.yaml | 1821 | acc49bf6bbfad8e4... |
 | operations/backup_verify.yaml | 1825 | 39a033d38487384d... |
 | operations/catalog_refresh.yaml | 1790 | 63a56f29313e31cc... |
@@ -50,9 +50,9 @@ Threat drift detection fails the build when architecture, API contracts, event c
 
 | Output | Size bytes | SHA-256 prefix |
 |---|---:|---|
-| threat-model/pocketlab-threat-model.yaml | 83328 | 31ec864e6e6a2e2e... |
-| docs/security/security-architecture-threat-model.md | 62656 | 6351f1f89f09cecf... |
-| docs/security/generated/threat-model/pocketlab-threat-model.json | 154230 | 4854922093148454... |
+| threat-model/pocketlab-threat-model.yaml | 83328 | 396e1ef855a958ab... |
+| docs/security/security-architecture-threat-model.md | 62656 | 41b8b804010189bd... |
+| docs/security/generated/threat-model/pocketlab-threat-model.json | 154230 | 3713f1988e11e59a... |
 | docs/security/generated/threat-model/index.md | 328 | 1f64fe7f0390803b... |
 
 ## Commands
@@ -87,7 +87,7 @@ Tier 6.8 protects against silent security documentation drift. If a developer ch
 {
   "apiVersion": "pocketlab.io/v1alpha1",
   "kind": "ThreatModelDriftManifest",
-  "source_fingerprint": "7ffbfb5f2f58f70e39d3de0a82b57f160c56ab176308158ceaa606002bcd3f22",
-  "generated_output_fingerprint": "15cefc951c4424336235dd72a47a75d48edc71472ba9b067e91aabfa5ca29b0e"
+  "source_fingerprint": "a546fa674ec6848f66ecaf7fb85dd87da4b9801346125635279d050c44913855",
+  "generated_output_fingerprint": "b9e06c35ea47a977ed2fd2857b2758b9a665291e5b93c0dad168e7b499d9ca39"
 }
 ```

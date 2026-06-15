@@ -151,8 +151,6 @@ nav:
   - ADR:
       - Overview: adr/README.md
 
-  - History:
-      - Overview: history/README.md
 
   - Observability:
       - Observability & Logging Guide: observability/observability-logging-guide.md
