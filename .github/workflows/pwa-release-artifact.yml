@@ -1,0 +1,102 @@
+name: Build PWA release artifact
+
+on:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing release tag to attach dist.zip to"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pwa-release-artifact-${{ github.event.release.tag_name || inputs.tag }}
+  cancel-in-progress: true
+
+jobs:
+  build-pwa-release-artifact:
+    name: Build and upload dist.zip
+    runs-on: ubuntu-latest
+
+    env:
+      RELEASE_TAG: ${{ github.event.release.tag_name }}
+      INPUT_TAG: ${{ inputs.tag }}
+
+    steps:
+      - name: Resolve release tag
+        id: release_tag
+        shell: bash
+        run: |
+          tag="${RELEASE_TAG:-${INPUT_TAG:-}}"
+          if [[ -z "$tag" ]]; then
+            echo "ERROR: release tag was not provided." >&2
+            exit 1
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout source at release tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.release_tag.outputs.tag }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install frontend dependencies
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: "true"
+        run: npm ci
+
+      - name: Clean stale PWA output
+        run: |
+          rm -rf dist dist.zip
+
+      - name: Build PWA
+        run: npm run build
+
+      - name: Verify PWA dist
+        run: |
+          test -f dist/index.html
+          test -f dist/manifest.webmanifest
+          test -f dist/sw.js
+          test -d dist/assets
+
+      - name: Write PWA build manifest
+        run: |
+          cat > dist/pocketlab-pwa-build.json <<EOF_MANIFEST
+          {
+            "app": "Pocket Lab",
+            "artifact": "dist.zip",
+            "release_tag": "${{ steps.release_tag.outputs.tag }}",
+            "source_commit": "${GITHUB_SHA}",
+            "workflow": "${GITHUB_WORKFLOW}",
+            "run_id": "${GITHUB_RUN_ID}",
+            "run_attempt": "${GITHUB_RUN_ATTEMPT}",
+            "built_at_utc": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          }
+          EOF_MANIFEST
+
+      - name: Create dist.zip
+        run: |
+          rm -f dist.zip
+          zip -r dist.zip dist
+
+          unzip -l dist.zip | grep "dist/index.html"
+          unzip -l dist.zip | grep "dist/manifest.webmanifest"
+          unzip -l dist.zip | grep "dist/sw.js"
+
+      - name: Upload dist.zip to release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ steps.release_tag.outputs.tag }}" dist.zip \
+            --repo "${GITHUB_REPOSITORY}" \
+            --clobber
