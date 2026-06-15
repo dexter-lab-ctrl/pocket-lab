@@ -63,7 +63,7 @@ export default function PolicyGuardrailsTab() {
         setIsLiveEnv(true);
       } else {
         setIsLiveEnv(false);
-        setEvaluations([{ id: 'control-plane-degraded', timestamp: new Date().toLocaleTimeString(), trigger: 'fastapi_nats_readiness', status: 'AUDIT_WARN', msg: 'FastAPI/NATS control plane unavailable. Policy evaluations are paused; simulator data is disabled in production mode.', time: 0 }]);
+        setEvaluations([{ id: 'control-plane-degraded', timestamp: new Date().toLocaleTimeString(), trigger: 'fastapi_nats_readiness', status: 'AUDIT_WARN', msg: 'Control plane unavailable. Policy evaluations are paused; simulator data is disabled in production mode.', time: 0 }]);
       }
     };
     fetchOpaLogs();
@@ -87,26 +87,26 @@ export default function PolicyGuardrailsTab() {
         setTaskId(result?.job_id || '');
       } catch (err) {
         setIsLiveEnv(false);
-        setTaskMessage(err?.message || 'Policy mode update rejected because FastAPI/NATS is unavailable.');
+        setTaskMessage(err?.message || 'Policy mode update rejected because control plane is unavailable.');
       }
     } else {
-      setTaskMessage('Policy mode update blocked until FastAPI/NATS production control plane is ready.');
+      setTaskMessage('Policy mode update blocked until the production control plane is ready.');
     }
   };
 
   const runScan = async () => {
     setPolicySweeping(true);
     window.setTimeout(() => setPolicySweeping(false), 700);
-    setTaskMessage('Submitting policy_deploy...');
+    setTaskMessage('Submitting policy update...');
     try {
       const result = await executeOperation('policy_deploy', {
         target: { type: 'policy', ref: enforceMode ? 'enforce' : 'audit' },
         params: { enforce_mode: enforceMode, playbook: '40_opa.yml' },
       });
       setTaskId(result?.job_id || '');
-      setTaskMessage(`Policy deployment completed. Task ${result?.job_id || 'queued'}.`);
+      setTaskMessage(`Policy update completed. Task ${result?.job_id || 'queued'}.`);
     } catch (err) {
-      setTaskMessage(err.message || 'Policy deployment failed.');
+      setTaskMessage(err.message || 'Policy update failed.');
     }
   };
 

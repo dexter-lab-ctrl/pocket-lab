@@ -21,19 +21,19 @@ import {
 } from 'lucide-react';
 
 const tabs = [
-  { id: 'appstore', label: 'App Catalog', icon: Package },
+  { id: 'appstore', label: 'Service Catalog', icon: Package },
   { id: 'blueprint', label: 'System Map', icon: Network },
-  { id: 'gitops', label: 'GitOps Pipeline', icon: CloudCog },
-  { id: 'registry', label: 'Blueprint Registry', icon: GitBranch },
-  { id: 'vault', label: 'Identity Vault', icon: Fingerprint },
-  { id: 'logs', label: 'Log Explorer', icon: AlignLeft },
-  { id: 'opa', label: 'Policy Guardrails', icon: FileCheck },
-  { id: 'telemetry', label: 'NOC Telemetry', icon: Activity },
+  { id: 'gitops', label: 'Environment Updates', icon: CloudCog },
+  { id: 'registry', label: 'Service Registry', icon: GitBranch },
+  { id: 'vault', label: 'Identity & Access', icon: Fingerprint },
+  { id: 'logs', label: 'Activity & Evidence', icon: AlignLeft },
+  { id: 'opa', label: 'Policy & Compliance', icon: FileCheck },
+  { id: 'telemetry', label: 'System Operations', icon: Activity },
   { id: 'security', label: 'Security Posture', icon: ShieldCheck },
-  { id: 'drift', label: 'Drift Center', icon: Radar },
+  { id: 'drift', label: 'Configuration Health', icon: Radar },
   { id: 'release', label: 'Release Workflow', icon: FileCheck },
-  { id: 'fleet', label: 'Mesh Fleet', icon: Workflow },
-  { id: 'recovery', label: 'Disaster Recovery', icon: Database },
+  { id: 'fleet', label: 'Device Fleet', icon: Workflow },
+  { id: 'recovery', label: 'Recovery Management', icon: Database },
 ];
 
 export default function Header({ activeTab, setActiveTab }) {
@@ -106,7 +106,7 @@ export default function Header({ activeTab, setActiveTab }) {
                   <h1 className="truncate text-lg font-black tracking-tight text-white sm:text-xl">Pocket Lab</h1>
                   <span className={`health-breathing-dot h-2.5 w-2.5 shrink-0 rounded-full ${isDevMode ? 'health-dot-degraded bg-orange-300' : 'health-dot-healthy bg-emerald-300'} shadow-[0_0_18px_currentColor]`} />
                 </div>
-                <div className="truncate text-xs text-slate-400">{headerLabel} · {isDevMode ? 'Local dev control plane' : 'FastAPI control plane'}</div>
+                <div className="truncate text-xs text-slate-400">{headerLabel} · {isDevMode ? 'Local dev control plane' : 'Control plane'}</div>
               </div>
             </div>
             <ModeSwitcher compact className="hidden sm:flex" />

@@ -41,7 +41,7 @@ export default function SecurityPostureTab({ simpleMode = false }) {
       } catch {
         setTrivyVulns({ critical: 0, high: 0, medium: 0 });
         setLynisMetrics({ index: 0, warnings: 0, suggestions: 0 });
-        setScanHistory([{ id: 'control-plane-degraded', time: new Date().toLocaleTimeString(), engine: 'FastAPI/NATS', status: 'Security telemetry unavailable', target: 'control-plane' }]);
+        setScanHistory([{ id: 'control-plane-degraded', time: new Date().toLocaleTimeString(), engine: 'control plane', status: 'Security telemetry unavailable', target: 'control-plane' }]);
       }
     };
 

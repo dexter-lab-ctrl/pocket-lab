@@ -14,13 +14,13 @@ export const PRODUCT_AREAS = {
   observe: {
     label: 'Observe',
     simpleLabel: 'Check',
-    description: 'Status, logs, drift, and system map',
+    description: 'System status, activity evidence, configuration health, and system map',
     tabs: ['telemetry', 'logs', 'drift', 'blueprint'],
   },
   scale: {
     label: 'Scale',
     simpleLabel: 'Devices',
-    description: 'Devices and fleet growth',
+    description: 'Device onboarding and fleet growth',
     tabs: ['fleet'],
   },
 };

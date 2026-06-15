@@ -6,6 +6,7 @@ import EvidenceReceipt from './EvidenceReceipt.jsx';
 import SafeActionPreview from './SafeActionPreview.jsx';
 import { useToast } from './ToastProvider.jsx';
 import { createEvidenceReceipt } from '../lib/evidenceReceipts.js';
+import { enterpriseDisplayText, enterpriseOperationLabel } from '../lib/enterpriseLabels.js';
 import { ProgressiveDisclosure } from './ui.jsx';
 
 /**
@@ -47,7 +48,7 @@ export default function SimpleActionWizard({ title, operation, target, params, m
         jobId: '',
         receipt: createEvidenceReceipt({ operation, status: 'failed', mode, message: errorMessage, simpleMode }),
       });
-      toast.error(errorMessage, { title: simpleMode ? 'Needs attention' : 'Operation failed' });
+      toast.error(enterpriseDisplayText(errorMessage), { title: simpleMode ? 'Needs attention' : 'Operation failed' });
     }
   };
 
@@ -58,7 +59,7 @@ export default function SimpleActionWizard({ title, operation, target, params, m
         <p className="mt-2 text-sm leading-6 text-slate-300">{copy.description}</p>
       </div>
       <SafeActionPreview operation={operation} simpleMode={simpleMode} />
-      {dispatching ? <p className="command-dispatch-label">{simpleMode ? 'Sending request safely...' : 'Command queued via FastAPI'}</p> : null}
+      {dispatching ? <p className="command-dispatch-label">{simpleMode ? 'Sending request safely...' : 'Action queued through the control plane'}</p> : null}
       <button
         type="button"
         onClick={handleRun}
@@ -72,10 +73,10 @@ export default function SimpleActionWizard({ title, operation, target, params, m
       {state.error ? <p className="text-sm text-rose-200">{state.error}</p> : null}
       <EvidenceReceipt receipt={state.receipt} simpleMode={simpleMode} />
       <ProgressiveDisclosure simpleMode={simpleMode} title="Support details">
-        <div>Operation: <span className="font-mono">{operation}</span></div>
+        <div>Action: <span className="font-mono">{enterpriseOperationLabel(operation)}</span></div>
         <div>Live job: <span className="font-mono">{state.jobId || 'not queued yet'}</span></div>
-        <div>Target: <span className="font-mono break-all">{JSON.stringify(target)}</span></div>
-        <div>Settings: <span className="font-mono break-all">{JSON.stringify(params)}</span></div>
+        <div>Target: <span className="font-mono break-all">{enterpriseDisplayText(JSON.stringify(target))}</span></div>
+        <div>Settings: <span className="font-mono break-all">{enterpriseDisplayText(JSON.stringify(params))}</span></div>
       </ProgressiveDisclosure>
     </div>
   );

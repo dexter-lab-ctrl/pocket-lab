@@ -36,7 +36,7 @@ export default function DriftCenterTab({ simpleMode = false }) {
   // Simple experience mode replaces technical wording for a
   // general audience.  The subtitle appears in the header and
   // the button label for scanning drift is simplified.
-  const subtitle = simpleMode ? 'Health & Issues' : 'Drift Center';
+  const subtitle = simpleMode ? 'Health & Issues' : 'Configuration Health';
   const headingTitle = simpleMode ? 'System health & issues' : 'Operation status stream and drift jobs';
   const scanButtonLabel = simpleMode ? 'Scan for Changes' : 'Scan Drift';
 
@@ -58,7 +58,7 @@ export default function DriftCenterTab({ simpleMode = false }) {
     } catch {
       setSummary({ healthy: 0, drifted: 0, pending_approval: 0, failed: 1, last_scan_at: null });
       setJobs([]);
-      setTaskMessage(simpleMode ? 'Pocket Lab cannot check changes until the live control plane is ready.' : 'FastAPI/NATS control plane unavailable; drift data is not simulated in production mode.');
+      setTaskMessage(simpleMode ? 'Pocket Lab cannot check changes until the live control plane is ready.' : 'control plane control plane unavailable; drift data is not simulated in production mode.');
     } finally {
       setRefreshing(false);
     }
@@ -83,7 +83,7 @@ export default function DriftCenterTab({ simpleMode = false }) {
       if (jobData) setJobs((prev) => prev.map((item) => (item.job_id === jobId ? { ...item, ...jobData } : item)));
       setDiffText(JSON.stringify(diffData || jobData?.diff || [], null, 2));
     } catch {
-      setDiffText(simpleMode ? 'No change details available while Pocket Lab is offline.' : 'Drift diff unavailable because the FastAPI control plane could not be reached.');
+      setDiffText(simpleMode ? 'No change details available while Pocket Lab is offline.' : 'Drift diff unavailable because the Control API control plane could not be reached.');
     }
   };
 

@@ -130,7 +130,7 @@ function HealthEnginePanelInner({ health, onRefresh, simpleMode = false, liveSta
         </button>
         <div className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-black/10 px-4 py-2.5 text-xs font-semibold opacity-90">
           <ShieldCheck className="h-4 w-4" />
-          {simpleMode ? (liveStatus?.isLive ? 'Live checks streaming' : normalizedHealth.gatus?.reachable ? 'Live checks active' : 'Offline summary active') : (liveStatus?.isLive ? 'FastAPI/NATS live stream active' : normalizedHealth.gatus?.reachable ? 'Gatus API reachable' : 'Fallback snapshot active')}
+          {simpleMode ? (liveStatus?.isLive ? 'Live checks streaming' : normalizedHealth.gatus?.reachable ? 'Live checks active' : 'Offline summary active') : (liveStatus?.isLive ? 'Control-plane live stream active' : normalizedHealth.gatus?.reachable ? 'Health service reachable' : 'Fallback snapshot active')}
         </div>
         <div className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-black/10 px-4 py-2.5 text-xs font-semibold opacity-90">
           <Clock3 className="h-4 w-4" />

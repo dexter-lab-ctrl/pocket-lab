@@ -29,7 +29,7 @@ export default function FirstRunOnboarding({ onNavigate }) {
     {
       id: 'control-plane',
       title: experienceMode === 'simple' ? 'Make sure Pocket Lab is ready' : 'Validate control-plane readiness',
-      description: experienceMode === 'simple' ? 'Pocket Lab checks whether safe actions can run.' : 'Check FastAPI, NATS, JetStream, and worker readiness before launching write flows.',
+      description: experienceMode === 'simple' ? 'Pocket Lab checks whether safe actions can run.' : 'Check Control API, Event Bus, Durable Event Stream, and worker readiness before launching write flows.',
       status: status.ready ? 'healthy' : 'degraded',
       icon: Activity,
     },
@@ -43,7 +43,7 @@ export default function FirstRunOnboarding({ onNavigate }) {
     {
       id: 'first-app',
       title: experienceMode === 'simple' ? 'Install your first app or service' : 'Open the Apps & Services workflow',
-      description: experienceMode === 'simple' ? 'Start with a guided install when you are ready.' : 'Blueprint installs are queued through FastAPI typed operations and worker execution.',
+      description: experienceMode === 'simple' ? 'Start with a guided install when you are ready.' : 'Blueprint installs are queued through Control API typed operations and executor processing.',
       status: 'queued',
       icon: LayoutGrid,
       action: () => onNavigate?.('appstore'),
@@ -71,7 +71,7 @@ export default function FirstRunOnboarding({ onNavigate }) {
             <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">
               {experienceMode === 'simple'
                 ? 'This quick guide helps you choose a comfortable mode, check readiness, and find your first safe action.'
-                : 'Validate readiness, choose governance behavior, and confirm the UI is using FastAPI-owned typed-operation flows.'}
+                : 'Validate readiness, choose governance behavior, and confirm the UI is using Control API-owned typed-operation flows.'}
             </p>
           </div>
           <button type="button" onClick={finish} className="rounded-2xl border border-white/10 bg-white/5 p-2 text-slate-200 hover:bg-white/10" aria-label="Close onboarding"><X className="h-5 w-5" /></button>
@@ -79,7 +79,7 @@ export default function FirstRunOnboarding({ onNavigate }) {
 
         <div className="grid gap-5 p-5 sm:p-6 lg:grid-cols-[minmax(0,1fr)_24rem]">
           <div className="space-y-5">
-            <StandardList title={experienceMode === 'simple' ? 'Setup steps' : 'Readiness checklist'} description={experienceMode === 'simple' ? 'Complete these in any order.' : 'These checks preserve the FastAPI/NATS/worker control-plane model.'}>
+            <StandardList title={experienceMode === 'simple' ? 'Setup steps' : 'Readiness checklist'} description={experienceMode === 'simple' ? 'Complete these in any order.' : 'These checks preserve the control plane/worker control-plane model.'}>
               {steps.map((step) => (
                 <StandardListItem
                   key={step.id}
@@ -95,9 +95,9 @@ export default function FirstRunOnboarding({ onNavigate }) {
 
             <ProgressiveDisclosure title={experienceMode === 'simple' ? 'Show support details' : 'Show technical checklist'} simpleMode={experienceMode === 'simple'}>
               <div className="grid gap-2 text-sm">
-                <div>FastAPI: <StatusBadge status={status.api ? 'healthy' : 'degraded'}>{status.api ? 'Ready' : 'Needs attention'}</StatusBadge></div>
-                <div>NATS: <StatusBadge status={status.nats ? 'healthy' : 'degraded'}>{status.nats ? 'Connected' : 'Offline'}</StatusBadge></div>
-                <div>JetStream: <StatusBadge status={status.jetstream ? 'healthy' : 'degraded'}>{status.jetstream ? 'Enabled' : 'Required'}</StatusBadge></div>
+                <div>Control API: <StatusBadge status={status.api ? 'healthy' : 'degraded'}>{status.api ? 'Ready' : 'Needs attention'}</StatusBadge></div>
+                <div>Event Bus: <StatusBadge status={status.nats ? 'healthy' : 'degraded'}>{status.nats ? 'Connected' : 'Offline'}</StatusBadge></div>
+                <div>Durable Event Stream: <StatusBadge status={status.jetstream ? 'healthy' : 'degraded'}>{status.jetstream ? 'Enabled' : 'Required'}</StatusBadge></div>
                 <div>Worker: <StatusBadge status={status.worker ? 'healthy' : 'degraded'}>{status.worker ? 'Ready' : 'Not ready'}</StatusBadge></div>
                 <p className="text-slate-400">Frontend actions remain API-owned. Workers own execution and lifecycle events remain observable.</p>
               </div>

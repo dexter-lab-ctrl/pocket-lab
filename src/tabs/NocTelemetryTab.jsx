@@ -125,7 +125,7 @@ export default function NocTelemetryTab({ simpleMode = false }) {
           <div className="relative z-10 flex flex-col sm:flex-row items-center sm:justify-between gap-4 text-center sm:text-left">
             <div>
             <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-2">{telemetryHeading}</h2>
-              <p className="text-slate-400 text-sm max-w-xl">{simpleMode ? 'See whether your Pocket Lab device has enough power, memory, and storage.' : <>Live hardware metrics streamed through FastAPI, NATS events, and Termux <code className="text-emerald-400">/proc</code> sensors.</>}</p>
+              <p className="text-slate-400 text-sm max-w-xl">{simpleMode ? 'See whether your Pocket Lab device has enough power, memory, and storage.' : <>Live hardware metrics streamed through Control API, Event Bus events, and Termux <code className="text-emerald-400">/proc</code> sensors.</>}</p>
             </div>
             <div className="flex flex-col items-center justify-center bg-black/40 px-6 py-4 rounded-3xl border border-white/5">
               <span className={`text-4xl font-black ${isHot ? 'text-red-400' : 'text-emerald-400'}`}>
@@ -243,7 +243,7 @@ export default function NocTelemetryTab({ simpleMode = false }) {
 
           <div className="bg-slate-900/50 border border-white/5 rounded-3xl p-5 flex flex-col items-center justify-center text-center">
             <NetIcon className={`w-6 h-6 mb-2 ${net.color}`} />
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{simpleMode ? 'Live Updates' : 'NATS Event Stream'}</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{simpleMode ? 'Live Updates' : 'Event Bus Event Stream'}</span>
             <span className={`font-black mt-1 ${net.color}`}>{net.text}</span>
           </div>
         </div>
@@ -252,7 +252,7 @@ export default function NocTelemetryTab({ simpleMode = false }) {
       <LiveEventPanel
         simpleMode={simpleMode}
         title="System status live stream"
-        description={simpleMode ? 'System health, device status, and service changes appear automatically.' : 'Health, telemetry, fleet, and sampler events stream from FastAPI/NATS as they are reported.'}
+        description={simpleMode ? 'System health, device status, and service changes appear automatically.' : 'Health, telemetry, fleet, and sampler events stream from control plane as they are reported.'}
         subjectPrefixes={['pocketlab.events.telemetry.', 'pocketlab.events.health.', 'pocketlab.events.fleet.', 'pocketlab.events.live_status.']}
         maxItems={4}
         compact

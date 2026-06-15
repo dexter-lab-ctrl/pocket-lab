@@ -8,7 +8,7 @@ const INITIAL_STATUS = {
   nats: false,
   jetstream: false,
   worker: false,
-  message: 'Checking FastAPI/NATS control plane...',
+  message: 'Checking control plane readiness...',
   raw: null,
   checkedAt: null,
 };
@@ -22,11 +22,11 @@ function normalizeStatus(readyPayload, natsPayload, workerPayload) {
   const workerReady = Boolean(worker.running ?? worker.connected ?? ready.worker_ready ?? true);
   const apiReady = Boolean(ready.status === 'ready' || ready.ready === true || ready.ok === true);
   const hardReady = apiReady && natsConnected && jetstreamEnabled && workerReady;
-  let message = 'FastAPI/NATS control plane is ready.';
-  if (!apiReady) message = ready.detail || ready.error || 'FastAPI readiness check failed.';
-  else if (!natsConnected) message = 'NATS is required for production writes and is not connected.';
-  else if (!jetstreamEnabled) message = 'JetStream is required for durable commands and is not enabled.';
-  else if (!workerReady) message = 'The command worker is not reporting ready.';
+  let message = 'Control plane is ready.';
+  if (!apiReady) message = ready.detail || ready.error || 'Control API readiness check failed.';
+  else if (!natsConnected) message = 'The event bus is required for governed changes and is not connected.';
+  else if (!jetstreamEnabled) message = 'The durable event stream is required for governed changes and is not enabled.';
+  else if (!workerReady) message = 'The command executor is not reporting ready.';
   return {
     ready: hardReady,
     loading: false,
@@ -65,7 +65,7 @@ export function useControlPlaneStatus(intervalMs = 15000) {
       setStatus({
         ...INITIAL_STATUS,
         loading: false,
-        message: err?.message || 'FastAPI control plane is unreachable.',
+        message: err?.message || 'Control plane is unreachable.',
         checkedAt: new Date().toISOString(),
       });
     }
@@ -83,5 +83,5 @@ export function useControlPlaneStatus(intervalMs = 15000) {
 export function productionWriteBlockedMessage(simpleMode = false) {
   return simpleMode
     ? 'Pocket Lab needs its live control plane before it can safely make changes.'
-    : 'Production writes are disabled until FastAPI, NATS, JetStream, and the worker are ready.';
+    : 'Governed changes are disabled until the control API, event bus, durable stream, and executor are ready.';
 }

@@ -55,7 +55,7 @@ export default function AppStoreTab({ simpleMode = false }) {
       if (!res.ok) throw new Error('Catalog endpoint unavailable');
       setCatalog(await res.json());
     } catch {
-      showToast('error', 'FastAPI/NATS control plane unreachable.');
+      showToast('error', 'Control plane is unreachable.');
     } finally {
       setIsFetching(false);
       setIsRefreshing(false);
@@ -238,7 +238,7 @@ export default function AppStoreTab({ simpleMode = false }) {
                       className={`w-full py-3 rounded-xl font-bold flex items-center justify-center transition-all relative z-10 ${loadingApp === app.id ? 'bg-indigo-600/50 text-indigo-200 cursor-not-allowed' : 'bg-white/5 hover:bg-indigo-600 text-white border border-white/10 hover:border-indigo-500'}`}
                     >
                       {loadingApp === app.id ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <Icons.PlayCircle className="w-5 h-5 mr-2" />}
-                      {!isLiveEnv ? (simpleMode ? 'Unavailable' : 'NATS required') : (loadingApp === app.id ? (simpleMode ? 'Installing...' : 'Triggering Pipeline...') : deployButtonLabel)}
+                      {!isLiveEnv ? (simpleMode ? 'Unavailable' : 'Control plane required') : (loadingApp === app.id ? (simpleMode ? 'Installing...' : 'Starting Install...') : deployButtonLabel)}
                     </button>
                   </div>
                 );
