@@ -1,0 +1,199 @@
+name: Cut Pocket Lab release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_id:
+        description: "Release identifier, for example 2026.06.15.1"
+        required: true
+        type: string
+      release_notes:
+        description: "Short release notes"
+        required: false
+        default: "Pocket Lab platform release"
+        type: string
+      prerelease:
+        description: "Mark release as prerelease"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cut-pocket-lab-release-${{ inputs.release_id }}
+  cancel-in-progress: false
+
+jobs:
+  cut-pocket-lab-release:
+    name: Build, tag, and publish Pocket Lab release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Resolve release metadata
+        id: meta
+        shell: bash
+        run: |
+          release_id="${{ inputs.release_id }}"
+
+          if [[ ! "$release_id" =~ ^[0-9]{4}\.[0-9]{2}\.[0-9]{2}\.[0-9]+$ ]]; then
+            echo "ERROR: release_id must look like 2026.06.15.1" >&2
+            exit 1
+          fi
+
+          tag="release/${release_id}"
+          title="Pocket Lab Release ${release_id}"
+
+          echo "release_id=$release_id" >> "$GITHUB_OUTPUT"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "title=$title" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Verify tag does not already exist
+        shell: bash
+        run: |
+          tag="${{ steps.meta.outputs.tag }}"
+
+          if git rev-parse "$tag" >/dev/null 2>&1; then
+            echo "ERROR: local tag already exists: $tag" >&2
+            exit 1
+          fi
+
+          if git ls-remote --exit-code --tags origin "refs/tags/$tag" >/dev/null 2>&1; then
+            echo "ERROR: remote tag already exists: $tag" >&2
+            exit 1
+          fi
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install frontend dependencies
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: "true"
+        run: npm ci
+
+      - name: Clean stale PWA output
+        run: |
+          rm -rf dist dist.zip
+
+      - name: Build PWA
+        run: npm run build
+
+      - name: Verify PWA dist
+        run: |
+          test -f dist/index.html
+          test -f dist/manifest.webmanifest
+          test -f dist/sw.js
+          test -d dist/assets
+
+      - name: Write PWA build manifest
+        run: |
+          cat > dist/pocketlab-pwa-build.json <<EOF_MANIFEST
+          {
+            "app": "Pocket Lab",
+            "artifact": "dist.zip",
+            "release_tag": "${{ steps.meta.outputs.tag }}",
+            "release_id": "${{ steps.meta.outputs.release_id }}",
+            "source_branch": "main",
+            "source_commit": "${GITHUB_SHA}",
+            "workflow": "${GITHUB_WORKFLOW}",
+            "run_id": "${GITHUB_RUN_ID}",
+            "run_attempt": "${GITHUB_RUN_ATTEMPT}",
+            "built_at_utc": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          }
+          EOF_MANIFEST
+
+      - name: Create dist.zip
+        run: |
+          zip -r dist.zip dist
+
+          unzip -l dist.zip | grep "dist/index.html"
+          unzip -l dist.zip | grep "dist/manifest.webmanifest"
+          unzip -l dist.zip | grep "dist/sw.js"
+          unzip -l dist.zip | grep "dist/pocketlab-pwa-build.json"
+
+          sha256sum dist.zip > dist.zip.sha256
+          cat dist.zip.sha256
+
+      - name: Create and push git tag
+        shell: bash
+        run: |
+          tag="${{ steps.meta.outputs.tag }}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git tag -a "$tag" -m "${{ steps.meta.outputs.title }}"
+          git push origin "$tag"
+
+      - name: Write release notes
+        shell: bash
+        run: |
+          cat > release-notes.md <<'EOF_NOTES'
+          # ${{ steps.meta.outputs.title }}
+
+          ${{ inputs.release_notes }}
+
+          ## Artifact
+
+          - `dist.zip` contains the built Pocket Lab PWA.
+          - `dist/pocketlab-pwa-build.json` records the source commit and workflow run.
+          - This release is compatible with `install-pwa-ui.sh`.
+
+          ## Source
+
+          - Branch: `main`
+          - Commit: `${{ github.sha }}`
+
+          ## SHA256
+
+          ```text
+          EOF_NOTES
+
+          cat dist.zip.sha256 >> release-notes.md
+
+          cat >> release-notes.md <<'EOF_NOTES'
+          ```
+          EOF_NOTES
+
+      - name: Create draft GitHub release with artifact
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          tag="${{ steps.meta.outputs.tag }}"
+
+          prerelease_flag=""
+          if [[ "${{ inputs.prerelease }}" == "true" ]]; then
+            prerelease_flag="--prerelease"
+          fi
+
+          gh release create "$tag" \
+            dist.zip \
+            dist.zip.sha256 \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "${{ steps.meta.outputs.title }}" \
+            --notes-file release-notes.md \
+            --draft \
+            $prerelease_flag
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          tag="${{ steps.meta.outputs.tag }}"
+
+          gh release edit "$tag" \
+            --repo "$GITHUB_REPOSITORY" \
+            --draft=false \
+            --latest
