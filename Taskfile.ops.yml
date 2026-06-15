@@ -1,0 +1,18 @@
+version: 3
+
+tasks:
+  release_prepare:
+    desc: Release prepare operation
+    operation: backup_now
+
+  release_sync:
+    desc: Release sync operation
+    operation: git_sync
+
+  release_deploy:
+    desc: Release deploy operation
+    operation: deploy_blueprint
+
+  release_verify:
+    desc: Release verify operation
+    operation: drift_scan

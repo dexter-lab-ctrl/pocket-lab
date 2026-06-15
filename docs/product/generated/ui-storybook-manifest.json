@@ -1,0 +1,55 @@
+{
+  "additional_screen_count": 5,
+  "additional_screens": [
+    "security-posture",
+    "noc-telemetry",
+    "disaster-recovery",
+    "policy-guardrails",
+    "settings-governance"
+  ],
+  "architecture_guardrails": [
+    "Frontend calls FastAPI only; stories use deterministic mock FastAPI responses.",
+    "No Storybook story talks directly to NATS or JetStream.",
+    "No Storybook story executes shell commands.",
+    "Write actions remain represented as Typed Operations submitted through FastAPI endpoints.",
+    "Approval, rejection, resume, auto-approval, operation status, and audit behavior are documented as UI states rather than bypassed."
+  ],
+  "documented_states": [
+    "backend_sync_behavior",
+    "button_action_behavior",
+    "degraded",
+    "empty",
+    "enterprise_mode",
+    "error",
+    "failed_operation",
+    "loading",
+    "normal",
+    "operation_status_behavior",
+    "permission_or_approval_required",
+    "professional_mode",
+    "simple_mode",
+    "success"
+  ],
+  "generated_files": [
+    "docs/product/generated/ui-storybook-manifest.json",
+    "docs/product/generated/ui-screen-reference.generated.md",
+    "docs/product/ui-screen-reference.md"
+  ],
+  "required_screen_count": 6,
+  "required_screens": [
+    "app-store",
+    "gitops",
+    "fleet-scaling",
+    "identity-vault",
+    "release-workflow",
+    "drift-center"
+  ],
+  "screen_count": 11,
+  "source_files": [
+    "src/stories/tier9UiScreens.json",
+    "src/stories/PocketLabTabs.stories.jsx"
+  ],
+  "source_fingerprint": "cb03a89c8f92cb8d80229d072a3ed3b87d77994282d60df2bd65220f2f2935db",
+  "story_export_count": 29,
+  "tier": "Tier 9 \u2014 UI Documentation with Storybook"
+}

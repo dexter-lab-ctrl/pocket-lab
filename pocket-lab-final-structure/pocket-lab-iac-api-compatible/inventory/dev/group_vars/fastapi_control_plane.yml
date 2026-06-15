@@ -1,0 +1,19 @@
+---
+fastapi_control_plane_enabled: true
+fastapi_control_plane_state_dir: "{{ common_api_dir }}"
+dashboard_ui_dir: "{{ common_pwa_dir }}"
+fastapi_control_plane_port: 8080
+fastapi_control_plane_health_path: /ready
+pocketlab_nats_required: true
+pocketlab_nats_require_jetstream: true
+pocketlab_worker_execution: worker
+pocketlab_nats_url: nats://127.0.0.1:4222
+pocketlab_nats_monitor_url: http://127.0.0.1:8222/varz
+pocketlab_nats_api_user: pocketlab_api
+pocketlab_nats_worker_user: pocketlab_worker
+pocketlab_nats_agent_user: pocketlab_agent
+
+pocketlab_nats_api_password: "{{ lookup('env', 'POCKETLAB_NATS_API_PASSWORD') | default('', true) }}"
+pocketlab_nats_worker_password: "{{ lookup('env', 'POCKETLAB_NATS_WORKER_PASSWORD') | default('', true) }}"
+pocketlab_nats_agent_password: "{{ lookup('env', 'POCKETLAB_NATS_AGENT_PASSWORD') | default('', true) }}"
+pocketlab_nats_tls_enabled: false

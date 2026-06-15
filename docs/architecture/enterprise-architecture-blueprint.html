@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pocket Lab Enterprise Architecture Blueprint</title>
+<style>
+:root {
+  --bg:#07111f; --panel:#0c1729; --panel2:#111f35; --ink:#e7eefc; --muted:#9eb0cc;
+  --line:#243a59; --accent:#7c3aed; --accent2:#06b6d4; --green:#22c55e; --amber:#f59e0b; --red:#ef4444;
+}
+* { box-sizing:border-box; }
+body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:radial-gradient(circle at top left,#172554 0,#07111f 32rem), var(--bg); color:var(--ink); line-height:1.55; }
+a { color:#93c5fd; }
+.container { max-width:1240px; margin:0 auto; padding:32px 20px 70px; }
+.hero { border:1px solid rgba(124,58,237,.35); background:linear-gradient(135deg,rgba(124,58,237,.22),rgba(6,182,212,.10)), rgba(12,23,41,.86); border-radius:28px; padding:34px; box-shadow:0 22px 80px rgba(0,0,0,.36); }
+h1 { margin:0 0 12px; font-size:clamp(2rem,4vw,4rem); line-height:1.02; letter-spacing:-.045em; }
+h2 { margin:44px 0 14px; font-size:1.75rem; letter-spacing:-.02em; }
+h3 { margin:24px 0 10px; font-size:1.15rem; }
+.eyebrow { color:#a5b4fc; text-transform:uppercase; font-weight:800; font-size:.78rem; letter-spacing:.18em; }
+.lead { font-size:1.08rem; color:#d6e3f8; max-width:940px; }
+.grid { display:grid; gap:16px; }
+.grid.cols-2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.grid.cols-3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.card { background:rgba(12,23,41,.86); border:1px solid rgba(148,163,184,.18); border-radius:22px; padding:20px; box-shadow:0 12px 40px rgba(0,0,0,.18); }
+.card.good { border-color:rgba(34,197,94,.35); }
+.card.warn { border-color:rgba(245,158,11,.35); }
+.kpi { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.badge { display:inline-flex; gap:7px; align-items:center; padding:4px 10px; border:1px solid rgba(148,163,184,.25); border-radius:999px; background:rgba(255,255,255,.05); color:#cbd5e1; font-weight:700; font-size:.78rem; }
+.badge.green { color:#bbf7d0; border-color:rgba(34,197,94,.35); background:rgba(34,197,94,.08); }
+.badge.amber { color:#fde68a; border-color:rgba(245,158,11,.35); background:rgba(245,158,11,.08); }
+.badge.red { color:#fecaca; border-color:rgba(239,68,68,.35); background:rgba(239,68,68,.08); }
+code { color:#bfdbfe; background:rgba(15,23,42,.85); border:1px solid rgba(148,163,184,.15); border-radius:6px; padding:1px 5px; font-size:.9em; }
+pre { overflow:auto; padding:16px; background:#030712; border:1px solid rgba(148,163,184,.18); border-radius:16px; color:#dbeafe; }
+table { width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border:1px solid rgba(148,163,184,.18); border-radius:18px; background:rgba(12,23,41,.75); margin:14px 0 28px; }
+th,td { padding:12px 14px; text-align:left; vertical-align:top; border-bottom:1px solid rgba(148,163,184,.14); }
+th { color:#dbeafe; background:rgba(30,41,59,.75); font-size:.82rem; text-transform:uppercase; letter-spacing:.08em; }
+tr:last-child td { border-bottom:none; }
+ul { margin-top:8px; }
+.svgbox { background:#07111f; border:1px solid rgba(148,163,184,.18); border-radius:22px; padding:14px; overflow:auto; margin:16px 0 28px; }
+svg text { font-family:Inter, ui-sans-serif, system-ui, sans-serif; fill:#e5eefc; }
+.node { fill:#10233d; stroke:#35557f; stroke-width:1.3; }
+.node2 { fill:#162b4a; stroke:#7c3aed; stroke-width:1.5; }
+.node3 { fill:#0d3b45; stroke:#06b6d4; stroke-width:1.5; }
+.arrow { stroke:#93c5fd; stroke-width:1.6; fill:none; marker-end:url(#arrow); }
+.small { color:var(--muted); font-size:.92rem; }
+.notice { border-left:4px solid var(--accent2); background:rgba(6,182,212,.08); padding:14px 16px; border-radius:14px; color:#d6f6ff; }
+.toc { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:18px; }
+.toc a { text-decoration:none; color:#dbeafe; background:rgba(255,255,255,.05); border:1px solid rgba(148,163,184,.16); padding:10px 12px; border-radius:14px; }
+@media (max-width:900px) { .grid.cols-2,.grid.cols-3,.toc { grid-template-columns:1fr; } .hero { padding:24px; } table { display:block; overflow-x:auto; } }
+@media print { body { background:white; color:#111827; } .card,.hero,.svgbox,table { box-shadow:none; } a { color:#111827; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <section class="hero">
+    <div class="eyebrow">Current-state enterprise blueprint · synced 2026-06-07 18:52 UTC</div>
+    <h1>Pocket Lab Enterprise Architecture Blueprint</h1>
+    <p class="lead">This blueprint describes Pocket Lab as it stands after the latest architecture, contract, E2E, performance, fault-injection, flaky-test, accessibility, and App Catalog remediation work. It replaces the older architecture narrative with a product blueprint focused on runtime architecture, app screens, frontend components, backend services, typed operations, event flows, security posture, and operator behavior.</p>
+    <div class="grid cols-3" style="margin-top:20px">
+      <div class="card good"><div class="kpi"><b>Architecture posture</b><span class="badge green">FastAPI + NATS/JetStream only</span></div><p class="small">Legacy Python HTTP server and compatibility operation paths are not part of the current release architecture.</p></div>
+      <div class="card good"><div class="kpi"><b>UI posture</b><span class="badge green">Professional + Simple Modes</span></div><p class="small">Professional screens expose technical controls; Simple Mode uses outcome-focused language and hides support details behind expandable panels.</p></div>
+      <div class="card good"><div class="kpi"><b>Validation posture</b><span class="badge green">Browser + faults + flakes + performance passed</span></div><p class="small">Remaining release gates are Android/Termux smoke and release dry-run.</p></div>
+    </div>
+    <div class="toc">
+      <a href="#audit">Alignment audit</a><a href="#system">System blueprint</a><a href="#screens">Screens and controls</a><a href="#backend">Backend blueprint</a><a href="#api">API contracts</a><a href="#flows">Enterprise flows</a><a href="#config">Runtime config</a><a href="#security">Security and reliability</a><a href="#operations">How to use the app</a>
+    </div>
+  </section>
+
+  <section id="audit">
+    <h2>1. Current-State Alignment Audit</h2>
+    <div class="notice"><b>Scope note:</b> This blueprint intentionally excludes local setup instructions and development-environment runbooks. Those belong in a separate developer environment document. This document covers the Pocket Lab product architecture, runtime behavior, screens, APIs, and operator workflows.</div>
+    <table>
+      <thead><tr><th>Area checked</th><th>Current synchronized state</th><th>Blueprint action</th></tr></thead>
+      <tbody>
+        <tr><td>Backend control plane</td><td>FastAPI app version <code>2.3.0-phase12</code> with NATS/JetStream command/event backbone, worker-owned execution, and event-sourced workflow engine.</td><td>Documented as authoritative runtime. Removed legacy <code>http.server</code> control plane narrative.</td></tr>
+        <tr><td>Legacy operation paths</td><td><code>legacy_intent</code>, <code>sync_bash</code>, <code>tofu_deploy</code>, and <code>/api/action/update</code> are retired and must not appear in current product flows.</td><td>Removed as active architecture. Mentioned only as retired/non-goal.</td></tr>
+        <tr><td>App Catalog refresh</td><td>Frontend button emits typed <code>catalog_refresh</code> request to <code>POST /api/catalog/refresh</code>. Backend route publishes <code>pocketlab.commands.catalog.refresh</code>.</td><td>Documented as canonical App Catalog refresh flow.</td></tr>
+        <tr><td>Health engine</td><td>Frontend consumes <code>/api/health-engine.json</code>. Raw Gatus path is backend adapter configuration only.</td><td>Documented as a FastAPI-owned health contract, not direct Gatus UI coupling.</td></tr>
+        <tr><td>Frontend resilience</td><td>Fault gates validated object-shaped health service values, degraded control plane, Vault sealed, stale fleet, low disk, drift, release failure, and WebSocket fallback.</td><td>Added defensive UI and fail-soft behavior sections.</td></tr>
+        <tr><td>Validation state</td><td>Full E2E, performance smoke, faults, flakes, API contract, visual, Lighthouse, accessibility, golden, network, WebSocket, NATS permissions, and redaction gates are recorded as passed in current discussion state.</td><td>Captured as evidence, not as setup instructions.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="system">
+    <h2>2. System Blueprint</h2>
+    <p>Pocket Lab is an edge-first self-hosted control plane. The frontend is a React/Vite PWA. The backend is a FastAPI API that publishes typed commands to NATS/JetStream. Workers consume those commands, execute typed operations, publish lifecycle events, and feed an event-sourced workflow engine. The browser receives live events through WebSocket with polling fallback.</p>
+    <div class="svgbox">
+      <svg width="1120" height="420" viewBox="0 0 1120 420" role="img" aria-label="Pocket Lab system context diagram">
+        <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#93c5fd"/></marker></defs>
+        <rect class="node2" x="30" y="35" width="210" height="92" rx="18"/><text x="135" y="72" text-anchor="middle" font-weight="800">React PWA</text><text x="135" y="100" text-anchor="middle" font-size="13">Professional + Simple Modes</text>
+        <rect class="node" x="30" y="175" width="210" height="92" rx="18"/><text x="135" y="211" text-anchor="middle" font-weight="800">Operator Screens</text><text x="135" y="239" text-anchor="middle" font-size="13">tabs, buttons, panels, events</text>
+        <rect class="node2" x="330" y="95" width="220" height="120" rx="18"/><text x="440" y="135" text-anchor="middle" font-weight="800">FastAPI Control API</text><text x="440" y="163" text-anchor="middle" font-size="13">auth, contracts, routers</text><text x="440" y="185" text-anchor="middle" font-size="13">fail-closed writes</text>
+        <rect class="node3" x="635" y="35" width="220" height="92" rx="18"/><text x="745" y="72" text-anchor="middle" font-weight="800">NATS / JetStream</text><text x="745" y="100" text-anchor="middle" font-size="13">commands, events, audit, DLQ</text>
+        <rect class="node3" x="635" y="175" width="220" height="92" rx="18"/><text x="745" y="212" text-anchor="middle" font-weight="800">Workers + Handlers</text><text x="745" y="239" text-anchor="middle" font-size="13">operation + domain execution</text>
+        <rect class="node" x="910" y="35" width="180" height="92" rx="18"/><text x="1000" y="72" text-anchor="middle" font-weight="800">State Stores</text><text x="1000" y="100" text-anchor="middle" font-size="13">runs, catalog, workflows</text>
+        <rect class="node" x="910" y="175" width="180" height="92" rx="18"/><text x="1000" y="212" text-anchor="middle" font-weight="800">Edge Services</text><text x="1000" y="239" text-anchor="middle" font-size="13">Vault, Gitea, OPA, Loki, fleet</text>
+        <rect class="node" x="330" y="290" width="525" height="82" rx="18"/><text x="592" y="324" text-anchor="middle" font-weight="800">Event-Sourced Workflow Engine</text><text x="592" y="350" text-anchor="middle" font-size="13">reconstruct · replay · recover · stale workflow plan</text>
+        <path class="arrow" d="M240 82 C270 82 292 120 330 135"/><path class="arrow" d="M240 220 C285 220 292 180 330 170"/><path class="arrow" d="M550 130 C585 112 600 85 635 82"/><path class="arrow" d="M745 127 L745 175"/><path class="arrow" d="M855 82 L910 82"/><path class="arrow" d="M855 220 L910 220"/><path class="arrow" d="M635 220 C590 245 555 275 520 290"/><path class="arrow" d="M635 82 C545 45 440 65 440 95"/><path class="arrow" d="M855 220 C890 300 790 340 855 340"/>
+      </svg>
+    </div>
+
+    <div class="grid cols-3">
+      <div class="card"><h3>Frontend contract</h3><p>The PWA sends only typed operation payloads and stable FastAPI-owned URLs. It rejects HTML fallback responses, normalizes degraded payloads, and keeps panels isolated with error boundaries.</p></div>
+      <div class="card"><h3>Backend contract</h3><p>FastAPI owns all browser-facing API contracts. It requires NATS/JetStream for write operations and returns 503/403 rather than silently executing locally when the control plane is unavailable.</p></div>
+      <div class="card"><h3>Event contract</h3><p>Commands, events, audit records, telemetry, and DLQ messages are first-class subjects. Recent event replay and WebSockets allow the UI to remain live even through reconnects.</p></div>
+    </div>
+  </section>
+
+  <section id="screens">
+    <h2>3. Screens, Tabs, Buttons, Toggles, and Options</h2>
+    <h3>Professional Mode screens</h3>
+    <table><thead><tr><th>Screen / tab</th><th>What it does</th><th>Buttons, toggles, and options</th><th>Backend/API</th><th>Operations</th></tr></thead><tbody><tr><td>App Catalog</td><td>Primary app/service installation surface.</td><td>Refresh catalog, source mode selector, source reference input, Deploy Workload / Install buttons, Health Engine panel, live Apps & Services event panel.</td><td><code>GET /api/catalog.json</code>, <code>POST /api/catalog/refresh</code>, <code>POST /api/operations/execute</code></td><td><code>catalog_refresh</code>, <code>deploy_blueprint</code></td></tr>
+<tr><td>System Map</td><td>Blueprint/package deployment and rollback view for apps and system packages.</td><td>Blueprint selection cards, package mode selector, package reference input, package name input, Import, Deploy Package, Rollback, operation history.</td><td><code>POST /api/operations/execute</code></td><td><code>deploy_blueprint</code> with action params for import/deploy/rollback</td></tr>
+<tr><td>GitOps Pipeline</td><td>Keeps IaC/GitOps state aligned with approved repository state.</td><td>Pipeline health/status, current typed terminology, update/sync actions, live GitOps event surface.</td><td><code>GET /api/pipeline_status.json</code>, <code>/api/gitops/health.json</code>, <code>/api/git_history.json</code>, operation execute/preview</td><td><code>git_sync</code>, release sync operations</td></tr>
+<tr><td>Blueprint Registry</td><td>Shows registry/catalog/package metadata and blueprint source evidence.</td><td>Registry cards, source metadata, status badges, catalog/blueprint details.</td><td>Catalog and registry read-side APIs</td><td>Read-side; deploy path routes through App Catalog/System Map.</td></tr>
+<tr><td>Identity Vault</td><td>Secrets and access management view.</td><td>Secret/access language, rotate/change password actions, dynamic access details hidden in Simple Mode, no root material exposure.</td><td><code>POST /api/operations/execute</code> and Vault/domain command handlers</td><td><code>rotate_secret</code>, <code>secret_read_dynamic</code></td></tr>
+<tr><td>Log Explorer</td><td>Operator log and event inspection surface.</td><td>Log query/view controls, event/log stream display, Loki-compatible query support.</td><td><code>GET /api/v1/query</code> or <code>/loki/api/v1/query</code>, <code>/api/events/recent</code></td><td>Read-side log/event inspection.</td></tr>
+<tr><td>Policy Guardrails</td><td>OPA/policy evidence and policy deployment guardrail view.</td><td>Policy status, OPA evaluation evidence, deploy safety check button/actions.</td><td><code>GET /api/opa_evaluations.json</code>, <code>POST /api/operations/execute</code>, <code>POST /api/security/scan</code></td><td><code>policy_deploy</code>, security scan commands</td></tr>
+<tr><td>NOC Telemetry</td><td>System status and telemetry screen.</td><td>CPU, memory, disk, temperature, fleet/NOC status, numeric safety normalization.</td><td><code>GET /api/telemetry.json</code>, <code>/api/telemetry/live/status</code></td><td>Read-side telemetry events: <code>pocketlab.events.telemetry.*</code></td></tr>
+<tr><td>Security Posture</td><td>Safety Center / security posture screen.</td><td>Posture summaries, scanner evidence, safety status, policy-related actions.</td><td><code>GET /api/opa_evaluations.json</code>, <code>POST /api/security/scan</code></td><td>Security scan and policy events.</td></tr>
+<tr><td>Drift Center</td><td>Health & Issues / drift detection and reconciliation surface.</td><td>Drift state, metrics, job details, diff view, scan/preview/remediation actions.</td><td><code>GET /api/drift/*</code>, <code>POST /api/drift/{action}</code>, operation execute/preview</td><td><code>drift_scan</code> and drift domain commands</td></tr>
+<tr><td>Release Workflow</td><td>Self-updating release orchestration panel.</td><td>Check release, Apply latest, stage timeline, current/target release cards, health verification and PWA refresh readiness.</td><td><code>GET /api/release/self-update/status</code>, <code>POST /api/release/self-update/check</code>, <code>POST /api/release/self-update/apply</code></td><td><code>release_check</code>, <code>release_apply</code>, release events/audit</td></tr>
+<tr><td>Mesh Fleet</td><td>Device/fleet onboarding and agent status screen.</td><td>Online/offline/stale agents, device invites, join script/bootstrap, node commands, broadcast command surface.</td><td><code>GET /api/fleet*</code>, <code>POST /api/fleet/join</code>, <code>POST /api/fleet/agents/*/commands</code></td><td><code>fleet_join</code>, node command subjects</td></tr>
+<tr><td>Disaster Recovery</td><td>Backup, restore, and backup verification screen.</td><td>Backup reference input, Backup Now, Restore, Verify Backup, recent operation runs.</td><td><code>GET /api/operations/runs</code>, <code>POST /api/operations/execute</code></td><td><code>backup_now</code>, <code>restore_backup</code>, <code>backup_verify</code></td></tr>
+<tr><td>Settings</td><td>Experience mode and user-facing app preferences.</td><td>Simple/Professional mode switch and app settings controls.</td><td>Local browser state/context only unless extended by future settings API.</td><td>No control-plane write operation by default.</td></tr></tbody></table>
+
+    <h3>Simple Mode screens</h3>
+    <p>Simple Mode is not a separate backend. It is a simplified presentation over the same typed operations, endpoints, event streams, and validation rules. It replaces technical vocabulary with plain-language outcomes.</p>
+    <table><thead><tr><th>Simple screen</th><th>User meaning</th><th>Underlying implementation</th></tr></thead><tbody><tr><td>Apps & Services</td><td>Simplified App Catalog. User can check for new apps and install without seeing deployment jargon.</td><td>Uses App Catalog tab in Simple Mode.</td></tr>
+<tr><td>Keep My Environment Updated</td><td>Simplified GitOps/update surface. User sees update intent rather than GitOps internals.</td><td>Uses GitOps Pipeline in Simple Mode.</td></tr>
+<tr><td>Health & Issues</td><td>Simplified Drift Center. Drift becomes “Something Changed”.</td><td>Uses Drift Center in Simple Mode.</td></tr>
+<tr><td>My Devices</td><td>Simplified Mesh Fleet. Fleet join becomes “Add Device”.</td><td>Uses Mesh Fleet in Simple Mode.</td></tr>
+<tr><td>Passwords & Access</td><td>Simplified Identity Vault. Secret rotation becomes “Change Password”.</td><td>Uses Identity Vault in Simple Mode.</td></tr>
+<tr><td>Backups</td><td>Simplified Disaster Recovery. Backup/restore/check backup remain plain-language.</td><td>Uses Disaster Recovery in Simple Mode.</td></tr>
+<tr><td>Updates</td><td>Simplified Release Workflow.</td><td>Uses Release Workflow in Simple Mode.</td></tr>
+<tr><td>Safety Center</td><td>Simplified Security Posture.</td><td>Uses Security Posture in Simple Mode.</td></tr>
+<tr><td>System Status</td><td>Simplified NOC Telemetry.</td><td>Uses NOC Telemetry in Simple Mode.</td></tr></tbody></table>
+
+    <h3>Global shell controls</h3>
+    <table>
+      <thead><tr><th>Control</th><th>Where it appears</th><th>Behavior</th></tr></thead>
+      <tbody>
+        <tr><td>Install PWA prompt</td><td>App shell</td><td>Appears when browser emits <code>beforeinstallprompt</code>. Button calls the browser install prompt and hides after acceptance.</td></tr>
+        <tr><td>Professional Mode button</td><td>Simple Dashboard</td><td>Switches from outcome-focused interface to full professional tab set.</td></tr>
+        <tr><td>Top tab scroll left/right</td><td>Professional header</td><td>Scrolls the horizontal professional tab rail on smaller screens.</td></tr>
+        <tr><td>Bottom nav</td><td>Professional shell</td><td>Quick access to Registry, Telemetry, Posture, Pipelines, Release, Drift, Map, and Settings.</td></tr>
+        <tr><td>Replay recent / Refresh</td><td>Live event panels</td><td>Fetches recent events from <code>/api/events/recent</code> when WebSocket is disconnected or operator wants a replay.</td></tr>
+        <tr><td>Clear</td><td>Live event panels</td><td>Clears the local event panel view only; does not delete backend events.</td></tr>
+        <tr><td>Advanced Details / Support Details</td><td>Simple and technical panels</td><td>Expands technical payloads, operation IDs, raw event data, or support-focused details without overwhelming Simple Mode users.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="components">
+    <h2>4. Frontend Component Blueprint</h2>
+    <table><thead><tr><th>Component</th><th>Responsibility</th></tr></thead><tbody><tr><td>App.jsx</td><td>Top-level shell that chooses SimpleDashboard or Professional shell. Owns active tab state, PWA install prompt, haptic tab changes, bottom navigation, and tab composition.</td></tr>
+<tr><td>Header.jsx</td><td>Sticky professional top navigation. Exposes App Catalog, System Map, GitOps Pipeline, Blueprint Registry, Identity Vault, Log Explorer, Policy Guardrails, NOC Telemetry, Security Posture, Drift Center, Release Workflow, Mesh Fleet, and Disaster Recovery. Includes scroll left/right buttons for small screens.</td></tr>
+<tr><td>SimpleDashboard.jsx</td><td>Outcome-focused mode for non-technical users. Provides Guided Actions, Recommended Actions, plain-language page navigation, live event summary, and a Professional Mode button.</td></tr>
+<tr><td>ControlPlaneBanner.jsx</td><td>Displays fail-closed readiness state for FastAPI/NATS/JetStream/worker. Warns when production control plane is degraded and writes should not be trusted.</td></tr>
+<tr><td>OTAUpdater.jsx</td><td>Release auto-update panel. Buttons: Check release and Apply latest. Shows current tag, target tag, mode, status, last checked, last applied, and stage timeline.</td></tr>
+<tr><td>HealthEnginePanel.jsx</td><td>Health summary card. Normalizes object/string service payloads, shows healthy/warning/attention counts, top service checks, source label, and Refresh health snapshot / Check Again button.</td></tr>
+<tr><td>LiveEventPanel.jsx</td><td>Event stream panel. Uses WebSocket first, polling fallback second. Buttons: Replay recent / Refresh and Clear. Can show raw event payload in Advanced Details.</td></tr>
+<tr><td>SimpleActionWizard.jsx</td><td>Guided Simple Mode action card. Runs preview or queued execute operations, surfaces success/failure in friendly language, and hides technical details behind Support Details.</td></tr>
+<tr><td>SimpleModeControls.jsx</td><td>Shared Simple Mode UI helpers: AdvancedDetails, SimpleStatus, and technical-text suppression/redaction.</td></tr>
+<tr><td>ErrorBoundary.jsx</td><td>Keeps the rest of the app alive if one panel crashes. Shows a safe fallback message instead of a blank screen.</td></tr>
+<tr><td>Hooks</td><td><code>useControlPlaneStatus</code>, <code>useHealthEngine</code>, <code>useTelemetry</code>, <code>usePocketLabEvents</code>, and <code>useDeviceMotion</code> provide readiness, health, telemetry, event stream, and motion/parallax behavior.</td></tr>
+<tr><td>operations.js</td><td>Frontend API helper. Parses JSON defensively, rejects HTML fallback, submits typed operations, previews operations, polls operation status, refreshes catalog, and drives release self-update calls.</td></tr></tbody></table>
+    <div class="notice"><b>Defensive UI rule:</b> arrays from backend/catalog/blueprint APIs must be normalized before mapping. Health services may be strings or objects. The UI should render an empty/degraded state rather than crashing. Fault gates validated this behavior after the <code>catalog.map is not a function</code> issue was remediated.</div>
+  </section>
+
+  <section id="backend">
+    <h2>5. Backend Component Blueprint</h2>
+    <table><thead><tr><th>Component</th><th>Code location</th><th>Role</th></tr></thead><tbody><tr><td>FastAPI app</td><td><code>api_fastapi/main.py</code></td><td>Authoritative API layer. Includes routers for health, telemetry, catalog, fleet, GitOps, release, drift, security, operations, events, WebSockets, and workflows. Starts NATS bus, installs operation event publisher, starts live status sampler, and optionally starts release updater.</td></tr>
+<tr><td>Auth and settings</td><td><code>api_fastapi/deps.py</code>, <code>runtime/core/control_plane_core.py</code></td><td>Bearer-token and loopback-aware auth, runtime settings, state directories, Git/Gatus/Gitea/release config, and shared core service access.</td></tr>
+<tr><td>Action queue</td><td><code>services/action_queue.py</code></td><td>Fail-closed command submission. Writes require NATS/JetStream and worker execution. Direct in-process execution is forbidden unless explicitly allowed for controlled scenarios.</td></tr>
+<tr><td>NATS bus</td><td><code>services/nats_bus.py</code></td><td>NATS/JetStream wrapper. Creates command/event/audit/telemetry/DLQ streams, maintains recent event cache, supports WebSocket subscribers, and records connected/JetStream status.</td></tr>
+<tr><td>Domain commands</td><td><code>services/domain_commands.py</code></td><td>First-class command handlers for catalog refresh, drift, fleet invite/config, health check, security scan, policy, vault, and release-related workflows.</td></tr>
+<tr><td>Operation service</td><td><code>runtime/core/operations/service.py</code></td><td>Operation registry and runner integration for typed operations: deploy_blueprint, git_sync, backup_now, restore_backup, backup_verify, drift_scan, rotate_secret, fleet_join, policy_deploy, secret_read_dynamic, and release operations.</td></tr>
+<tr><td>Workflow engine</td><td><code>services/workflow_engine.py</code></td><td>Event-sourced workflow reconstruction, replay, recovery planning, command lookup, history limits, stale workflow detection, and DLQ-aware recovery.</td></tr>
+<tr><td>Reliability service</td><td><code>services/reliability.py</code></td><td>Retry, max-deliver, ack-wait, DLQ replay, recovery, and dead-letter history management.</td></tr>
+<tr><td>Live status</td><td><code>services/live_status.py</code></td><td>Samples telemetry, health, and fleet status and emits <code>pocketlab.events.telemetry.*</code>, <code>pocketlab.events.health.*</code>, and <code>pocketlab.events.fleet.*</code>.</td></tr>
+<tr><td>Fleet registry</td><td><code>services/fleet_registry.py</code></td><td>Merges static nodes and live agent signals, tracks TTL/stale agents, agent command channels, bootstrap config, and node health snapshots.</td></tr>
+<tr><td>Release orchestrator</td><td><code>services/release_orchestrator.py</code></td><td>Orchestrates release check/apply flow, stage events, catalog refresh, health verification, PWA refresh readiness, applied audit, and failed workflow events.</td></tr></tbody></table>
+  </section>
+
+  <section id="api">
+    <h2>6. Browser-Facing API Blueprint</h2>
+    <table><thead><tr><th>Domain</th><th>Endpoints</th><th>Purpose</th></tr></thead><tbody><tr><td>Health / readiness</td><td><code>GET /health</code>, <code>/healthz</code>, <code>/ready</code></td><td>Service health and readiness. <code>/ready</code> is authoritative for FastAPI/NATS/JetStream/worker readiness and returns degraded status when fail-closed dependencies are unavailable.</td></tr>
+<tr><td>Telemetry</td><td><code>GET /api/telemetry</code>, <code>/api/telemetry.json</code>, <code>/api/telemetry/live/status</code></td><td>NOC/System Status reads CPU usage, memory, free disk, temperature, and live sampler status. Values are normalized for UI safety.</td></tr>
+<tr><td>Health Engine</td><td><code>GET /api/health-engine.json</code>, <code>POST /api/health/check</code></td><td>Pocket Lab-owned health snapshot. The frontend must not call raw Gatus <code>/api/v1/endpoints/statuses</code>; FastAPI adapts Gatus/internal health into stable UI contracts.</td></tr>
+<tr><td>Catalog</td><td><code>GET /api/catalog.json</code>, <code>POST /api/catalog/refresh</code></td><td>App Catalog reads normalized catalog items and submits <code>pocketlab.commands.catalog.refresh</code> for typed refresh. <code>GET /api/catalog/refresh</code> intentionally returns 405.</td></tr>
+<tr><td>Operations</td><td><code>GET /api/operations</code>, <code>/api/operations/runs</code>, <code>/api/operations/health</code>, <code>/api/operations/{job_id}</code>, <code>/api/operations/{job_id}/status</code>, <code>POST /api/operations/execute</code>, <code>POST /api/operations/preview</code></td><td>Canonical typed operation interface. No legacy <code>/api/action/update</code> path belongs in the release architecture.</td></tr>
+<tr><td>Events / reliability</td><td><code>GET /api/events/status</code>, <code>/api/nats/status</code>, <code>/api/events/recent</code>, <code>POST /api/events/publish</code>, <code>GET /api/reliability/status</code>, <code>/api/reliability/dead-letters</code>, <code>POST /api/reliability/recover</code>, <code>POST /api/reliability/dead-letters/{id}/replay</code></td><td>NATS/JetStream status, recent event replay, DLQ inspection, replay, and recovery.</td></tr>
+<tr><td>WebSockets</td><td><code>WS /ws/events</code>, <code>WS /ws/operations/{job_id}</code></td><td>Live event feed and operation-specific progress stream. Frontend falls back to <code>/api/events/recent</code> polling when WebSocket is unavailable.</td></tr>
+<tr><td>Fleet</td><td><code>GET /api/fleet.json</code>, <code>/api/fleet/agents</code>, <code>/api/fleet/agents/{node_id}</code>, <code>/api/fleet/agents/{node_id}/commands</code>, <code>POST /api/fleet/agents/{node_id}/commands</code>, <code>POST /api/fleet/agents/broadcast</code>, <code>GET /api/fleet/agent/bootstrap</code>, <code>/api/fleet/health.json</code>, <code>/api/fleet/nodes/{node_id}/health</code>, <code>POST /api/fleet/join</code>, <code>GET /api/join.sh</code></td><td>Mesh Fleet / My Devices APIs for agent visibility, command queues, bootstrap configuration, health, and onboarding.</td></tr>
+<tr><td>GitOps</td><td><code>GET /api/pipeline_status.json</code>, <code>/api/gitops/health.json</code>, <code>/api/git_history.json</code></td><td>Read-side GitOps pipeline, health, and history views.</td></tr>
+<tr><td>Drift</td><td><code>GET /api/drift/summary</code>, <code>/api/drift/metrics</code>, <code>/api/drift/jobs</code>, <code>/api/drift/jobs/{job_id}</code>, <code>/api/drift/jobs/{job_id}/diff</code>, <code>POST /api/drift/{action}</code></td><td>Drift Center read model plus typed drift actions such as scan, preview, approve, or remediation operations depending on backend action routing.</td></tr>
+<tr><td>Release</td><td><code>GET /api/release/workflow</code>, <code>/api/release/workflow.json</code>, <code>/api/release/self-update/status</code>, <code>POST /api/release/self-update/check</code>, <code>POST /api/release/self-update/apply</code></td><td>Self-update and release workflow orchestration: check, apply, stage tracking, health verification, catalog refresh, PWA refresh readiness, and audit events.</td></tr>
+<tr><td>Security / policy / logs</td><td><code>GET /api/opa_evaluations.json</code>, <code>/api/opa_interceptor.py</code>, <code>/api/v1/query</code>, <code>/loki/api/v1/query</code>, <code>POST /api/security/scan</code></td><td>Security Posture, OPA evidence, Loki-compatible log query, and typed security scan command.</td></tr>
+<tr><td>Workflows</td><td><code>GET /api/workflows/status</code>, <code>/api/workflows</code>, <code>/api/workflows/events</code>, <code>/api/workflows/{workflow_id}</code>, <code>/api/workflows/{workflow_id}/command</code>, <code>GET /api/workflows/recovery/plan</code>, <code>POST /api/workflows/rebuild</code>, <code>POST /api/workflows/recover</code>, <code>POST /api/workflows/{workflow_id}/replay</code></td><td>Phase 12 event-sourced workflow engine: reconstruct, rebuild, replay, and recover workflows from command/event history.</td></tr></tbody></table>
+  </section>
+
+  <section id="flows">
+    <h2>7. Enterprise Flowcharts</h2>
+    <h3>7.1 Typed Operation Submission</h3>
+    <div class="svgbox">
+      <svg width="1120" height="250" viewBox="0 0 1120 250" role="img" aria-label="Typed operation flow">
+        <defs><marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#93c5fd"/></marker></defs>
+        <path class="arrow" marker-end="url(#arrow2)" d="M185 100 L285 100"/><path class="arrow" marker-end="url(#arrow2)" d="M465 100 L565 100"/><path class="arrow" marker-end="url(#arrow2)" d="M745 100 L845 100"/><path class="arrow" marker-end="url(#arrow2)" d="M650 150 C600 210 360 210 310 150"/>
+        <rect class="node2" x="35" y="60" width="150" height="80" rx="16"/><text x="110" y="94" text-anchor="middle" font-weight="800">UI Action</text><text x="110" y="119" text-anchor="middle" font-size="13">button / wizard</text>
+        <rect class="node" x="285" y="60" width="180" height="80" rx="16"/><text x="375" y="94" text-anchor="middle" font-weight="800">FastAPI Validate</text><text x="375" y="119" text-anchor="middle" font-size="13">auth + schema + readiness</text>
+        <rect class="node3" x="565" y="60" width="180" height="80" rx="16"/><text x="655" y="94" text-anchor="middle" font-weight="800">NATS Command</text><text x="655" y="119" text-anchor="middle" font-size="13">durable JetStream</text>
+        <rect class="node3" x="845" y="60" width="220" height="80" rx="16"/><text x="955" y="94" text-anchor="middle" font-weight="800">Worker Executes</text><text x="955" y="119" text-anchor="middle" font-size="13">events + state + audit</text>
+        <rect class="node" x="335" y="168" width="450" height="56" rx="14"/><text x="560" y="202" text-anchor="middle" font-weight="800">WebSocket / recent-events replay updates UI</text>
+      </svg>
+    </div>
+
+    <h3>7.2 App Catalog Refresh</h3>
+    <pre>Refresh catalog button
+  → POST /api/catalog/refresh
+  → FastAPI require_auth(write=True)
+  → submit_domain_command("pocketlab.commands.catalog.refresh", "catalog.refresh.requested", {})
+  → worker/domain handler emits catalog.refresh_started and catalog.refreshed
+  → catalog state updates
+  → UI fetches /api/catalog.json and live events update the panel</pre>
+
+    <h3>7.3 Release Workflow</h3>
+    <div class="svgbox">
+      <svg width="1120" height="230" viewBox="0 0 1120 230" role="img" aria-label="Release workflow">
+        <defs><marker id="arrow3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#93c5fd"/></marker></defs>
+        <g font-size="13"><rect class="node2" x="25" y="70" width="135" height="70" rx="14"/><text x="92" y="101" text-anchor="middle" font-weight="800">Check release</text><text x="92" y="123" text-anchor="middle">status/check</text><path class="arrow" marker-end="url(#arrow3)" d="M160 105 L215 105"/><rect class="node" x="215" y="70" width="135" height="70" rx="14"/><text x="282" y="101" text-anchor="middle" font-weight="800">Prepare</text><text x="282" y="123" text-anchor="middle">backup</text><path class="arrow" marker-end="url(#arrow3)" d="M350 105 L405 105"/><rect class="node" x="405" y="70" width="135" height="70" rx="14"/><text x="472" y="101" text-anchor="middle" font-weight="800">Sync</text><text x="472" y="123" text-anchor="middle">GitOps</text><path class="arrow" marker-end="url(#arrow3)" d="M540 105 L595 105"/><rect class="node" x="595" y="70" width="135" height="70" rx="14"/><text x="662" y="101" text-anchor="middle" font-weight="800">Deploy</text><text x="662" y="123" text-anchor="middle">blueprint</text><path class="arrow" marker-end="url(#arrow3)" d="M730 105 L785 105"/><rect class="node" x="785" y="70" width="135" height="70" rx="14"/><text x="852" y="101" text-anchor="middle" font-weight="800">Verify</text><text x="852" y="123" text-anchor="middle">drift + health</text><path class="arrow" marker-end="url(#arrow3)" d="M920 105 L975 105"/><rect class="node3" x="975" y="70" width="120" height="70" rx="14"/><text x="1035" y="101" text-anchor="middle" font-weight="800">Refresh UI</text><text x="1035" y="123" text-anchor="middle">PWA ready</text></g>
+      </svg>
+    </div>
+
+    <h3>7.4 Fail-Closed Write Decision</h3>
+    <pre>Write request arrives
+  → authenticate request
+  → check worker execution policy
+  → if direct/in-process mode requested without explicit allowance: 403 forbidden
+  → if NATS/JetStream unavailable: 503 unavailable
+  → else create queued run / domain command
+  → publish durable command
+  → worker owns execution</pre>
+
+    <h3>7.5 Edge Runtime Topology</h3>
+    <p>Pocket Lab is edge-first. The product topology supports a constrained single-node environment with optional supporting open-source services. This is runtime topology only, not a setup guide.</p>
+    <div class="svgbox">
+      <svg width="1120" height="300" viewBox="0 0 1120 300" role="img" aria-label="Edge runtime topology">
+        <defs><marker id="arrow4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#93c5fd"/></marker></defs>
+        <rect class="node2" x="40" y="35" width="260" height="220" rx="20"/><text x="170" y="70" text-anchor="middle" font-weight="900">Edge Device</text><text x="170" y="98" text-anchor="middle" font-size="13">PWA + FastAPI + worker</text><text x="170" y="124" text-anchor="middle" font-size="13">state + catalog + workflows</text><text x="170" y="150" text-anchor="middle" font-size="13">NATS/JetStream endpoint</text><text x="170" y="176" text-anchor="middle" font-size="13">optional local services</text>
+        <rect class="node" x="420" y="45" width="210" height="76" rx="16"/><text x="525" y="78" text-anchor="middle" font-weight="800">Secrets + Access</text><text x="525" y="102" text-anchor="middle" font-size="13">Vault / dynamic access</text>
+        <rect class="node" x="420" y="160" width="210" height="76" rx="16"/><text x="525" y="193" text-anchor="middle" font-weight="800">Git + Catalog</text><text x="525" y="217" text-anchor="middle" font-size="13">Gitea / blueprints / OCI</text>
+        <rect class="node" x="760" y="45" width="250" height="76" rx="16"/><text x="885" y="78" text-anchor="middle" font-weight="800">Policy + Observability</text><text x="885" y="102" text-anchor="middle" font-size="13">OPA / Loki-compatible query</text>
+        <rect class="node" x="760" y="160" width="250" height="76" rx="16"/><text x="885" y="193" text-anchor="middle" font-weight="800">Fleet Devices</text><text x="885" y="217" text-anchor="middle" font-size="13">agents, commands, telemetry</text>
+        <path class="arrow" marker-end="url(#arrow4)" d="M300 95 L420 82"/><path class="arrow" marker-end="url(#arrow4)" d="M300 180 L420 198"/><path class="arrow" marker-end="url(#arrow4)" d="M630 82 L760 82"/><path class="arrow" marker-end="url(#arrow4)" d="M630 198 L760 198"/>
+      </svg>
+    </div>
+  </section>
+
+  <section id="config">
+    <h2>8. Runtime Configuration Blueprint</h2>
+    <table><thead><tr><th>Configuration area</th><th>Variables</th><th>Purpose</th></tr></thead><tbody><tr><td>API server</td><td><code>POCKETLAB_API_HOST</code>, <code>POCKETLAB_API_PORT</code>, <code>API_PORT</code>, <code>POCKETLAB_LOG_LEVEL</code></td><td>Bind address, port, and log level for the FastAPI control API.</td></tr>
+<tr><td>CORS</td><td><code>POCKETLAB_CORS_ORIGINS</code></td><td>Allowed browser origins for the PWA.</td></tr>
+<tr><td>State and workspace</td><td><code>POCKETLAB_BASE_DIR</code>, <code>POCKETLAB_STATE_DIR</code>, <code>POCKETLAB_IAC_DIR</code>, <code>POCKETLAB_API_DIR</code>, <code>POCKETLAB_TELEMETRY_PATH</code></td><td>Runtime state, IaC repository, API data, and telemetry file locations.</td></tr>
+<tr><td>Authentication</td><td><code>POCKETLAB_API_TOKEN</code>, <code>POCKETLAB_ALLOW_LOCAL_WRITE</code></td><td>Bearer token / x-pocket-lab-token support. Local writes may be allowed only by explicit runtime policy.</td></tr>
+<tr><td>NATS/JetStream</td><td><code>POCKETLAB_NATS_URL</code>, <code>POCKETLAB_NATS_NAME</code>, <code>POCKETLAB_NATS_JETSTREAM</code>, <code>POCKETLAB_NATS_REQUIRED</code>, <code>POCKETLAB_NATS_REQUIRE_JETSTREAM</code>, <code>POCKETLAB_NATS_USER</code>, <code>POCKETLAB_NATS_PASSWORD</code>, <code>POCKETLAB_NATS_TOKEN</code>, <code>POCKETLAB_NATS_TLS*</code></td><td>Command/event backbone. Production architecture requires NATS/JetStream for writes and fails closed if unavailable.</td></tr>
+<tr><td>Worker execution</td><td><code>POCKETLAB_WORKER_EXECUTION</code>, <code>POCKETLAB_ALLOW_INPROCESS_EXECUTION</code></td><td>Controls whether FastAPI may execute locally. Current enterprise posture is worker-owned execution; direct local execution is blocked by default.</td></tr>
+<tr><td>Reliability</td><td><code>POCKETLAB_COMMAND_MAX_DELIVER</code>, <code>POCKETLAB_COMMAND_ACK_WAIT_SECONDS</code>, <code>POCKETLAB_COMMAND_RETRY_BASE_SECONDS</code>, <code>POCKETLAB_COMMAND_RETRY_MAX_SECONDS</code>, <code>POCKETLAB_DLQ_HISTORY_LIMIT</code></td><td>Retry, ack, backoff, and dead-letter retention policy.</td></tr>
+<tr><td>Workflow engine</td><td><code>POCKETLAB_WORKFLOW_HISTORY_LIMIT</code>, <code>POCKETLAB_WORKFLOW_STALE_SECONDS</code></td><td>Event-sourced workflow history and stale workflow recovery thresholds.</td></tr>
+<tr><td>Release</td><td><code>POCKETLAB_RELEASE_TAG</code>, <code>POCKETLAB_GITHUB_REPO</code>, <code>POCKETLAB_RELEASE_POLL_SECONDS</code>, <code>POCKETLAB_AUTO_RELEASE_APPLY</code>, <code>POCKETLAB_DISABLE_RELEASE_UPDATER</code></td><td>Self-update status, polling, and auto-apply policy.</td></tr>
+<tr><td>Health/Gatus adapter</td><td><code>POCKETLAB_GATUS_BASE_URL</code>, <code>POCKETLAB_GATUS_STATUSES_PATH</code></td><td>Backend-only health adapter configuration. Frontend consumes <code>/api/health-engine.json</code> only.</td></tr>
+<tr><td>Fleet</td><td><code>POCKETLAB_FLEET_AGENT_TTL_SECONDS</code>, <code>POCKETLAB_FLEET_COMMAND_TTL_SECONDS</code>, <code>POCKETLAB_NATS_AGENT_USER</code>, <code>POCKETLAB_NATS_AGENT_PASSWORD</code>, <code>POCKETLAB_ENABLE_JOIN_SCRIPT</code>, <code>POCKETLAB_ALLOW_TAILSCALE_API</code>, <code>POCKETLAB_ALLOW_SIMULATED_ZTP</code></td><td>Agent staleness, command expiry, bootstrap credentials, join script, and ZTP/Tailscale behavior.</td></tr></tbody></table>
+  </section>
+
+  <section id="security">
+    <h2>9. Security, Reliability, and Resilience Blueprint</h2>
+    <div class="grid cols-2">
+      <div class="card good"><h3>Fail-closed writes</h3><p>Write actions require NATS/JetStream and worker-owned execution. When unavailable, FastAPI returns structured 503/403 responses and the UI shows degraded control-plane state instead of using unsafe fallback execution.</p></div>
+      <div class="card good"><h3>Auth boundaries</h3><p>Writes call <code>require_auth(write=True)</code>. Bearer tokens and <code>x-pocket-lab-token</code> are supported. Loopback/local-write behavior is controlled by runtime policy rather than hardcoded trust.</p></div>
+      <div class="card good"><h3>Event durability</h3><p>JetStream streams separate commands, events, audit, telemetry, and DLQ subjects. Reliability services support retry, dead-letter inspection, replay, and recovery.</p></div>
+      <div class="card good"><h3>UI crash containment</h3><p>Error boundaries, defensive JSON parsing, normalized health payloads, and fail-soft catalog/blueprint handling prevent blank-screen failures from malformed backend data.</p></div>
+      <div class="card good"><h3>Secrets and policy</h3><p>Identity Vault surfaces safe access workflows. Policy Guardrails and Security Posture expose OPA/security evidence while avoiding root material exposure in the UI.</p></div>
+      <div class="card good"><h3>Degraded operations</h3><p>Fault gates validated NATS down, worker down, Vault sealed, bad health payloads, low disk telemetry, stale fleet agents, drift, release failure, and WebSocket fallback.</p></div>
+    </div>
+  </section>
+
+  <section id="operations">
+    <h2>10. How Operators Use Pocket Lab</h2>
+    <h3>Install or update an app/service</h3>
+    <ol><li>Open <b>App Catalog</b> or Simple Mode <b>Apps & Services</b>.</li><li>Click <b>Refresh catalog</b> / <b>Check for New Apps</b> to submit a typed catalog refresh.</li><li>Choose source mode/reference if needed.</li><li>Click <b>Deploy Workload</b> / <b>Install</b>.</li><li>Watch live progress in the event panel; open Advanced Details for operation IDs and technical payloads.</li></ol>
+    <h3>Run a release update</h3>
+    <ol><li>Open <b>Release Workflow</b> or Simple Mode <b>Updates</b>.</li><li>Click <b>Check release</b> to discover current vs target release.</li><li>Click <b>Apply latest</b> to run release orchestration.</li><li>Monitor stages: prepare, sync, deploy, verify, catalog refresh, health verification, PWA refresh readiness.</li></ol>
+    <h3>Add or manage edge devices</h3>
+    <ol><li>Open <b>Mesh Fleet</b> or Simple Mode <b>My Devices</b>.</li><li>Review online/offline/stale agents.</li><li>Create device invite/bootstrap or send node/broadcast commands.</li><li>Use NOC Telemetry/System Status to watch fleet and device health.</li></ol>
+    <h3>Investigate issues</h3>
+    <ol><li>Open <b>Drift Center</b> / <b>Health & Issues</b> for drift or state mismatch.</li><li>Open <b>NOC Telemetry</b> / <b>System Status</b> for CPU, memory, disk, temperature, and live status.</li><li>Open <b>Security Posture</b> / <b>Safety Center</b> for policy/security status.</li><li>Open <b>Log Explorer</b> for event/log context.</li></ol>
+    <h3>Recover safely</h3>
+    <ol><li>Open <b>Disaster Recovery</b> / <b>Backups</b>.</li><li>Run <b>Backup Now</b> before risky changes.</li><li>Use <b>Verify Backup</b> before restore.</li><li>Use <b>Restore</b> only with the intended backup reference and watch event progress.</li></ol>
+  </section>
+</div>
+</body>
+</html>

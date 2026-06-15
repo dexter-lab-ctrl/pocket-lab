@@ -1,0 +1,56 @@
+{
+  "apiVersion": "pocketlab.io/v1alpha1",
+  "kind": "RunbookDocsManifest",
+  "metadata": {
+    "name": "pocketlab-runbook-docs-manifest",
+    "tier": "7B",
+    "generatedAt": "2026-06-14T08:55:03.247012+00:00",
+    "sourceOfTruth": "runbooks/*.yaml"
+  },
+  "summary": {
+    "runbookCount": 5,
+    "generatedPageCount": 12,
+    "operationReferenceCount": 20
+  },
+  "generatedPages": [
+    "docs/operations/generated/runbooks/approval-matrix.md",
+    "docs/operations/generated/runbooks/backup-restore-verify.md",
+    "docs/operations/generated/runbooks/drift-detect-approve-apply.md",
+    "docs/operations/generated/runbooks/evidence-matrix.md",
+    "docs/operations/generated/runbooks/index.md",
+    "docs/operations/generated/runbooks/operation-map.md",
+    "docs/operations/generated/runbooks/recover-failed-install.md",
+    "docs/operations/generated/runbooks/release-rollback.md",
+    "docs/operations/generated/runbooks/rotate-secret-with-audit.md",
+    "docs/operations/generated/runbooks/runbook-docs-manifest.json",
+    "docs/operations/generated/runbooks/simple-mode.md",
+    "docs/operations/runbook-automation.md"
+  ],
+  "runbookPages": [
+    {
+      "runbook": "backup_restore_verify",
+      "sourceFile": "runbooks/backup_restore_verify.yaml",
+      "page": "docs/operations/generated/runbooks/backup-restore-verify.md"
+    },
+    {
+      "runbook": "drift_detect_approve_apply",
+      "sourceFile": "runbooks/drift_detect_approve_apply.yaml",
+      "page": "docs/operations/generated/runbooks/drift-detect-approve-apply.md"
+    },
+    {
+      "runbook": "recover_failed_install",
+      "sourceFile": "runbooks/recover_failed_install.yaml",
+      "page": "docs/operations/generated/runbooks/recover-failed-install.md"
+    },
+    {
+      "runbook": "release_rollback",
+      "sourceFile": "runbooks/release_rollback.yaml",
+      "page": "docs/operations/generated/runbooks/release-rollback.md"
+    },
+    {
+      "runbook": "rotate_secret_with_audit",
+      "sourceFile": "runbooks/rotate_secret_with_audit.yaml",
+      "page": "docs/operations/generated/runbooks/rotate-secret-with-audit.md"
+    }
+  ]
+}

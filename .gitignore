@@ -17,3 +17,29 @@ Thumbs.db
 .env
 api/telemetry.json
 api/opa_config.json
+
+# Pocket Lab dev environment
+.venv/
+.pocketlab-dev/state/
+.pocketlab-dev/releases/
+.pocketlab-dev/playwright-report/
+.pocketlab-dev/test-results/
+.pocketlab-dev/observability/
+.pocketlab-dev/status/
+.pocketlab-dev/*.json
+.pocketlab-dev/logs/
+test-results/
+playwright-report/
+
+# Local caches and generated validation artifacts
+.pocketlab-dev/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+storybook-static/
+site/
+*.tmp
+*.bak
+*.tar.gz
+.env.*
+!.env.example

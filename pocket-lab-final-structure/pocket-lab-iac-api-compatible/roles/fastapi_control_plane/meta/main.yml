@@ -1,0 +1,9 @@
+---
+galaxy_info:
+  role_name: fastapi_control_plane
+  author: OpenAI
+  description: Pocket Lab fastapi_control_plane reconciliation
+  license: MIT
+  min_ansible_version: '2.15'
+dependencies:
+  - common

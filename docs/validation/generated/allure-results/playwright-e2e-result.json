@@ -1,0 +1,52 @@
+{
+  "description": "Recorded command completed successfully.",
+  "fullName": "Pocket Lab Validation::Test::playwright-e2e",
+  "historyId": "583cab747b201a6f42f49d46bbb58258",
+  "labels": [
+    {
+      "name": "epic",
+      "value": "Tier 8 Validation Documentation"
+    },
+    {
+      "name": "feature",
+      "value": "Test"
+    },
+    {
+      "name": "story",
+      "value": "playwright-e2e"
+    },
+    {
+      "name": "owner",
+      "value": "Frontend"
+    },
+    {
+      "name": "severity",
+      "value": "blocker"
+    },
+    {
+      "name": "tag",
+      "value": "PASS"
+    }
+  ],
+  "name": "Playwright browser E2E evidence",
+  "parameters": [
+    {
+      "name": "command",
+      "value": "task test:e2e"
+    },
+    {
+      "name": "evidence_state",
+      "value": "executed-command"
+    },
+    {
+      "name": "generated_at",
+      "value": "2026-06-14T19:32:50Z"
+    }
+  ],
+  "stage": "finished",
+  "start": 1781465570478,
+  "status": "passed",
+  "stop": 1781465570478,
+  "testCaseId": "playwright-e2e",
+  "uuid": "7a8481e9-6e20-5913-a595-d407f384ff5e"
+}

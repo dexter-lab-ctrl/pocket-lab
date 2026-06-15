@@ -1,6 +1,6 @@
 # Secret Handling
 
-The Pocket Lab operates on a strict Zero-Trust model managed by HashiCorp Vault. 
+The Pocket Lab operates on a strict Zero-Trust model managed by HashiCorp Vault.
 
 - **No Hardcoded Passwords:** Do not commit plaintext passwords or API keys. The OPA interceptor utilizes a `.rego` policy that automatically denies any Ansible playbook containing hardcoded `password` variables that do not utilize the `lookup('hashi_vault')` plugin.
 - **Dynamic Ephemeral Secrets:** For database access (e.g., MariaDB), always prefer Vault's database engine to generate short-lived, ephemeral credentials with automatic TTL expiration.

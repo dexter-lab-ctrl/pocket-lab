@@ -1,0 +1,4 @@
+---
+- name: nats configuration updated
+  ansible.builtin.debug:
+    msg: "NATS configuration changed. Restart nats-server with {{ nats_start_command }} before running FastAPI readiness checks."

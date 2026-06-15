@@ -1,0 +1,1422 @@
+{
+  "alerting_slo_sources": [],
+  "bootstrap_observability_scripts": [
+    {
+      "kind": "bootstrap_observability_scripts",
+      "observability_tokens": [
+        "observability",
+        "telemetry"
+      ],
+      "path": "pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/scripts/bootstrap.sh",
+      "sha256": "26806bd6b13405c4206904ce4fab433d755b89447fa880ef0e9f8cd969164e44",
+      "size_bytes": 11714,
+      "summary": "Pocket Lab Day-0 bootstrap dispatcher."
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "observability_tokens": [
+        "prometheus",
+        "telemetry"
+      ],
+      "path": "pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/scripts/init-vault.sh",
+      "sha256": "6d7d2ebec6c88ed3eba3677617243fb582735250180ed2b593ea0a45b7f1a629",
+      "size_bytes": 4454,
+      "summary": "shellcheck disable=SC1091"
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "observability_tokens": [
+        "gatus",
+        "grafana",
+        "loki",
+        "observability",
+        "prometheus",
+        "promtail"
+      ],
+      "path": "pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/scripts/install-binaries.sh",
+      "sha256": "4244fcb6c4e5e6d0c0b4600c7172aad5cdd93782070632cb2083e4d2c9e8b6b7",
+      "size_bytes": 5804,
+      "summary": "shellcheck disable=SC1091"
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "observability_tokens": [
+        "telemetry"
+      ],
+      "path": "pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/scripts/install-fleet-agent.sh",
+      "sha256": "bbaf13b2ddc1fc624e27b8bd36e1bced0bb6f04fa92ada489407cbc54a60b3ef",
+      "size_bytes": 2017,
+      "summary": "shellcheck disable=SC1091"
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "observability_tokens": [
+        "gatus",
+        "observability"
+      ],
+      "path": "pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/scripts/lib/common.sh",
+      "sha256": "31f016067847e230a0c70a67b30eaceb0c31168d14c5cc83961b452c6be8087e",
+      "size_bytes": 7490,
+      "summary": "Pocket Lab Day-0 common runtime helpers."
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "observability_tokens": [
+        "gatus",
+        "health-engine",
+        "telemetry"
+      ],
+      "path": "pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/scripts/smoke-test.sh",
+      "sha256": "833fd94bab896601a3f4a415a73a41ec2d3ab605e2d908287fb181379ba4b76a",
+      "size_bytes": 2489,
+      "summary": "shellcheck disable=SC1091"
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "observability_tokens": [
+        "gatus",
+        "grafana",
+        "loki",
+        "observability",
+        "pm2_logs",
+        "prometheus",
+        "promtail",
+        "telemetry"
+      ],
+      "path": "pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/scripts/start-dashboard.sh",
+      "sha256": "d769fe08ec7f570460aa389b66fc362891c2db2efe565691b29ae7db69072ae2",
+      "size_bytes": 14162,
+      "summary": "shellcheck disable=SC1091"
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "observability_tokens": [
+        "telemetry"
+      ],
+      "path": "scripts/dev/check-faults.sh",
+      "sha256": "679704a773f21384d3212c8d628c3dc340c137a3c55c1058cac6c75acb2c66d1",
+      "size_bytes": 758,
+      "summary": "check-faults.sh"
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "observability_tokens": [
+        "telemetry"
+      ],
+      "path": "scripts/dev/check-schemas.sh",
+      "sha256": "4f34a088371df780b86abdb3d2d9a9bc61410413e098fd59d449688c475109a3",
+      "size_bytes": 844,
+      "summary": "check-schemas.sh"
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "observability_tokens": [
+        "health-engine"
+      ],
+      "path": "scripts/dev/fault-inject.sh",
+      "sha256": "da12103510af7e66e61d08dabc2b131d417b4d7430aa1df8cc250eba1f66834a",
+      "size_bytes": 773,
+      "summary": "fault-inject.sh"
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "observability_tokens": [
+        "telemetry"
+      ],
+      "path": "scripts/dev/implement-documentation-placement.sh",
+      "sha256": "4b0f35e572f1d904489999c9ee19a55228263dcdd2e109656720488584206ccb",
+      "size_bytes": 17792,
+      "summary": "=============================================================================="
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "observability_tokens": [
+        "gatus"
+      ],
+      "path": "scripts/dev/migrations/pocketlab_bootstrap_scripts_shellcheck_fix.sh",
+      "sha256": "f5741acdbab255655e5aea4e9d9ee23b04164fd07182e3c6962a9477e328aac9",
+      "size_bytes": 9576,
+      "summary": "Pocket Lab bootstrap script fixer"
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "observability_tokens": [
+        "gatus",
+        "health-engine",
+        "loki",
+        "observability",
+        "telemetry"
+      ],
+      "path": "scripts/dev/migrations/pocketlab_ubuntu_dev_env_setup_v3_architecture_plus_contract_fix.sh",
+      "sha256": "252f247d340ded02de2bb009ccb9469452f6503c6719be967663bb8f56979b43",
+      "size_bytes": 110290,
+      "summary": "pocketlab_ubuntu_dev_env_setup_v3_architecture_plus.sh"
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "observability_tokens": [
+        "observability"
+      ],
+      "path": "scripts/dev/observability-runtime-status.py",
+      "sha256": "1f2bc9e940bb8dcc06d9794ecef578f780546c3f8b64cdb1ee903e0b89f66e73",
+      "size_bytes": 1901,
+      "summary": "observability-runtime-status.py"
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "observability_tokens": [
+        "health-engine",
+        "observability",
+        "telemetry"
+      ],
+      "path": "scripts/dev/observability-snapshot.sh",
+      "sha256": "49bd9d28a05319a2e6f9dd88722c1c86ddd3d4158fa1100861a2c06d59c088ba",
+      "size_bytes": 951,
+      "summary": "observability-snapshot.sh"
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "observability_tokens": [
+        "observability"
+      ],
+      "path": "scripts/dev/organize-mkdocs-docs.sh",
+      "sha256": "b20fbef199c47e8ab490c4a6d4eb45836f9587065b4647aa7643883bf24a1ce3",
+      "size_bytes": 7955,
+      "summary": "One-time documentation project artifacts."
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "observability_tokens": [
+        "health-engine",
+        "observability",
+        "telemetry"
+      ],
+      "path": "scripts/dev/populate-pocketlab-docs.py",
+      "sha256": "ced45318770d245e413763c15fb389fbd4ed0e8b10465ee7a205f551ff9ae07f",
+      "size_bytes": 53088,
+      "summary": "Ensure plugin does not produce strict-mode failures on moved/copied docs."
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "observability_tokens": [
+        "telemetry"
+      ],
+      "path": "scripts/dev/report-flakes.sh",
+      "sha256": "024f714f0f0e41f4cd05305292e763a5769ce02fbc2c68c8fc914a4440def3a7",
+      "size_bytes": 6545,
+      "summary": "report-flakes.sh"
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "observability_tokens": [
+        "observability"
+      ],
+      "path": "scripts/dev/reset-state.sh",
+      "sha256": "b3b552392f2b35202bfdb425badc7e4ada8dc6d8653f9a14144138ce4fb14bbf",
+      "size_bytes": 279,
+      "summary": "reset-state.sh"
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "observability_tokens": [
+        "telemetry"
+      ],
+      "path": "scripts/dev/run-e2e.sh",
+      "sha256": "2c553f7b19d0913c52823b9488d2f3e0e0c2380b7c3d736b76ea87b8d10d6d96",
+      "size_bytes": 731,
+      "summary": "run-e2e.sh"
+    }
+  ],
+  "fastapi_observability_routes": [
+    {
+      "function": "publish_event",
+      "method": "POST",
+      "route": "/api/events/publish",
+      "source_file": "pocket-lab-final-structure/runtime/api_fastapi/routers/events.py"
+    },
+    {
+      "function": "recent_events",
+      "method": "GET",
+      "route": "/api/events/recent",
+      "source_file": "pocket-lab-final-structure/runtime/api_fastapi/routers/events.py"
+    },
+    {
+      "function": "event_bus_status",
+      "method": "GET",
+      "route": "/api/events/status",
+      "source_file": "pocket-lab-final-structure/runtime/api_fastapi/routers/events.py"
+    },
+    {
+      "function": "health_engine",
+      "method": "GET",
+      "route": "/api/health-engine.json",
+      "source_file": "pocket-lab-final-structure/runtime/api_fastapi/routers/health.py"
+    },
+    {
+      "function": "health_check",
+      "method": "POST",
+      "route": "/api/health/check",
+      "source_file": "pocket-lab-final-structure/runtime/api_fastapi/routers/health.py"
+    },
+    {
+      "function": "event_bus_status",
+      "method": "GET",
+      "route": "/api/nats/status",
+      "source_file": "pocket-lab-final-structure/runtime/api_fastapi/routers/events.py"
+    },
+    {
+      "function": "telemetry",
+      "method": "GET",
+      "route": "/api/telemetry",
+      "source_file": "pocket-lab-final-structure/runtime/api_fastapi/routers/telemetry.py"
+    },
+    {
+      "function": "telemetry",
+      "method": "GET",
+      "route": "/api/telemetry.json",
+      "source_file": "pocket-lab-final-structure/runtime/api_fastapi/routers/telemetry.py"
+    },
+    {
+      "function": "telemetry_live_status",
+      "method": "GET",
+      "route": "/api/telemetry/live/status",
+      "source_file": "pocket-lab-final-structure/runtime/api_fastapi/routers/telemetry.py"
+    },
+    {
+      "function": "worker_status",
+      "method": "GET",
+      "route": "/api/workers/status",
+      "source_file": "pocket-lab-final-structure/runtime/api_fastapi/routers/events.py"
+    },
+    {
+      "function": "health",
+      "method": "GET",
+      "route": "/health",
+      "source_file": "pocket-lab-final-structure/runtime/api_fastapi/routers/health.py"
+    },
+    {
+      "function": "health",
+      "method": "GET",
+      "route": "/healthz",
+      "source_file": "pocket-lab-final-structure/runtime/api_fastapi/routers/health.py"
+    },
+    {
+      "function": "loki_query",
+      "method": "GET",
+      "route": "/loki/api/v1/query",
+      "source_file": "pocket-lab-final-structure/runtime/api_fastapi/routers/security.py"
+    },
+    {
+      "function": "ready",
+      "method": "GET",
+      "route": "/ready",
+      "source_file": "pocket-lab-final-structure/runtime/api_fastapi/routers/health.py"
+    }
+  ],
+  "frontend_observability_consumers": [
+    {
+      "endpoints_or_tokens": [
+        "/loki/api/v1/query?query=${encodeURIComponent(query)}&limit=100",
+        "/ready"
+      ],
+      "hooks": [],
+      "path": "src/tabs/LogExplorerTab.jsx",
+      "purpose": "Log Explorer queries Loki-compatible log data through FastAPI.",
+      "screen": "LogExplorerTab"
+    },
+    {
+      "endpoints_or_tokens": [
+        "/loki/api/v1/query?query={job=\"pm2_logs\"} |= \"security_audit\"&limit=5"
+      ],
+      "hooks": [
+        "useHealthEngine"
+      ],
+      "path": "src/tabs/SecurityPostureTab.jsx",
+      "purpose": "Security Posture surfaces safety scans and security log activity.",
+      "screen": "SecurityPostureTab"
+    },
+    {
+      "endpoints_or_tokens": [],
+      "hooks": [
+        "useHealthEngine",
+        "useTelemetry",
+        "useObservabilityStatus"
+      ],
+      "path": "src/tabs/NocTelemetryTab.jsx",
+      "purpose": "NOC Telemetry / System Status consumes health, telemetry, and runtime observability snapshots.",
+      "screen": "NocTelemetryTab"
+    },
+    {
+      "endpoints_or_tokens": [],
+      "hooks": [],
+      "path": "src/components/RuntimeObservabilityStatusPanel.jsx",
+      "purpose": "UI card for live Prometheus, Loki, Grafana, Gatus, Promtail, and Prometheus target status through FastAPI.",
+      "screen": "RuntimeObservabilityStatusPanel"
+    },
+    {
+      "endpoints_or_tokens": [
+        "/api/observability/status"
+      ],
+      "hooks": [
+        "useObservabilityStatus"
+      ],
+      "path": "src/hooks/useObservabilityStatus.js",
+      "purpose": "Shared hook that polls FastAPI runtime observability health status.",
+      "screen": "useObservabilityStatus"
+    },
+    {
+      "endpoints_or_tokens": [
+        "/api/health-engine.json"
+      ],
+      "hooks": [
+        "useHealthEngine",
+        "usePocketLabEvents"
+      ],
+      "path": "src/hooks/useHealthEngine.js",
+      "purpose": "Shared hook that polls FastAPI health-engine snapshots.",
+      "screen": "useHealthEngine"
+    },
+    {
+      "endpoints_or_tokens": [
+        "/api/telemetry.json"
+      ],
+      "hooks": [
+        "useTelemetry",
+        "usePocketLabEvents"
+      ],
+      "path": "src/hooks/useTelemetry.js",
+      "purpose": "Shared hook that polls FastAPI telemetry snapshots.",
+      "screen": "useTelemetry"
+    },
+    {
+      "endpoints_or_tokens": [
+        "/api/events/recent?limit=${Math.max(limit, 25)}${prefix}",
+        "/ws/events"
+      ],
+      "hooks": [
+        "usePocketLabEvents"
+      ],
+      "path": "src/hooks/usePocketLabEvents.js",
+      "purpose": "Shared hook that replays recent events and streams live Pocket Lab events.",
+      "screen": "usePocketLabEvents"
+    }
+  ],
+  "gatus": {
+    "fallback_behavior": "FastAPI can return fallback health data when Gatus is unreachable",
+    "health_engine_integration": "control_plane_core.fetch_gatus_statuses()",
+    "port": 8081,
+    "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/gatus-config.yaml.j2"
+  },
+  "gatus_endpoints": [
+    {
+      "conditions": [
+        "[STATUS] == 200"
+      ],
+      "group": "core",
+      "interval": "30s",
+      "name": "pocket-lab-api",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/gatus-config.yaml.j2",
+      "url": "http://127.0.0.1:8080/health"
+    },
+    {
+      "conditions": [
+        "[STATUS] == 200"
+      ],
+      "group": "core",
+      "interval": "30s",
+      "name": "pocket-lab-ready",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/gatus-config.yaml.j2",
+      "url": "http://127.0.0.1:8080/ready"
+    },
+    {
+      "conditions": [
+        "[STATUS] == any(200, 429)"
+      ],
+      "group": "platform",
+      "interval": "30s",
+      "name": "vault",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/gatus-config.yaml.j2",
+      "url": "http://127.0.0.1:8200/v1/sys/health?standbyok=true"
+    },
+    {
+      "conditions": [
+        "[STATUS] == 200"
+      ],
+      "group": "platform",
+      "interval": "30s",
+      "name": "gitea",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/gatus-config.yaml.j2",
+      "url": "http://127.0.0.1:3030/api/healthz"
+    },
+    {
+      "conditions": [
+        "[STATUS] == 200"
+      ],
+      "group": "observability",
+      "interval": "30s",
+      "name": "loki",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/gatus-config.yaml.j2",
+      "url": "http://127.0.0.1:3100/ready"
+    },
+    {
+      "conditions": [
+        "[STATUS] == 200"
+      ],
+      "group": "observability",
+      "interval": "30s",
+      "name": "prometheus",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/gatus-config.yaml.j2",
+      "url": "http://127.0.0.1:9090/-/ready"
+    },
+    {
+      "conditions": [
+        "[STATUS] == 200"
+      ],
+      "group": "observability",
+      "interval": "30s",
+      "name": "grafana",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/gatus-config.yaml.j2",
+      "url": "http://127.0.0.1:3050/api/health"
+    },
+    {
+      "conditions": [
+        "[STATUS] == 200"
+      ],
+      "group": "observability",
+      "interval": "30s",
+      "name": "gatus-self",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/gatus-config.yaml.j2",
+      "url": "http://127.0.0.1:8081/health"
+    },
+    {
+      "conditions": [
+        "[STATUS] == 200"
+      ],
+      "group": "policy",
+      "interval": "30s",
+      "name": "opa",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/gatus-config.yaml.j2",
+      "url": "http://127.0.0.1:8181/health"
+    },
+    {
+      "conditions": [
+        "[STATUS] == 200"
+      ],
+      "group": "platform",
+      "interval": "30s",
+      "name": "tailscale",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/gatus-config.yaml.j2",
+      "url": "http://127.0.0.1:8080/api/config/tailscale.json"
+    },
+    {
+      "conditions": [
+        "[STATUS] == 200"
+      ],
+      "group": "fleet",
+      "interval": "30s",
+      "name": "fleet-health",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/gatus-config.yaml.j2",
+      "url": "http://127.0.0.1:8080/api/fleet/health.json"
+    },
+    {
+      "conditions": [
+        "[STATUS] == 200"
+      ],
+      "group": "fleet",
+      "interval": "30s",
+      "name": "fleet-nodes",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/gatus-config.yaml.j2",
+      "url": "http://127.0.0.1:8080/api/fleet.json"
+    },
+    {
+      "conditions": [
+        "[STATUS] == 200"
+      ],
+      "group": "fleet",
+      "interval": "30s",
+      "name": "fleet-node-1",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/gatus-config.yaml.j2",
+      "url": "http://127.0.0.1:8080/api/fleet/nodes/node-1/health"
+    },
+    {
+      "conditions": [
+        "[STATUS] == 200"
+      ],
+      "group": "fleet",
+      "interval": "30s",
+      "name": "fleet-node-2",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/gatus-config.yaml.j2",
+      "url": "http://127.0.0.1:8080/api/fleet/nodes/node-2/health"
+    },
+    {
+      "conditions": [
+        "[STATUS] == 200"
+      ],
+      "group": "fleet",
+      "interval": "30s",
+      "name": "fleet-node-3",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/gatus-config.yaml.j2",
+      "url": "http://127.0.0.1:8080/api/fleet/nodes/node-3/health"
+    },
+    {
+      "conditions": [
+        "[STATUS] == 200"
+      ],
+      "group": "drift",
+      "interval": "30s",
+      "name": "drift-summary",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/gatus-config.yaml.j2",
+      "url": "http://127.0.0.1:8080/api/drift/summary"
+    },
+    {
+      "conditions": [
+        "[STATUS] == 200"
+      ],
+      "group": "drift",
+      "interval": "30s",
+      "name": "drift-jobs",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/gatus-config.yaml.j2",
+      "url": "http://127.0.0.1:8080/api/drift/jobs"
+    },
+    {
+      "conditions": [
+        "[STATUS] == 200"
+      ],
+      "group": "drift",
+      "interval": "30s",
+      "name": "drift-metrics",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/gatus-config.yaml.j2",
+      "url": "http://127.0.0.1:8080/api/drift/metrics"
+    },
+    {
+      "conditions": [
+        "[STATUS] == 200"
+      ],
+      "group": "gitops",
+      "interval": "30s",
+      "name": "gitops-health",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/gatus-config.yaml.j2",
+      "url": "http://127.0.0.1:8080/api/gitops/health.json"
+    },
+    {
+      "conditions": [
+        "[STATUS] == 200"
+      ],
+      "group": "gitops",
+      "interval": "30s",
+      "name": "git-history",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/gatus-config.yaml.j2",
+      "url": "http://127.0.0.1:8080/api/git_history.json"
+    }
+  ],
+  "generated_at": "2026-06-14T17:07:43.576236Z",
+  "generated_by": "scripts/docs/generate_observability_evidence.py",
+  "grafana_config": {
+    "dashboard_json_files": [],
+    "dashboard_provisioning_dirs": [
+      "{{ observability_base_dir }}/grafana/provisioning/dashboards"
+    ],
+    "dashboards_as_code_verified": false,
+    "data_path": "{{ observability_base_dir }}/grafana/data",
+    "datasource_provisioning_dirs": [
+      "{{ observability_base_dir }}/grafana/provisioning/datasources"
+    ],
+    "datasource_yaml_files": [],
+    "datasources_as_code_verified": false,
+    "http_addr": "0.0.0.0",
+    "logs_path": "{{ observability_base_dir }}/grafana/logs",
+    "plugins_path": "{{ observability_base_dir }}/grafana/plugins",
+    "port": "{{ observability_grafana_port }}",
+    "provisioning_path": "{{ observability_base_dir }}/grafana/provisioning",
+    "source_files": [
+      "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/custom.ini.j2",
+      "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/tasks/main.yml"
+    ]
+  },
+  "grafana_provisioning_paths": {
+    "dashboards": [
+      "{{ observability_base_dir }}/grafana/provisioning/dashboards"
+    ],
+    "datasources": [
+      "{{ observability_base_dir }}/grafana/provisioning/datasources"
+    ]
+  },
+  "loki_pipeline": {
+    "caddy_routes": [
+      {
+        "route": "/loki/*",
+        "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy/templates/Caddyfile.j2",
+        "upstream": "{{ caddy_routes.loki }}"
+      },
+      {
+        "route": "/gatus/*",
+        "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy/templates/Caddyfile.j2",
+        "upstream": "{{ caddy_routes.gatus }}"
+      }
+    ],
+    "loki": {
+      "chunks_directory": "{{ observability_base_dir }}/loki/chunks",
+      "http_listen_address": "127.0.0.1",
+      "http_listen_port": "{{ observability_loki_port }}",
+      "path_prefix": "{{ observability_base_dir }}/loki",
+      "query_path": "/loki/api/v1/query",
+      "rules_directory": "{{ observability_base_dir }}/loki/rules",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/loki-config.yaml.j2"
+    },
+    "promtail": {
+      "http_listen_port": "{{ observability_promtail_port }}",
+      "positions_file": "{{ observability_base_dir }}/promtail/positions.yaml",
+      "push_url": "http://127.0.0.1:{{ observability_loki_port }}/loki/api/v1/push",
+      "scrape_configs": [
+        {
+          "job_name": "pm2_logs",
+          "log_path_pattern": "{{ observability_termux_pm2_logs }}/*.log",
+          "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/promtail-config.yaml.j2",
+          "targets": [
+            "localhost"
+          ]
+        }
+      ],
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/promtail-config.yaml.j2"
+    },
+    "redaction_notes": [
+      "Do not expose token, password, secret, api_key, authorization, private_key, value, or join-secret material in logs.",
+      "FastAPI Loki-compatible routes should return safe query results only and preserve existing redaction behavior."
+    ]
+  },
+  "missing_enterprise_features": [
+    "First-class FastAPI /metrics endpoint and app-level metrics instrumentation.",
+    "Grafana dashboards-as-code JSON under a committed provisioning path.",
+    "Grafana datasource provisioning as code for Prometheus and Loki.",
+    "Alert rules and SLO metadata as committed source files."
+  ],
+  "observability_components": [
+    {
+      "name": "Prometheus",
+      "purpose": "Metrics scrape and storage",
+      "verified_from_source": true
+    },
+    {
+      "name": "Grafana",
+      "purpose": "Dashboards / visualization runtime",
+      "verified_from_source": true
+    },
+    {
+      "name": "Loki",
+      "purpose": "Log storage and query backend",
+      "verified_from_source": true
+    },
+    {
+      "name": "Promtail",
+      "purpose": "PM2 log scrape and Loki push agent",
+      "verified_from_source": true
+    },
+    {
+      "name": "Gatus",
+      "purpose": "Health aggregation dashboard / health engine",
+      "verified_from_source": true
+    },
+    {
+      "name": "Caddy",
+      "purpose": "Reverse proxy routes for API, Loki-compatible logs, Gatus, and UI",
+      "verified_from_source": true
+    },
+    {
+      "name": "FastAPI Loki-compatible routes",
+      "purpose": "Control API exposes Loki query-compatible endpoints",
+      "verified_from_source": true
+    },
+    {
+      "name": "React observability UI",
+      "purpose": "Log Explorer, Security Posture, and NOC/System Status consumers",
+      "verified_from_source": true
+    }
+  ],
+  "ports": {
+    "gatus": {
+      "port": 8081,
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/defaults/main.yml"
+    },
+    "grafana": {
+      "port": 3050,
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/defaults/main.yml"
+    },
+    "loki": {
+      "port": 3100,
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/defaults/main.yml"
+    },
+    "prometheus": {
+      "port": 9090,
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/defaults/main.yml"
+    },
+    "promtail": {
+      "port": 9080,
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/defaults/main.yml"
+    }
+  },
+  "prometheus": {
+    "evaluation_interval": "15s",
+    "fastapi_metrics_endpoint_verified": false,
+    "port": 9090,
+    "scrape_interval": "15s",
+    "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/prometheus.yml.j2"
+  },
+  "prometheus_jobs": [
+    {
+      "job_name": "prometheus",
+      "metrics_path": "/metrics",
+      "notes": "",
+      "params": {},
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/prometheus.yml.j2",
+      "targets": [
+        "localhost:{{ observability_prometheus_port }}"
+      ]
+    },
+    {
+      "job_name": "pm2_bridge_services",
+      "metrics_path": "/metrics",
+      "notes": "",
+      "params": {},
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/prometheus.yml.j2",
+      "targets": [
+        "localhost:{{ observability_grafana_port }}",
+        "localhost:{{ observability_loki_port }}"
+      ]
+    },
+    {
+      "job_name": "vault",
+      "metrics_path": "/v1/sys/metrics",
+      "notes": "Vault metrics rely on unauthenticated_metrics_access",
+      "params": {
+        "format": [
+          "prometheus"
+        ]
+      },
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/prometheus.yml.j2",
+      "targets": [
+        "127.0.0.1:8200"
+      ]
+    }
+  ],
+  "promtail_scrape_configs": [
+    {
+      "job_name": "pm2_logs",
+      "log_path_pattern": "{{ observability_termux_pm2_logs }}/*.log",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/promtail-config.yaml.j2",
+      "targets": [
+        "localhost"
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "route": "/health",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy/templates/Caddyfile.j2",
+      "upstream": "{{ caddy_routes.api }}"
+    },
+    {
+      "route": "/ready",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy/templates/Caddyfile.j2",
+      "upstream": "{{ caddy_routes.api }}"
+    },
+    {
+      "route": "/healthz",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy/templates/Caddyfile.j2",
+      "upstream": "{{ caddy_routes.api }}"
+    },
+    {
+      "route": "/api/*",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy/templates/Caddyfile.j2",
+      "upstream": "{{ caddy_routes.api }}"
+    },
+    {
+      "route": "/ws/*",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy/templates/Caddyfile.j2",
+      "upstream": "{{ caddy_routes.api }}"
+    },
+    {
+      "route": "/loki/*",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy/templates/Caddyfile.j2",
+      "upstream": "{{ caddy_routes.loki }}"
+    },
+    {
+      "route": "/gatus/*",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy/templates/Caddyfile.j2",
+      "upstream": "{{ caddy_routes.gatus }}"
+    },
+    {
+      "route": "caddy_routes.api",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/caddy.yml",
+      "upstream": "127.0.0.1:8080"
+    },
+    {
+      "route": "caddy_routes.loki",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/caddy.yml",
+      "upstream": "127.0.0.1:3100"
+    },
+    {
+      "route": "caddy_routes.gatus",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/caddy.yml",
+      "upstream": "127.0.0.1:8081"
+    },
+    {
+      "route": "caddy_routes.api",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/caddy.yml",
+      "upstream": "127.0.0.1:8080"
+    },
+    {
+      "route": "caddy_routes.loki",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/caddy.yml",
+      "upstream": "127.0.0.1:3100"
+    },
+    {
+      "route": "caddy_routes.gatus",
+      "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/caddy.yml",
+      "upstream": "127.0.0.1:8081"
+    }
+  ],
+  "runtime_contract_links": {
+    "asyncapi_subjects": [
+      "pocketlab.audit.>",
+      "pocketlab.audit.release.applied",
+      "pocketlab.audit.runbook.approved",
+      "pocketlab.audit.runbook.executed",
+      "pocketlab.audit.runbook.rejected",
+      "pocketlab.audit.security.policy_updated",
+      "pocketlab.audit.vault.secret_rotated",
+      "pocketlab.commands.health.check",
+      "pocketlab.commands.operation.execute",
+      "pocketlab.dlq.>",
+      "pocketlab.dlq.original_subject",
+      "pocketlab.events.fleet.node_telemetry",
+      "pocketlab.events.health.checked",
+      "pocketlab.events.operation.created",
+      "pocketlab.events.operation.failed",
+      "pocketlab.events.operation.log",
+      "pocketlab.events.operation.succeeded",
+      "pocketlab.events.operation.worker_claimed",
+      "pocketlab.events.telemetry.sampled",
+      "pocketlab.events.worker.heartbeat"
+    ],
+    "contract_sources": [
+      "contracts/generated/openapi.json",
+      "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+      "contracts/operations/pocketlab-typed-operations.json",
+      "docs/runtime/nats-jetstream-event-contract.md",
+      "docs/runtime/typed-operations-catalog.md"
+    ],
+    "openapi_paths": [
+      "/api/drift/metrics",
+      "/api/events/publish",
+      "/api/events/recent",
+      "/api/events/status",
+      "/api/fleet/health.json",
+      "/api/fleet/nodes/{node_id}/health",
+      "/api/gitops/health.json",
+      "/api/health-engine.json",
+      "/api/health/check",
+      "/api/nats/status",
+      "/api/operations/health",
+      "/api/telemetry",
+      "/api/telemetry.json",
+      "/api/telemetry/live/status",
+      "/api/workers/status",
+      "/api/workflows/events",
+      "/health",
+      "/healthz",
+      "/loki/api/v1/query",
+      "/ready"
+    ],
+    "operation_contracts": [
+      "backup_now",
+      "backup_verify",
+      "catalog_refresh",
+      "configure_opa",
+      "deploy_blueprint",
+      "drift_apply",
+      "drift_approve",
+      "drift_ignore",
+      "drift_preview",
+      "drift_scan",
+      "fleet_join",
+      "git_sync",
+      "health_check",
+      "release_apply",
+      "release_check",
+      "restore_backup",
+      "rotate_secret",
+      "secret_read_dynamic",
+      "security_scan"
+    ],
+    "redaction_rules": [
+      "token",
+      "password",
+      "secret",
+      "api_key",
+      "authorization",
+      "private_key",
+      "value"
+    ]
+  },
+  "schema_version": "pocketlab.observability_evidence.v1",
+  "source_files": [
+    {
+      "kind": "runtime_contracts",
+      "path": "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+      "sha256": "80b91f358f774e6e9ba795171a22444075b093c0a1d518f905652298dfcfff72",
+      "size_bytes": 36658
+    },
+    {
+      "kind": "runtime_contracts",
+      "path": "contracts/generated/openapi.json",
+      "sha256": "84c20e572205a5f61781322e1f0e9fa9e00da14ac8bf1ccb90e3701f032b7282",
+      "size_bytes": 200550
+    },
+    {
+      "kind": "runtime_contracts",
+      "path": "contracts/operations/pocketlab-typed-operations.json",
+      "sha256": "740abf611e28ab291df95cd70f040e5bfca20e9d3849842774ce8c32aea6ec9d",
+      "size_bytes": 22222
+    },
+    {
+      "kind": "runtime_contracts",
+      "path": "contracts/schemas/telemetry.schema.json",
+      "sha256": "b03ee7b485254743eff929610ac4e7715680f9dc401ffbfbb69d16176e0980c2",
+      "size_bytes": 400
+    },
+    {
+      "kind": "observability_human_docs",
+      "path": "docs/observability/observability-logging-guide.md",
+      "sha256": "a7a2831854ed165365f4e6c2632edc52a1b3fc10338270127f356bedfd81fa58",
+      "size_bytes": 2964
+    },
+    {
+      "kind": "runtime_contracts",
+      "path": "docs/runtime/nats-jetstream-event-contract.md",
+      "sha256": "da0021b6e2e3015f98f4123ce30e56ea726eb80b60b816cc29282cfcd0960f24",
+      "size_bytes": 5400
+    },
+    {
+      "kind": "runtime_contracts",
+      "path": "docs/runtime/typed-operations-catalog.md",
+      "sha256": "ecb064f074846ac4409b1b2d2a37718c41d6e1558ac09d46f33b40a68788b7d9",
+      "size_bytes": 8042
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "path": "pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/scripts/bootstrap.sh",
+      "sha256": "26806bd6b13405c4206904ce4fab433d755b89447fa880ef0e9f8cd969164e44",
+      "size_bytes": 11714
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "path": "pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/scripts/init-vault.sh",
+      "sha256": "6d7d2ebec6c88ed3eba3677617243fb582735250180ed2b593ea0a45b7f1a629",
+      "size_bytes": 4454
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "path": "pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/scripts/install-binaries.sh",
+      "sha256": "4244fcb6c4e5e6d0c0b4600c7172aad5cdd93782070632cb2083e4d2c9e8b6b7",
+      "size_bytes": 5804
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "path": "pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/scripts/install-fleet-agent.sh",
+      "sha256": "bbaf13b2ddc1fc624e27b8bd36e1bced0bb6f04fa92ada489407cbc54a60b3ef",
+      "size_bytes": 2017
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "path": "pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/scripts/lib/common.sh",
+      "sha256": "31f016067847e230a0c70a67b30eaceb0c31168d14c5cc83961b452c6be8087e",
+      "size_bytes": 7490
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "path": "pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/scripts/smoke-test.sh",
+      "sha256": "833fd94bab896601a3f4a415a73a41ec2d3ab605e2d908287fb181379ba4b76a",
+      "size_bytes": 2489
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "path": "pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/scripts/start-dashboard.sh",
+      "sha256": "d769fe08ec7f570460aa389b66fc362891c2db2efe565691b29ae7db69072ae2",
+      "size_bytes": 14162
+    },
+    {
+      "kind": "ansible_inventory_vars",
+      "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/all.yml",
+      "sha256": "dcbb0803fa4fd7dd73e2adcd758d52532c1400ba27620ae2776166a3369bea28",
+      "size_bytes": 7687
+    },
+    {
+      "kind": "ansible_inventory_vars",
+      "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/caddy.yml",
+      "sha256": "76ca1703fa879fd8ad6ca2fe980cdd25f0b5a7df5ad0b6b1b3cf593af4d62f4a",
+      "size_bytes": 585
+    },
+    {
+      "kind": "ansible_inventory_vars",
+      "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/drift_check.yml",
+      "sha256": "2b823b20c780ddddb77ab6b0bbb1c765c59eda5c882eace3a42c8c7df0a3838f",
+      "size_bytes": 628
+    },
+    {
+      "kind": "ansible_inventory_vars",
+      "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/observability.yml",
+      "sha256": "878f3242809b48e27d2afb1e31e05af2221a41649135974ac031a82e08acf076",
+      "size_bytes": 311
+    },
+    {
+      "kind": "ansible_inventory_vars",
+      "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/all.yml",
+      "sha256": "0df64dcfd31ddae709a0503e9b6236aa3b99aa660171db36cecdcfff594d331f",
+      "size_bytes": 8404
+    },
+    {
+      "kind": "ansible_inventory_vars",
+      "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/caddy.yml",
+      "sha256": "76ca1703fa879fd8ad6ca2fe980cdd25f0b5a7df5ad0b6b1b3cf593af4d62f4a",
+      "size_bytes": 585
+    },
+    {
+      "kind": "ansible_inventory_vars",
+      "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/drift_check.yml",
+      "sha256": "2b823b20c780ddddb77ab6b0bbb1c765c59eda5c882eace3a42c8c7df0a3838f",
+      "size_bytes": 628
+    },
+    {
+      "kind": "ansible_inventory_vars",
+      "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/observability.yml",
+      "sha256": "878f3242809b48e27d2afb1e31e05af2221a41649135974ac031a82e08acf076",
+      "size_bytes": 311
+    },
+    {
+      "kind": "caddy_routes",
+      "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy/defaults/main.yml",
+      "sha256": "931606bd5e8affc66f25184d0488b385e4574643c3970f4eecec30b6b3f85bb6",
+      "size_bytes": 582
+    },
+    {
+      "kind": "caddy_routes",
+      "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy/tasks/main.yml",
+      "sha256": "a1b07bd567defbbe469b8deb8874c703c2a3f6585be52c748bc83112505e8c67",
+      "size_bytes": 842
+    },
+    {
+      "kind": "caddy_routes",
+      "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy/templates/Caddyfile.j2",
+      "sha256": "c06dcaff1985930a46e3ef784feca9ce5f5fe4fbe2887bfce5c07c852a5a26ef",
+      "size_bytes": 1147
+    },
+    {
+      "kind": "ansible_observability_role",
+      "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/defaults/main.yml",
+      "sha256": "13d8472b3e08f1c14fd0787318c54b0a23ff695b585c63faed8e886a639956d4",
+      "size_bytes": 473
+    },
+    {
+      "kind": "ansible_observability_role",
+      "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/tasks/main.yml",
+      "sha256": "e4dc983eeac1ffe62b14132946efe13bd4c3d1fd2558d8991280673979e5455d",
+      "size_bytes": 3076
+    },
+    {
+      "kind": "ansible_observability_role",
+      "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/custom.ini.j2",
+      "sha256": "691aabd28b462c3a13a4e3c51ffbf67cb9f06562e44e14821d637b9f38f5670b",
+      "size_bytes": 301
+    },
+    {
+      "kind": "ansible_observability_role",
+      "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/gatus-config.yaml.j2",
+      "sha256": "8462a1fd84af32065e10186e5f77bf92fc0205f341d7344b888858b26b78b219",
+      "size_bytes": 3316
+    },
+    {
+      "kind": "ansible_observability_role",
+      "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/loki-config.yaml.j2",
+      "sha256": "8a5298b1f8dd29c03af3f5b2c3ca679076709a48a87957bbdfa8fdbd6e44074f",
+      "size_bytes": 782
+    },
+    {
+      "kind": "ansible_observability_role",
+      "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/prometheus.yml.j2",
+      "sha256": "b2621e37a26bbb5c2e6e9ac3c478b67d479e274f66749c8e6ee702a2877ab19a",
+      "size_bytes": 685
+    },
+    {
+      "kind": "ansible_observability_role",
+      "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/promtail-config.yaml.j2",
+      "sha256": "2592c0226a015b6fc6256546f0cbe3f82b21d549f55d879d3abbffaf1f858996",
+      "size_bytes": 526
+    },
+    {
+      "kind": "fastapi_runtime_observability",
+      "path": "pocket-lab-final-structure/runtime/api_fastapi/routers/events.py",
+      "sha256": "ffb122ddfe0260118201e0ed26a645ed95f1db2353a0435074d463ffb8060d6c",
+      "size_bytes": 4791
+    },
+    {
+      "kind": "fastapi_runtime_observability",
+      "path": "pocket-lab-final-structure/runtime/api_fastapi/routers/health.py",
+      "sha256": "537c3452e364359f4ecaacc2d0cb018a22a97b9ed884b483a120a5b7b8507eb4",
+      "size_bytes": 2475
+    },
+    {
+      "kind": "fastapi_runtime_observability",
+      "path": "pocket-lab-final-structure/runtime/api_fastapi/routers/observability.py",
+      "sha256": "cef5f52b05a937a22359a992e81b7597e12d3d13c2a78520b3ab3675e2ad90c7",
+      "size_bytes": 500
+    },
+    {
+      "kind": "fastapi_runtime_observability",
+      "path": "pocket-lab-final-structure/runtime/api_fastapi/routers/security.py",
+      "sha256": "0e689910071ec06a4f31f19f0fca8e007a6a2ff01c4bc91e8ebe6dc217fc3ee8",
+      "size_bytes": 1976
+    },
+    {
+      "kind": "fastapi_runtime_observability",
+      "path": "pocket-lab-final-structure/runtime/api_fastapi/routers/telemetry.py",
+      "sha256": "dbd6dbffff711a8e859de1dcfe63512ae18164969dc1843f388b8da6110c20dc",
+      "size_bytes": 553
+    },
+    {
+      "kind": "fastapi_runtime_observability",
+      "path": "pocket-lab-final-structure/runtime/api_fastapi/services/live_status.py",
+      "sha256": "7fd8e92f3a0fb7dbfdbb3d3025cd5780edf562ded030078c6d399ee9840cd3ec",
+      "size_bytes": 12111
+    },
+    {
+      "kind": "fastapi_runtime_observability",
+      "path": "pocket-lab-final-structure/runtime/api_fastapi/services/nats_bus.py",
+      "sha256": "cc7a18ac8628032a90762e3975336289ad85bd1b1ed556995e942132a7382b56",
+      "size_bytes": 19241
+    },
+    {
+      "kind": "fastapi_runtime_observability",
+      "path": "pocket-lab-final-structure/runtime/api_fastapi/services/observability_status.py",
+      "sha256": "6aa9f685ce0dcb1bd70004789799c0bf520de45409410d1bd4806acad2c3d535",
+      "size_bytes": 12244
+    },
+    {
+      "kind": "fastapi_runtime_observability",
+      "path": "pocket-lab-final-structure/runtime/core/control_plane_core.py",
+      "sha256": "aa382bcc2539a26aa0533e8f3b9b2d1c40c4bf48931a69b5156717b56974adf7",
+      "size_bytes": 25964
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "path": "scripts/dev/check-faults.sh",
+      "sha256": "679704a773f21384d3212c8d628c3dc340c137a3c55c1058cac6c75acb2c66d1",
+      "size_bytes": 758
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "path": "scripts/dev/check-schemas.sh",
+      "sha256": "4f34a088371df780b86abdb3d2d9a9bc61410413e098fd59d449688c475109a3",
+      "size_bytes": 844
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "path": "scripts/dev/fault-inject.sh",
+      "sha256": "da12103510af7e66e61d08dabc2b131d417b4d7430aa1df8cc250eba1f66834a",
+      "size_bytes": 773
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "path": "scripts/dev/implement-documentation-placement.sh",
+      "sha256": "4b0f35e572f1d904489999c9ee19a55228263dcdd2e109656720488584206ccb",
+      "size_bytes": 17792
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "path": "scripts/dev/migrations/pocketlab_bootstrap_scripts_shellcheck_fix.sh",
+      "sha256": "f5741acdbab255655e5aea4e9d9ee23b04164fd07182e3c6962a9477e328aac9",
+      "size_bytes": 9576
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "path": "scripts/dev/migrations/pocketlab_ubuntu_dev_env_setup_v3_architecture_plus_contract_fix.sh",
+      "sha256": "252f247d340ded02de2bb009ccb9469452f6503c6719be967663bb8f56979b43",
+      "size_bytes": 110290
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "path": "scripts/dev/observability-runtime-status.py",
+      "sha256": "1f2bc9e940bb8dcc06d9794ecef578f780546c3f8b64cdb1ee903e0b89f66e73",
+      "size_bytes": 1901
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "path": "scripts/dev/observability-snapshot.sh",
+      "sha256": "49bd9d28a05319a2e6f9dd88722c1c86ddd3d4158fa1100861a2c06d59c088ba",
+      "size_bytes": 951
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "path": "scripts/dev/organize-mkdocs-docs.sh",
+      "sha256": "b20fbef199c47e8ab490c4a6d4eb45836f9587065b4647aa7643883bf24a1ce3",
+      "size_bytes": 7955
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "path": "scripts/dev/populate-pocketlab-docs.py",
+      "sha256": "ced45318770d245e413763c15fb389fbd4ed0e8b10465ee7a205f551ff9ae07f",
+      "size_bytes": 53088
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "path": "scripts/dev/report-flakes.sh",
+      "sha256": "024f714f0f0e41f4cd05305292e763a5769ce02fbc2c68c8fc914a4440def3a7",
+      "size_bytes": 6545
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "path": "scripts/dev/reset-state.sh",
+      "sha256": "b3b552392f2b35202bfdb425badc7e4ada8dc6d8653f9a14144138ce4fb14bbf",
+      "size_bytes": 279
+    },
+    {
+      "kind": "bootstrap_observability_scripts",
+      "path": "scripts/dev/run-e2e.sh",
+      "sha256": "2c553f7b19d0913c52823b9488d2f3e0e0c2380b7c3d736b76ea87b8d10d6d96",
+      "size_bytes": 731
+    },
+    {
+      "kind": "frontend_observability_consumers",
+      "path": "src/components/RuntimeObservabilityStatusPanel.jsx",
+      "sha256": "fd5e019b41479eb2f6cf6512a32b8e1bdf4053215ecd2e844f160a1a5feb58ad",
+      "size_bytes": 7453
+    },
+    {
+      "kind": "frontend_observability_consumers",
+      "path": "src/hooks/useHealthEngine.js",
+      "sha256": "77d66eb0b84ae9f416f84cb83d66abfb3031a25627f0967579426cfb44c1cbd3",
+      "size_bytes": 2515
+    },
+    {
+      "kind": "frontend_observability_consumers",
+      "path": "src/hooks/useObservabilityStatus.js",
+      "sha256": "606eca55570d1fcf4a81cd3b25ac27446880e8d566e85478a0ea7e565d37ab5f",
+      "size_bytes": 3764
+    },
+    {
+      "kind": "frontend_observability_consumers",
+      "path": "src/hooks/usePocketLabEvents.js",
+      "sha256": "fe83d5723b37d40044177e86423c11c50518bd9d5ba166ba8212e890b57f65a1",
+      "size_bytes": 4192
+    },
+    {
+      "kind": "frontend_observability_consumers",
+      "path": "src/hooks/useTelemetry.js",
+      "sha256": "be1d7da8d6839fd78db43370a08f46e59c14406c9d9fc9d660514ae53d583e39",
+      "size_bytes": 3899
+    },
+    {
+      "kind": "frontend_observability_consumers",
+      "path": "src/tabs/LogExplorerTab.jsx",
+      "sha256": "631c68b69c0523e97fed88ec5f3032ddc4263bfd7a86ae2c54c9430b3315fc9e",
+      "size_bytes": 13432
+    },
+    {
+      "kind": "frontend_observability_consumers",
+      "path": "src/tabs/NocTelemetryTab.jsx",
+      "sha256": "996dabfe540fbe7193b17280887b3e5ead610905e383ec2955ccdc23ab1ebc51",
+      "size_bytes": 13309
+    },
+    {
+      "kind": "frontend_observability_consumers",
+      "path": "src/tabs/SecurityPostureTab.jsx",
+      "sha256": "718ee416da34463d55a5220c81dceff477240aed060d9a6da2d24bcbefe34404",
+      "size_bytes": 15013
+    }
+  ],
+  "source_groups": {
+    "ansible_inventory_vars": [
+      "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/all.yml",
+      "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/caddy.yml",
+      "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/drift_check.yml",
+      "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/observability.yml",
+      "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/all.yml",
+      "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/caddy.yml",
+      "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/drift_check.yml",
+      "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/observability.yml"
+    ],
+    "ansible_observability_role": [
+      "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/defaults/main.yml",
+      "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/tasks/main.yml",
+      "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/custom.ini.j2",
+      "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/gatus-config.yaml.j2",
+      "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/loki-config.yaml.j2",
+      "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/prometheus.yml.j2",
+      "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/promtail-config.yaml.j2"
+    ],
+    "bootstrap_observability_scripts": [
+      "pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/scripts/bootstrap.sh",
+      "pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/scripts/init-vault.sh",
+      "pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/scripts/install-binaries.sh",
+      "pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/scripts/install-fleet-agent.sh",
+      "pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/scripts/lib/common.sh",
+      "pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/scripts/smoke-test.sh",
+      "pocket-lab-final-structure/pocket-lab-bootstrap-production-scripts-patched/scripts/start-dashboard.sh",
+      "scripts/dev/check-faults.sh",
+      "scripts/dev/check-schemas.sh",
+      "scripts/dev/fault-inject.sh",
+      "scripts/dev/implement-documentation-placement.sh",
+      "scripts/dev/migrations/pocketlab_bootstrap_scripts_shellcheck_fix.sh",
+      "scripts/dev/migrations/pocketlab_ubuntu_dev_env_setup_v3_architecture_plus_contract_fix.sh",
+      "scripts/dev/observability-runtime-status.py",
+      "scripts/dev/observability-snapshot.sh",
+      "scripts/dev/organize-mkdocs-docs.sh",
+      "scripts/dev/populate-pocketlab-docs.py",
+      "scripts/dev/report-flakes.sh",
+      "scripts/dev/reset-state.sh",
+      "scripts/dev/run-e2e.sh"
+    ],
+    "caddy_routes": [
+      "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy/defaults/main.yml",
+      "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy/tasks/main.yml",
+      "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy/templates/Caddyfile.j2"
+    ],
+    "fastapi_runtime_observability": [
+      "pocket-lab-final-structure/runtime/api_fastapi/routers/events.py",
+      "pocket-lab-final-structure/runtime/api_fastapi/routers/health.py",
+      "pocket-lab-final-structure/runtime/api_fastapi/routers/observability.py",
+      "pocket-lab-final-structure/runtime/api_fastapi/routers/security.py",
+      "pocket-lab-final-structure/runtime/api_fastapi/routers/telemetry.py",
+      "pocket-lab-final-structure/runtime/api_fastapi/services/live_status.py",
+      "pocket-lab-final-structure/runtime/api_fastapi/services/nats_bus.py",
+      "pocket-lab-final-structure/runtime/api_fastapi/services/observability_status.py",
+      "pocket-lab-final-structure/runtime/core/control_plane_core.py"
+    ],
+    "frontend_observability_consumers": [
+      "src/components/RuntimeObservabilityStatusPanel.jsx",
+      "src/hooks/useHealthEngine.js",
+      "src/hooks/useObservabilityStatus.js",
+      "src/hooks/usePocketLabEvents.js",
+      "src/hooks/useTelemetry.js",
+      "src/tabs/LogExplorerTab.jsx",
+      "src/tabs/NocTelemetryTab.jsx",
+      "src/tabs/SecurityPostureTab.jsx"
+    ],
+    "observability_human_docs": [
+      "docs/observability/observability-logging-guide.md"
+    ],
+    "runtime_contracts": [
+      "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+      "contracts/generated/openapi.json",
+      "contracts/operations/pocketlab-typed-operations.json",
+      "contracts/schemas/telemetry.schema.json",
+      "docs/runtime/nats-jetstream-event-contract.md",
+      "docs/runtime/typed-operations-catalog.md"
+    ]
+  },
+  "warnings": [
+    "FastAPI /metrics endpoint was not verified in the current repository snapshot.",
+    "Grafana directories/config exist, but dashboard JSON files were not verified.",
+    "Grafana datasource provisioning YAML was not verified.",
+    "Alert/SLO source files were not verified; Tier 12 generates a gap/reference page only."
+  ]
+}

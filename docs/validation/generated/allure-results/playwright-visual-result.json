@@ -1,0 +1,52 @@
+{
+  "description": "Recorded command completed successfully.",
+  "fullName": "Pocket Lab Validation::UI::playwright-visual",
+  "historyId": "04370bd238205b070f536130504edb75",
+  "labels": [
+    {
+      "name": "epic",
+      "value": "Tier 8 Validation Documentation"
+    },
+    {
+      "name": "feature",
+      "value": "UI"
+    },
+    {
+      "name": "story",
+      "value": "playwright-visual"
+    },
+    {
+      "name": "owner",
+      "value": "Frontend"
+    },
+    {
+      "name": "severity",
+      "value": "blocker"
+    },
+    {
+      "name": "tag",
+      "value": "PASS"
+    }
+  ],
+  "name": "Playwright visual regression evidence",
+  "parameters": [
+    {
+      "name": "command",
+      "value": "task test:visual"
+    },
+    {
+      "name": "evidence_state",
+      "value": "executed-command"
+    },
+    {
+      "name": "generated_at",
+      "value": "2026-06-14T19:32:50Z"
+    }
+  ],
+  "stage": "finished",
+  "start": 1781465570478,
+  "status": "passed",
+  "stop": 1781465570478,
+  "testCaseId": "playwright-visual",
+  "uuid": "a3edbbf2-c448-5fd2-89f3-4003701c980a"
+}

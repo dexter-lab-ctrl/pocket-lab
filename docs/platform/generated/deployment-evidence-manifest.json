@@ -1,0 +1,4898 @@
+{
+  "ansible": {
+    "bases": [
+      "pocket-lab-final-structure/pocket-lab-iac-api-compatible",
+      "pocket_lab_iac",
+      "pocket-lab-final-structure/pocket_lab_iac",
+      "pocket-lab-final-structure/runtime/core/ansible"
+    ],
+    "collections": [],
+    "iac_catalog": [],
+    "inventories_and_vars": [
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/all.yml",
+        "sha256": "dcbb0803fa4fd7dd73e2adcd758d52532c1400ba27620ae2776166a3369bea28",
+        "size_bytes": 7687,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/backups.yml",
+        "sha256": "7f495ac9f7ebb3db4052ab2d2aac574aaa5738d7a00915f57cb8fc07dcdd7da1",
+        "size_bytes": 522,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/caddy.yml",
+        "sha256": "76ca1703fa879fd8ad6ca2fe980cdd25f0b5a7df5ad0b6b1b3cf593af4d62f4a",
+        "size_bytes": 585,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/catalog_seed.yml",
+        "sha256": "30f2b2281aeb97d82a994d8672dacc288862c36f9daff5653a6d73c7ee9b6cf9",
+        "size_bytes": 497,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/dashboard_api.yml",
+        "sha256": "91acdc5d861018934c9f68507b375d9430a7eefe2b6f1ad40162a5c2ee62f88d",
+        "size_bytes": 217,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/drift_check.yml",
+        "sha256": "2b823b20c780ddddb77ab6b0bbb1c765c59eda5c882eace3a42c8c7df0a3838f",
+        "size_bytes": 628,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/fastapi_control_plane.yml",
+        "sha256": "4ae7394593ad12ddfe0dcdf433143c36918ed517c7c17085d151e3fbd7da381d",
+        "size_bytes": 891,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/gitea.yml",
+        "sha256": "7a89113ac401c37dbe248a0064baff9c5e8d5378f9b3ae6271d9b93cb265db41",
+        "size_bytes": 823,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/gitea_runner.yml",
+        "sha256": "76a99dee8983160d28cf77e723a4e9663d5d9dc992df26f5851a2c9da4120d39",
+        "size_bytes": 504,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/mariadb.yml",
+        "sha256": "962b3216144f36153e499b0364df8320997fc53ecabad16ac4b4e8ec3e03fecd",
+        "size_bytes": 821,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/nats.yml",
+        "sha256": "65235222cac0e2de75fdaf5002db61324f12cccd6afffb24b1739a73859c62f8",
+        "size_bytes": 958,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/observability.yml",
+        "sha256": "878f3242809b48e27d2afb1e31e05af2221a41649135974ac031a82e08acf076",
+        "size_bytes": 311,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/opa.yml",
+        "sha256": "03d4a78a37986aa04220a81199fd410c86e3f786aa14bc9816ccde2329a5fa3d",
+        "size_bytes": 298,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/security.yml",
+        "sha256": "30eefdcdcfb17b1fa1fba62a70adae7448dcae3fbb7b23c643a604227df14285",
+        "size_bytes": 310,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/tailscale.yml",
+        "sha256": "388424e833a463ceac2bc46a029f2a6af221fa2e7bb24a16c7e64e99bba01215",
+        "size_bytes": 356,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/vault.yml",
+        "sha256": "c9203e383ea892029f8f8d326580af7645dda55616b2e2928f1321d725d1bafd",
+        "size_bytes": 4342,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/group_vars/workloads.yml",
+        "sha256": "cef76668bd6332de77ac4e021c34326d0407bdb3896fc5ce7c6f660e0d96d0ea",
+        "size_bytes": 546,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/dev/hosts.yml",
+        "sha256": "a621ae84a7e3d171ba52e55bbb870e026be5f6cda403e9789b6789b42e972cf9",
+        "size_bytes": 1260,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/all.yml",
+        "sha256": "0df64dcfd31ddae709a0503e9b6236aa3b99aa660171db36cecdcfff594d331f",
+        "size_bytes": 8404,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/backups.yml",
+        "sha256": "7f495ac9f7ebb3db4052ab2d2aac574aaa5738d7a00915f57cb8fc07dcdd7da1",
+        "size_bytes": 522,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/caddy.yml",
+        "sha256": "76ca1703fa879fd8ad6ca2fe980cdd25f0b5a7df5ad0b6b1b3cf593af4d62f4a",
+        "size_bytes": 585,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/catalog_seed.yml",
+        "sha256": "30f2b2281aeb97d82a994d8672dacc288862c36f9daff5653a6d73c7ee9b6cf9",
+        "size_bytes": 497,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/dashboard_api.yml",
+        "sha256": "91acdc5d861018934c9f68507b375d9430a7eefe2b6f1ad40162a5c2ee62f88d",
+        "size_bytes": 217,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/drift_check.yml",
+        "sha256": "2b823b20c780ddddb77ab6b0bbb1c765c59eda5c882eace3a42c8c7df0a3838f",
+        "size_bytes": 628,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/fastapi_control_plane.yml",
+        "sha256": "4ae7394593ad12ddfe0dcdf433143c36918ed517c7c17085d151e3fbd7da381d",
+        "size_bytes": 891,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/gitea.yml",
+        "sha256": "7a89113ac401c37dbe248a0064baff9c5e8d5378f9b3ae6271d9b93cb265db41",
+        "size_bytes": 823,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/gitea_runner.yml",
+        "sha256": "76a99dee8983160d28cf77e723a4e9663d5d9dc992df26f5851a2c9da4120d39",
+        "size_bytes": 504,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/mariadb.yml",
+        "sha256": "962b3216144f36153e499b0364df8320997fc53ecabad16ac4b4e8ec3e03fecd",
+        "size_bytes": 821,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/nats.yml",
+        "sha256": "65235222cac0e2de75fdaf5002db61324f12cccd6afffb24b1739a73859c62f8",
+        "size_bytes": 958,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/observability.yml",
+        "sha256": "878f3242809b48e27d2afb1e31e05af2221a41649135974ac031a82e08acf076",
+        "size_bytes": 311,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/opa.yml",
+        "sha256": "03d4a78a37986aa04220a81199fd410c86e3f786aa14bc9816ccde2329a5fa3d",
+        "size_bytes": 298,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/security.yml",
+        "sha256": "30eefdcdcfb17b1fa1fba62a70adae7448dcae3fbb7b23c643a604227df14285",
+        "size_bytes": 310,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/tailscale.yml",
+        "sha256": "388424e833a463ceac2bc46a029f2a6af221fa2e7bb24a16c7e64e99bba01215",
+        "size_bytes": 356,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/vault.yml",
+        "sha256": "c9203e383ea892029f8f8d326580af7645dda55616b2e2928f1321d725d1bafd",
+        "size_bytes": 4342,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/group_vars/workloads.yml",
+        "sha256": "cef76668bd6332de77ac4e021c34326d0407bdb3896fc5ce7c6f660e0d96d0ea",
+        "size_bytes": 546,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/inventory/prod/hosts.yml",
+        "sha256": "a621ae84a7e3d171ba52e55bbb870e026be5f6cda403e9789b6789b42e972cf9",
+        "size_bytes": 1260,
+        "yaml_error": null
+      },
+      {
+        "kind": "ansible_inventory_or_vars",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/requirements.yml",
+        "sha256": "32b273c277c20f09e6b3ab7652c13ccafca043f677e8cc60a53a2a2fbea5ce8f",
+        "size_bytes": 177,
+        "yaml_error": null
+      }
+    ],
+    "playbooks": [
+      {
+        "become": false,
+        "hosts": [
+          "backups"
+        ],
+        "kind": "ansible_playbook",
+        "name": "maintenance",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/iac-catalog/backup_restore/maintenance.yml",
+        "roles": [
+          "backups"
+        ],
+        "sha256": "91e99330a7ee9e96617537e0e89d454f1e844f1d0f345d62473eda37e133869d",
+        "size_bytes": 105,
+        "tags": [],
+        "tasks": [],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      },
+      {
+        "become": false,
+        "hosts": [
+          "localhost"
+        ],
+        "kind": "ansible_playbook",
+        "name": "playbook",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/iac-catalog/cve_patcher/playbook.yml",
+        "roles": [],
+        "sha256": "a455560e8041d102e586932c71bd59797f2c8824c720fa2a5bf8cca82e262ca9",
+        "size_bytes": 560,
+        "tags": [],
+        "tasks": [
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "Apply OS-Level Security Patches",
+            "section": "tasks",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.shell",
+            "name": "Log Patch Event to Loki",
+            "section": "tasks",
+            "tags": [],
+            "uses_shell_or_command": true
+          }
+        ],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      },
+      {
+        "become": false,
+        "hosts": [
+          "drift_check"
+        ],
+        "kind": "ansible_playbook",
+        "name": "maintenance",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/iac-catalog/drift_check/maintenance.yml",
+        "roles": [],
+        "sha256": "3a879371b96277f1e92da0c909a8ea0313dbf3e390c1e6d28fa46b9d26981e62",
+        "size_bytes": 191,
+        "tags": [],
+        "tasks": [
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.include_role",
+            "name": "Run drift check role",
+            "section": "tasks",
+            "tags": [],
+            "uses_shell_or_command": false
+          }
+        ],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      },
+      {
+        "become": false,
+        "hosts": [
+          "localhost"
+        ],
+        "kind": "ansible_playbook",
+        "name": "playbook",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/iac-catalog/host_hardening/playbook.yml",
+        "roles": [],
+        "sha256": "6ee0035a8dbb1eafdbf182e70ecf280f7546b6dec9f5402790f7359106cce7c2",
+        "size_bytes": 551,
+        "tags": [],
+        "tasks": [
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "Enforce Strict File Permissions on PRoot /etc",
+            "section": "tasks",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.shell",
+            "name": "Log Hardening Event to Loki",
+            "section": "tasks",
+            "tags": [],
+            "uses_shell_or_command": true
+          }
+        ],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      },
+      {
+        "become": false,
+        "hosts": [
+          "observability"
+        ],
+        "kind": "ansible_playbook",
+        "name": "maintenance",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/iac-catalog/observability/maintenance.yml",
+        "roles": [],
+        "sha256": "e26b150b11dd691e3179d4c7f656ba8bcda46dcacead7b56ad0126a1ddccc34d",
+        "size_bytes": 211,
+        "tags": [],
+        "tasks": [
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.include_role",
+            "name": "Run observability role",
+            "section": "tasks",
+            "tags": [],
+            "uses_shell_or_command": false
+          }
+        ],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      },
+      {
+        "become": false,
+        "hosts": [
+          "workloads"
+        ],
+        "kind": "ansible_playbook",
+        "name": "playbook",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/iac-catalog/photoprism/playbook.yml",
+        "roles": [
+          "workloads/photoprism"
+        ],
+        "sha256": "f7722eb6fe797ed8a48231c55972a4c4e7ba8556675206347a88fef0ba9322a5",
+        "size_bytes": 109,
+        "tags": [],
+        "tasks": [],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      },
+      {
+        "become": false,
+        "hosts": [
+          "localhost"
+        ],
+        "kind": "ansible_playbook",
+        "name": "maintenance",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/iac-catalog/secret_rotation/maintenance.yml",
+        "roles": [],
+        "sha256": "984cdf35de0969f901930bc518627f289542fa60600428079ce1fb5dc3f44282",
+        "size_bytes": 1184,
+        "tags": [],
+        "tasks": [
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "no_log",
+            "name": "Authenticate with Vault AppRole",
+            "section": "tasks",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "no_log",
+            "name": "Set dynamic Vault token",
+            "section": "tasks",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "no_log",
+            "name": "Rotate application secret in Vault",
+            "section": "tasks",
+            "tags": [],
+            "uses_shell_or_command": false
+          }
+        ],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      },
+      {
+        "become": false,
+        "hosts": [
+          "localhost"
+        ],
+        "kind": "ansible_playbook",
+        "name": "playbook",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/iac-catalog/security_scanners/playbook.yml",
+        "roles": [],
+        "sha256": "bb79cdf8576c876175b7930c74c7eca7bbbcd57e43e98f58d1a311302dab286c",
+        "size_bytes": 1054,
+        "tags": [],
+        "tasks": [
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "Execute Trivy Rootfs Vulnerability Scan",
+            "section": "tasks",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "Execute Lynis Host Hardening Audit",
+            "section": "tasks",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.debug",
+            "name": "Emit Audit Summary to Promtail",
+            "section": "tasks",
+            "tags": [],
+            "uses_shell_or_command": false
+          }
+        ],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      },
+      {
+        "become": false,
+        "hosts": [
+          "localhost"
+        ],
+        "kind": "ansible_playbook",
+        "name": "maintenance",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/iac-catalog/tailscale_ztp/maintenance.yml",
+        "roles": [],
+        "sha256": "13207dcd0f3b8f6b01ee40792be6583911a6ddc504aa61884b516823f1c3f67e",
+        "size_bytes": 1245,
+        "tags": [],
+        "tasks": [
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "no_log",
+            "name": "Authenticate with Vault AppRole",
+            "section": "tasks",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "no_log",
+            "name": "Set dynamic Vault token",
+            "section": "tasks",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "Verify Tailscale API key exists in Vault",
+            "section": "tasks",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.fail",
+            "name": "Fail when Tailscale secret is missing",
+            "section": "tasks",
+            "tags": [],
+            "uses_shell_or_command": false
+          }
+        ],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      },
+      {
+        "become": false,
+        "hosts": [
+          "common"
+        ],
+        "kind": "ansible_playbook",
+        "name": "00_preflight",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/playbooks/00_preflight.yml",
+        "roles": [
+          "common"
+        ],
+        "sha256": "ffbf7bb631b4da17ae7b7515c7c3de5daae3b60944473ea2d1020db5e9dbe565",
+        "size_bytes": 85,
+        "tags": [],
+        "tasks": [],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      },
+      {
+        "become": false,
+        "hosts": [
+          "vault"
+        ],
+        "kind": "ansible_playbook",
+        "name": "10_vault",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/playbooks/10_vault.yml",
+        "roles": [
+          "common",
+          "vault"
+        ],
+        "sha256": "62de42287aaec193d596eb98ffebc1fc18787eaba5c24f988f1c4fa3c5956c91",
+        "size_bytes": 92,
+        "tags": [],
+        "tasks": [],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      },
+      {
+        "become": false,
+        "hosts": [
+          "mariadb"
+        ],
+        "kind": "ansible_playbook",
+        "name": "20_mariadb",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/playbooks/20_mariadb.yml",
+        "roles": [
+          "common",
+          "mariadb"
+        ],
+        "sha256": "5775668adc96600381415bfce674d49219ec39e7cbba7cb721f753f613b66c91",
+        "size_bytes": 98,
+        "tags": [],
+        "tasks": [],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      },
+      {
+        "become": false,
+        "hosts": [
+          "gitea"
+        ],
+        "kind": "ansible_playbook",
+        "name": "30_gitea",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/playbooks/30_gitea.yml",
+        "roles": [
+          "common",
+          "gitea",
+          "vault"
+        ],
+        "sha256": "8ad677cf189889fa5253c27fc38804e56eea3866d7e8ab27b328110904358f15",
+        "size_bytes": 104,
+        "tags": [],
+        "tasks": [],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      },
+      {
+        "become": false,
+        "hosts": [
+          "localhost"
+        ],
+        "kind": "ansible_playbook",
+        "name": "40_opa",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/playbooks/40_opa.yml",
+        "roles": [
+          "opa"
+        ],
+        "sha256": "522a449e0f2131d73a04d44b06bd8eeb50d63089c714592701b7cd5eb865c36c",
+        "size_bytes": 129,
+        "tags": [],
+        "tasks": [],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      },
+      {
+        "become": false,
+        "hosts": [
+          "tailscale"
+        ],
+        "kind": "ansible_playbook",
+        "name": "50_tailscale",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/playbooks/50_tailscale.yml",
+        "roles": [
+          "common",
+          "tailscale"
+        ],
+        "sha256": "0b83033b8ff81ac3505322b5492bd1eb804a76ec9cf11525e4bb8cbfee5882a6",
+        "size_bytes": 104,
+        "tags": [],
+        "tasks": [],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      },
+      {
+        "become": false,
+        "hosts": [
+          "caddy"
+        ],
+        "kind": "ansible_playbook",
+        "name": "60_caddy",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/playbooks/60_caddy.yml",
+        "roles": [
+          "caddy",
+          "common"
+        ],
+        "sha256": "b98462d2e8dfbadef4674532ee933d8a6597c725968601a14913fef2d45fcbb0",
+        "size_bytes": 92,
+        "tags": [],
+        "tasks": [],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      },
+      {
+        "become": false,
+        "hosts": [
+          "nats"
+        ],
+        "kind": "ansible_playbook",
+        "name": "65_nats",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/playbooks/65_nats.yml",
+        "roles": [
+          "common",
+          "nats"
+        ],
+        "sha256": "3cfc6554f605d204bedd2903546788afe2783ce45357705c319c362d6764b550",
+        "size_bytes": 110,
+        "tags": [],
+        "tasks": [],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      },
+      {
+        "become": false,
+        "hosts": [
+          "fastapi_control_plane"
+        ],
+        "kind": "ansible_playbook",
+        "name": "70_fastapi_control_plane",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/playbooks/70_fastapi_control_plane.yml",
+        "roles": [
+          "common",
+          "fastapi_control_plane"
+        ],
+        "sha256": "ecaf35c2afac1c88de16f0fbdda7e68ce26f9ebe1ad6e4986e9821ff6fc3b462",
+        "size_bytes": 140,
+        "tags": [],
+        "tasks": [],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      },
+      {
+        "become": false,
+        "hosts": [
+          "catalog_seed"
+        ],
+        "kind": "ansible_playbook",
+        "name": "80_catalog_seed",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/playbooks/80_catalog_seed.yml",
+        "roles": [
+          "catalog_seed",
+          "common",
+          "gitea",
+          "vault"
+        ],
+        "sha256": "dd1e8a2ccab7dc1c57da1f17d1d13940fb008bba4360df88c4085c6fb3bbfb34",
+        "size_bytes": 137,
+        "tags": [],
+        "tasks": [],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      },
+      {
+        "become": false,
+        "hosts": [
+          "workloads"
+        ],
+        "kind": "ansible_playbook",
+        "name": "90_workloads",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/playbooks/90_workloads.yml",
+        "roles": [
+          "common",
+          "photoprism",
+          "vault"
+        ],
+        "sha256": "97e50d559f9a9bc70908a46075e7d11a6440ebce0da69d57f4ecbd87926930cc",
+        "size_bytes": 117,
+        "tags": [],
+        "tasks": [],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      },
+      {
+        "become": false,
+        "hosts": [
+          "backups"
+        ],
+        "kind": "ansible_playbook",
+        "name": "95_backup_restore",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/playbooks/95_backup_restore.yml",
+        "roles": [
+          "backups",
+          "common"
+        ],
+        "sha256": "0c68ac44a932e622e94a506403675380f4231963a7b455f8e3731508164bb24a",
+        "size_bytes": 105,
+        "tags": [],
+        "tasks": [],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      },
+      {
+        "become": false,
+        "hosts": [
+          "gitea"
+        ],
+        "kind": "ansible_playbook",
+        "name": "97_gitea_runner",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/playbooks/97_gitea_runner.yml",
+        "roles": [
+          "common",
+          "gitea_runner"
+        ],
+        "sha256": "8c0b2329b774ed253f7bf08fe9783662a3e5ce09687435dd18b823e5898247f5",
+        "size_bytes": 106,
+        "tags": [],
+        "tasks": [],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      },
+      {
+        "become": false,
+        "hosts": [
+          "observability"
+        ],
+        "kind": "ansible_playbook",
+        "name": "98_observability",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/playbooks/98_observability.yml",
+        "roles": [
+          "common",
+          "observability",
+          "vault"
+        ],
+        "sha256": "14892f5f7ca9c98c9e6e84e3150df0ac08f7c891d87b36a4774bb28324a434e6",
+        "size_bytes": 128,
+        "tags": [],
+        "tasks": [],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      },
+      {
+        "become": false,
+        "hosts": [
+          "drift_check"
+        ],
+        "kind": "ansible_playbook",
+        "name": "99_drift_check",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/playbooks/99_drift_check.yml",
+        "roles": [
+          "common",
+          "drift_check"
+        ],
+        "sha256": "6dde3a495c0acd3e31f297ee20745b50ec9a1ba8b6d2220d8188a4e77e181445",
+        "size_bytes": 110,
+        "tags": [],
+        "tasks": [],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      },
+      {
+        "become": false,
+        "hosts": [],
+        "kind": "ansible_playbook",
+        "name": "site",
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/site.yml",
+        "roles": [],
+        "sha256": "efbb0b05481b5c387d745b56751b74f083f4a97695dac93bc38cd9700d5a59ec",
+        "size_bytes": 762,
+        "tags": [],
+        "tasks": [],
+        "vars": [],
+        "vars_files": [],
+        "yaml_error": null
+      }
+    ],
+    "roles": [
+      {
+        "default_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/defaults/backups_defaults_main.yml",
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/defaults/main.yml"
+        ],
+        "files": [],
+        "handler_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/handlers/backups_handlers_main.yml",
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/handlers/main.yml"
+        ],
+        "modules": [
+          "ansible.builtin.copy",
+          "ansible.builtin.debug",
+          "ansible.builtin.file",
+          "ansible.builtin.template",
+          "changed_when"
+        ],
+        "package_tasks": [],
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups",
+        "role": "backups",
+        "service_tasks": [],
+        "sha256": "2cbf8ab051642a02d640b8887ed04e9cbe47d8e77730451e06822466d6a2a667",
+        "shell_or_command_tasks": [],
+        "task_count": 16,
+        "task_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/tasks/backups_tasks_main.yml",
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/tasks/main.yml"
+        ],
+        "tasks": [
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.file",
+            "name": "backups | ensure backup directory exists",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/tasks/backups_tasks_main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.template",
+            "name": "backups | render backup script",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/tasks/backups_tasks_main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.template",
+            "name": "backups | render restore script",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/tasks/backups_tasks_main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.copy",
+            "name": "backups | write retention manifest",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/tasks/backups_tasks_main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "backups | validate backup script syntax",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/tasks/backups_tasks_main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "backups | validate restore script syntax",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/tasks/backups_tasks_main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.debug",
+            "name": "backups | summarize",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/tasks/backups_tasks_main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.file",
+            "name": "backups | ensure backup directory exists",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.template",
+            "name": "backups | render backup script",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.template",
+            "name": "backups | render restore script",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.copy",
+            "name": "backups | write retention manifest",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "backups | validate backup script syntax",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "backups | validate restore script syntax",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.debug",
+            "name": "backups | summarize",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.debug",
+            "name": "backups configuration updated",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/handlers/backups_handlers_main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.debug",
+            "name": "backups configuration updated",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/handlers/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          }
+        ],
+        "templates": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/templates/backup.sh.j2",
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/templates/backups_templates_backup.sh.j2",
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/templates/backups_templates_restore.sh.j2",
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/backups/templates/restore.sh.j2"
+        ],
+        "yaml_errors": []
+      },
+      {
+        "default_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy/defaults/main.yml"
+        ],
+        "files": [],
+        "handler_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy/handlers/main.yml"
+        ],
+        "modules": [
+          "ansible.builtin.copy",
+          "ansible.builtin.debug",
+          "ansible.builtin.file",
+          "ansible.builtin.template",
+          "changed_when"
+        ],
+        "package_tasks": [],
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy",
+        "role": "caddy",
+        "service_tasks": [],
+        "sha256": "69b46b79a3bb1ccbaae45653683a5c565fa48148b09e07b64970ec75770937d3",
+        "shell_or_command_tasks": [],
+        "task_count": 5,
+        "task_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy/tasks/main.yml"
+        ],
+        "tasks": [
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.file",
+            "name": "caddy | ensure directories exist",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.template",
+            "name": "caddy | render reverse proxy configuration",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "caddy | validate configuration",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.copy",
+            "name": "caddy | persist route summary",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.debug",
+            "name": "caddy configuration updated",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy/handlers/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          }
+        ],
+        "templates": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/caddy/templates/Caddyfile.j2"
+        ],
+        "yaml_errors": []
+      },
+      {
+        "default_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/catalog_seed/defaults/main.yml"
+        ],
+        "files": [],
+        "handler_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/catalog_seed/handlers/main.yml"
+        ],
+        "modules": [
+          "ansible.builtin.assert",
+          "ansible.builtin.copy",
+          "ansible.builtin.debug",
+          "ansible.builtin.file",
+          "ansible.builtin.stat",
+          "block",
+          "changed_when",
+          "run_once"
+        ],
+        "package_tasks": [],
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/catalog_seed",
+        "role": "catalog_seed",
+        "service_tasks": [],
+        "sha256": "74b4ba78c9583a3c69578e64e4499ab62f621d215e13f006de3ef02db9e44bee",
+        "shell_or_command_tasks": [],
+        "task_count": 13,
+        "task_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/catalog_seed/tasks/main.yml"
+        ],
+        "tasks": [
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.assert",
+            "name": "catalog_seed | validate inputs",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/catalog_seed/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "run_once",
+            "name": "catalog_seed | ensure source tree exists",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/catalog_seed/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.assert",
+            "name": "catalog_seed | fail when source tree is missing",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/catalog_seed/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.file",
+            "name": "catalog_seed | ensure destination exists",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/catalog_seed/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.copy",
+            "name": "catalog_seed | copy catalog tree into local checkout",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/catalog_seed/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.stat",
+            "name": "catalog_seed | ensure .git exists",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/catalog_seed/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "catalog_seed | initialize git repository when absent",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/catalog_seed/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "catalog_seed | configure git identity",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/catalog_seed/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "catalog_seed | stage tree when changed or repo is new",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/catalog_seed/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "catalog_seed | create initial commit when repository is new",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/catalog_seed/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "block",
+            "name": "catalog_seed | set origin remote",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/catalog_seed/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "catalog_seed | push to remote when enabled",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/catalog_seed/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.debug",
+            "name": "catalog_seed configuration updated",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/catalog_seed/handlers/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          }
+        ],
+        "templates": [],
+        "yaml_errors": []
+      },
+      {
+        "default_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/common/defaults/main.yml"
+        ],
+        "files": [],
+        "handler_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/common/handlers/main.yml"
+        ],
+        "modules": [
+          "ansible.builtin.assert",
+          "ansible.builtin.copy",
+          "ansible.builtin.debug",
+          "ansible.builtin.file",
+          "changed_when"
+        ],
+        "package_tasks": [],
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/common",
+        "role": "common",
+        "service_tasks": [],
+        "sha256": "d90a2039b9f3884e2b9666c33678cea2896d5a49c3f9da548c46ad7ac88f5757",
+        "shell_or_command_tasks": [],
+        "task_count": 5,
+        "task_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/common/tasks/main.yml"
+        ],
+        "tasks": [
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.assert",
+            "name": "common | validate environment",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/common/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "common | validate required commands",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/common/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.file",
+            "name": "common | create shared directories",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/common/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.copy",
+            "name": "common | write runtime metadata",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/common/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.debug",
+            "name": "common configuration updated",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/common/handlers/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          }
+        ],
+        "templates": [],
+        "yaml_errors": []
+      },
+      {
+        "default_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/defaults/drift_check_defaults_main.yml",
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/defaults/main.yml"
+        ],
+        "files": [],
+        "handler_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/handlers/drift_check_handler_main.yml",
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/handlers/main.yml"
+        ],
+        "modules": [
+          "ansible.builtin.copy",
+          "ansible.builtin.debug",
+          "ansible.builtin.fail",
+          "ansible.builtin.file",
+          "ansible.builtin.set_fact",
+          "ansible.builtin.template",
+          "changed_when",
+          "failed_when"
+        ],
+        "package_tasks": [],
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check",
+        "role": "drift_check",
+        "service_tasks": [],
+        "sha256": "f20f230dc35b85e40ebb34ae32308c0926ce09eb9daf5d80a10286f02b558e5e",
+        "shell_or_command_tasks": [],
+        "task_count": 20,
+        "task_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/tasks/drift_check_tasks_main.yml",
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/tasks/main.yml"
+        ],
+        "tasks": [
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.file",
+            "name": "drift_check | ensure drift directories exist",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/tasks/drift_check_tasks_main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.set_fact",
+            "name": "drift_check | derive timestamp and job id",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/tasks/drift_check_tasks_main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.set_fact",
+            "name": "drift_check | initialize job containers",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/tasks/drift_check_tasks_main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "failed_when",
+            "name": "drift_check | probe HTTP endpoints",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/tasks/drift_check_tasks_main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "failed_when",
+            "name": "drift_check | run command-based checks",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/tasks/drift_check_tasks_main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.set_fact",
+            "name": "drift_check | normalize endpoint results",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/tasks/drift_check_tasks_main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.set_fact",
+            "name": "drift_check | normalize command results",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/tasks/drift_check_tasks_main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.set_fact",
+            "name": "drift_check | compute overall status",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/tasks/drift_check_tasks_main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.set_fact",
+            "name": "drift_check | build drift report object",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/tasks/drift_check_tasks_main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.copy",
+            "name": "drift_check | persist latest drift report",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/tasks/drift_check_tasks_main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.copy",
+            "name": "drift_check | persist history snapshot",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/tasks/drift_check_tasks_main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.debug",
+            "name": "drift_check | summarize monitored targets",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/tasks/drift_check_tasks_main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.fail",
+            "name": "drift_check | fail only when explicitly enabled",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/tasks/drift_check_tasks_main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.file",
+            "name": "drift_check | ensure log directory exists",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.template",
+            "name": "drift_check | render health check runner",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "drift_check | run health checks",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.copy",
+            "name": "drift_check | persist drift report",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.debug",
+            "name": "drift_check | summarize monitored endpoints",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.debug",
+            "name": "drift_check configuration updated",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/handlers/drift_check_handler_main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.debug",
+            "name": "drift_check configuration updated",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/handlers/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          }
+        ],
+        "templates": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/templates/drift_check_templates_healthcheck.sh.j2",
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/drift_check/templates/healthcheck.sh.j2"
+        ],
+        "yaml_errors": []
+      },
+      {
+        "default_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/fastapi_control_plane/defaults/main.yml"
+        ],
+        "files": [],
+        "handler_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/fastapi_control_plane/handlers/main.yml"
+        ],
+        "modules": [
+          "ansible.builtin.assert",
+          "ansible.builtin.copy",
+          "ansible.builtin.debug",
+          "ansible.builtin.fail",
+          "ansible.builtin.file",
+          "ansible.builtin.stat",
+          "ignore_errors"
+        ],
+        "package_tasks": [],
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/fastapi_control_plane",
+        "role": "fastapi_control_plane",
+        "service_tasks": [],
+        "sha256": "0b84d0c1d9e98d527c536b5e4f8f3436704393761b821476e698a5d61da9c3b6",
+        "shell_or_command_tasks": [],
+        "task_count": 11,
+        "task_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/fastapi_control_plane/tasks/main.yml"
+        ],
+        "tasks": [
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.file",
+            "name": "fastapi_control_plane | ensure directories exist",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/fastapi_control_plane/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.stat",
+            "name": "fastapi_control_plane | verify NATS credentials env file exists",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/fastapi_control_plane/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.stat",
+            "name": "fastapi_control_plane | verify NATS server config exists",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/fastapi_control_plane/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.fail",
+            "name": "fastapi_control_plane | fail when NATS credentials/config are missing in production mode",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/fastapi_control_plane/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ignore_errors",
+            "name": "fastapi_control_plane | verify NATS monitor is running",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/fastapi_control_plane/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.fail",
+            "name": "fastapi_control_plane | fail when NATS monitor is unavailable in production mode",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/fastapi_control_plane/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.assert",
+            "name": "fastapi_control_plane | verify JetStream is enabled",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/fastapi_control_plane/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ignore_errors",
+            "name": "fastapi_control_plane | verify FastAPI process is running",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/fastapi_control_plane/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.debug",
+            "name": "fastapi_control_plane | warn if control plane is down",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/fastapi_control_plane/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.copy",
+            "name": "fastapi_control_plane | persist asset manifest",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/fastapi_control_plane/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.debug",
+            "name": "fastapi_control_plane configuration updated",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/fastapi_control_plane/handlers/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          }
+        ],
+        "templates": [],
+        "yaml_errors": []
+      },
+      {
+        "default_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea/defaults/main.yml"
+        ],
+        "files": [],
+        "handler_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea/handlers/main.yml"
+        ],
+        "modules": [
+          "ansible.builtin.assert",
+          "ansible.builtin.copy",
+          "ansible.builtin.debug",
+          "ansible.builtin.file",
+          "changed_when",
+          "loop_control",
+          "no_log"
+        ],
+        "package_tasks": [],
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea",
+        "role": "gitea",
+        "service_tasks": [],
+        "sha256": "2237be5afac51fb1db94493792390f99bf1da818c8596313578a9ccee4548db9",
+        "shell_or_command_tasks": [],
+        "task_count": 18,
+        "task_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea/tasks/main.yml"
+        ],
+        "tasks": [
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.assert",
+            "name": "gitea | validate inputs",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "no_log",
+            "name": "gitea | determine Vault auth token",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "gitea | login with AppRole when token is absent",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "no_log",
+            "name": "gitea | select AppRole token",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "no_log",
+            "name": "gitea | ensure token is available",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "gitea | fetch secret bundle from Vault",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "no_log",
+            "name": "gitea | extract secret values",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "no_log",
+            "name": "gitea | validate secrets",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.file",
+            "name": "gitea | ensure directories exist",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "no_log",
+            "name": "gitea | render runtime config",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "gitea | validate API reachability",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "gitea | query existing repos",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "gitea | query existing orgs",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "loop_control",
+            "name": "gitea | create missing organizations",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "loop_control",
+            "name": "gitea | create missing repositories",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "loop_control",
+            "name": "gitea | update repository defaults",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.copy",
+            "name": "gitea | persist desired state manifest",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.debug",
+            "name": "gitea configuration updated",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea/handlers/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          }
+        ],
+        "templates": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea/templates/app.ini.j2"
+        ],
+        "yaml_errors": []
+      },
+      {
+        "default_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea_runner/defaults/main.yml"
+        ],
+        "files": [],
+        "handler_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea_runner/handlers/main.yml"
+        ],
+        "modules": [
+          "ansible.builtin.debug",
+          "ansible.builtin.file",
+          "changed_when",
+          "loop_control",
+          "no_log",
+          "until"
+        ],
+        "package_tasks": [],
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea_runner",
+        "role": "gitea_runner",
+        "service_tasks": [],
+        "sha256": "04a2fccfbac7520e38ab3746ffea2fd42c52943d41634f97d6c3456af68c2280",
+        "shell_or_command_tasks": [],
+        "task_count": 11,
+        "task_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea_runner/tasks/main.yml"
+        ],
+        "tasks": [
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "no_log",
+            "name": "gitea_runner | validate inputs",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea_runner/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.file",
+            "name": "gitea_runner | ensure base directory exists",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea_runner/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "until",
+            "name": "gitea_runner | wait for Gitea API to be reachable",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea_runner/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "gitea_runner | fetch global registration token",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea_runner/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "loop_control",
+            "name": "gitea_runner | ensure individual runner directories exist",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea_runner/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "loop_control",
+            "name": "gitea_runner | render runner configurations",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea_runner/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "loop_control",
+            "name": "gitea_runner | read Vault AppRole identities",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea_runner/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "loop_control",
+            "name": "gitea_runner | inject Zero-Trust .env files",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea_runner/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "loop_control",
+            "name": "gitea_runner | register runners with Gitea",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea_runner/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "loop_control",
+            "name": "gitea_runner | start isolated runners natively via PM2",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea_runner/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.debug",
+            "name": "gitea_runner configuration updated",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea_runner/handlers/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          }
+        ],
+        "templates": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/gitea_runner/templates/config.yaml.j2"
+        ],
+        "yaml_errors": []
+      },
+      {
+        "default_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/mariadb/defaults/main.yml"
+        ],
+        "files": [],
+        "handler_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/mariadb/handlers/main.yml"
+        ],
+        "modules": [
+          "ansible.builtin.assert",
+          "ansible.builtin.copy",
+          "ansible.builtin.debug",
+          "ansible.builtin.file",
+          "changed_when",
+          "loop_control"
+        ],
+        "package_tasks": [],
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/mariadb",
+        "role": "mariadb",
+        "service_tasks": [],
+        "sha256": "775e162d093e1f48003ebdf355f897baf015c0bcff6b71e3a3a1787c2e7e42b0",
+        "shell_or_command_tasks": [],
+        "task_count": 7,
+        "task_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/mariadb/tasks/main.yml"
+        ],
+        "tasks": [
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.assert",
+            "name": "mariadb | validate inputs",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/mariadb/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.file",
+            "name": "mariadb | ensure directories exist",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/mariadb/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "mariadb | ensure service socket is present",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/mariadb/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "loop_control",
+            "name": "mariadb | create databases",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/mariadb/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "loop_control",
+            "name": "mariadb | create and secure users",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/mariadb/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.copy",
+            "name": "mariadb | store manifest",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/mariadb/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.debug",
+            "name": "mariadb configuration updated",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/mariadb/handlers/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          }
+        ],
+        "templates": [],
+        "yaml_errors": []
+      },
+      {
+        "default_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/nats/defaults/main.yml"
+        ],
+        "files": [],
+        "handler_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/nats/handlers/main.yml"
+        ],
+        "modules": [
+          "ansible.builtin.assert",
+          "ansible.builtin.copy",
+          "ansible.builtin.debug",
+          "ansible.builtin.file",
+          "changed_when",
+          "failed_when",
+          "no_log"
+        ],
+        "package_tasks": [],
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/nats",
+        "role": "nats",
+        "service_tasks": [],
+        "sha256": "ed056528453bd79b86bfc75945aa40e239665571f9ac3ca8307da5a6623bd954",
+        "shell_or_command_tasks": [],
+        "task_count": 10,
+        "task_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/nats/tasks/main.yml"
+        ],
+        "tasks": [
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.assert",
+            "name": "nats | validate production posture",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/nats/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "nats | verify nats-server binary is installed",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/nats/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.file",
+            "name": "nats | ensure config and store directories exist",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/nats/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "no_log",
+            "name": "nats | derive persistent credentials",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/nats/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "no_log",
+            "name": "nats | write runtime credentials env file for launcher and agents",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/nats/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "no_log",
+            "name": "nats | render authenticated JetStream server config",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/nats/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.copy",
+            "name": "nats | write non-secret manifest",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/nats/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "failed_when",
+            "name": "nats | probe monitor endpoint when service is already running",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/nats/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.debug",
+            "name": "nats | report startup command when NATS is not yet running",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/nats/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.debug",
+            "name": "nats configuration updated",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/nats/handlers/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          }
+        ],
+        "templates": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/nats/templates/nats-server.conf.j2"
+        ],
+        "yaml_errors": []
+      },
+      {
+        "default_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/defaults/main.yml"
+        ],
+        "files": [],
+        "handler_files": [],
+        "modules": [
+          "ansible.builtin.file",
+          "ansible.builtin.template",
+          "changed_when"
+        ],
+        "package_tasks": [],
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability",
+        "role": "observability",
+        "service_tasks": [],
+        "sha256": "ac32cbf463428180fd19c7089b059d241b9395b5a307b180b18a88a15a5a0bcc",
+        "shell_or_command_tasks": [],
+        "task_count": 7,
+        "task_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/tasks/main.yml"
+        ],
+        "tasks": [
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.file",
+            "name": "observability | ensure PRoot application directories exist",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.template",
+            "name": "observability | render Loki config",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.template",
+            "name": "observability | render Promtail config",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.template",
+            "name": "observability | render Gatus config",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.template",
+            "name": "observability | render Prometheus config",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.template",
+            "name": "observability | render Grafana custom.ini",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "observability | orchestrate services via PM2 Bridge",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          }
+        ],
+        "templates": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/custom.ini.j2",
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/gatus-config.yaml.j2",
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/loki-config.yaml.j2",
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/prometheus.yml.j2",
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/observability/templates/promtail-config.yaml.j2"
+        ],
+        "yaml_errors": []
+      },
+      {
+        "default_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/opa/defaults/main.yml"
+        ],
+        "files": [],
+        "handler_files": [],
+        "modules": [
+          "ansible.builtin.file",
+          "ansible.builtin.get_url",
+          "ansible.builtin.pip",
+          "ansible.builtin.template"
+        ],
+        "package_tasks": [
+          "opa | Install PyYAML for interceptor parsing"
+        ],
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/opa",
+        "role": "opa",
+        "service_tasks": [],
+        "sha256": "2e5b251b9dde745632527cad6d239888dfed3e306bfd98eabfef6e4a7349a902",
+        "shell_or_command_tasks": [],
+        "task_count": 5,
+        "task_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/opa/tasks/main.yml"
+        ],
+        "tasks": [
+          {
+            "installs_package": true,
+            "manages_service": false,
+            "module": "ansible.builtin.pip",
+            "name": "opa | Install PyYAML for interceptor parsing",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/opa/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.get_url",
+            "name": "opa | Download OPA ARM64 binary",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/opa/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.file",
+            "name": "opa | Ensure policies directory exists",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/opa/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.template",
+            "name": "opa | Deploy Rego policies",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/opa/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.template",
+            "name": "opa | Deploy Gatekeeper Interceptor script",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/opa/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          }
+        ],
+        "templates": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/opa/templates/execution.rego.j2",
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/opa/templates/opa_interceptor.py.j2",
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/opa/templates/ports.rego.j2",
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/opa/templates/secrets.rego.j2"
+        ],
+        "yaml_errors": []
+      },
+      {
+        "default_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/tailscale/defaults/main.yml"
+        ],
+        "files": [],
+        "handler_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/tailscale/handlers/main.yml"
+        ],
+        "modules": [
+          "ansible.builtin.copy",
+          "ansible.builtin.debug",
+          "ansible.builtin.file",
+          "ansible.builtin.get_url",
+          "ansible.builtin.pause",
+          "args",
+          "changed_when",
+          "no_log"
+        ],
+        "package_tasks": [],
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/tailscale",
+        "role": "tailscale",
+        "service_tasks": [],
+        "sha256": "491d089b756ea89c6143af172d47f6b51dcaa413d20c7885c8126f34444d8eee",
+        "shell_or_command_tasks": [],
+        "task_count": 11,
+        "task_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/tailscale/tasks/main.yml"
+        ],
+        "tasks": [
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.file",
+            "name": "tailscale | ensure patched state directory exists",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/tailscale/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.get_url",
+            "name": "tailscale | download bropines patched installer",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/tailscale/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "args",
+            "name": "tailscale | execute patched installer",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/tailscale/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "no_log",
+            "name": "tailscale | render env file for patched daemon",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/tailscale/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "tailscale | start patched daemon wrapper",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/tailscale/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.pause",
+            "name": "tailscale | wait for daemon to initialize",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/tailscale/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "tailscale | authenticate when auth key is provided",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/tailscale/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "tailscale | capture status",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/tailscale/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.copy",
+            "name": "tailscale | persist status snapshot",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/tailscale/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.debug",
+            "name": "tailscale | summarize state",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/tailscale/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.debug",
+            "name": "tailscale configuration updated",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/tailscale/handlers/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          }
+        ],
+        "templates": [],
+        "yaml_errors": []
+      },
+      {
+        "default_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/defaults/main.yml"
+        ],
+        "files": [],
+        "handler_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/handlers/main.yml"
+        ],
+        "modules": [
+          "ansible.builtin.assert",
+          "ansible.builtin.copy",
+          "ansible.builtin.debug",
+          "ansible.builtin.file",
+          "ansible.builtin.pause",
+          "ansible.builtin.template",
+          "changed_when",
+          "loop_control",
+          "no_log"
+        ],
+        "package_tasks": [],
+        "path": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault",
+        "role": "vault",
+        "service_tasks": [],
+        "sha256": "e3cb96cc93496a19b917e56ff9ed6e1fc4917fb0c9a46e1a66979243ff06f927",
+        "shell_or_command_tasks": [],
+        "task_count": 25,
+        "task_files": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/export_approle_ids.yml",
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/main.yml"
+        ],
+        "tasks": [
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "vault | read role id",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/export_approle_ids.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "vault | create secret id",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/export_approle_ids.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "no_log",
+            "name": "vault | store AppRole bundle",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/export_approle_ids.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.assert",
+            "name": "vault | validate inputs",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.file",
+            "name": "vault | ensure directories exist",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.template",
+            "name": "vault | render configuration",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "vault | start vault daemon natively via PM2",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.pause",
+            "name": "vault | wait for daemon to initialize",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "vault | probe health endpoint",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "no_log",
+            "name": "vault | determine auth method",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "vault | login with AppRole when token is absent",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "no_log",
+            "name": "vault | select AppRole token",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "no_log",
+            "name": "vault | ensure token available",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "vault | read current mounts",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "loop_control",
+            "name": "vault | enable mounts",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "vault | configure audit device",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "loop_control",
+            "name": "vault | apply policies",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "loop_control",
+            "name": "vault | configure database connections",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "loop_control",
+            "name": "vault | configure database roles",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "changed_when",
+            "name": "vault | enable AppRole auth",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "loop_control",
+            "name": "vault | reconcile AppRole roles",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "loop_control",
+            "name": "vault | export AppRole ids when requested",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "loop_control",
+            "name": "vault | write secret bundles",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.copy",
+            "name": "vault | write audit summary",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/tasks/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          },
+          {
+            "installs_package": false,
+            "manages_service": false,
+            "module": "ansible.builtin.debug",
+            "name": "vault configuration updated",
+            "source_file": "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/handlers/main.yml",
+            "tags": [],
+            "uses_shell_or_command": false
+          }
+        ],
+        "templates": [
+          "pocket-lab-final-structure/pocket-lab-iac-api-compatible/roles/vault/templates/vault.hcl.j2"
+        ],
+        "yaml_errors": []
+      }
+    ]
+  },
+  "bootstrap_and_platform_scripts": [
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/android-termux-smoke.sh",
+      "platform": "Android / Termux / ARM64",
+      "sha256": "fb9ce38bfaf1ac30a03d89f074d071eec71a3f6cb66cdb0e1968ed902bd11804",
+      "size_bytes": 87,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/check-api-contract.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "0228393659f1d5df2982e24b6b2bfceed1d076b384ab05b8f377e4dafcc40355",
+      "size_bytes": 1103,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/check-architecture-contract.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "a208ffe9d3cf94293a4e47f6ff1db5c86f9594d687d44dd6e7eba9b4aecac851",
+      "size_bytes": 4694,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/check-backend.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "fc6ebf99e914dc43641c7b1423092e27bd474d7edcb6f0c7d4b0990e11009aeb",
+      "size_bytes": 431,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/check-bootstrap.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "efb2e41629e7592ae126ff793bb4823b234bcb8efcff8b83e0394768c1bec67d",
+      "size_bytes": 110,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [
+        "POCKETLAB_FAULTS_WORKERS"
+      ],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/check-faults.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "679704a773f21384d3212c8d628c3dc340c137a3c55c1058cac6c75acb2c66d1",
+      "size_bytes": 758,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/check-frontend.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "5157e7949d0b106fa3cec63ccc38aa190042fd79dc8d3b20e81c6d7cd1a9d240",
+      "size_bytes": 1247,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [
+        "ANSIBLE_COLLECTIONS_PATH",
+        "ANSIBLE_CONFIG",
+        "ANSIBLE_LOCAL_TEMP",
+        "ANSIBLE_REMOTE_TEMP",
+        "ANSIBLE_ROLES_PATH",
+        "POCKETLAB_ACTIVE_CODE_SCAN_EXCLUDES"
+      ],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/check-iac.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "446068eef2ccb7c3506cf3fa1258de9b10de7c715fd1c980e718dcd30951f83b",
+      "size_bytes": 4721,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [
+        "CHROME_PATH",
+        "LHCI_CHROME_PATH",
+        "POCKETLAB_LIGHTHOUSE_CHROME_FLAGS",
+        "POCKETLAB_LIGHTHOUSE_CHROME_PATH",
+        "POCKETLAB_LIGHTHOUSE_WSL_CHROME_FIX"
+      ],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/check-lighthouse.sh",
+      "platform": "Windows WSL2 Ubuntu",
+      "sha256": "dcfb0f49d4ec8562adc99e92dc0f5cf2b4f9ac56b3de0f9ed5f98d741dc3b79b",
+      "size_bytes": 1256,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/check-nats-permissions.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "e7e5cc8a171290f88c3160db086c8101e84bed4240d0a4539a38ea666b1168e5",
+      "size_bytes": 176,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/check-schemas.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "4f34a088371df780b86abdb3d2d9a9bc61410413e098fd59d449688c475109a3",
+      "size_bytes": 844,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/check-supply-chain.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "acfc86e9ce7a6703548ea7fce0755ba9bc908d2a6739d38a3313e7197f078ec6",
+      "size_bytes": 4293,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [
+        "NATS_CONTAINER",
+        "NATS_HEALTH_URL",
+        "NATS_SERVICE",
+        "POCKETLAB_DOCKER_CHECK_CLEANUP",
+        "POCKETLAB_DOCKER_COMPOSE_FILE",
+        "POCKETLAB_NATS_COMPOSE_SERVICE",
+        "POCKETLAB_NATS_CONTAINER_NAME",
+        "POCKETLAB_NATS_HEALTH_URL",
+        "POCKETLAB_WSL_DOCKER_REPORT_PATH"
+      ],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/check-wsl-docker-desktop.sh",
+      "platform": "Windows WSL2 Ubuntu",
+      "sha256": "fcd240e7f2db292a20b550427fda813e048e893455d94b99eb63b0428f642c4b",
+      "size_bytes": 4164,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [
+        "POCKETLAB_WSL_FILESYSTEM_REPORT_PATH",
+        "POCKETLAB_WSL_REPO_PATH"
+      ],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/check-wsl-filesystem-standard.sh",
+      "platform": "Windows WSL2 Ubuntu",
+      "sha256": "7c77e880892ef682d8b22f285a114cd4e2c304f84bc774f1cf1bc6a8293aeba0",
+      "size_bytes": 2688,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [
+        "POCKETLAB_NODE_MAJOR",
+        "POCKETLAB_WSL_CHECK_REPORT_PATH",
+        "POCKETLAB_WSL_REPO_PATH"
+      ],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/check-wsl-ubuntu-dev.sh",
+      "platform": "Windows WSL2 Ubuntu",
+      "sha256": "2edd31933b046cb21dc323052826ac97cde6f87222acdc024e44a3c622fc4986",
+      "size_bytes": 5894,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/day0-dry-run.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "66c8c3f73aa4d46b02c83f3b0c9a5c955d568deeb3739bfabc4f7d2c630b76a0",
+      "size_bytes": 567,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/day0-static-check.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "0a20d3e5c619dd3454e278bc32381ac9e02baad556a346469d916c1f8c5e999d",
+      "size_bytes": 381,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/day0-termux-smoke.sh",
+      "platform": "Android / Termux / ARM64",
+      "sha256": "42565de57128bd2bd84787a795acd0ec97272732fa32d5ac152b5a47fdd7a5e9",
+      "size_bytes": 785,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/down.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "a2bc32f6ed6bf2e2216d883977a1cbacefab23c0f45802396b8a21b29ee371cd",
+      "size_bytes": 322,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/export-openapi.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "f8cd8109840195c361b8ee7559a98b1922423c5e76af3dd5e561621e4d8d8397",
+      "size_bytes": 449,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/fault-inject.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "da12103510af7e66e61d08dabc2b131d417b4d7430aa1df8cc250eba1f66834a",
+      "size_bytes": 773,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/implement-documentation-placement.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "4b0f35e572f1d904489999c9ee19a55228263dcdd2e109656720488584206ccb",
+      "size_bytes": 17792,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [
+        "POCKETLAB_PLAYWRIGHT_CHANNEL",
+        "POCKETLAB_PLAYWRIGHT_REPORT_PATH"
+      ],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/install-playwright-browser.sh",
+      "platform": "Windows WSL2 Ubuntu",
+      "sha256": "708aff02237d03c8c0de8a9c025e10bf16dcadd27ea8ca548b8cd4481d87ee73",
+      "size_bytes": 3396,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/logs.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "7d115a63c433ee43df6dc6f034efdf908f40c322ef669a538b5be34c5ac07b42",
+      "size_bytes": 108,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [
+        "POCKETLAB_API_URL"
+      ],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/observability-snapshot.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "49bd9d28a05319a2e6f9dd88722c1c86ddd3d4158fa1100861a2c06d59c088ba",
+      "size_bytes": 951,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/organize-mkdocs-docs.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "b20fbef199c47e8ab490c4a6d4eb45836f9587065b4647aa7643883bf24a1ce3",
+      "size_bytes": 7955,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [
+        "POCKETLAB_AUTH_TOKEN",
+        "POCKETLAB_LOG_LEVEL",
+        "POCKETLAB_NATS_REQUIRED",
+        "POCKETLAB_NATS_REQUIRE_JETSTREAM",
+        "POCKETLAB_NATS_URL",
+        "POCKETLAB_RELEASE_CHANNEL",
+        "POCKETLAB_STATE_DIR",
+        "POCKETLAB_WRITE_TOKEN"
+      ],
+      "kind": "python_script",
+      "path": "scripts/dev/populate-pocketlab-docs.py",
+      "platform": "Android / Termux / ARM64",
+      "sha256": "ced45318770d245e413763c15fb389fbd4ed0e8b10465ee7a205f551ff9ae07f",
+      "size_bytes": 53088,
+      "summary": "!/usr/bin/env python3"
+    },
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/prepare-docs-consolidation-commit.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "62a407bd413da76b612c1fa1dc60bac21046c892b85855a90bf9889e13d8fb36",
+      "size_bytes": 12204,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [
+        "POCKETLAB_RELEASE_DRY_RUN_ACTIVE_SCOPE_EXCLUDES"
+      ],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/release-dry-run.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "fe6ae412440a757d4e480b31248f14ea44baca689e36c73792b5c44a01e756c4",
+      "size_bytes": 2061,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [
+        "POCKETLAB_FLAKES_REPEAT",
+        "POCKETLAB_FLAKES_WORKERS",
+        "POCKETLAB_FLAKE_ROUNDS",
+        "POCKETLAB_FLAKE_WORKERS"
+      ],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/report-flakes.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "024f714f0f0e41f4cd05305292e763a5769ce02fbc2c68c8fc914a4440def3a7",
+      "size_bytes": 6545,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/reset-state.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "b3b552392f2b35202bfdb425badc7e4ada8dc6d8653f9a14144138ce4fb14bbf",
+      "size_bytes": 279,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [
+        "POCKETLAB_E2E_WORKERS"
+      ],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/run-e2e.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "2c553f7b19d0913c52823b9488d2f3e0e0c2380b7c3d736b76ea87b8d10d6d96",
+      "size_bytes": 731,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [
+        "POCKETLAB_NATS_REQUIRED",
+        "POCKETLAB_NATS_REQUIRE_JETSTREAM",
+        "POCKETLAB_NATS_URL",
+        "POCKETLAB_STATE_DIR"
+      ],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/run-fastapi-dev.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "13ed0ee21f28ce75edb794f28285f271f89a2be5ef95ad6adfc34075a7d82ef5",
+      "size_bytes": 625,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/run-nats-dev.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "215debfce77718e56f3bc619df3d8eec4fae5adad3d01a1b90f61bfa13daa577",
+      "size_bytes": 381,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/run-playwright.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "897eeabc3a6b3116b1277da7689eb013d1820bcbd7350d92a96f0425ea970246",
+      "size_bytes": 185,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/run-validation-gate.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "3ef189cbf7e2d12a6a234ceeed43bb6bc9392252fd1bd68b2741c5bd5d6a53c0",
+      "size_bytes": 948,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [
+        "POCKETLAB_NATS_REQUIRED",
+        "POCKETLAB_NATS_REQUIRE_JETSTREAM",
+        "POCKETLAB_NATS_URL",
+        "POCKETLAB_STATE_DIR"
+      ],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/run-worker-dev.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "d07f1bb12598b0634d53365c0bffe332de9f0c2f0e9a5d03e05745c2ac5c6874",
+      "size_bytes": 562,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [
+        "POCKETLAB_THREAT_DRAGON_DIR",
+        "POCKETLAB_THREAT_MODEL_DIR"
+      ],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/setup-threat-dragon.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "5708e4f89858f53e06d5114eefe1c65da475b6b20c3e385870958e5793901dbe",
+      "size_bytes": 4163,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [
+        "POCKETLAB_NODE_MAJOR",
+        "POCKETLAB_TASK_VERSION",
+        "POCKETLAB_WSL_REPORT_PATH",
+        "POCKETLAB_WSL_REPO_PATH",
+        "POCKETLAB_WSL_SKIP_REPO_SYNC",
+        "POCKETLAB_WSL_SOURCE_ROOT"
+      ],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/setup-wsl-ubuntu-dev.sh",
+      "platform": "Windows WSL2 Ubuntu",
+      "sha256": "4532205fa8cb000bcc28e766e5b8043751ad4f68e9615bbbc0a9358286b69b18",
+      "size_bytes": 6398,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [
+        "POCKETLAB_API_URL"
+      ],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/status.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "d9591a93b1eefb04d0da838c46a4afa0199bdc13be26c20b412a6ee25f34e196",
+      "size_bytes": 1138,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [
+        "POCKETLAB_WINDOWS_REPO",
+        "POCKETLAB_WSL_REPO"
+      ],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/sync-wsl-to-windows.sh",
+      "platform": "Windows WSL2 Ubuntu",
+      "sha256": "7d1c975022ab093b98dce7258ff689ab3914ccd5fe14c99a1dda865f5e037acb",
+      "size_bytes": 4396,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [
+        "POCKETLAB_API_URL",
+        "POCKETLAB_NATS_REQUIRED",
+        "POCKETLAB_NATS_REQUIRE_JETSTREAM",
+        "POCKETLAB_NATS_URL",
+        "POCKETLAB_STATE_DIR",
+        "POCKETLAB_TEST_NATS_CURL_CONNECT_TIMEOUT",
+        "POCKETLAB_TEST_NATS_CURL_MAX_TIME",
+        "POCKETLAB_TEST_NATS_OPERATION_SETTLE_SECONDS",
+        "POCKETLAB_TEST_NATS_OPERATION_SUBMIT_TIMEOUT",
+        "POCKETLAB_TEST_NATS_SUBMIT_OPERATION"
+      ],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/test-nats-stack.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "0d5f583b8d4a7a0a7349155437be1fbeaccf32a20257751f826ca0b6570d27df",
+      "size_bytes": 4459,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [
+        "POCKETLAB_API_URL"
+      ],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/trace-operation.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "5721d248320c55182ad3092f8a5416a6785da102be7186eb1737c5f3fbc24ba4",
+      "size_bytes": 780,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/up.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "b51c1a636f904b872d7b9b8e178c6f409c7b61c7d1de55f9052083a451e975f3",
+      "size_bytes": 791,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [],
+      "kind": "ubuntu_shell",
+      "path": "scripts/dev/wait-http.sh",
+      "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+      "sha256": "2572f60cf011844a547a35dcee2af15a02476381c21466c3ba848c0516afb9b5",
+      "size_bytes": 299,
+      "summary": "!/usr/bin/env bash"
+    },
+    {
+      "environment_variables": [
+        "POCKETLAB_WSL_CHECK_ONLY",
+        "POCKETLAB_WSL_DISTRO",
+        "POCKETLAB_WSL_REPO_PATH",
+        "POCKETLAB_WSL_SKIP_REPO_SYNC",
+        "POCKETLAB_WSL_SOURCE_ROOT"
+      ],
+      "kind": "windows_powershell",
+      "path": "scripts/windows/bootstrap-wsl2-ubuntu.ps1",
+      "platform": "Windows WSL2 Ubuntu",
+      "sha256": "854e082ea793923f172124d595e960911365cff9e45143bf88698c4fa12755b5",
+      "size_bytes": 4819,
+      "summary": "bootstrap-wsl2-ubuntu.ps1"
+    },
+    {
+      "environment_variables": [
+        "POCKETLAB_WSL_DISTRO"
+      ],
+      "kind": "windows_powershell",
+      "path": "scripts/windows/check-wsl2-host.ps1",
+      "platform": "Windows WSL2 Ubuntu",
+      "sha256": "827d0dfdf3706ee9dbf987556060b5c5a53e18dd654b6162978e25f9f1e9ad5d",
+      "size_bytes": 16131,
+      "summary": "Windows host version"
+    },
+    {
+      "environment_variables": [
+        "POCKETLAB_ENV",
+        "POCKETLAB_NATS_REQUIRED",
+        "POCKETLAB_NATS_REQUIRE_JETSTREAM",
+        "POCKETLAB_NATS_URL",
+        "POCKETLAB_STATE_DIR",
+        "POCKETLAB_WSL_DISTRO"
+      ],
+      "kind": "windows_powershell",
+      "path": "scripts/windows/configure-vscode.ps1",
+      "platform": "Windows WSL2 Ubuntu",
+      "sha256": "ff5ea1f636288c28235dfd9a3eec53919dadf5d2d57f3fd8116c1896df21c4db",
+      "size_bytes": 15034,
+      "summary": "Attempt Remote WSL extension install for extensions that must execute in the Linux workspace."
+    }
+  ],
+  "compatibility_evidence": {
+    "android_termux_arm64": [
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/android-termux-smoke.sh",
+        "platform": "Android / Termux / ARM64",
+        "sha256": "fb9ce38bfaf1ac30a03d89f074d071eec71a3f6cb66cdb0e1968ed902bd11804",
+        "size_bytes": 87,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/check-api-contract.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "0228393659f1d5df2982e24b6b2bfceed1d076b384ab05b8f377e4dafcc40355",
+        "size_bytes": 1103,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/check-architecture-contract.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "a208ffe9d3cf94293a4e47f6ff1db5c86f9594d687d44dd6e7eba9b4aecac851",
+        "size_bytes": 4694,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/check-backend.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "fc6ebf99e914dc43641c7b1423092e27bd474d7edcb6f0c7d4b0990e11009aeb",
+        "size_bytes": 431,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/check-bootstrap.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "efb2e41629e7592ae126ff793bb4823b234bcb8efcff8b83e0394768c1bec67d",
+        "size_bytes": 110,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_FAULTS_WORKERS"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/check-faults.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "679704a773f21384d3212c8d628c3dc340c137a3c55c1058cac6c75acb2c66d1",
+        "size_bytes": 758,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/check-frontend.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "5157e7949d0b106fa3cec63ccc38aa190042fd79dc8d3b20e81c6d7cd1a9d240",
+        "size_bytes": 1247,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "ANSIBLE_COLLECTIONS_PATH",
+          "ANSIBLE_CONFIG",
+          "ANSIBLE_LOCAL_TEMP",
+          "ANSIBLE_REMOTE_TEMP",
+          "ANSIBLE_ROLES_PATH",
+          "POCKETLAB_ACTIVE_CODE_SCAN_EXCLUDES"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/check-iac.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "446068eef2ccb7c3506cf3fa1258de9b10de7c715fd1c980e718dcd30951f83b",
+        "size_bytes": 4721,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/check-nats-permissions.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "e7e5cc8a171290f88c3160db086c8101e84bed4240d0a4539a38ea666b1168e5",
+        "size_bytes": 176,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/check-schemas.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "4f34a088371df780b86abdb3d2d9a9bc61410413e098fd59d449688c475109a3",
+        "size_bytes": 844,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/check-supply-chain.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "acfc86e9ce7a6703548ea7fce0755ba9bc908d2a6739d38a3313e7197f078ec6",
+        "size_bytes": 4293,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/day0-dry-run.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "66c8c3f73aa4d46b02c83f3b0c9a5c955d568deeb3739bfabc4f7d2c630b76a0",
+        "size_bytes": 567,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/day0-static-check.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "0a20d3e5c619dd3454e278bc32381ac9e02baad556a346469d916c1f8c5e999d",
+        "size_bytes": 381,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/day0-termux-smoke.sh",
+        "platform": "Android / Termux / ARM64",
+        "sha256": "42565de57128bd2bd84787a795acd0ec97272732fa32d5ac152b5a47fdd7a5e9",
+        "size_bytes": 785,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/down.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "a2bc32f6ed6bf2e2216d883977a1cbacefab23c0f45802396b8a21b29ee371cd",
+        "size_bytes": 322,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/export-openapi.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "f8cd8109840195c361b8ee7559a98b1922423c5e76af3dd5e561621e4d8d8397",
+        "size_bytes": 449,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/fault-inject.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "da12103510af7e66e61d08dabc2b131d417b4d7430aa1df8cc250eba1f66834a",
+        "size_bytes": 773,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/implement-documentation-placement.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "4b0f35e572f1d904489999c9ee19a55228263dcdd2e109656720488584206ccb",
+        "size_bytes": 17792,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/logs.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "7d115a63c433ee43df6dc6f034efdf908f40c322ef669a538b5be34c5ac07b42",
+        "size_bytes": 108,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_API_URL"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/observability-snapshot.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "49bd9d28a05319a2e6f9dd88722c1c86ddd3d4158fa1100861a2c06d59c088ba",
+        "size_bytes": 951,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/organize-mkdocs-docs.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "b20fbef199c47e8ab490c4a6d4eb45836f9587065b4647aa7643883bf24a1ce3",
+        "size_bytes": 7955,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_AUTH_TOKEN",
+          "POCKETLAB_LOG_LEVEL",
+          "POCKETLAB_NATS_REQUIRED",
+          "POCKETLAB_NATS_REQUIRE_JETSTREAM",
+          "POCKETLAB_NATS_URL",
+          "POCKETLAB_RELEASE_CHANNEL",
+          "POCKETLAB_STATE_DIR",
+          "POCKETLAB_WRITE_TOKEN"
+        ],
+        "kind": "python_script",
+        "path": "scripts/dev/populate-pocketlab-docs.py",
+        "platform": "Android / Termux / ARM64",
+        "sha256": "ced45318770d245e413763c15fb389fbd4ed0e8b10465ee7a205f551ff9ae07f",
+        "size_bytes": 53088,
+        "summary": "!/usr/bin/env python3"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/prepare-docs-consolidation-commit.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "62a407bd413da76b612c1fa1dc60bac21046c892b85855a90bf9889e13d8fb36",
+        "size_bytes": 12204,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_RELEASE_DRY_RUN_ACTIVE_SCOPE_EXCLUDES"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/release-dry-run.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "fe6ae412440a757d4e480b31248f14ea44baca689e36c73792b5c44a01e756c4",
+        "size_bytes": 2061,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_FLAKES_REPEAT",
+          "POCKETLAB_FLAKES_WORKERS",
+          "POCKETLAB_FLAKE_ROUNDS",
+          "POCKETLAB_FLAKE_WORKERS"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/report-flakes.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "024f714f0f0e41f4cd05305292e763a5769ce02fbc2c68c8fc914a4440def3a7",
+        "size_bytes": 6545,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/reset-state.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "b3b552392f2b35202bfdb425badc7e4ada8dc6d8653f9a14144138ce4fb14bbf",
+        "size_bytes": 279,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_E2E_WORKERS"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/run-e2e.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "2c553f7b19d0913c52823b9488d2f3e0e0c2380b7c3d736b76ea87b8d10d6d96",
+        "size_bytes": 731,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_NATS_REQUIRED",
+          "POCKETLAB_NATS_REQUIRE_JETSTREAM",
+          "POCKETLAB_NATS_URL",
+          "POCKETLAB_STATE_DIR"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/run-fastapi-dev.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "13ed0ee21f28ce75edb794f28285f271f89a2be5ef95ad6adfc34075a7d82ef5",
+        "size_bytes": 625,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/run-nats-dev.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "215debfce77718e56f3bc619df3d8eec4fae5adad3d01a1b90f61bfa13daa577",
+        "size_bytes": 381,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/run-playwright.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "897eeabc3a6b3116b1277da7689eb013d1820bcbd7350d92a96f0425ea970246",
+        "size_bytes": 185,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/run-validation-gate.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "3ef189cbf7e2d12a6a234ceeed43bb6bc9392252fd1bd68b2741c5bd5d6a53c0",
+        "size_bytes": 948,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_NATS_REQUIRED",
+          "POCKETLAB_NATS_REQUIRE_JETSTREAM",
+          "POCKETLAB_NATS_URL",
+          "POCKETLAB_STATE_DIR"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/run-worker-dev.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "d07f1bb12598b0634d53365c0bffe332de9f0c2f0e9a5d03e05745c2ac5c6874",
+        "size_bytes": 562,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_THREAT_DRAGON_DIR",
+          "POCKETLAB_THREAT_MODEL_DIR"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/setup-threat-dragon.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "5708e4f89858f53e06d5114eefe1c65da475b6b20c3e385870958e5793901dbe",
+        "size_bytes": 4163,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_API_URL"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/status.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "d9591a93b1eefb04d0da838c46a4afa0199bdc13be26c20b412a6ee25f34e196",
+        "size_bytes": 1138,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_API_URL",
+          "POCKETLAB_NATS_REQUIRED",
+          "POCKETLAB_NATS_REQUIRE_JETSTREAM",
+          "POCKETLAB_NATS_URL",
+          "POCKETLAB_STATE_DIR",
+          "POCKETLAB_TEST_NATS_CURL_CONNECT_TIMEOUT",
+          "POCKETLAB_TEST_NATS_CURL_MAX_TIME",
+          "POCKETLAB_TEST_NATS_OPERATION_SETTLE_SECONDS",
+          "POCKETLAB_TEST_NATS_OPERATION_SUBMIT_TIMEOUT",
+          "POCKETLAB_TEST_NATS_SUBMIT_OPERATION"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/test-nats-stack.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "0d5f583b8d4a7a0a7349155437be1fbeaccf32a20257751f826ca0b6570d27df",
+        "size_bytes": 4459,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_API_URL"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/trace-operation.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "5721d248320c55182ad3092f8a5416a6785da102be7186eb1737c5f3fbc24ba4",
+        "size_bytes": 780,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/up.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "b51c1a636f904b872d7b9b8e178c6f409c7b61c7d1de55f9052083a451e975f3",
+        "size_bytes": 791,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/wait-http.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "2572f60cf011844a547a35dcee2af15a02476381c21466c3ba848c0516afb9b5",
+        "size_bytes": 299,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "kind": "platform_or_architecture_doc",
+        "path": "docs/platform/android-termux-operations-guide.md",
+        "sha256": "69b8776365aecb838577e23babda834faec7e8c0059366bbe693d156f0fd3307",
+        "size_bytes": 2388,
+        "title": "Android / Termux Operations Guide"
+      }
+    ],
+    "ubuntu_wsl2": [
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/android-termux-smoke.sh",
+        "platform": "Android / Termux / ARM64",
+        "sha256": "fb9ce38bfaf1ac30a03d89f074d071eec71a3f6cb66cdb0e1968ed902bd11804",
+        "size_bytes": 87,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/check-api-contract.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "0228393659f1d5df2982e24b6b2bfceed1d076b384ab05b8f377e4dafcc40355",
+        "size_bytes": 1103,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/check-architecture-contract.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "a208ffe9d3cf94293a4e47f6ff1db5c86f9594d687d44dd6e7eba9b4aecac851",
+        "size_bytes": 4694,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/check-backend.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "fc6ebf99e914dc43641c7b1423092e27bd474d7edcb6f0c7d4b0990e11009aeb",
+        "size_bytes": 431,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/check-bootstrap.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "efb2e41629e7592ae126ff793bb4823b234bcb8efcff8b83e0394768c1bec67d",
+        "size_bytes": 110,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_FAULTS_WORKERS"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/check-faults.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "679704a773f21384d3212c8d628c3dc340c137a3c55c1058cac6c75acb2c66d1",
+        "size_bytes": 758,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/check-frontend.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "5157e7949d0b106fa3cec63ccc38aa190042fd79dc8d3b20e81c6d7cd1a9d240",
+        "size_bytes": 1247,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "ANSIBLE_COLLECTIONS_PATH",
+          "ANSIBLE_CONFIG",
+          "ANSIBLE_LOCAL_TEMP",
+          "ANSIBLE_REMOTE_TEMP",
+          "ANSIBLE_ROLES_PATH",
+          "POCKETLAB_ACTIVE_CODE_SCAN_EXCLUDES"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/check-iac.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "446068eef2ccb7c3506cf3fa1258de9b10de7c715fd1c980e718dcd30951f83b",
+        "size_bytes": 4721,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "CHROME_PATH",
+          "LHCI_CHROME_PATH",
+          "POCKETLAB_LIGHTHOUSE_CHROME_FLAGS",
+          "POCKETLAB_LIGHTHOUSE_CHROME_PATH",
+          "POCKETLAB_LIGHTHOUSE_WSL_CHROME_FIX"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/check-lighthouse.sh",
+        "platform": "Windows WSL2 Ubuntu",
+        "sha256": "dcfb0f49d4ec8562adc99e92dc0f5cf2b4f9ac56b3de0f9ed5f98d741dc3b79b",
+        "size_bytes": 1256,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/check-nats-permissions.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "e7e5cc8a171290f88c3160db086c8101e84bed4240d0a4539a38ea666b1168e5",
+        "size_bytes": 176,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/check-schemas.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "4f34a088371df780b86abdb3d2d9a9bc61410413e098fd59d449688c475109a3",
+        "size_bytes": 844,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/check-supply-chain.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "acfc86e9ce7a6703548ea7fce0755ba9bc908d2a6739d38a3313e7197f078ec6",
+        "size_bytes": 4293,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "NATS_CONTAINER",
+          "NATS_HEALTH_URL",
+          "NATS_SERVICE",
+          "POCKETLAB_DOCKER_CHECK_CLEANUP",
+          "POCKETLAB_DOCKER_COMPOSE_FILE",
+          "POCKETLAB_NATS_COMPOSE_SERVICE",
+          "POCKETLAB_NATS_CONTAINER_NAME",
+          "POCKETLAB_NATS_HEALTH_URL",
+          "POCKETLAB_WSL_DOCKER_REPORT_PATH"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/check-wsl-docker-desktop.sh",
+        "platform": "Windows WSL2 Ubuntu",
+        "sha256": "fcd240e7f2db292a20b550427fda813e048e893455d94b99eb63b0428f642c4b",
+        "size_bytes": 4164,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_WSL_FILESYSTEM_REPORT_PATH",
+          "POCKETLAB_WSL_REPO_PATH"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/check-wsl-filesystem-standard.sh",
+        "platform": "Windows WSL2 Ubuntu",
+        "sha256": "7c77e880892ef682d8b22f285a114cd4e2c304f84bc774f1cf1bc6a8293aeba0",
+        "size_bytes": 2688,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_NODE_MAJOR",
+          "POCKETLAB_WSL_CHECK_REPORT_PATH",
+          "POCKETLAB_WSL_REPO_PATH"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/check-wsl-ubuntu-dev.sh",
+        "platform": "Windows WSL2 Ubuntu",
+        "sha256": "2edd31933b046cb21dc323052826ac97cde6f87222acdc024e44a3c622fc4986",
+        "size_bytes": 5894,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/day0-dry-run.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "66c8c3f73aa4d46b02c83f3b0c9a5c955d568deeb3739bfabc4f7d2c630b76a0",
+        "size_bytes": 567,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/day0-static-check.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "0a20d3e5c619dd3454e278bc32381ac9e02baad556a346469d916c1f8c5e999d",
+        "size_bytes": 381,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/day0-termux-smoke.sh",
+        "platform": "Android / Termux / ARM64",
+        "sha256": "42565de57128bd2bd84787a795acd0ec97272732fa32d5ac152b5a47fdd7a5e9",
+        "size_bytes": 785,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/down.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "a2bc32f6ed6bf2e2216d883977a1cbacefab23c0f45802396b8a21b29ee371cd",
+        "size_bytes": 322,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/export-openapi.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "f8cd8109840195c361b8ee7559a98b1922423c5e76af3dd5e561621e4d8d8397",
+        "size_bytes": 449,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/fault-inject.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "da12103510af7e66e61d08dabc2b131d417b4d7430aa1df8cc250eba1f66834a",
+        "size_bytes": 773,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/implement-documentation-placement.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "4b0f35e572f1d904489999c9ee19a55228263dcdd2e109656720488584206ccb",
+        "size_bytes": 17792,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_PLAYWRIGHT_CHANNEL",
+          "POCKETLAB_PLAYWRIGHT_REPORT_PATH"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/install-playwright-browser.sh",
+        "platform": "Windows WSL2 Ubuntu",
+        "sha256": "708aff02237d03c8c0de8a9c025e10bf16dcadd27ea8ca548b8cd4481d87ee73",
+        "size_bytes": 3396,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/logs.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "7d115a63c433ee43df6dc6f034efdf908f40c322ef669a538b5be34c5ac07b42",
+        "size_bytes": 108,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_API_URL"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/observability-snapshot.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "49bd9d28a05319a2e6f9dd88722c1c86ddd3d4158fa1100861a2c06d59c088ba",
+        "size_bytes": 951,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/organize-mkdocs-docs.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "b20fbef199c47e8ab490c4a6d4eb45836f9587065b4647aa7643883bf24a1ce3",
+        "size_bytes": 7955,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/prepare-docs-consolidation-commit.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "62a407bd413da76b612c1fa1dc60bac21046c892b85855a90bf9889e13d8fb36",
+        "size_bytes": 12204,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_RELEASE_DRY_RUN_ACTIVE_SCOPE_EXCLUDES"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/release-dry-run.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "fe6ae412440a757d4e480b31248f14ea44baca689e36c73792b5c44a01e756c4",
+        "size_bytes": 2061,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_FLAKES_REPEAT",
+          "POCKETLAB_FLAKES_WORKERS",
+          "POCKETLAB_FLAKE_ROUNDS",
+          "POCKETLAB_FLAKE_WORKERS"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/report-flakes.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "024f714f0f0e41f4cd05305292e763a5769ce02fbc2c68c8fc914a4440def3a7",
+        "size_bytes": 6545,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/reset-state.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "b3b552392f2b35202bfdb425badc7e4ada8dc6d8653f9a14144138ce4fb14bbf",
+        "size_bytes": 279,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_E2E_WORKERS"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/run-e2e.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "2c553f7b19d0913c52823b9488d2f3e0e0c2380b7c3d736b76ea87b8d10d6d96",
+        "size_bytes": 731,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_NATS_REQUIRED",
+          "POCKETLAB_NATS_REQUIRE_JETSTREAM",
+          "POCKETLAB_NATS_URL",
+          "POCKETLAB_STATE_DIR"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/run-fastapi-dev.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "13ed0ee21f28ce75edb794f28285f271f89a2be5ef95ad6adfc34075a7d82ef5",
+        "size_bytes": 625,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/run-nats-dev.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "215debfce77718e56f3bc619df3d8eec4fae5adad3d01a1b90f61bfa13daa577",
+        "size_bytes": 381,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/run-playwright.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "897eeabc3a6b3116b1277da7689eb013d1820bcbd7350d92a96f0425ea970246",
+        "size_bytes": 185,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/run-validation-gate.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "3ef189cbf7e2d12a6a234ceeed43bb6bc9392252fd1bd68b2741c5bd5d6a53c0",
+        "size_bytes": 948,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_NATS_REQUIRED",
+          "POCKETLAB_NATS_REQUIRE_JETSTREAM",
+          "POCKETLAB_NATS_URL",
+          "POCKETLAB_STATE_DIR"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/run-worker-dev.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "d07f1bb12598b0634d53365c0bffe332de9f0c2f0e9a5d03e05745c2ac5c6874",
+        "size_bytes": 562,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_THREAT_DRAGON_DIR",
+          "POCKETLAB_THREAT_MODEL_DIR"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/setup-threat-dragon.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "5708e4f89858f53e06d5114eefe1c65da475b6b20c3e385870958e5793901dbe",
+        "size_bytes": 4163,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_NODE_MAJOR",
+          "POCKETLAB_TASK_VERSION",
+          "POCKETLAB_WSL_REPORT_PATH",
+          "POCKETLAB_WSL_REPO_PATH",
+          "POCKETLAB_WSL_SKIP_REPO_SYNC",
+          "POCKETLAB_WSL_SOURCE_ROOT"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/setup-wsl-ubuntu-dev.sh",
+        "platform": "Windows WSL2 Ubuntu",
+        "sha256": "4532205fa8cb000bcc28e766e5b8043751ad4f68e9615bbbc0a9358286b69b18",
+        "size_bytes": 6398,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_API_URL"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/status.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "d9591a93b1eefb04d0da838c46a4afa0199bdc13be26c20b412a6ee25f34e196",
+        "size_bytes": 1138,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_WINDOWS_REPO",
+          "POCKETLAB_WSL_REPO"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/sync-wsl-to-windows.sh",
+        "platform": "Windows WSL2 Ubuntu",
+        "sha256": "7d1c975022ab093b98dce7258ff689ab3914ccd5fe14c99a1dda865f5e037acb",
+        "size_bytes": 4396,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_API_URL",
+          "POCKETLAB_NATS_REQUIRED",
+          "POCKETLAB_NATS_REQUIRE_JETSTREAM",
+          "POCKETLAB_NATS_URL",
+          "POCKETLAB_STATE_DIR",
+          "POCKETLAB_TEST_NATS_CURL_CONNECT_TIMEOUT",
+          "POCKETLAB_TEST_NATS_CURL_MAX_TIME",
+          "POCKETLAB_TEST_NATS_OPERATION_SETTLE_SECONDS",
+          "POCKETLAB_TEST_NATS_OPERATION_SUBMIT_TIMEOUT",
+          "POCKETLAB_TEST_NATS_SUBMIT_OPERATION"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/test-nats-stack.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "0d5f583b8d4a7a0a7349155437be1fbeaccf32a20257751f826ca0b6570d27df",
+        "size_bytes": 4459,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_API_URL"
+        ],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/trace-operation.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "5721d248320c55182ad3092f8a5416a6785da102be7186eb1737c5f3fbc24ba4",
+        "size_bytes": 780,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/up.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "b51c1a636f904b872d7b9b8e178c6f409c7b61c7d1de55f9052083a451e975f3",
+        "size_bytes": 791,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [],
+        "kind": "ubuntu_shell",
+        "path": "scripts/dev/wait-http.sh",
+        "platform": "Ubuntu / WSL2 / Linux / Termux where compatible",
+        "sha256": "2572f60cf011844a547a35dcee2af15a02476381c21466c3ba848c0516afb9b5",
+        "size_bytes": 299,
+        "summary": "!/usr/bin/env bash"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_WSL_CHECK_ONLY",
+          "POCKETLAB_WSL_DISTRO",
+          "POCKETLAB_WSL_REPO_PATH",
+          "POCKETLAB_WSL_SKIP_REPO_SYNC",
+          "POCKETLAB_WSL_SOURCE_ROOT"
+        ],
+        "kind": "windows_powershell",
+        "path": "scripts/windows/bootstrap-wsl2-ubuntu.ps1",
+        "platform": "Windows WSL2 Ubuntu",
+        "sha256": "854e082ea793923f172124d595e960911365cff9e45143bf88698c4fa12755b5",
+        "size_bytes": 4819,
+        "summary": "bootstrap-wsl2-ubuntu.ps1"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_WSL_DISTRO"
+        ],
+        "kind": "windows_powershell",
+        "path": "scripts/windows/check-wsl2-host.ps1",
+        "platform": "Windows WSL2 Ubuntu",
+        "sha256": "827d0dfdf3706ee9dbf987556060b5c5a53e18dd654b6162978e25f9f1e9ad5d",
+        "size_bytes": 16131,
+        "summary": "Windows host version"
+      },
+      {
+        "environment_variables": [
+          "POCKETLAB_ENV",
+          "POCKETLAB_NATS_REQUIRED",
+          "POCKETLAB_NATS_REQUIRE_JETSTREAM",
+          "POCKETLAB_NATS_URL",
+          "POCKETLAB_STATE_DIR",
+          "POCKETLAB_WSL_DISTRO"
+        ],
+        "kind": "windows_powershell",
+        "path": "scripts/windows/configure-vscode.ps1",
+        "platform": "Windows WSL2 Ubuntu",
+        "sha256": "ff5ea1f636288c28235dfd9a3eec53919dadf5d2d57f3fd8116c1896df21c4db",
+        "size_bytes": 15034,
+        "summary": "Attempt Remote WSL extension install for extensions that must execute in the Linux workspace."
+      },
+      {
+        "kind": "platform_or_architecture_doc",
+        "path": "docs/platform/windows-wsl2-host-preflight.md",
+        "sha256": "a56dbb0fcd27c484c88768458617c9f8de87ddf33bc8f9fcbee82b77d3f37aee",
+        "size_bytes": 4230,
+        "title": "Windows WSL2 Host Preflight"
+      },
+      {
+        "kind": "platform_or_architecture_doc",
+        "path": "docs/platform/windows-wsl2-ubuntu-bootstrap.md",
+        "sha256": "32b1fb2ac87ca51286cf84758f86d4b32b899eb594d3821e8b900b481b026285",
+        "size_bytes": 2196,
+        "title": "Windows WSL2 Ubuntu Bootstrap"
+      }
+    ]
+  },
+  "environment_and_runtime_files": [
+    {
+      "kind": "environment_or_runtime_template",
+      "path": "docker-compose.dev.yml",
+      "sha256": "792311cafdc4233e45a5425b8c420e535cffe1ee7bc597143f604d675f4e1f76",
+      "size_bytes": 304
+    },
+    {
+      "kind": "environment_or_runtime_template",
+      "path": "package.json",
+      "sha256": "b9b27604350fa80c9c584484e4e4653ba5bbee47327c53656d79aa4b188c3d81",
+      "size_bytes": 2576
+    },
+    {
+      "kind": "environment_or_runtime_template",
+      "path": "requirements-dev.txt",
+      "sha256": "f1b3046c909137c5a03943e3069ad1bc06ba6c364d286e41d628d9356f4858af",
+      "size_bytes": 304
+    },
+    {
+      "kind": "environment_or_runtime_template",
+      "path": "requirements-docs.txt",
+      "sha256": "cc8b3b3ae0fe09aae50211dae24e00fd5a569b8f602602cc10635429ec8f0897",
+      "size_bytes": 369
+    }
+  ],
+  "environment_variables": {
+    "ANSIBLE_COLLECTIONS_PATH": [
+      "scripts/dev/check-iac.sh"
+    ],
+    "ANSIBLE_CONFIG": [
+      "scripts/dev/check-iac.sh"
+    ],
+    "ANSIBLE_LOCAL_TEMP": [
+      "scripts/dev/check-iac.sh"
+    ],
+    "ANSIBLE_REMOTE_TEMP": [
+      "scripts/dev/check-iac.sh"
+    ],
+    "ANSIBLE_ROLES_PATH": [
+      "scripts/dev/check-iac.sh"
+    ],
+    "CHROME_PATH": [
+      "scripts/dev/check-lighthouse.sh"
+    ],
+    "LHCI_CHROME_PATH": [
+      "scripts/dev/check-lighthouse.sh"
+    ],
+    "NATS_CONTAINER": [
+      "scripts/dev/check-wsl-docker-desktop.sh"
+    ],
+    "NATS_HEALTH_URL": [
+      "scripts/dev/check-wsl-docker-desktop.sh"
+    ],
+    "NATS_SERVICE": [
+      "scripts/dev/check-wsl-docker-desktop.sh"
+    ],
+    "POCKETLAB_ACTIVE_CODE_SCAN_EXCLUDES": [
+      "scripts/dev/check-iac.sh"
+    ],
+    "POCKETLAB_API_URL": [
+      "scripts/dev/observability-snapshot.sh",
+      "scripts/dev/status.sh",
+      "scripts/dev/test-nats-stack.sh",
+      "scripts/dev/trace-operation.sh"
+    ],
+    "POCKETLAB_AUTH_TOKEN": [
+      "scripts/dev/populate-pocketlab-docs.py"
+    ],
+    "POCKETLAB_DOCKER_CHECK_CLEANUP": [
+      "scripts/dev/check-wsl-docker-desktop.sh"
+    ],
+    "POCKETLAB_DOCKER_COMPOSE_FILE": [
+      "scripts/dev/check-wsl-docker-desktop.sh"
+    ],
+    "POCKETLAB_E2E_WORKERS": [
+      "scripts/dev/run-e2e.sh"
+    ],
+    "POCKETLAB_ENV": [
+      "scripts/windows/configure-vscode.ps1"
+    ],
+    "POCKETLAB_FAULTS_WORKERS": [
+      "scripts/dev/check-faults.sh"
+    ],
+    "POCKETLAB_FLAKES_REPEAT": [
+      "scripts/dev/report-flakes.sh"
+    ],
+    "POCKETLAB_FLAKES_WORKERS": [
+      "scripts/dev/report-flakes.sh"
+    ],
+    "POCKETLAB_FLAKE_ROUNDS": [
+      "scripts/dev/report-flakes.sh"
+    ],
+    "POCKETLAB_FLAKE_WORKERS": [
+      "scripts/dev/report-flakes.sh"
+    ],
+    "POCKETLAB_LIGHTHOUSE_CHROME_FLAGS": [
+      "scripts/dev/check-lighthouse.sh"
+    ],
+    "POCKETLAB_LIGHTHOUSE_CHROME_PATH": [
+      "scripts/dev/check-lighthouse.sh"
+    ],
+    "POCKETLAB_LIGHTHOUSE_WSL_CHROME_FIX": [
+      "scripts/dev/check-lighthouse.sh"
+    ],
+    "POCKETLAB_LOG_LEVEL": [
+      "scripts/dev/populate-pocketlab-docs.py"
+    ],
+    "POCKETLAB_NATS_COMPOSE_SERVICE": [
+      "scripts/dev/check-wsl-docker-desktop.sh"
+    ],
+    "POCKETLAB_NATS_CONTAINER_NAME": [
+      "scripts/dev/check-wsl-docker-desktop.sh"
+    ],
+    "POCKETLAB_NATS_HEALTH_URL": [
+      "scripts/dev/check-wsl-docker-desktop.sh"
+    ],
+    "POCKETLAB_NATS_REQUIRED": [
+      "scripts/dev/populate-pocketlab-docs.py",
+      "scripts/dev/run-fastapi-dev.sh",
+      "scripts/dev/run-worker-dev.sh",
+      "scripts/dev/test-nats-stack.sh",
+      "scripts/windows/configure-vscode.ps1"
+    ],
+    "POCKETLAB_NATS_REQUIRE_JETSTREAM": [
+      "scripts/dev/populate-pocketlab-docs.py",
+      "scripts/dev/run-fastapi-dev.sh",
+      "scripts/dev/run-worker-dev.sh",
+      "scripts/dev/test-nats-stack.sh",
+      "scripts/windows/configure-vscode.ps1"
+    ],
+    "POCKETLAB_NATS_URL": [
+      "scripts/dev/populate-pocketlab-docs.py",
+      "scripts/dev/run-fastapi-dev.sh",
+      "scripts/dev/run-worker-dev.sh",
+      "scripts/dev/test-nats-stack.sh",
+      "scripts/windows/configure-vscode.ps1"
+    ],
+    "POCKETLAB_NODE_MAJOR": [
+      "scripts/dev/check-wsl-ubuntu-dev.sh",
+      "scripts/dev/setup-wsl-ubuntu-dev.sh"
+    ],
+    "POCKETLAB_PLAYWRIGHT_CHANNEL": [
+      "scripts/dev/install-playwright-browser.sh"
+    ],
+    "POCKETLAB_PLAYWRIGHT_REPORT_PATH": [
+      "scripts/dev/install-playwright-browser.sh"
+    ],
+    "POCKETLAB_RELEASE_CHANNEL": [
+      "scripts/dev/populate-pocketlab-docs.py"
+    ],
+    "POCKETLAB_RELEASE_DRY_RUN_ACTIVE_SCOPE_EXCLUDES": [
+      "scripts/dev/release-dry-run.sh"
+    ],
+    "POCKETLAB_STATE_DIR": [
+      "scripts/dev/populate-pocketlab-docs.py",
+      "scripts/dev/run-fastapi-dev.sh",
+      "scripts/dev/run-worker-dev.sh",
+      "scripts/dev/test-nats-stack.sh",
+      "scripts/windows/configure-vscode.ps1"
+    ],
+    "POCKETLAB_TASK_VERSION": [
+      "scripts/dev/setup-wsl-ubuntu-dev.sh"
+    ],
+    "POCKETLAB_TEST_NATS_CURL_CONNECT_TIMEOUT": [
+      "scripts/dev/test-nats-stack.sh"
+    ],
+    "POCKETLAB_TEST_NATS_CURL_MAX_TIME": [
+      "scripts/dev/test-nats-stack.sh"
+    ],
+    "POCKETLAB_TEST_NATS_OPERATION_SETTLE_SECONDS": [
+      "scripts/dev/test-nats-stack.sh"
+    ],
+    "POCKETLAB_TEST_NATS_OPERATION_SUBMIT_TIMEOUT": [
+      "scripts/dev/test-nats-stack.sh"
+    ],
+    "POCKETLAB_TEST_NATS_SUBMIT_OPERATION": [
+      "scripts/dev/test-nats-stack.sh"
+    ],
+    "POCKETLAB_THREAT_DRAGON_DIR": [
+      "scripts/dev/setup-threat-dragon.sh"
+    ],
+    "POCKETLAB_THREAT_MODEL_DIR": [
+      "scripts/dev/setup-threat-dragon.sh"
+    ],
+    "POCKETLAB_WINDOWS_REPO": [
+      "scripts/dev/sync-wsl-to-windows.sh"
+    ],
+    "POCKETLAB_WRITE_TOKEN": [
+      "scripts/dev/populate-pocketlab-docs.py"
+    ],
+    "POCKETLAB_WSL_CHECK_ONLY": [
+      "scripts/windows/bootstrap-wsl2-ubuntu.ps1"
+    ],
+    "POCKETLAB_WSL_CHECK_REPORT_PATH": [
+      "scripts/dev/check-wsl-ubuntu-dev.sh"
+    ],
+    "POCKETLAB_WSL_DISTRO": [
+      "scripts/windows/bootstrap-wsl2-ubuntu.ps1",
+      "scripts/windows/check-wsl2-host.ps1",
+      "scripts/windows/configure-vscode.ps1"
+    ],
+    "POCKETLAB_WSL_DOCKER_REPORT_PATH": [
+      "scripts/dev/check-wsl-docker-desktop.sh"
+    ],
+    "POCKETLAB_WSL_FILESYSTEM_REPORT_PATH": [
+      "scripts/dev/check-wsl-filesystem-standard.sh"
+    ],
+    "POCKETLAB_WSL_REPO": [
+      "scripts/dev/sync-wsl-to-windows.sh"
+    ],
+    "POCKETLAB_WSL_REPORT_PATH": [
+      "scripts/dev/setup-wsl-ubuntu-dev.sh"
+    ],
+    "POCKETLAB_WSL_REPO_PATH": [
+      "scripts/dev/check-wsl-filesystem-standard.sh",
+      "scripts/dev/check-wsl-ubuntu-dev.sh",
+      "scripts/dev/setup-wsl-ubuntu-dev.sh",
+      "scripts/windows/bootstrap-wsl2-ubuntu.ps1"
+    ],
+    "POCKETLAB_WSL_SKIP_REPO_SYNC": [
+      "scripts/dev/setup-wsl-ubuntu-dev.sh",
+      "scripts/windows/bootstrap-wsl2-ubuntu.ps1"
+    ],
+    "POCKETLAB_WSL_SOURCE_ROOT": [
+      "scripts/dev/setup-wsl-ubuntu-dev.sh",
+      "scripts/windows/bootstrap-wsl2-ubuntu.ps1"
+    ]
+  },
+  "forbidden_active_token_findings": [],
+  "generated_by": "scripts/docs/generate_deployment_evidence.py",
+  "platform_source_docs": [
+    {
+      "kind": "platform_or_architecture_doc",
+      "path": "docs/platform/android-termux-operations-guide.md",
+      "sha256": "69b8776365aecb838577e23babda834faec7e8c0059366bbe693d156f0fd3307",
+      "size_bytes": 2388,
+      "title": "Android / Termux Operations Guide"
+    },
+    {
+      "kind": "platform_or_architecture_doc",
+      "path": "docs/platform/windows-vscode-development.md",
+      "sha256": "f60bc6f07a4d81368ff803f598584408b2786a1c247b3c850986cc106e8bfe67",
+      "size_bytes": 4249,
+      "title": "Windows VS Code Development Configuration"
+    },
+    {
+      "kind": "platform_or_architecture_doc",
+      "path": "docs/platform/windows-wsl2-host-preflight.md",
+      "sha256": "a56dbb0fcd27c484c88768458617c9f8de87ddf33bc8f9fcbee82b77d3f37aee",
+      "size_bytes": 4230,
+      "title": "Windows WSL2 Host Preflight"
+    },
+    {
+      "kind": "platform_or_architecture_doc",
+      "path": "docs/platform/windows-wsl2-ubuntu-bootstrap.md",
+      "sha256": "32b1fb2ac87ca51286cf84758f86d4b32b899eb594d3821e8b900b481b026285",
+      "size_bytes": 2196,
+      "title": "Windows WSL2 Ubuntu Bootstrap"
+    },
+    {
+      "kind": "platform_or_architecture_doc",
+      "path": "docs/architecture/deployment-runtime-blueprint.md",
+      "sha256": "7aae65ac91e4400966ba6b3dbec60e976ff0caa9ebdfc1766ac2bbac083af496",
+      "size_bytes": 4607,
+      "title": "Deployment / Runtime Blueprint"
+    },
+    {
+      "kind": "platform_or_architecture_doc",
+      "path": "docs/architecture/enterprise-architecture-blueprint.md",
+      "sha256": "2e1f885e4e0cad5cb920f6e992e917c83c19e5d9cc3676e786e33625de3b52c9",
+      "size_bytes": 2354,
+      "title": "Production Architecture"
+    },
+    {
+      "kind": "platform_or_architecture_doc",
+      "path": "docs/architecture/structurizr-architecture.md",
+      "sha256": "59ddc84119a45f37596d65605ecec6d789ccee12641c3e63b8c001f867198655",
+      "size_bytes": 2993,
+      "title": "Structurizr Architecture"
+    }
+  ],
+  "repo_root_name": "pocket-lab",
+  "schema_version": "pocketlab.deployment_evidence.v1",
+  "source_summary": {
+    "ansible_bases": [
+      "pocket-lab-final-structure/pocket-lab-iac-api-compatible",
+      "pocket_lab_iac",
+      "pocket-lab-final-structure/pocket_lab_iac",
+      "pocket-lab-final-structure/runtime/core/ansible"
+    ],
+    "bootstrap_script_count": 48,
+    "environment_file_count": 4,
+    "iac_catalog_count": 0,
+    "inventory_or_vars_count": 37,
+    "platform_doc_count": 7,
+    "playbook_count": 25,
+    "role_count": 14
+  },
+  "taskfile_deployment_related_tasks": [
+    {
+      "description": "Run Android/Termux Day 0 smoke helper over SSH",
+      "name": "android:smoke"
+    },
+    {
+      "description": "Run all local quality gates",
+      "name": "check"
+    },
+    {
+      "description": "Export FastAPI OpenAPI and verify frontend API calls",
+      "name": "check:api-contract"
+    },
+    {
+      "description": "",
+      "name": "check:bootstrap"
+    },
+    {
+      "description": "",
+      "name": "check:contracts"
+    },
+    {
+      "description": "",
+      "name": "check:iac"
+    },
+    {
+      "description": "Validate fixtures and event payloads against JSON schemas",
+      "name": "check:schemas"
+    },
+    {
+      "description": "",
+      "name": "check:supply-chain"
+    },
+    {
+      "description": "List available Pocket Lab development tasks",
+      "name": "default"
+    },
+    {
+      "description": "Start FastAPI locally",
+      "name": "dev:backend"
+    },
+    {
+      "description": "Stop deterministic local stack",
+      "name": "dev:down"
+    },
+    {
+      "description": "Start Vite PWA locally",
+      "name": "dev:frontend"
+    },
+    {
+      "description": "Start Vite frontend with MSW mock API scenarios enabled",
+      "name": "dev:frontend:mock"
+    },
+    {
+      "description": "Tail local dev stack logs",
+      "name": "dev:logs"
+    },
+    {
+      "description": "Start local NATS/JetStream",
+      "name": "dev:nats"
+    },
+    {
+      "description": "",
+      "name": "dev:nats:down"
+    },
+    {
+      "description": "Generate local observability HTML snapshot",
+      "name": "dev:observe"
+    },
+    {
+      "description": "Reset local dev state, logs and pid files",
+      "name": "dev:reset"
+    },
+    {
+      "description": "Show FastAPI/NATS/worker/frontend status",
+      "name": "dev:status"
+    },
+    {
+      "description": "Start Storybook for Pocket Lab UI components",
+      "name": "dev:storybook"
+    },
+    {
+      "description": "Start deterministic local stack: NATS, FastAPI, worker, frontend",
+      "name": "dev:up"
+    },
+    {
+      "description": "Start Pocket Lab worker locally",
+      "name": "dev:worker"
+    },
+    {
+      "description": "Serve Structurizr architecture workspace locally with Docker",
+      "name": "docs:architecture:serve"
+    },
+    {
+      "description": "Generate and validate Pocket Lab documentation",
+      "name": "docs:check"
+    },
+    {
+      "description": "Generate Tier 11 deployment documentation from repository-native deployment sources",
+      "name": "docs:deployment"
+    },
+    {
+      "description": "Generate Tier 11 Ansible playbook and role/task deployment reference docs",
+      "name": "docs:deployment:ansible"
+    },
+    {
+      "description": "Validate Tier 11 Ansible deployment docs and evidence freshness",
+      "name": "docs:deployment:ansible:check"
+    },
+    {
+      "description": "Validate Tier 11 generated deployment documentation freshness",
+      "name": "docs:deployment:check"
+    },
+    {
+      "description": "Generate Tier 11 deployment evidence manifest from Ansible, bootstrap, platform, Taskfile, and environment sources",
+      "name": "docs:deployment:evidence"
+    },
+    {
+      "description": "Validate Tier 11 deployment evidence manifest fingerprints and source integrity",
+      "name": "docs:deployment:evidence:check"
+    },
+    {
+      "description": "Run all Tier 11 deployment documentation generation and freshness checks",
+      "name": "docs:deployment:full-check"
+    },
+    {
+      "description": "Generate Tier 11 platform, bootstrap, environment, and runtime blueprint docs",
+      "name": "docs:deployment:platform"
+    },
+    {
+      "description": "Validate Tier 11 platform deployment docs and MkDocs navigation coverage",
+      "name": "docs:deployment:platform:check"
+    },
+    {
+      "description": "Run Tier 8 validation evidence checks and enforce release readiness from recorded evidence",
+      "name": "docs:validation:full-check"
+    },
+    {
+      "description": "Record high-signal release validation gates for Tier 8 evidence",
+      "name": "docs:validation:release-gates"
+    },
+    {
+      "description": "",
+      "name": "fault:bad-health"
+    },
+    {
+      "description": "",
+      "name": "fault:nats-down"
+    },
+    {
+      "description": "",
+      "name": "fault:worker-down"
+    },
+    {
+      "description": "Build release artifacts locally without publishing",
+      "name": "release:dry-run"
+    },
+    {
+      "description": "Install Python/npm dependencies",
+      "name": "setup"
+    },
+    {
+      "description": "Backend compile, FastAPI tests and runtime tests",
+      "name": "test:backend"
+    },
+    {
+      "description": "Day 0 bootstrap static and dry-run validation",
+      "name": "test:bootstrap"
+    },
+    {
+      "description": "Playwright browser E2E tests with screenshots/videos/traces",
+      "name": "test:e2e"
+    },
+    {
+      "description": "Enterprise fault injection and degraded-mode gate",
+      "name": "test:faults"
+    },
+    {
+      "description": "Enterprise flaky-test gate: quarantine scan plus repeated high-signal Playwright stability runs",
+      "name": "test:flakes"
+    },
+    {
+      "description": "React/Vite PWA lint, typecheck, unit test and production build",
+      "name": "test:frontend"
+    },
+    {
+      "description": "Run the Pocket Lab golden-path release-candidate E2E flow",
+      "name": "test:golden"
+    },
+    {
+      "description": "Ansible/IaC validation and drift simulation",
+      "name": "test:iac"
+    },
+    {
+      "description": "Lighthouse CI PWA quality gate",
+      "name": "test:lighthouse"
+    },
+    {
+      "description": "Start NATS, FastAPI, worker, submit typed operation, validate events/journal",
+      "name": "test:nats"
+    },
+    {
+      "description": "Simulate NATS subject permission model for API, worker and agent",
+      "name": "test:nats-permissions"
+    },
+    {
+      "description": "Performance and reliability smoke tests",
+      "name": "test:performance"
+    },
+    {
+      "description": "Tail local OWASP Threat Dragon container logs",
+      "name": "threatdragon:logs"
+    },
+    {
+      "description": "Pull the pinned OWASP Threat Dragon container image",
+      "name": "threatdragon:pull"
+    },
+    {
+      "description": "Run OWASP Threat Dragon locally on http://localhost:8082",
+      "name": "threatdragon:serve"
+    },
+    {
+      "description": "Stop local OWASP Threat Dragon container",
+      "name": "threatdragon:stop"
+    },
+    {
+      "description": "Submit and trace a typed operation with correlation IDs",
+      "name": "trace:operation"
+    },
+    {
+      "description": "Alias for Windows WSL2 host preflight",
+      "name": "windows:host:check"
+    },
+    {
+      "description": "Validate Windows 10 host readiness for WSL2 Ubuntu Pocket Lab development",
+      "name": "windows:host:preflight"
+    },
+    {
+      "description": "Write and validate Pocket Lab VS Code workspace files without installing extensions",
+      "name": "windows:vscode:check"
+    },
+    {
+      "description": "Configure VS Code for Pocket Lab Windows + WSL2 development",
+      "name": "windows:vscode:configure"
+    },
+    {
+      "description": "Configure VS Code for Pocket Lab with optional productivity extensions",
+      "name": "windows:vscode:configure:optional"
+    },
+    {
+      "description": "Bootstrap Ubuntu WSL2 developer environment for Pocket Lab",
+      "name": "windows:wsl:bootstrap"
+    },
+    {
+      "description": "Validate Ubuntu WSL2 Pocket Lab developer environment",
+      "name": "windows:wsl:check"
+    }
+  ]
+}

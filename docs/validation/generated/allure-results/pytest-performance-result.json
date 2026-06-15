@@ -1,0 +1,52 @@
+{
+  "description": "Recorded command completed successfully.",
+  "fullName": "Pocket Lab Validation::Performance::pytest-performance",
+  "historyId": "1b1c90f01ab8646964ba08923f8992c0",
+  "labels": [
+    {
+      "name": "epic",
+      "value": "Tier 8 Validation Documentation"
+    },
+    {
+      "name": "feature",
+      "value": "Performance"
+    },
+    {
+      "name": "story",
+      "value": "pytest-performance"
+    },
+    {
+      "name": "owner",
+      "value": "Platform"
+    },
+    {
+      "name": "severity",
+      "value": "blocker"
+    },
+    {
+      "name": "tag",
+      "value": "PASS"
+    }
+  ],
+  "name": "Performance smoke pytest evidence",
+  "parameters": [
+    {
+      "name": "command",
+      "value": "task test:performance"
+    },
+    {
+      "name": "evidence_state",
+      "value": "executed-command"
+    },
+    {
+      "name": "generated_at",
+      "value": "2026-06-14T19:32:50Z"
+    }
+  ],
+  "stage": "finished",
+  "start": 1781465570478,
+  "status": "passed",
+  "stop": 1781465570478,
+  "testCaseId": "pytest-performance",
+  "uuid": "31810448-8278-5155-8e95-d42e34885cf6"
+}

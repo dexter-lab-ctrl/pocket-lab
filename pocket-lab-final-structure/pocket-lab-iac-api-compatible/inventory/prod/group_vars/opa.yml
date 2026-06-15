@@ -2,16 +2,7 @@
 # Open Policy Agent (DevSecOps) Configuration
 opa_version: "v1.16.2"
 opa_arch: "linux_arm64_static"
-
-# Native Termux Execution Paths
 opa_bin_dir: "/data/data/com.termux/files/usr/bin"
-
-# Policy and Gatekeeper Paths
-# Note: ansible_env.HOME dynamically resolves to /data/data/com.termux/files/home
-opa_policies_dir: "{{ ansible_env.HOME }}/pocket_lab_policies"
-opa_interceptor_dest: "{{ ansible_env.HOME }}/api/opa_interceptor.py"
-
-# Enforce Mode Default (False = Audit only, True = Block deployments)
-# This gets overridden dynamically by the React UI writing to opa_config.json,
-# but setting it here provides a known baseline for the deployment.
+opa_policies_dir: "{{ common_policies_dir }}"
+opa_interceptor_dest: "{{ common_api_dir }}/opa_interceptor.py"
 opa_enforce_mode_baseline: false

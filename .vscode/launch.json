@@ -1,0 +1,62 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Pocket Lab: FastAPI",
+      "type": "python",
+      "request": "launch",
+      "module": "uvicorn",
+      "cwd": "${workspaceFolder}/pocket-lab-final-structure",
+      "args": [
+        "runtime.api_fastapi.pocket_lab_fastapi_server:app",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8000",
+        "--reload"
+      ],
+      "env": {
+        "POCKETLAB_ENV": "dev",
+        "POCKETLAB_STATE_DIR": "${workspaceFolder}/.pocketlab-dev/state",
+        "POCKETLAB_NATS_URL": "nats://127.0.0.1:4222",
+        "POCKETLAB_NATS_REQUIRED": "1",
+        "POCKETLAB_NATS_REQUIRE_JETSTREAM": "1"
+      },
+      "console": "integratedTerminal",
+      "justMyCode": false
+    },
+    {
+      "name": "Pocket Lab: Worker",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/pocket-lab-final-structure/runtime/workers/pocketlab_worker.py",
+      "cwd": "${workspaceFolder}/pocket-lab-final-structure",
+      "env": {
+        "POCKETLAB_ENV": "dev",
+        "POCKETLAB_STATE_DIR": "${workspaceFolder}/.pocketlab-dev/state",
+        "POCKETLAB_NATS_URL": "nats://127.0.0.1:4222",
+        "POCKETLAB_NATS_REQUIRED": "1",
+        "POCKETLAB_NATS_REQUIRE_JETSTREAM": "1"
+      },
+      "console": "integratedTerminal",
+      "justMyCode": false
+    },
+    {
+      "name": "Pocket Lab: Frontend in browser",
+      "type": "pwa-chrome",
+      "request": "launch",
+      "url": "http://127.0.0.1:5173",
+      "webRoot": "${workspaceFolder}/src"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Pocket Lab: API + Worker",
+      "configurations": [
+        "Pocket Lab: FastAPI",
+        "Pocket Lab: Worker"
+      ],
+      "stopAll": true
+    }
+  ]
+}

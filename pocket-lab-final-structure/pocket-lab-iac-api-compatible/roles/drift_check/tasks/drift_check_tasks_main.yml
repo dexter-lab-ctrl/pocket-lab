@@ -1,0 +1,157 @@
+---
+- name: drift_check | ensure drift directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0750"
+  loop:
+    - "{{ drift_check_report_dir }}"
+    - "{{ drift_check_jobs_dir }}"
+    - "{{ drift_check_history_dir }}"
+
+- name: drift_check | derive timestamp and job id
+  ansible.builtin.set_fact:
+    drift_check_timestamp_utc: "{{ lookup('pipe', 'date -u +%Y%m%dT%H%M%SZ') }}"
+
+- name: drift_check | initialize job containers
+  ansible.builtin.set_fact:
+    drift_check_items: []
+    drift_check_summary:
+      healthy: 0
+      drifted: 0
+      unknown: 0
+      total: 0
+
+- name: drift_check | probe HTTP endpoints
+  ansible.builtin.uri:
+    url: "{{ item.url }}"
+    method: GET
+    return_content: true
+    timeout: "{{ drift_check_timeout_seconds }}"
+    status_code: "{{ item.expected_status_codes | default([200]) }}"
+  loop: "{{ drift_check_endpoints }}"
+  register: drift_check_endpoint_results
+  failed_when: false
+  changed_when: false
+
+- name: drift_check | run command-based checks
+  ansible.builtin.command: "{{ item.command }}"
+  loop: "{{ drift_check_commands }}"
+  register: drift_check_command_results
+  failed_when: false
+  changed_when: false
+  args:
+    warn: false
+
+- name: drift_check | normalize endpoint results
+  ansible.builtin.set_fact:
+    drift_check_items: "{{ drift_check_items + [drift_check_normalized_item] }}"
+    drift_check_summary:
+      healthy: "{{ drift_check_summary.healthy + (1 if drift_check_is_ok else 0) }}"
+      drifted: "{{ drift_check_summary.drifted + (0 if drift_check_is_ok else 1) }}"
+      unknown: "{{ drift_check_summary.unknown }}"
+      total: "{{ drift_check_summary.total + 1 }}"
+  vars:
+    drift_check_cfg: "{{ item.item }}"
+    drift_check_is_ok: >-
+      {{
+        (item.failed | default(false) | bool) == false
+        and ((item.status | default(0)) in (drift_check_cfg.expected_status_codes | default([200])))
+      }}
+    drift_check_normalized_item:
+      name: "{{ drift_check_cfg.name }}"
+      scope: "{{ drift_check_cfg.scope | default('service') }}"
+      target: "{{ drift_check_cfg.target | default(drift_check_cfg.name) }}"
+      kind: endpoint
+      severity: "{{ drift_check_cfg.severity | default('medium') }}"
+      status: "{{ 'healthy' if drift_check_is_ok else 'drifted' }}"
+      summary: "{{ drift_check_cfg.summary | default('HTTP endpoint check') }}"
+      expected:
+        status_codes: "{{ drift_check_cfg.expected_status_codes | default([200]) }}"
+      actual:
+        status_code: "{{ item.status | default(omit) }}"
+        ok: "{{ drift_check_is_ok }}"
+      details:
+        url: "{{ drift_check_cfg.url }}"
+        response_length: "{{ (item.content | default('') | string | length) if (item.content is defined) else 0 }}"
+  loop: "{{ drift_check_endpoint_results.results | default([]) }}"
+
+- name: drift_check | normalize command results
+  ansible.builtin.set_fact:
+    drift_check_items: "{{ drift_check_items + [drift_check_normalized_item] }}"
+    drift_check_summary:
+      healthy: "{{ drift_check_summary.healthy + (1 if drift_check_is_ok else 0) }}"
+      drifted: "{{ drift_check_summary.drifted + (0 if drift_check_is_ok else 1) }}"
+      unknown: "{{ drift_check_summary.unknown }}"
+      total: "{{ drift_check_summary.total + 1 }}"
+  vars:
+    drift_check_cfg: "{{ item.item }}"
+    drift_check_is_ok: "{{ (item.rc | default(1)) == (drift_check_cfg.expected_rc | default(0)) }}"
+    drift_check_stdout: "{{ (item.stdout | default('') | string)[:drift_check_output_limit] }}"
+    drift_check_stderr: "{{ (item.stderr | default('') | string)[:drift_check_output_limit] }}"
+    drift_check_normalized_item:
+      name: "{{ drift_check_cfg.name }}"
+      scope: "{{ drift_check_cfg.scope | default('service') }}"
+      target: "{{ drift_check_cfg.target | default(drift_check_cfg.name) }}"
+      kind: command
+      severity: "{{ drift_check_cfg.severity | default('medium') }}"
+      status: "{{ 'healthy' if drift_check_is_ok else 'drifted' }}"
+      summary: "{{ drift_check_cfg.summary | default('Command-based check') }}"
+      expected:
+        rc: "{{ drift_check_cfg.expected_rc | default(0) }}"
+      actual:
+        rc: "{{ item.rc | default(omit) }}"
+        ok: "{{ drift_check_is_ok }}"
+      details:
+        command: "{{ drift_check_cfg.command }}"
+        stdout: "{{ drift_check_stdout }}"
+        stderr: "{{ drift_check_stderr }}"
+  loop: "{{ drift_check_command_results.results | default([]) }}"
+
+- name: drift_check | compute overall status
+  ansible.builtin.set_fact:
+    drift_check_overall_status: "{{ 'healthy' if (drift_check_summary.drifted | int) == 0 else 'degraded' }}"
+    drift_check_report_path: "{{ drift_report_path }}"
+    drift_check_job_path: "{{ drift_check_history_dir }}/drift_{{ drift_check_timestamp_utc }}.json"
+
+- name: drift_check | build drift report object
+  ansible.builtin.set_fact:
+    drift_check_report:
+      job_id: "drift_{{ drift_check_timestamp_utc }}"
+      environment: "{{ env_name | default('prod') }}"
+      generated_by: "drift_check role"
+      timestamp_utc: "{{ drift_check_timestamp_utc }}"
+      overall_status: "{{ drift_check_overall_status }}"
+      counts: "{{ drift_check_summary }}"
+      targets: "{{ drift_check_items }}"
+      failed_targets: "{{ drift_check_items | selectattr('status', 'equalto', 'drifted') | list }}"
+
+- name: drift_check | persist latest drift report
+  ansible.builtin.copy:
+    dest: "{{ drift_check_report_path }}"
+    mode: "0640"
+    content: "{{ drift_check_report | to_nice_json }}"
+
+- name: drift_check | persist history snapshot
+  ansible.builtin.copy:
+    dest: "{{ drift_check_job_path }}"
+    mode: "0640"
+    content: "{{ drift_check_report | to_nice_json }}"
+  when: drift_check_write_history | bool
+
+- name: drift_check | summarize monitored targets
+  ansible.builtin.debug:
+    msg:
+      - "Overall: {{ drift_check_overall_status }}"
+      - "Targets checked: {{ drift_check_summary.total }}"
+      - "Healthy: {{ drift_check_summary.healthy }}"
+      - "Drifted: {{ drift_check_summary.drifted }}"
+      - "Latest report: {{ drift_check_report_path }}"
+      - "Snapshot: {{ drift_check_job_path }}"
+
+- name: drift_check | fail only when explicitly enabled
+  ansible.builtin.fail:
+    msg: "Configuration drift detected; see {{ drift_check_report_path }}"
+  when:
+    - drift_check_fail_on_drift | bool
+    - (drift_check_summary.drifted | int) > 0

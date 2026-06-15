@@ -1,0 +1,52 @@
+{
+  "description": "Recorded command completed successfully.",
+  "fullName": "Pocket Lab Validation::Reliability::faults",
+  "historyId": "ee1162d2b3556ba6de5f02cc86676d10",
+  "labels": [
+    {
+      "name": "epic",
+      "value": "Tier 8 Validation Documentation"
+    },
+    {
+      "name": "feature",
+      "value": "Reliability"
+    },
+    {
+      "name": "story",
+      "value": "faults"
+    },
+    {
+      "name": "owner",
+      "value": "Platform"
+    },
+    {
+      "name": "severity",
+      "value": "blocker"
+    },
+    {
+      "name": "tag",
+      "value": "PASS"
+    }
+  ],
+  "name": "Fault and degraded-mode evidence",
+  "parameters": [
+    {
+      "name": "command",
+      "value": "bash scripts/dev/run-validation-gate.sh 300 env POCKETLAB_FAULTS_WORKERS=1 task test:faults"
+    },
+    {
+      "name": "evidence_state",
+      "value": "executed-command"
+    },
+    {
+      "name": "generated_at",
+      "value": "2026-06-14T19:32:50Z"
+    }
+  ],
+  "stage": "finished",
+  "start": 1781465570478,
+  "status": "passed",
+  "stop": 1781465570478,
+  "testCaseId": "faults",
+  "uuid": "a80d89c3-8420-5006-bbba-b5abecf459d8"
+}

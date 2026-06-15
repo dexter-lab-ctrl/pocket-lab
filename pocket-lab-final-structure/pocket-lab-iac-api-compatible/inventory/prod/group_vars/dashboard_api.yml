@@ -1,6 +1,0 @@
----
-dashboard_api_enabled: true
-dashboard_api_dir: "{{ common_base_dir }}/dashboard"
-dashboard_api_port: 8080
-dashboard_ui_dir: "{{ common_base_dir }}/pwa_dist"
-dashboard_health_path: /healthz

@@ -1,0 +1,52 @@
+{
+  "description": "Recorded command completed successfully.",
+  "fullName": "Pocket Lab Validation::Release::release-dry-run",
+  "historyId": "cddd6170fc4e8d4970824077e7828471",
+  "labels": [
+    {
+      "name": "epic",
+      "value": "Tier 8 Validation Documentation"
+    },
+    {
+      "name": "feature",
+      "value": "Release"
+    },
+    {
+      "name": "story",
+      "value": "release-dry-run"
+    },
+    {
+      "name": "owner",
+      "value": "Release Engineering"
+    },
+    {
+      "name": "severity",
+      "value": "blocker"
+    },
+    {
+      "name": "tag",
+      "value": "PASS"
+    }
+  ],
+  "name": "Release dry-run evidence",
+  "parameters": [
+    {
+      "name": "command",
+      "value": "timeout --kill-after=30s 900s task release:dry-run"
+    },
+    {
+      "name": "evidence_state",
+      "value": "executed-command"
+    },
+    {
+      "name": "generated_at",
+      "value": "2026-06-14T19:32:50Z"
+    }
+  ],
+  "stage": "finished",
+  "start": 1781465570479,
+  "status": "passed",
+  "stop": 1781465570479,
+  "testCaseId": "release-dry-run",
+  "uuid": "3fbeb504-4271-59a7-b42d-abbbb7dff11c"
+}

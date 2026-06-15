@@ -1,0 +1,174 @@
+{
+  "apiVersion": "pocketlab.io/v1alpha1",
+  "kind": "ThreatModelDriftManifest",
+  "metadata": {
+    "name": "pocketlab-threat-model-drift-manifest",
+    "tier": "6.8",
+    "description": "Detects stale threat-model artifacts when architecture, contracts, or operation metadata change.",
+    "sealedAt": "2026-06-13T23:15:28.703021+00:00"
+  },
+  "source_patterns": [
+    "architecture/structurizr/workspace.dsl",
+    "contracts/generated/openapi.json",
+    "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+    "contracts/operations/pocketlab-typed-operations.json",
+    "operations/*.yaml"
+  ],
+  "generated_outputs": [
+    "threat-model/pocketlab-threat-model.yaml",
+    "docs/security/security-architecture-threat-model.md",
+    "docs/security/generated/threat-model/pocketlab-threat-model.json",
+    "docs/security/generated/threat-model/index.md"
+  ],
+  "source_files": [
+    {
+      "path": "architecture/structurizr/workspace.dsl",
+      "sha256": "80659057feb60cff51f7afcd2b0fe61c4994b99b8377abed011ff2d082d46a9a",
+      "bytes": 13185
+    },
+    {
+      "path": "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+      "sha256": "80b91f358f774e6e9ba795171a22444075b093c0a1d518f905652298dfcfff72",
+      "bytes": 36658
+    },
+    {
+      "path": "contracts/generated/openapi.json",
+      "sha256": "c2aa4119d33c2616e85dbf9fb1ce23a1e24ce4e15d9cb13657bcb0c4681f4357",
+      "bytes": 198396
+    },
+    {
+      "path": "contracts/operations/pocketlab-typed-operations.json",
+      "sha256": "740abf611e28ab291df95cd70f040e5bfca20e9d3849842774ce8c32aea6ec9d",
+      "bytes": 22222
+    },
+    {
+      "path": "operations/backup_now.yaml",
+      "sha256": "acc49bf6bbfad8e4b9d757b92163aa42f893e289cdb57ba332920e284c7e549d",
+      "bytes": 1821
+    },
+    {
+      "path": "operations/backup_verify.yaml",
+      "sha256": "39a033d38487384d4f3a6242449f71b2e5fb87bab4f6f8b16172af5cd7288540",
+      "bytes": 1825
+    },
+    {
+      "path": "operations/catalog_refresh.yaml",
+      "sha256": "63a56f29313e31cc5abf2578b326b6b976d96c470a52db511eebf0075c9621e5",
+      "bytes": 1790
+    },
+    {
+      "path": "operations/configure_opa.yaml",
+      "sha256": "a41c4134342e868d7935007fe10e21f4e7b8aca44aa4a9e2a086caa3bace740b",
+      "bytes": 1839
+    },
+    {
+      "path": "operations/deploy_blueprint.yaml",
+      "sha256": "60590cbd7527d274351639823b0f5037a8f9e668015c0b0e0f77b37b425630f8",
+      "bytes": 1716
+    },
+    {
+      "path": "operations/drift_apply.yaml",
+      "sha256": "f3e9f5f563d36063504ea44ffc5d185a9769987ec9dd78b4e0bafd57d0ac1be1",
+      "bytes": 1825
+    },
+    {
+      "path": "operations/drift_approve.yaml",
+      "sha256": "ed8b54887c51e7239c41e52b14221b155451ae79501ba5f640515e9baff8aee1",
+      "bytes": 1750
+    },
+    {
+      "path": "operations/drift_ignore.yaml",
+      "sha256": "a0773dd9ae0d95c86bb899fa76c370867ba543316829c916ab9b90f0b9e79c59",
+      "bytes": 1756
+    },
+    {
+      "path": "operations/drift_preview.yaml",
+      "sha256": "75f4f18bd5cfbce4b8cf826af4487a43758e720f9e185fb7ca4b3a7c2fe6b542",
+      "bytes": 1804
+    },
+    {
+      "path": "operations/drift_scan.yaml",
+      "sha256": "ac912127e123ed5bfab72d2d0a968d008c68012bb7fc2c51c7cb13db2a115667",
+      "bytes": 1918
+    },
+    {
+      "path": "operations/fleet_join.yaml",
+      "sha256": "61d9653c389c98705edf930ca4733cfd2bbc5a73e689876024b70a4e7c5b8af0",
+      "bytes": 1903
+    },
+    {
+      "path": "operations/git_sync.yaml",
+      "sha256": "d43f97a7c8f95ecda5161eb099980d0ce09b4004ef7779606daeb81f34299e43",
+      "bytes": 1590
+    },
+    {
+      "path": "operations/health_check.yaml",
+      "sha256": "27208e976bb314a932e6daa1d26e4b45663c4d74e1d185d1af1cda93cc76c9a3",
+      "bytes": 1758
+    },
+    {
+      "path": "operations/release_apply.yaml",
+      "sha256": "71aaec58b212e6ac08f010daee50bf74b48a8650038089246b4005672c456e8d",
+      "bytes": 1983
+    },
+    {
+      "path": "operations/release_check.yaml",
+      "sha256": "6bdeb99f1aa5cc7d8a7f100df7e1d715d13fe0fac753ed45b65027e1d9043438",
+      "bytes": 1829
+    },
+    {
+      "path": "operations/restore_backup.yaml",
+      "sha256": "60895eaa4c40ff6a7827dce5f69656cb9815880d7985d658d2f97d5db91bcb8b",
+      "bytes": 1939
+    },
+    {
+      "path": "operations/rotate_secret.yaml",
+      "sha256": "237ca8464a4971a26fb57d9069570e288a7eb1ad65334ca019f631596a1bbb65",
+      "bytes": 1862
+    },
+    {
+      "path": "operations/secret_read_dynamic.yaml",
+      "sha256": "c9c87767604577e05d32776d25d5f1121144034a8e893a0ef688b094ec59c5e7",
+      "bytes": 1888
+    },
+    {
+      "path": "operations/security_scan.yaml",
+      "sha256": "aa98b073415206e46d30d9ddc3a8e458f36915277e8fd573e8d2a8fb7433ebcb",
+      "bytes": 1821
+    }
+  ],
+  "generated_output_files": [
+    {
+      "path": "threat-model/pocketlab-threat-model.yaml",
+      "sha256": "31ec864e6e6a2e2e8156032548c25e28d15a7f47dd68bab72d794ff3a37c94d4",
+      "bytes": 83328
+    },
+    {
+      "path": "docs/security/security-architecture-threat-model.md",
+      "sha256": "6351f1f89f09cecfa39a06bef657f10247efbd955392e335023fb27bae7bff91",
+      "bytes": 62656
+    },
+    {
+      "path": "docs/security/generated/threat-model/pocketlab-threat-model.json",
+      "sha256": "48549220931484547f4cb06d61717cff16e72fe0edc69fbc4a0136775369e218",
+      "bytes": 154230
+    },
+    {
+      "path": "docs/security/generated/threat-model/index.md",
+      "sha256": "1f64fe7f0390803bb88ccc24751e43af903ce38f6bb6e20f50f7a1c254ca38e4",
+      "bytes": 328
+    }
+  ],
+  "source_fingerprint": "7ffbfb5f2f58f70e39d3de0a82b57f160c56ab176308158ceaa606002bcd3f22",
+  "generated_output_fingerprint": "15cefc951c4424336235dd72a47a75d48edc71472ba9b067e91aabfa5ca29b0e",
+  "validation_commands": [
+    "task docs:threat-model:drift",
+    "task docs:threat-model:check",
+    "mkdocs build --strict"
+  ],
+  "remediation_commands": [
+    "task docs:threat-model",
+    "task docs:threat-model:drift:seal",
+    "task docs:threat-model:drift"
+  ]
+}

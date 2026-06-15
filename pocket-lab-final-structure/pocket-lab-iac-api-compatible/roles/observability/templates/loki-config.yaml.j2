@@ -3,7 +3,7 @@ auth_enabled: false
 server:
   http_listen_port: {{ observability_loki_port }}
   # [THE FIX]: Binds to localhost to avoid startup race conditions
-  http_listen_address: 127.0.0.1 
+  http_listen_address: 127.0.0.1
 
 common:
   instance_addr: 127.0.0.1

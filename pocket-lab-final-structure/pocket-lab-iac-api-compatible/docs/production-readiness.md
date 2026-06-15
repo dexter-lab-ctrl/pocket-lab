@@ -8,3 +8,7 @@ Before relying on the edge node for production workloads, ensure the following Z
 - **Branch Protection:** Protect the `main` branch in both repositories. The Dashboard API is architected to commit changes to `feature/*` branches, allowing Gitea Actions to validate the state change before merging.
 - **Identity Hardening:** Ensure `unauthenticated_metrics_access` is enabled in Vault specifically for the local loopback, allowing Prometheus to scrape system health without sidecar token managers, reducing circular dependencies.
 - **Mesh Integrity:** Store Tailscale API keys exclusively in Vault. Never commit keys or pre-authorized tokens to the GitOps catalog.
+
+## Enterprise NATS/JetStream alignment
+
+The IaC tree now treats NATS/JetStream as a first-class production dependency. `playbooks/65_nats.yml` renders the authenticated NATS server config, persistent per-role credentials, JetStream storage directory, and a non-secret manifest under `{{ common_state_dir }}/nats`. `playbooks/70_fastapi_control_plane.yml` must run after NATS and validates that the monitor endpoint is reachable and JetStream is enabled before declaring the FastAPI control plane ready. WebSocket traffic is proxied through Caddy via `/ws/*`, matching the React live event frontend.

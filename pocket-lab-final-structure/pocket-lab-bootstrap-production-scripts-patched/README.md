@@ -1,12 +1,13 @@
-# Pocket Lab Bootstrap
+# Pocket Lab Bootstrap Scripts
 
-This bundle performs the Day-0 bootstrap in strict order:
+This directory contains Day-0 bootstrap scripts and production initialization helpers for Pocket Lab.
 
-1. Termux prerequisites
-2. proot Ubuntu setup
-3. binary installation
-4. Vault + MariaDB + identity bootstrap
-5. GitOps repo seeding
-6. Tailscale enrollment
-7. Dashboard/API publication
-8. Smoke test
+Canonical documentation:
+
+- [Production Deployment, Bootstrap, and IaC](../../docs/prod/deployment-bootstrap-and-iac.md)
+- [Production Release Workflow and Readiness](../../docs/prod/release-workflow-and-readiness.md)
+
+Historical reference:
+
+- [Bootstrap README Archive](../../docs/reference/original-updated-md/pocket-lab-final-structure__pocket-lab-bootstrap-production-scripts-patched__README.md)
+- [Bootstrap Idempotency Notes Archive](../../docs/reference/original-updated-md/pocket-lab-final-structure__pocket-lab-bootstrap-production-scripts-patched__BOOTSTRAP_IDEMPOTENCY_NOTES.md)

@@ -23,7 +23,7 @@ vault_policies:
       path "secret/data/mariadb" { capabilities = ["read"] }
       path "secret/data/workloads/*" { capabilities = ["read"] }
       path "database/creds/gitea-role" { capabilities = ["read"] }
-  - name: dashboard-api
+  - name: fastapi-control-plane
     rules: |
       path "secret/data/gitea" { capabilities = ["read"] }
       path "secret/data/tailscale" { capabilities = ["read", "create", "update"] }
@@ -85,8 +85,8 @@ vault_approle_roles:
     token_ttl: 1h
     token_max_ttl: 24h
     secret_id_ttl: 24h
-  - name: dashboard-api
-    policies: [dashboard-api]
+  - name: fastapi-control-plane
+    policies: [fastapi-control-plane]
     token_ttl: 2h
     token_max_ttl: 24h
     secret_id_ttl: 24h

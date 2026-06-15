@@ -4,14 +4,16 @@ caddy_state_dir: "{{ common_base_dir }}/caddy"
 caddy_public_port: 8443
 
 # The directory where install-pwa-ui.sh extracts the React build
-caddy_pwa_dir: "/data/data/com.termux/files/home/pwa_dist"
+caddy_pwa_dir: "{{ common_pwa_dir }}"
 
-# Optional: Set this to your MagicDNS name (e.g., pocket-lab.tailnet123.ts.net) 
+# Optional: Set this to your MagicDNS name (e.g., pocket-lab.tailnet123.ts.net)
 # to enable automatic HTTPS via Ansible. If blank, defaults to port 8443 HTTP.
-caddy_tailscale_fqdn: "" 
+caddy_tailscale_fqdn: ""
 
 caddy_routes:
   api: 127.0.0.1:8080
+  gitea: 127.0.0.1:3030
   loki: 127.0.0.1:3100
+  gatus: 127.0.0.1:8081
 caddy_tls_mode: internal
 caddy_hsts_max_age: 31536000

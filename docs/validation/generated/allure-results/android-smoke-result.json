@@ -1,0 +1,52 @@
+{
+  "description": "No machine-readable advisory evidence found. This does not block the default release readiness calculation.",
+  "fullName": "Pocket Lab Validation::Platform::android-smoke",
+  "historyId": "c0390e351f277ff6fb0a34e1b2238b22",
+  "labels": [
+    {
+      "name": "epic",
+      "value": "Tier 8 Validation Documentation"
+    },
+    {
+      "name": "feature",
+      "value": "Platform"
+    },
+    {
+      "name": "story",
+      "value": "android-smoke"
+    },
+    {
+      "name": "owner",
+      "value": "Platform"
+    },
+    {
+      "name": "severity",
+      "value": "minor"
+    },
+    {
+      "name": "tag",
+      "value": "WARNING"
+    }
+  ],
+  "name": "Android / Termux edge smoke evidence",
+  "parameters": [
+    {
+      "name": "command",
+      "value": "task android:smoke"
+    },
+    {
+      "name": "evidence_state",
+      "value": "missing-advisory-evidence"
+    },
+    {
+      "name": "generated_at",
+      "value": "2026-06-14T19:32:50Z"
+    }
+  ],
+  "stage": "finished",
+  "start": 1781465570479,
+  "status": "skipped",
+  "stop": 1781465570479,
+  "testCaseId": "android-smoke",
+  "uuid": "25ec18ed-46c3-5363-a3ce-29a705e92ac1"
+}

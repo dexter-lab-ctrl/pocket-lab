@@ -1,0 +1,32 @@
+- name: vault | read role id
+  ansible.builtin.uri:
+    url: '{{ vault_api_addr }}/v1/auth/{{ vault_approle_mount }}/role/{{ vault_approle_role.name
+      }}/role-id'
+    method: GET
+    headers:
+      X-Vault-Token: '{{ vault_effective_token }}'
+    status_code: 200
+  register: vault_role_id_result
+  changed_when: false
+  no_log: true
+- name: vault | create secret id
+  ansible.builtin.uri:
+    url: '{{ vault_api_addr }}/v1/auth/{{ vault_approle_mount }}/role/{{ vault_approle_role.name
+      }}/secret-id'
+    method: POST
+    headers:
+      X-Vault-Token: '{{ vault_effective_token }}'
+    status_code: 200
+  register: vault_secret_id_result
+  changed_when: true
+  no_log: true
+- name: vault | store AppRole bundle
+  ansible.builtin.copy:
+    dest: '{{ vault_approle_exports_dir }}/{{ vault_approle_role.name }}.json'
+    mode: '0600'
+    content: |
+      {
+        "role_id": "{{ vault_role_id_result.json.data.role_id }}",
+        "secret_id": "{{ vault_secret_id_result.json.data.secret_id }}"
+      }
+  no_log: true

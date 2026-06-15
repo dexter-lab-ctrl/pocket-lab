@@ -1,0 +1,2171 @@
+apiVersion: pocketlab.io/v1alpha1
+kind: ThreatModel
+metadata:
+  name: pocketlab-threat-model
+  title: Pocket Lab Security Architecture & Threat Model
+  tier: '6.5'
+  generatedAt: '2026-06-13T23:15:29.689084+00:00'
+  sourceOfTruth: Repository-generated metadata. Operation-level security blocks in operations/*.yaml are required for new
+    features.
+evidence_sources:
+- type: structurizr
+  path: architecture/structurizr/workspace.dsl
+  notes: C4 architecture model and Tier 5B security views.
+- type: openapi
+  path: contracts/generated/openapi.json
+  api_path_count: 77
+- type: asyncapi
+  path: contracts/asyncapi/pocketlab-nats-jetstream.yaml
+  channel_count: 56
+- type: typed_operations
+  path: contracts/operations/pocketlab-typed-operations.json
+  operation_count: 19
+- type: operation_security_metadata
+  paths:
+  - operations/backup_now.yaml
+  - operations/backup_verify.yaml
+  - operations/catalog_refresh.yaml
+  - operations/configure_opa.yaml
+  - operations/deploy_blueprint.yaml
+  - operations/drift_apply.yaml
+  - operations/drift_approve.yaml
+  - operations/drift_ignore.yaml
+  - operations/drift_preview.yaml
+  - operations/drift_scan.yaml
+  - operations/fleet_join.yaml
+  - operations/git_sync.yaml
+  - operations/health_check.yaml
+  - operations/release_apply.yaml
+  - operations/release_check.yaml
+  - operations/restore_backup.yaml
+  - operations/rotate_secret.yaml
+  - operations/secret_read_dynamic.yaml
+  - operations/security_scan.yaml
+tier5b_views:
+- security-review
+- nats-command-event-boundaries
+- audit-and-dlq-paths
+assets:
+- name: FastAPI Control API
+  classification: control-plane API
+  evidence: OpenAPI paths
+- name: NATS / JetStream
+  classification: command and event backbone
+  evidence: AsyncAPI channels
+- name: Pocket Lab Worker
+  classification: typed operation executor
+  evidence: Structurizr worker container
+- name: Typed Operations Catalog
+  classification: execution contract
+  evidence: operations/*.yaml
+- name: Event Journal / Workflow Store
+  classification: workflow recovery evidence
+  evidence: Tier 5B audit view
+- name: Audit Trail / Evidence Store
+  classification: audit evidence
+  evidence: Tier 5B audit view
+- name: Vault / OpenBao Runtime
+  classification: secret backend
+  evidence: Tier 5B security view
+- name: OPA Runtime
+  classification: policy decision point
+  evidence: Tier 5B security view
+trust_boundaries:
+- name: browser_to_fastapi
+  description: Operation metadata declares crossing of browser_to_fastapi.
+  controls:
+  - asyncapi_subject_governance
+  - correlation_ids
+  - dlq_review_path
+  - event_redaction
+  - event_sourced_workflow_journal
+  - opa_policy_decision
+  - openapi_validation
+  - operation_audit_events
+  - payload_minimization
+  - secret_redaction
+  - typed_operation_schema
+  - vault_or_openbao_leases
+- name: fastapi_to_nats
+  description: Operation metadata declares crossing of fastapi_to_nats.
+  controls:
+  - asyncapi_subject_governance
+  - correlation_ids
+  - dlq_review_path
+  - event_redaction
+  - event_sourced_workflow_journal
+  - opa_policy_decision
+  - openapi_validation
+  - operation_audit_events
+  - payload_minimization
+  - secret_redaction
+  - typed_operation_schema
+  - vault_or_openbao_leases
+- name: nats_to_worker
+  description: Operation metadata declares crossing of nats_to_worker.
+  controls:
+  - asyncapi_subject_governance
+  - correlation_ids
+  - dlq_review_path
+  - event_redaction
+  - event_sourced_workflow_journal
+  - opa_policy_decision
+  - openapi_validation
+  - operation_audit_events
+  - payload_minimization
+  - secret_redaction
+  - typed_operation_schema
+  - vault_or_openbao_leases
+- name: worker_to_secrets_policy
+  description: Operation metadata declares crossing of worker_to_secrets_policy.
+  controls:
+  - asyncapi_subject_governance
+  - correlation_ids
+  - dlq_review_path
+  - event_redaction
+  - event_sourced_workflow_journal
+  - opa_policy_decision
+  - openapi_validation
+  - operation_audit_events
+  - payload_minimization
+  - secret_redaction
+  - typed_operation_schema
+  - vault_or_openbao_leases
+- name: worker_to_state_audit
+  description: Operation metadata declares crossing of worker_to_state_audit.
+  controls:
+  - asyncapi_subject_governance
+  - correlation_ids
+  - dlq_review_path
+  - event_redaction
+  - event_sourced_workflow_journal
+  - opa_policy_decision
+  - openapi_validation
+  - operation_audit_events
+  - payload_minimization
+  - secret_redaction
+  - typed_operation_schema
+  - vault_or_openbao_leases
+data_flows:
+- name: backup_now operation flow
+  source: React / Vite PWA
+  destination: FastAPI → NATS / JetStream → Worker
+  data: typed operation target, params, correlation ID, lifecycle events
+  trustBoundary: browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit
+  stride: &id001
+  - Tampering
+  - Repudiation
+  - Denial of Service
+  - Elevation of Privilege
+  evidence: &id002
+  - architecture/structurizr/workspace.dsl
+  - contracts/generated/openapi.json
+  - contracts/asyncapi/pocketlab-nats-jetstream.yaml
+  - contracts/operations/pocketlab-typed-operations.json
+  - operations/backup_now.yaml
+- name: backup_verify operation flow
+  source: React / Vite PWA
+  destination: FastAPI → NATS / JetStream → Worker
+  data: typed operation target, params, correlation ID, lifecycle events
+  trustBoundary: browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit
+  stride: &id003
+  - Tampering
+  - Repudiation
+  - Denial of Service
+  - Elevation of Privilege
+  evidence: &id004
+  - architecture/structurizr/workspace.dsl
+  - contracts/generated/openapi.json
+  - contracts/asyncapi/pocketlab-nats-jetstream.yaml
+  - contracts/operations/pocketlab-typed-operations.json
+  - operations/backup_verify.yaml
+- name: catalog_refresh operation flow
+  source: React / Vite PWA
+  destination: FastAPI → NATS / JetStream → Worker
+  data: typed operation target, params, correlation ID, lifecycle events
+  trustBoundary: browser_to_fastapi, fastapi_to_nats, nats_to_worker
+  stride: &id005
+  - Tampering
+  - Repudiation
+  evidence: &id006
+  - architecture/structurizr/workspace.dsl
+  - contracts/generated/openapi.json
+  - contracts/asyncapi/pocketlab-nats-jetstream.yaml
+  - contracts/operations/pocketlab-typed-operations.json
+  - operations/catalog_refresh.yaml
+- name: configure_opa operation flow
+  source: React / Vite PWA
+  destination: FastAPI → NATS / JetStream → Worker
+  data: typed operation target, params, correlation ID, lifecycle events
+  trustBoundary: browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy
+  stride: &id007
+  - Tampering
+  - Repudiation
+  - Information Disclosure
+  - Elevation of Privilege
+  evidence: &id008
+  - architecture/structurizr/workspace.dsl
+  - contracts/generated/openapi.json
+  - contracts/asyncapi/pocketlab-nats-jetstream.yaml
+  - contracts/operations/pocketlab-typed-operations.json
+  - operations/configure_opa.yaml
+- name: deploy_blueprint operation flow
+  source: React / Vite PWA
+  destination: FastAPI → NATS / JetStream → Worker
+  data: typed operation target, params, correlation ID, lifecycle events
+  trustBoundary: browser_to_fastapi, fastapi_to_nats, nats_to_worker
+  stride: &id009
+  - Tampering
+  - Repudiation
+  evidence: &id010
+  - architecture/structurizr/workspace.dsl
+  - contracts/generated/openapi.json
+  - contracts/asyncapi/pocketlab-nats-jetstream.yaml
+  - contracts/operations/pocketlab-typed-operations.json
+  - operations/deploy_blueprint.yaml
+- name: drift_apply operation flow
+  source: React / Vite PWA
+  destination: FastAPI → NATS / JetStream → Worker
+  data: typed operation target, params, correlation ID, lifecycle events
+  trustBoundary: browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit
+  stride: &id011
+  - Tampering
+  - Repudiation
+  - Denial of Service
+  - Elevation of Privilege
+  evidence: &id012
+  - architecture/structurizr/workspace.dsl
+  - contracts/generated/openapi.json
+  - contracts/asyncapi/pocketlab-nats-jetstream.yaml
+  - contracts/operations/pocketlab-typed-operations.json
+  - operations/drift_apply.yaml
+- name: drift_approve operation flow
+  source: React / Vite PWA
+  destination: FastAPI → NATS / JetStream → Worker
+  data: typed operation target, params, correlation ID, lifecycle events
+  trustBoundary: browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit
+  stride: &id013
+  - Tampering
+  - Repudiation
+  - Denial of Service
+  - Elevation of Privilege
+  evidence: &id014
+  - architecture/structurizr/workspace.dsl
+  - contracts/generated/openapi.json
+  - contracts/asyncapi/pocketlab-nats-jetstream.yaml
+  - contracts/operations/pocketlab-typed-operations.json
+  - operations/drift_approve.yaml
+- name: drift_ignore operation flow
+  source: React / Vite PWA
+  destination: FastAPI → NATS / JetStream → Worker
+  data: typed operation target, params, correlation ID, lifecycle events
+  trustBoundary: browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit
+  stride: &id015
+  - Tampering
+  - Repudiation
+  - Denial of Service
+  - Elevation of Privilege
+  evidence: &id016
+  - architecture/structurizr/workspace.dsl
+  - contracts/generated/openapi.json
+  - contracts/asyncapi/pocketlab-nats-jetstream.yaml
+  - contracts/operations/pocketlab-typed-operations.json
+  - operations/drift_ignore.yaml
+- name: drift_preview operation flow
+  source: React / Vite PWA
+  destination: FastAPI → NATS / JetStream → Worker
+  data: typed operation target, params, correlation ID, lifecycle events
+  trustBoundary: browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit
+  stride: &id017
+  - Tampering
+  - Repudiation
+  - Denial of Service
+  - Elevation of Privilege
+  evidence: &id018
+  - architecture/structurizr/workspace.dsl
+  - contracts/generated/openapi.json
+  - contracts/asyncapi/pocketlab-nats-jetstream.yaml
+  - contracts/operations/pocketlab-typed-operations.json
+  - operations/drift_preview.yaml
+- name: drift_scan operation flow
+  source: React / Vite PWA
+  destination: FastAPI → NATS / JetStream → Worker
+  data: typed operation target, params, correlation ID, lifecycle events
+  trustBoundary: browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit
+  stride: &id019
+  - Tampering
+  - Repudiation
+  - Denial of Service
+  - Elevation of Privilege
+  evidence: &id020
+  - architecture/structurizr/workspace.dsl
+  - contracts/generated/openapi.json
+  - contracts/asyncapi/pocketlab-nats-jetstream.yaml
+  - contracts/operations/pocketlab-typed-operations.json
+  - operations/drift_scan.yaml
+- name: fleet_join operation flow
+  source: React / Vite PWA
+  destination: FastAPI → NATS / JetStream → Worker
+  data: typed operation target, params, correlation ID, lifecycle events
+  trustBoundary: browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy
+  stride: &id021
+  - Tampering
+  - Repudiation
+  - Information Disclosure
+  - Elevation of Privilege
+  evidence: &id022
+  - architecture/structurizr/workspace.dsl
+  - contracts/generated/openapi.json
+  - contracts/asyncapi/pocketlab-nats-jetstream.yaml
+  - contracts/operations/pocketlab-typed-operations.json
+  - operations/fleet_join.yaml
+- name: git_sync operation flow
+  source: React / Vite PWA
+  destination: FastAPI → NATS / JetStream → Worker
+  data: typed operation target, params, correlation ID, lifecycle events
+  trustBoundary: browser_to_fastapi, fastapi_to_nats, nats_to_worker
+  stride: &id023
+  - Tampering
+  - Repudiation
+  evidence: &id024
+  - architecture/structurizr/workspace.dsl
+  - contracts/generated/openapi.json
+  - contracts/asyncapi/pocketlab-nats-jetstream.yaml
+  - contracts/operations/pocketlab-typed-operations.json
+  - operations/git_sync.yaml
+- name: health_check operation flow
+  source: React / Vite PWA
+  destination: FastAPI → NATS / JetStream → Worker
+  data: typed operation target, params, correlation ID, lifecycle events
+  trustBoundary: browser_to_fastapi, fastapi_to_nats, nats_to_worker
+  stride: &id025
+  - Tampering
+  - Repudiation
+  - Information Disclosure
+  - Denial of Service
+  evidence: &id026
+  - architecture/structurizr/workspace.dsl
+  - contracts/generated/openapi.json
+  - contracts/asyncapi/pocketlab-nats-jetstream.yaml
+  - contracts/operations/pocketlab-typed-operations.json
+  - operations/health_check.yaml
+- name: release_apply operation flow
+  source: React / Vite PWA
+  destination: FastAPI → NATS / JetStream → Worker
+  data: typed operation target, params, correlation ID, lifecycle events
+  trustBoundary: browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit
+  stride: &id027
+  - Tampering
+  - Repudiation
+  - Denial of Service
+  - Elevation of Privilege
+  evidence: &id028
+  - architecture/structurizr/workspace.dsl
+  - contracts/generated/openapi.json
+  - contracts/asyncapi/pocketlab-nats-jetstream.yaml
+  - contracts/operations/pocketlab-typed-operations.json
+  - operations/release_apply.yaml
+- name: release_check operation flow
+  source: React / Vite PWA
+  destination: FastAPI → NATS / JetStream → Worker
+  data: typed operation target, params, correlation ID, lifecycle events
+  trustBoundary: browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit
+  stride: &id029
+  - Tampering
+  - Repudiation
+  - Denial of Service
+  - Elevation of Privilege
+  evidence: &id030
+  - architecture/structurizr/workspace.dsl
+  - contracts/generated/openapi.json
+  - contracts/asyncapi/pocketlab-nats-jetstream.yaml
+  - contracts/operations/pocketlab-typed-operations.json
+  - operations/release_check.yaml
+- name: restore_backup operation flow
+  source: React / Vite PWA
+  destination: FastAPI → NATS / JetStream → Worker
+  data: typed operation target, params, correlation ID, lifecycle events
+  trustBoundary: browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit
+  stride: &id031
+  - Tampering
+  - Repudiation
+  - Denial of Service
+  - Elevation of Privilege
+  evidence: &id032
+  - architecture/structurizr/workspace.dsl
+  - contracts/generated/openapi.json
+  - contracts/asyncapi/pocketlab-nats-jetstream.yaml
+  - contracts/operations/pocketlab-typed-operations.json
+  - operations/restore_backup.yaml
+- name: rotate_secret operation flow
+  source: React / Vite PWA
+  destination: FastAPI → NATS / JetStream → Worker
+  data: typed operation target, params, correlation ID, lifecycle events
+  trustBoundary: browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy
+  stride: &id033
+  - Tampering
+  - Repudiation
+  - Information Disclosure
+  - Elevation of Privilege
+  evidence: &id034
+  - architecture/structurizr/workspace.dsl
+  - contracts/generated/openapi.json
+  - contracts/asyncapi/pocketlab-nats-jetstream.yaml
+  - contracts/operations/pocketlab-typed-operations.json
+  - operations/rotate_secret.yaml
+- name: secret_read_dynamic operation flow
+  source: React / Vite PWA
+  destination: FastAPI → NATS / JetStream → Worker
+  data: typed operation target, params, correlation ID, lifecycle events
+  trustBoundary: browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy
+  stride: &id035
+  - Tampering
+  - Repudiation
+  - Information Disclosure
+  - Elevation of Privilege
+  evidence: &id036
+  - architecture/structurizr/workspace.dsl
+  - contracts/generated/openapi.json
+  - contracts/asyncapi/pocketlab-nats-jetstream.yaml
+  - contracts/operations/pocketlab-typed-operations.json
+  - operations/secret_read_dynamic.yaml
+- name: security_scan operation flow
+  source: React / Vite PWA
+  destination: FastAPI → NATS / JetStream → Worker
+  data: typed operation target, params, correlation ID, lifecycle events
+  trustBoundary: browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy
+  stride: &id037
+  - Tampering
+  - Repudiation
+  - Information Disclosure
+  - Elevation of Privilege
+  evidence: &id038
+  - architecture/structurizr/workspace.dsl
+  - contracts/generated/openapi.json
+  - contracts/asyncapi/pocketlab-nats-jetstream.yaml
+  - contracts/operations/pocketlab-typed-operations.json
+  - operations/security_scan.yaml
+attack_surfaces:
+- name: api_endpoint
+  evidence_count: 19
+  examples:
+  - backup_now
+  - backup_verify
+  - catalog_refresh
+  - configure_opa
+  - deploy_blueprint
+  - drift_apply
+  - drift_approve
+  - drift_ignore
+  - drift_preview
+  - drift_scan
+  - fleet_join
+  - git_sync
+- name: audit_event_payload
+  evidence_count: 5
+  examples:
+  - configure_opa
+  - fleet_join
+  - rotate_secret
+  - secret_read_dynamic
+  - security_scan
+- name: dlq_subject
+  evidence_count: 10
+  examples:
+  - backup_now
+  - backup_verify
+  - drift_apply
+  - drift_approve
+  - drift_ignore
+  - drift_preview
+  - drift_scan
+  - release_apply
+  - release_check
+  - restore_backup
+- name: event_journal
+  evidence_count: 10
+  examples:
+  - backup_now
+  - backup_verify
+  - drift_apply
+  - drift_approve
+  - drift_ignore
+  - drift_preview
+  - drift_scan
+  - release_apply
+  - release_check
+  - restore_backup
+- name: nats_subject
+  evidence_count: 19
+  examples:
+  - backup_now
+  - backup_verify
+  - catalog_refresh
+  - configure_opa
+  - deploy_blueprint
+  - drift_apply
+  - drift_approve
+  - drift_ignore
+  - drift_preview
+  - drift_scan
+  - fleet_join
+  - git_sync
+- name: state_store
+  evidence_count: 10
+  examples:
+  - backup_now
+  - backup_verify
+  - drift_apply
+  - drift_approve
+  - drift_ignore
+  - drift_preview
+  - drift_scan
+  - release_apply
+  - release_check
+  - restore_backup
+- name: status_stream
+  evidence_count: 1
+  examples:
+  - health_check
+- name: telemetry_payload
+  evidence_count: 1
+  examples:
+  - health_check
+- name: vault_or_policy_adapter
+  evidence_count: 5
+  examples:
+  - configure_opa
+  - fleet_join
+  - rotate_secret
+  - secret_read_dynamic
+  - security_scan
+- name: worker_handler
+  evidence_count: 19
+  examples:
+  - backup_now
+  - backup_verify
+  - catalog_refresh
+  - configure_opa
+  - deploy_blueprint
+  - drift_apply
+  - drift_approve
+  - drift_ignore
+  - drift_preview
+  - drift_scan
+  - fleet_join
+  - git_sync
+operation_security:
+- name: backup_now
+  title: Create Backup
+  source_file: operations/backup_now.yaml
+  nats_subject: pocketlab.commands.operation.execute
+  api_entrypoints:
+  - /api/operations/execute
+  security:
+    data_classification: recovery
+    stride: *id001
+    trust_boundaries:
+    - browser_to_fastapi
+    - fastapi_to_nats
+    - nats_to_worker
+    - worker_to_state_audit
+    attack_surfaces: &id039
+    - api_endpoint
+    - nats_subject
+    - worker_handler
+    - state_store
+    - event_journal
+    - dlq_subject
+    mitigations: &id040
+    - typed_operation_schema
+    - openapi_validation
+    - asyncapi_subject_governance
+    - operation_audit_events
+    - event_sourced_workflow_journal
+    - dlq_review_path
+    - correlation_ids
+    residual_risks:
+    - Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    - Edge-first deployments remain sensitive to host, storage, and network availability.
+    evidence: *id002
+- name: backup_verify
+  title: Verify Backup
+  source_file: operations/backup_verify.yaml
+  nats_subject: pocketlab.commands.operation.execute
+  api_entrypoints:
+  - /api/operations/execute
+  security:
+    data_classification: recovery
+    stride: *id003
+    trust_boundaries:
+    - browser_to_fastapi
+    - fastapi_to_nats
+    - nats_to_worker
+    - worker_to_state_audit
+    attack_surfaces: &id041
+    - api_endpoint
+    - nats_subject
+    - worker_handler
+    - state_store
+    - event_journal
+    - dlq_subject
+    mitigations: &id042
+    - typed_operation_schema
+    - openapi_validation
+    - asyncapi_subject_governance
+    - operation_audit_events
+    - event_sourced_workflow_journal
+    - dlq_review_path
+    - correlation_ids
+    residual_risks:
+    - Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    - Edge-first deployments remain sensitive to host, storage, and network availability.
+    evidence: *id004
+- name: catalog_refresh
+  title: Refresh App Catalog
+  source_file: operations/catalog_refresh.yaml
+  nats_subject: pocketlab.commands.catalog.refresh
+  api_entrypoints:
+  - /api/catalog/refresh
+  - /api/operations/execute
+  security:
+    data_classification: operational
+    stride: *id005
+    trust_boundaries:
+    - browser_to_fastapi
+    - fastapi_to_nats
+    - nats_to_worker
+    attack_surfaces: &id043
+    - api_endpoint
+    - nats_subject
+    - worker_handler
+    mitigations: &id044
+    - typed_operation_schema
+    - openapi_validation
+    - asyncapi_subject_governance
+    - operation_audit_events
+    residual_risks:
+    - Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    evidence: *id006
+- name: configure_opa
+  title: Configure OPA
+  source_file: operations/configure_opa.yaml
+  nats_subject: pocketlab.commands.security.configure_opa
+  api_entrypoints:
+  - /api/operations/execute
+  security:
+    data_classification: policy
+    stride: *id007
+    trust_boundaries:
+    - browser_to_fastapi
+    - fastapi_to_nats
+    - nats_to_worker
+    - worker_to_secrets_policy
+    attack_surfaces: &id045
+    - api_endpoint
+    - nats_subject
+    - worker_handler
+    - vault_or_policy_adapter
+    - audit_event_payload
+    mitigations: &id046
+    - typed_operation_schema
+    - openapi_validation
+    - asyncapi_subject_governance
+    - operation_audit_events
+    - opa_policy_decision
+    - secret_redaction
+    - vault_or_openbao_leases
+    residual_risks:
+    - Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    - New secret or policy fields may require manual redaction review.
+    evidence: *id008
+- name: deploy_blueprint
+  title: Deploy Blueprint
+  source_file: operations/deploy_blueprint.yaml
+  nats_subject: pocketlab.commands.operation.execute
+  api_entrypoints:
+  - /api/operations/execute
+  security:
+    data_classification: operational
+    stride: *id009
+    trust_boundaries:
+    - browser_to_fastapi
+    - fastapi_to_nats
+    - nats_to_worker
+    attack_surfaces: &id047
+    - api_endpoint
+    - nats_subject
+    - worker_handler
+    mitigations: &id048
+    - typed_operation_schema
+    - openapi_validation
+    - asyncapi_subject_governance
+    - operation_audit_events
+    residual_risks:
+    - Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    evidence: *id010
+- name: drift_apply
+  title: Apply Drift Remediation
+  source_file: operations/drift_apply.yaml
+  nats_subject: pocketlab.commands.drift.apply
+  api_entrypoints:
+  - /api/operations/execute
+  security:
+    data_classification: configuration
+    stride: *id011
+    trust_boundaries:
+    - browser_to_fastapi
+    - fastapi_to_nats
+    - nats_to_worker
+    - worker_to_state_audit
+    attack_surfaces: &id049
+    - api_endpoint
+    - nats_subject
+    - worker_handler
+    - state_store
+    - event_journal
+    - dlq_subject
+    mitigations: &id050
+    - typed_operation_schema
+    - openapi_validation
+    - asyncapi_subject_governance
+    - operation_audit_events
+    - event_sourced_workflow_journal
+    - dlq_review_path
+    - correlation_ids
+    residual_risks:
+    - Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    - Edge-first deployments remain sensitive to host, storage, and network availability.
+    evidence: *id012
+- name: drift_approve
+  title: Approve Drift Remediation
+  source_file: operations/drift_approve.yaml
+  nats_subject: pocketlab.commands.drift.approve
+  api_entrypoints:
+  - /api/operations/execute
+  security:
+    data_classification: configuration
+    stride: *id013
+    trust_boundaries:
+    - browser_to_fastapi
+    - fastapi_to_nats
+    - nats_to_worker
+    - worker_to_state_audit
+    attack_surfaces: &id051
+    - api_endpoint
+    - nats_subject
+    - worker_handler
+    - state_store
+    - event_journal
+    - dlq_subject
+    mitigations: &id052
+    - typed_operation_schema
+    - openapi_validation
+    - asyncapi_subject_governance
+    - operation_audit_events
+    - event_sourced_workflow_journal
+    - dlq_review_path
+    - correlation_ids
+    residual_risks:
+    - Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    - Edge-first deployments remain sensitive to host, storage, and network availability.
+    evidence: *id014
+- name: drift_ignore
+  title: Ignore Drift Finding
+  source_file: operations/drift_ignore.yaml
+  nats_subject: pocketlab.commands.drift.ignore
+  api_entrypoints:
+  - /api/operations/execute
+  security:
+    data_classification: configuration
+    stride: *id015
+    trust_boundaries:
+    - browser_to_fastapi
+    - fastapi_to_nats
+    - nats_to_worker
+    - worker_to_state_audit
+    attack_surfaces: &id053
+    - api_endpoint
+    - nats_subject
+    - worker_handler
+    - state_store
+    - event_journal
+    - dlq_subject
+    mitigations: &id054
+    - typed_operation_schema
+    - openapi_validation
+    - asyncapi_subject_governance
+    - operation_audit_events
+    - event_sourced_workflow_journal
+    - dlq_review_path
+    - correlation_ids
+    residual_risks:
+    - Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    - Edge-first deployments remain sensitive to host, storage, and network availability.
+    evidence: *id016
+- name: drift_preview
+  title: Preview Drift Remediation
+  source_file: operations/drift_preview.yaml
+  nats_subject: pocketlab.commands.drift.preview
+  api_entrypoints:
+  - /api/operations/preview
+  - /api/operations/execute
+  security:
+    data_classification: configuration
+    stride: *id017
+    trust_boundaries:
+    - browser_to_fastapi
+    - fastapi_to_nats
+    - nats_to_worker
+    - worker_to_state_audit
+    attack_surfaces: &id055
+    - api_endpoint
+    - nats_subject
+    - worker_handler
+    - state_store
+    - event_journal
+    - dlq_subject
+    mitigations: &id056
+    - typed_operation_schema
+    - openapi_validation
+    - asyncapi_subject_governance
+    - operation_audit_events
+    - event_sourced_workflow_journal
+    - dlq_review_path
+    - correlation_ids
+    residual_risks:
+    - Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    - Edge-first deployments remain sensitive to host, storage, and network availability.
+    evidence: *id018
+- name: drift_scan
+  title: Run Drift Scan
+  source_file: operations/drift_scan.yaml
+  nats_subject: pocketlab.commands.drift.scan
+  api_entrypoints:
+  - /api/operations/execute
+  security:
+    data_classification: configuration
+    stride: *id019
+    trust_boundaries:
+    - browser_to_fastapi
+    - fastapi_to_nats
+    - nats_to_worker
+    - worker_to_state_audit
+    attack_surfaces: &id057
+    - api_endpoint
+    - nats_subject
+    - worker_handler
+    - state_store
+    - event_journal
+    - dlq_subject
+    mitigations: &id058
+    - typed_operation_schema
+    - openapi_validation
+    - asyncapi_subject_governance
+    - operation_audit_events
+    - event_sourced_workflow_journal
+    - dlq_review_path
+    - correlation_ids
+    residual_risks:
+    - Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    - Edge-first deployments remain sensitive to host, storage, and network availability.
+    evidence: *id020
+- name: fleet_join
+  title: Join Fleet
+  source_file: operations/fleet_join.yaml
+  nats_subject: pocketlab.commands.fleet.join
+  api_entrypoints:
+  - /api/operations/execute
+  security:
+    data_classification: secret
+    stride: *id021
+    trust_boundaries:
+    - browser_to_fastapi
+    - fastapi_to_nats
+    - nats_to_worker
+    - worker_to_secrets_policy
+    attack_surfaces: &id059
+    - api_endpoint
+    - nats_subject
+    - worker_handler
+    - vault_or_policy_adapter
+    - audit_event_payload
+    mitigations: &id060
+    - typed_operation_schema
+    - openapi_validation
+    - asyncapi_subject_governance
+    - operation_audit_events
+    - opa_policy_decision
+    - secret_redaction
+    - vault_or_openbao_leases
+    residual_risks:
+    - Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    - New secret or policy fields may require manual redaction review.
+    evidence: *id022
+- name: git_sync
+  title: GitOps Sync
+  source_file: operations/git_sync.yaml
+  nats_subject: pocketlab.commands.operation.execute
+  api_entrypoints:
+  - /api/operations/execute
+  security:
+    data_classification: operational
+    stride: *id023
+    trust_boundaries:
+    - browser_to_fastapi
+    - fastapi_to_nats
+    - nats_to_worker
+    attack_surfaces: &id061
+    - api_endpoint
+    - nats_subject
+    - worker_handler
+    mitigations: &id062
+    - typed_operation_schema
+    - openapi_validation
+    - asyncapi_subject_governance
+    - operation_audit_events
+    residual_risks:
+    - Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    evidence: *id024
+- name: health_check
+  title: Run Health Check
+  source_file: operations/health_check.yaml
+  nats_subject: pocketlab.commands.health.check
+  api_entrypoints:
+  - /api/health/check
+  security:
+    data_classification: telemetry
+    stride: *id025
+    trust_boundaries:
+    - browser_to_fastapi
+    - fastapi_to_nats
+    - nats_to_worker
+    attack_surfaces: &id063
+    - api_endpoint
+    - nats_subject
+    - worker_handler
+    - telemetry_payload
+    - status_stream
+    mitigations: &id064
+    - typed_operation_schema
+    - openapi_validation
+    - asyncapi_subject_governance
+    - operation_audit_events
+    - payload_minimization
+    - event_redaction
+    residual_risks:
+    - Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    - Telemetry schemas can drift if new fields are added without privacy review.
+    evidence: *id026
+- name: release_apply
+  title: Apply Release
+  source_file: operations/release_apply.yaml
+  nats_subject: pocketlab.commands.release.apply
+  api_entrypoints:
+  - /api/release/self-update/apply
+  security:
+    data_classification: release
+    stride: *id027
+    trust_boundaries:
+    - browser_to_fastapi
+    - fastapi_to_nats
+    - nats_to_worker
+    - worker_to_state_audit
+    attack_surfaces: &id065
+    - api_endpoint
+    - nats_subject
+    - worker_handler
+    - state_store
+    - event_journal
+    - dlq_subject
+    mitigations: &id066
+    - typed_operation_schema
+    - openapi_validation
+    - asyncapi_subject_governance
+    - operation_audit_events
+    - event_sourced_workflow_journal
+    - dlq_review_path
+    - correlation_ids
+    residual_risks:
+    - Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    - Edge-first deployments remain sensitive to host, storage, and network availability.
+    evidence: *id028
+- name: release_check
+  title: Check Release
+  source_file: operations/release_check.yaml
+  nats_subject: pocketlab.commands.release.check
+  api_entrypoints:
+  - /api/release/self-update/check
+  security:
+    data_classification: release
+    stride: *id029
+    trust_boundaries:
+    - browser_to_fastapi
+    - fastapi_to_nats
+    - nats_to_worker
+    - worker_to_state_audit
+    attack_surfaces: &id067
+    - api_endpoint
+    - nats_subject
+    - worker_handler
+    - state_store
+    - event_journal
+    - dlq_subject
+    mitigations: &id068
+    - typed_operation_schema
+    - openapi_validation
+    - asyncapi_subject_governance
+    - operation_audit_events
+    - event_sourced_workflow_journal
+    - dlq_review_path
+    - correlation_ids
+    residual_risks:
+    - Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    - Edge-first deployments remain sensitive to host, storage, and network availability.
+    evidence: *id030
+- name: restore_backup
+  title: Restore Backup
+  source_file: operations/restore_backup.yaml
+  nats_subject: pocketlab.commands.operation.execute
+  api_entrypoints:
+  - /api/operations/execute
+  - /api/operations/preview
+  security:
+    data_classification: recovery
+    stride: *id031
+    trust_boundaries:
+    - browser_to_fastapi
+    - fastapi_to_nats
+    - nats_to_worker
+    - worker_to_state_audit
+    attack_surfaces: &id069
+    - api_endpoint
+    - nats_subject
+    - worker_handler
+    - state_store
+    - event_journal
+    - dlq_subject
+    mitigations: &id070
+    - typed_operation_schema
+    - openapi_validation
+    - asyncapi_subject_governance
+    - operation_audit_events
+    - event_sourced_workflow_journal
+    - dlq_review_path
+    - correlation_ids
+    residual_risks:
+    - Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    - Edge-first deployments remain sensitive to host, storage, and network availability.
+    evidence: *id032
+- name: rotate_secret
+  title: Rotate Secret
+  source_file: operations/rotate_secret.yaml
+  nats_subject: pocketlab.commands.vault.rotate
+  api_entrypoints:
+  - /api/operations/execute
+  security:
+    data_classification: secret
+    stride: *id033
+    trust_boundaries:
+    - browser_to_fastapi
+    - fastapi_to_nats
+    - nats_to_worker
+    - worker_to_secrets_policy
+    attack_surfaces: &id071
+    - api_endpoint
+    - nats_subject
+    - worker_handler
+    - vault_or_policy_adapter
+    - audit_event_payload
+    mitigations: &id072
+    - typed_operation_schema
+    - openapi_validation
+    - asyncapi_subject_governance
+    - operation_audit_events
+    - opa_policy_decision
+    - secret_redaction
+    - vault_or_openbao_leases
+    residual_risks:
+    - Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    - New secret or policy fields may require manual redaction review.
+    evidence: *id034
+- name: secret_read_dynamic
+  title: Read Dynamic Secret
+  source_file: operations/secret_read_dynamic.yaml
+  nats_subject: pocketlab.commands.vault.dynamic_secret
+  api_entrypoints:
+  - /api/operations/execute
+  security:
+    data_classification: secret
+    stride: *id035
+    trust_boundaries:
+    - browser_to_fastapi
+    - fastapi_to_nats
+    - nats_to_worker
+    - worker_to_secrets_policy
+    attack_surfaces: &id073
+    - api_endpoint
+    - nats_subject
+    - worker_handler
+    - vault_or_policy_adapter
+    - audit_event_payload
+    mitigations: &id074
+    - typed_operation_schema
+    - openapi_validation
+    - asyncapi_subject_governance
+    - operation_audit_events
+    - opa_policy_decision
+    - secret_redaction
+    - vault_or_openbao_leases
+    residual_risks:
+    - Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    - New secret or policy fields may require manual redaction review.
+    evidence: *id036
+- name: security_scan
+  title: Run Security Scan
+  source_file: operations/security_scan.yaml
+  nats_subject: pocketlab.commands.security.scan
+  api_entrypoints:
+  - /api/security/scan
+  security:
+    data_classification: policy
+    stride: *id037
+    trust_boundaries:
+    - browser_to_fastapi
+    - fastapi_to_nats
+    - nats_to_worker
+    - worker_to_secrets_policy
+    attack_surfaces: &id075
+    - api_endpoint
+    - nats_subject
+    - worker_handler
+    - vault_or_policy_adapter
+    - audit_event_payload
+    mitigations: &id076
+    - typed_operation_schema
+    - openapi_validation
+    - asyncapi_subject_governance
+    - operation_audit_events
+    - opa_policy_decision
+    - secret_redaction
+    - vault_or_openbao_leases
+    residual_risks:
+    - Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    - New secret or policy fields may require manual redaction review.
+    evidence: *id038
+threats:
+- id: TM-S-001
+  source: baseline
+  stride: Spoofing
+  scenario: An untrusted client attempts to impersonate the UI, worker, or fleet agent.
+  affected:
+  - FastAPI Control API
+  - NATS / JetStream
+  - Fleet Agent Control
+  mitigations:
+  - API auth/write gates
+  - NATS subject role separation
+  - fleet join validation
+  residualRisk: Misconfigured local development credentials can weaken role boundaries.
+  evidence:
+  - architecture/structurizr/workspace.dsl
+- id: TM-T-001
+  source: baseline
+  stride: Tampering
+  scenario: A caller modifies operation payloads, catalog data, or NATS command bodies.
+  affected:
+  - Typed Operations Catalog
+  - NATS / JetStream
+  - Worker
+  mitigations:
+  - typed operation schema validation
+  - AsyncAPI subject governance
+  - operation metadata checks
+  residualRisk: A compromised operator account can still submit authorized destructive changes.
+  evidence:
+  - contracts/operations/pocketlab-typed-operations.json
+- id: TM-R-001
+  source: baseline
+  stride: Repudiation
+  scenario: A sensitive release, vault, drift, or restore action cannot be traced after execution.
+  affected:
+  - Audit Trail / Evidence Store
+  - Event Journal / Workflow Store
+  mitigations:
+  - correlation IDs
+  - audit events
+  - event-sourced workflow journal
+  residualRisk: Local storage loss can remove evidence unless backed up.
+  evidence:
+  - architecture/structurizr/workspace.dsl
+- id: TM-I-001
+  source: baseline
+  stride: Information Disclosure
+  scenario: Secrets leak through logs, events, audit payloads, UI streams, or DLQ records.
+  affected:
+  - Vault / OpenBao Runtime
+  - Event Journal
+  - DLQ / Retry Subjects
+  mitigations:
+  - redaction rules
+  - journal redaction tests
+  - DLQ payload review
+  residualRisk: New secret field names need continuous review.
+  evidence:
+  - tests/backend/test_journal_redaction.py
+- id: TM-D-001
+  source: baseline
+  stride: Denial of Service
+  scenario: NATS, worker, OPA, Vault, or the API becomes unavailable during an operation.
+  affected:
+  - FastAPI
+  - NATS / JetStream
+  - Worker
+  - OPA
+  - Vault
+  mitigations:
+  - readiness gates
+  - JetStream retry/DLQ
+  - degraded-mode tests
+  residualRisk: Single-device edge deployments remain capacity constrained.
+  evidence:
+  - contracts/asyncapi/pocketlab-nats-jetstream.yaml
+- id: TM-E-001
+  source: baseline
+  stride: Elevation of Privilege
+  scenario: A lower-privileged path triggers privileged operations such as release apply, restore, or secret rotation.
+  affected:
+  - FastAPI Control API
+  - Policy Guardrails
+  - Typed Operations Catalog
+  mitigations:
+  - write authorization
+  - OPA policy decisions
+  - operation safety metadata
+  residualRisk: Policy gaps can appear when new operations are added without matching guardrails.
+  evidence:
+  - operations/*.yaml
+- id: OP-BACKUP_NOW-TAMPERING
+  source: operation_metadata
+  operation: backup_now
+  stride: Tampering
+  scenario: backup_now may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id039
+  mitigations: *id040
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id002
+- id: OP-BACKUP_NOW-REPUDIATION
+  source: operation_metadata
+  operation: backup_now
+  stride: Repudiation
+  scenario: backup_now may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id039
+  mitigations: *id040
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id002
+- id: OP-BACKUP_NOW-DENIAL
+  source: operation_metadata
+  operation: backup_now
+  stride: Denial of Service
+  scenario: backup_now may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id039
+  mitigations: *id040
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id002
+- id: OP-BACKUP_NOW-ELEVATION
+  source: operation_metadata
+  operation: backup_now
+  stride: Elevation of Privilege
+  scenario: backup_now may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id039
+  mitigations: *id040
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id002
+- id: OP-BACKUP_VERIFY-TAMPERING
+  source: operation_metadata
+  operation: backup_verify
+  stride: Tampering
+  scenario: backup_verify may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id041
+  mitigations: *id042
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id004
+- id: OP-BACKUP_VERIFY-REPUDIATION
+  source: operation_metadata
+  operation: backup_verify
+  stride: Repudiation
+  scenario: backup_verify may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id041
+  mitigations: *id042
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id004
+- id: OP-BACKUP_VERIFY-DENIAL
+  source: operation_metadata
+  operation: backup_verify
+  stride: Denial of Service
+  scenario: backup_verify may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id041
+  mitigations: *id042
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id004
+- id: OP-BACKUP_VERIFY-ELEVATION
+  source: operation_metadata
+  operation: backup_verify
+  stride: Elevation of Privilege
+  scenario: backup_verify may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id041
+  mitigations: *id042
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id004
+- id: OP-CATALOG_REFRESH-TAMPERING
+  source: operation_metadata
+  operation: catalog_refresh
+  stride: Tampering
+  scenario: catalog_refresh may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker.
+  affected: *id043
+  mitigations: *id044
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  evidence: *id006
+- id: OP-CATALOG_REFRESH-REPUDIATION
+  source: operation_metadata
+  operation: catalog_refresh
+  stride: Repudiation
+  scenario: catalog_refresh may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker.
+  affected: *id043
+  mitigations: *id044
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  evidence: *id006
+- id: OP-CONFIGURE_OPA-TAMPERING
+  source: operation_metadata
+  operation: configure_opa
+  stride: Tampering
+  scenario: configure_opa may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy.
+  affected: *id045
+  mitigations: *id046
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    New secret or policy fields may require manual redaction review.
+  evidence: *id008
+- id: OP-CONFIGURE_OPA-REPUDIATION
+  source: operation_metadata
+  operation: configure_opa
+  stride: Repudiation
+  scenario: configure_opa may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy.
+  affected: *id045
+  mitigations: *id046
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    New secret or policy fields may require manual redaction review.
+  evidence: *id008
+- id: OP-CONFIGURE_OPA-INFORMATION
+  source: operation_metadata
+  operation: configure_opa
+  stride: Information Disclosure
+  scenario: configure_opa may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy.
+  affected: *id045
+  mitigations: *id046
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    New secret or policy fields may require manual redaction review.
+  evidence: *id008
+- id: OP-CONFIGURE_OPA-ELEVATION
+  source: operation_metadata
+  operation: configure_opa
+  stride: Elevation of Privilege
+  scenario: configure_opa may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy.
+  affected: *id045
+  mitigations: *id046
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    New secret or policy fields may require manual redaction review.
+  evidence: *id008
+- id: OP-DEPLOY_BLUEPRINT-TAMPERING
+  source: operation_metadata
+  operation: deploy_blueprint
+  stride: Tampering
+  scenario: deploy_blueprint may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker.
+  affected: *id047
+  mitigations: *id048
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  evidence: *id010
+- id: OP-DEPLOY_BLUEPRINT-REPUDIATION
+  source: operation_metadata
+  operation: deploy_blueprint
+  stride: Repudiation
+  scenario: deploy_blueprint may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker.
+  affected: *id047
+  mitigations: *id048
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  evidence: *id010
+- id: OP-DRIFT_APPLY-TAMPERING
+  source: operation_metadata
+  operation: drift_apply
+  stride: Tampering
+  scenario: drift_apply may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id049
+  mitigations: *id050
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id012
+- id: OP-DRIFT_APPLY-REPUDIATION
+  source: operation_metadata
+  operation: drift_apply
+  stride: Repudiation
+  scenario: drift_apply may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id049
+  mitigations: *id050
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id012
+- id: OP-DRIFT_APPLY-DENIAL
+  source: operation_metadata
+  operation: drift_apply
+  stride: Denial of Service
+  scenario: drift_apply may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id049
+  mitigations: *id050
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id012
+- id: OP-DRIFT_APPLY-ELEVATION
+  source: operation_metadata
+  operation: drift_apply
+  stride: Elevation of Privilege
+  scenario: drift_apply may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id049
+  mitigations: *id050
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id012
+- id: OP-DRIFT_APPROVE-TAMPERING
+  source: operation_metadata
+  operation: drift_approve
+  stride: Tampering
+  scenario: drift_approve may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id051
+  mitigations: *id052
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id014
+- id: OP-DRIFT_APPROVE-REPUDIATION
+  source: operation_metadata
+  operation: drift_approve
+  stride: Repudiation
+  scenario: drift_approve may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id051
+  mitigations: *id052
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id014
+- id: OP-DRIFT_APPROVE-DENIAL
+  source: operation_metadata
+  operation: drift_approve
+  stride: Denial of Service
+  scenario: drift_approve may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id051
+  mitigations: *id052
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id014
+- id: OP-DRIFT_APPROVE-ELEVATION
+  source: operation_metadata
+  operation: drift_approve
+  stride: Elevation of Privilege
+  scenario: drift_approve may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id051
+  mitigations: *id052
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id014
+- id: OP-DRIFT_IGNORE-TAMPERING
+  source: operation_metadata
+  operation: drift_ignore
+  stride: Tampering
+  scenario: drift_ignore may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id053
+  mitigations: *id054
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id016
+- id: OP-DRIFT_IGNORE-REPUDIATION
+  source: operation_metadata
+  operation: drift_ignore
+  stride: Repudiation
+  scenario: drift_ignore may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id053
+  mitigations: *id054
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id016
+- id: OP-DRIFT_IGNORE-DENIAL
+  source: operation_metadata
+  operation: drift_ignore
+  stride: Denial of Service
+  scenario: drift_ignore may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id053
+  mitigations: *id054
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id016
+- id: OP-DRIFT_IGNORE-ELEVATION
+  source: operation_metadata
+  operation: drift_ignore
+  stride: Elevation of Privilege
+  scenario: drift_ignore may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id053
+  mitigations: *id054
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id016
+- id: OP-DRIFT_PREVIEW-TAMPERING
+  source: operation_metadata
+  operation: drift_preview
+  stride: Tampering
+  scenario: drift_preview may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id055
+  mitigations: *id056
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id018
+- id: OP-DRIFT_PREVIEW-REPUDIATION
+  source: operation_metadata
+  operation: drift_preview
+  stride: Repudiation
+  scenario: drift_preview may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id055
+  mitigations: *id056
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id018
+- id: OP-DRIFT_PREVIEW-DENIAL
+  source: operation_metadata
+  operation: drift_preview
+  stride: Denial of Service
+  scenario: drift_preview may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id055
+  mitigations: *id056
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id018
+- id: OP-DRIFT_PREVIEW-ELEVATION
+  source: operation_metadata
+  operation: drift_preview
+  stride: Elevation of Privilege
+  scenario: drift_preview may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id055
+  mitigations: *id056
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id018
+- id: OP-DRIFT_SCAN-TAMPERING
+  source: operation_metadata
+  operation: drift_scan
+  stride: Tampering
+  scenario: drift_scan may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id057
+  mitigations: *id058
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id020
+- id: OP-DRIFT_SCAN-REPUDIATION
+  source: operation_metadata
+  operation: drift_scan
+  stride: Repudiation
+  scenario: drift_scan may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id057
+  mitigations: *id058
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id020
+- id: OP-DRIFT_SCAN-DENIAL
+  source: operation_metadata
+  operation: drift_scan
+  stride: Denial of Service
+  scenario: drift_scan may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id057
+  mitigations: *id058
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id020
+- id: OP-DRIFT_SCAN-ELEVATION
+  source: operation_metadata
+  operation: drift_scan
+  stride: Elevation of Privilege
+  scenario: drift_scan may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id057
+  mitigations: *id058
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id020
+- id: OP-FLEET_JOIN-TAMPERING
+  source: operation_metadata
+  operation: fleet_join
+  stride: Tampering
+  scenario: fleet_join may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy.
+  affected: *id059
+  mitigations: *id060
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    New secret or policy fields may require manual redaction review.
+  evidence: *id022
+- id: OP-FLEET_JOIN-REPUDIATION
+  source: operation_metadata
+  operation: fleet_join
+  stride: Repudiation
+  scenario: fleet_join may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy.
+  affected: *id059
+  mitigations: *id060
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    New secret or policy fields may require manual redaction review.
+  evidence: *id022
+- id: OP-FLEET_JOIN-INFORMATION
+  source: operation_metadata
+  operation: fleet_join
+  stride: Information Disclosure
+  scenario: fleet_join may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy.
+  affected: *id059
+  mitigations: *id060
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    New secret or policy fields may require manual redaction review.
+  evidence: *id022
+- id: OP-FLEET_JOIN-ELEVATION
+  source: operation_metadata
+  operation: fleet_join
+  stride: Elevation of Privilege
+  scenario: fleet_join may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy.
+  affected: *id059
+  mitigations: *id060
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    New secret or policy fields may require manual redaction review.
+  evidence: *id022
+- id: OP-GIT_SYNC-TAMPERING
+  source: operation_metadata
+  operation: git_sync
+  stride: Tampering
+  scenario: git_sync may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker.
+  affected: *id061
+  mitigations: *id062
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  evidence: *id024
+- id: OP-GIT_SYNC-REPUDIATION
+  source: operation_metadata
+  operation: git_sync
+  stride: Repudiation
+  scenario: git_sync may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker.
+  affected: *id061
+  mitigations: *id062
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  evidence: *id024
+- id: OP-HEALTH_CHECK-TAMPERING
+  source: operation_metadata
+  operation: health_check
+  stride: Tampering
+  scenario: health_check may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker.
+  affected: *id063
+  mitigations: *id064
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Telemetry schemas can drift if new fields are added without privacy review.
+  evidence: *id026
+- id: OP-HEALTH_CHECK-REPUDIATION
+  source: operation_metadata
+  operation: health_check
+  stride: Repudiation
+  scenario: health_check may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker.
+  affected: *id063
+  mitigations: *id064
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Telemetry schemas can drift if new fields are added without privacy review.
+  evidence: *id026
+- id: OP-HEALTH_CHECK-INFORMATION
+  source: operation_metadata
+  operation: health_check
+  stride: Information Disclosure
+  scenario: health_check may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker.
+  affected: *id063
+  mitigations: *id064
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Telemetry schemas can drift if new fields are added without privacy review.
+  evidence: *id026
+- id: OP-HEALTH_CHECK-DENIAL
+  source: operation_metadata
+  operation: health_check
+  stride: Denial of Service
+  scenario: health_check may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker.
+  affected: *id063
+  mitigations: *id064
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Telemetry schemas can drift if new fields are added without privacy review.
+  evidence: *id026
+- id: OP-RELEASE_APPLY-TAMPERING
+  source: operation_metadata
+  operation: release_apply
+  stride: Tampering
+  scenario: release_apply may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id065
+  mitigations: *id066
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id028
+- id: OP-RELEASE_APPLY-REPUDIATION
+  source: operation_metadata
+  operation: release_apply
+  stride: Repudiation
+  scenario: release_apply may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id065
+  mitigations: *id066
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id028
+- id: OP-RELEASE_APPLY-DENIAL
+  source: operation_metadata
+  operation: release_apply
+  stride: Denial of Service
+  scenario: release_apply may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id065
+  mitigations: *id066
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id028
+- id: OP-RELEASE_APPLY-ELEVATION
+  source: operation_metadata
+  operation: release_apply
+  stride: Elevation of Privilege
+  scenario: release_apply may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id065
+  mitigations: *id066
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id028
+- id: OP-RELEASE_CHECK-TAMPERING
+  source: operation_metadata
+  operation: release_check
+  stride: Tampering
+  scenario: release_check may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id067
+  mitigations: *id068
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id030
+- id: OP-RELEASE_CHECK-REPUDIATION
+  source: operation_metadata
+  operation: release_check
+  stride: Repudiation
+  scenario: release_check may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id067
+  mitigations: *id068
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id030
+- id: OP-RELEASE_CHECK-DENIAL
+  source: operation_metadata
+  operation: release_check
+  stride: Denial of Service
+  scenario: release_check may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id067
+  mitigations: *id068
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id030
+- id: OP-RELEASE_CHECK-ELEVATION
+  source: operation_metadata
+  operation: release_check
+  stride: Elevation of Privilege
+  scenario: release_check may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id067
+  mitigations: *id068
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id030
+- id: OP-RESTORE_BACKUP-TAMPERING
+  source: operation_metadata
+  operation: restore_backup
+  stride: Tampering
+  scenario: restore_backup may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id069
+  mitigations: *id070
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id032
+- id: OP-RESTORE_BACKUP-REPUDIATION
+  source: operation_metadata
+  operation: restore_backup
+  stride: Repudiation
+  scenario: restore_backup may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id069
+  mitigations: *id070
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id032
+- id: OP-RESTORE_BACKUP-DENIAL
+  source: operation_metadata
+  operation: restore_backup
+  stride: Denial of Service
+  scenario: restore_backup may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id069
+  mitigations: *id070
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id032
+- id: OP-RESTORE_BACKUP-ELEVATION
+  source: operation_metadata
+  operation: restore_backup
+  stride: Elevation of Privilege
+  scenario: restore_backup may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_state_audit.
+  affected: *id069
+  mitigations: *id070
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    Edge-first deployments remain sensitive to host, storage, and network availability.
+  evidence: *id032
+- id: OP-ROTATE_SECRET-TAMPERING
+  source: operation_metadata
+  operation: rotate_secret
+  stride: Tampering
+  scenario: rotate_secret may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy.
+  affected: *id071
+  mitigations: *id072
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    New secret or policy fields may require manual redaction review.
+  evidence: *id034
+- id: OP-ROTATE_SECRET-REPUDIATION
+  source: operation_metadata
+  operation: rotate_secret
+  stride: Repudiation
+  scenario: rotate_secret may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy.
+  affected: *id071
+  mitigations: *id072
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    New secret or policy fields may require manual redaction review.
+  evidence: *id034
+- id: OP-ROTATE_SECRET-INFORMATION
+  source: operation_metadata
+  operation: rotate_secret
+  stride: Information Disclosure
+  scenario: rotate_secret may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy.
+  affected: *id071
+  mitigations: *id072
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    New secret or policy fields may require manual redaction review.
+  evidence: *id034
+- id: OP-ROTATE_SECRET-ELEVATION
+  source: operation_metadata
+  operation: rotate_secret
+  stride: Elevation of Privilege
+  scenario: rotate_secret may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy.
+  affected: *id071
+  mitigations: *id072
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    New secret or policy fields may require manual redaction review.
+  evidence: *id034
+- id: OP-SECRET_READ_DYNAMIC-TAMPERING
+  source: operation_metadata
+  operation: secret_read_dynamic
+  stride: Tampering
+  scenario: secret_read_dynamic may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy.
+  affected: *id073
+  mitigations: *id074
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    New secret or policy fields may require manual redaction review.
+  evidence: *id036
+- id: OP-SECRET_READ_DYNAMIC-REPUDIATION
+  source: operation_metadata
+  operation: secret_read_dynamic
+  stride: Repudiation
+  scenario: secret_read_dynamic may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy.
+  affected: *id073
+  mitigations: *id074
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    New secret or policy fields may require manual redaction review.
+  evidence: *id036
+- id: OP-SECRET_READ_DYNAMIC-INFORMATION
+  source: operation_metadata
+  operation: secret_read_dynamic
+  stride: Information Disclosure
+  scenario: secret_read_dynamic may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy.
+  affected: *id073
+  mitigations: *id074
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    New secret or policy fields may require manual redaction review.
+  evidence: *id036
+- id: OP-SECRET_READ_DYNAMIC-ELEVATION
+  source: operation_metadata
+  operation: secret_read_dynamic
+  stride: Elevation of Privilege
+  scenario: secret_read_dynamic may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy.
+  affected: *id073
+  mitigations: *id074
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    New secret or policy fields may require manual redaction review.
+  evidence: *id036
+- id: OP-SECURITY_SCAN-TAMPERING
+  source: operation_metadata
+  operation: security_scan
+  stride: Tampering
+  scenario: security_scan may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy.
+  affected: *id075
+  mitigations: *id076
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    New secret or policy fields may require manual redaction review.
+  evidence: *id038
+- id: OP-SECURITY_SCAN-REPUDIATION
+  source: operation_metadata
+  operation: security_scan
+  stride: Repudiation
+  scenario: security_scan may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy.
+  affected: *id075
+  mitigations: *id076
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    New secret or policy fields may require manual redaction review.
+  evidence: *id038
+- id: OP-SECURITY_SCAN-INFORMATION
+  source: operation_metadata
+  operation: security_scan
+  stride: Information Disclosure
+  scenario: security_scan may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy.
+  affected: *id075
+  mitigations: *id076
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    New secret or policy fields may require manual redaction review.
+  evidence: *id038
+- id: OP-SECURITY_SCAN-ELEVATION
+  source: operation_metadata
+  operation: security_scan
+  stride: Elevation of Privilege
+  scenario: security_scan may be abused or fail across browser_to_fastapi, fastapi_to_nats, nats_to_worker, worker_to_secrets_policy.
+  affected: *id075
+  mitigations: *id076
+  residualRisk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+    New secret or policy fields may require manual redaction review.
+  evidence: *id038
+mitigations:
+- name: asyncapi_subject_governance
+  covers:
+  - Tampering
+  - Repudiation
+  - Denial of Service
+  - Elevation of Privilege
+  - Information Disclosure
+  evidence: operations/*.yaml
+- name: correlation_ids
+  covers:
+  - Tampering
+  - Repudiation
+  - Denial of Service
+  - Elevation of Privilege
+  evidence: operations/*.yaml
+- name: dlq_review_path
+  covers:
+  - Tampering
+  - Repudiation
+  - Denial of Service
+  - Elevation of Privilege
+  evidence: operations/*.yaml
+- name: event_redaction
+  covers:
+  - Tampering
+  - Repudiation
+  - Information Disclosure
+  - Denial of Service
+  evidence: operations/*.yaml
+- name: event_sourced_workflow_journal
+  covers:
+  - Tampering
+  - Repudiation
+  - Denial of Service
+  - Elevation of Privilege
+  evidence: operations/*.yaml
+- name: opa_policy_decision
+  covers:
+  - Tampering
+  - Repudiation
+  - Information Disclosure
+  - Elevation of Privilege
+  evidence: operations/*.yaml
+- name: openapi_validation
+  covers:
+  - Tampering
+  - Repudiation
+  - Denial of Service
+  - Elevation of Privilege
+  - Information Disclosure
+  evidence: operations/*.yaml
+- name: operation_audit_events
+  covers:
+  - Tampering
+  - Repudiation
+  - Denial of Service
+  - Elevation of Privilege
+  - Information Disclosure
+  evidence: operations/*.yaml
+- name: payload_minimization
+  covers:
+  - Tampering
+  - Repudiation
+  - Information Disclosure
+  - Denial of Service
+  evidence: operations/*.yaml
+- name: secret_redaction
+  covers:
+  - Tampering
+  - Repudiation
+  - Information Disclosure
+  - Elevation of Privilege
+  evidence: operations/*.yaml
+- name: typed_operation_schema
+  covers:
+  - Tampering
+  - Repudiation
+  - Denial of Service
+  - Elevation of Privilege
+  - Information Disclosure
+  evidence: operations/*.yaml
+- name: vault_or_openbao_leases
+  covers:
+  - Tampering
+  - Repudiation
+  - Information Disclosure
+  - Elevation of Privilege
+  evidence: operations/*.yaml
+residual_risks:
+- operation: backup_now
+  risk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: backup_now
+  risk: Edge-first deployments remain sensitive to host, storage, and network availability.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: backup_verify
+  risk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: backup_verify
+  risk: Edge-first deployments remain sensitive to host, storage, and network availability.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: catalog_refresh
+  risk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: configure_opa
+  risk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: configure_opa
+  risk: New secret or policy fields may require manual redaction review.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: deploy_blueprint
+  risk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: drift_apply
+  risk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: drift_apply
+  risk: Edge-first deployments remain sensitive to host, storage, and network availability.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: drift_approve
+  risk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: drift_approve
+  risk: Edge-first deployments remain sensitive to host, storage, and network availability.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: drift_ignore
+  risk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: drift_ignore
+  risk: Edge-first deployments remain sensitive to host, storage, and network availability.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: drift_preview
+  risk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: drift_preview
+  risk: Edge-first deployments remain sensitive to host, storage, and network availability.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: drift_scan
+  risk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: drift_scan
+  risk: Edge-first deployments remain sensitive to host, storage, and network availability.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: fleet_join
+  risk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: fleet_join
+  risk: New secret or policy fields may require manual redaction review.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: git_sync
+  risk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: health_check
+  risk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: health_check
+  risk: Telemetry schemas can drift if new fields are added without privacy review.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: release_apply
+  risk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: release_apply
+  risk: Edge-first deployments remain sensitive to host, storage, and network availability.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: release_check
+  risk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: release_check
+  risk: Edge-first deployments remain sensitive to host, storage, and network availability.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: restore_backup
+  risk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: restore_backup
+  risk: Edge-first deployments remain sensitive to host, storage, and network availability.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: rotate_secret
+  risk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: rotate_secret
+  risk: New secret or policy fields may require manual redaction review.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: secret_read_dynamic
+  risk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: secret_read_dynamic
+  risk: New secret or policy fields may require manual redaction review.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: security_scan
+  risk: Authorized operators can still trigger high-impact changes if policy or approval controls are incomplete.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.
+- operation: security_scan
+  risk: New secret or policy fields may require manual redaction review.
+  owner: feature_owner
+  treatment: Review during operation metadata and Threat Dragon review.

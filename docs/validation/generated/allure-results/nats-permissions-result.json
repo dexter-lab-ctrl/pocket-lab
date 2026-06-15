@@ -1,0 +1,52 @@
+{
+  "description": "Recorded command completed successfully.",
+  "fullName": "Pocket Lab Validation::Security::nats-permissions",
+  "historyId": "85e8b2743f057481765807788baa8099",
+  "labels": [
+    {
+      "name": "epic",
+      "value": "Tier 8 Validation Documentation"
+    },
+    {
+      "name": "feature",
+      "value": "Security"
+    },
+    {
+      "name": "story",
+      "value": "nats-permissions"
+    },
+    {
+      "name": "owner",
+      "value": "Runtime"
+    },
+    {
+      "name": "severity",
+      "value": "blocker"
+    },
+    {
+      "name": "tag",
+      "value": "PASS"
+    }
+  ],
+  "name": "NATS subject permission evidence",
+  "parameters": [
+    {
+      "name": "command",
+      "value": "timeout --kill-after=15s 180s task test:nats-permissions"
+    },
+    {
+      "name": "evidence_state",
+      "value": "executed-command"
+    },
+    {
+      "name": "generated_at",
+      "value": "2026-06-14T19:32:50Z"
+    }
+  ],
+  "stage": "finished",
+  "start": 1781465570478,
+  "status": "passed",
+  "stop": 1781465570478,
+  "testCaseId": "nats-permissions",
+  "uuid": "bed5ec5e-7273-5d16-87aa-9dedbc7cbde6"
+}

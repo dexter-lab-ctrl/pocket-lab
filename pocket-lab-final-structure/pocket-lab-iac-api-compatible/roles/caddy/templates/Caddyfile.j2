@@ -12,21 +12,41 @@
         X-Frame-Options "DENY"
         Referrer-Policy "no-referrer"
     }
-    
+
     encode zstd gzip
-    
-    handle /healthz {
-        respond "ok" 200
+
+    handle /health {
+        reverse_proxy {{ caddy_routes.api }}
     }
-    
+
+    handle /ready {
+        reverse_proxy {{ caddy_routes.api }}
+    }
+
+    handle /healthz {
+        reverse_proxy {{ caddy_routes.api }}
+    }
+
     handle /api/* {
         reverse_proxy {{ caddy_routes.api }}
     }
-    
+
+    handle /ws/* {
+        reverse_proxy {{ caddy_routes.api }}
+    }
+
+    handle /gitea/* {
+        reverse_proxy {{ caddy_routes.gitea }}
+    }
+
     handle /loki/* {
         reverse_proxy {{ caddy_routes.loki }}
     }
-    
+
+    handle /gatus/* {
+        reverse_proxy {{ caddy_routes.gatus }}
+    }
+
     # Day-3 Static PWA Serving
     handle /* {
         root * {{ caddy_pwa_dir }}

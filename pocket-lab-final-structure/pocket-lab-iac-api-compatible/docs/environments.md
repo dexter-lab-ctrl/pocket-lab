@@ -18,3 +18,7 @@ The master `site.yml` controls the exact order of operations necessary to bootst
 3.  Confirm OPA correctly audits (but does not block) test deployments.
 4.  Switch to `prod` inventory.
 5.  Reconcile `prod` and switch the OPA Gatekeeper to "Enforcement Mode" via the UI.
+
+## Enterprise NATS/JetStream alignment
+
+The IaC tree now treats NATS/JetStream as a first-class production dependency. `playbooks/65_nats.yml` renders the authenticated NATS server config, persistent per-role credentials, JetStream storage directory, and a non-secret manifest under `{{ common_state_dir }}/nats`. `playbooks/70_fastapi_control_plane.yml` must run after NATS and validates that the monitor endpoint is reachable and JetStream is enabled before declaring the FastAPI control plane ready. WebSocket traffic is proxied through Caddy via `/ws/*`, matching the React live event frontend.

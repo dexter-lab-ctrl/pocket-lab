@@ -79,12 +79,12 @@
     label: "{{ item.name }}"
   ansible.builtin.command:
     cmd: >
-      act_runner register 
-      --no-interactive 
-      --instance "{{ gitea_runner_api_url }}" 
-      --token "{{ gitea_runner_token_req.json.token }}" 
-      --name "{{ item.name }}" 
-      --labels "{{ item.labels }}" 
+      act_runner register
+      --no-interactive
+      --instance "{{ gitea_runner_api_url }}"
+      --token "{{ gitea_runner_token_req.json.token }}"
+      --name "{{ item.name }}"
+      --labels "{{ item.labels }}"
       --config "config.yaml"
     chdir: "{{ gitea_runner_base_dir }}/{{ item.name }}"
     creates: "{{ gitea_runner_base_dir }}/{{ item.name }}/.runner"

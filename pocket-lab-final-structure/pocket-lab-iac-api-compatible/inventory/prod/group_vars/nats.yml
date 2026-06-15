@@ -1,0 +1,21 @@
+---
+nats_enabled: true
+nats_require_jetstream: true
+nats_require_auth: true
+nats_config_dir: "{{ common_nats_dir }}"
+nats_store_dir: "{{ common_nats_dir }}/store"
+nats_config_path: "{{ common_nats_dir }}/nats-server.conf"
+nats_env_path: "{{ common_nats_dir }}/pocketlab-nats.env"
+nats_listen_host: 127.0.0.1
+nats_client_port: 4222
+nats_monitor_host: 127.0.0.1
+nats_monitor_port: 8222
+pocketlab_nats_url: nats://127.0.0.1:4222
+pocketlab_nats_monitor_url: http://127.0.0.1:8222/varz
+pocketlab_nats_api_user: pocketlab_api
+pocketlab_nats_worker_user: pocketlab_worker
+pocketlab_nats_agent_user: pocketlab_agent
+pocketlab_nats_api_password: "{{ lookup('env', 'POCKETLAB_NATS_API_PASSWORD') | default('', true) }}"
+pocketlab_nats_worker_password: "{{ lookup('env', 'POCKETLAB_NATS_WORKER_PASSWORD') | default('', true) }}"
+pocketlab_nats_agent_password: "{{ lookup('env', 'POCKETLAB_NATS_AGENT_PASSWORD') | default('', true) }}"
+pocketlab_nats_tls_enabled: false

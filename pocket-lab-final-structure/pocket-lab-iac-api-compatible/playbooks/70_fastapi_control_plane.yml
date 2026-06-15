@@ -1,0 +1,7 @@
+---
+- name: 70 fastapi control plane
+  hosts: fastapi_control_plane
+  gather_facts: false
+  roles:
+    - common
+    - fastapi_control_plane

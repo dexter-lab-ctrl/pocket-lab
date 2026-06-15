@@ -13,7 +13,9 @@ caddy_tailscale_fqdn: ""
 # Backend service proxies
 caddy_routes:
   api: 127.0.0.1:8080
-  loki: 127.0.0.1:3100
+  gitea: 127.0.0.1:3030
+  loki: 127.0.0.1:8080
+  gatus: 127.0.0.1:8081
 
 caddy_tls_mode: internal
 caddy_hsts_max_age: 31536000

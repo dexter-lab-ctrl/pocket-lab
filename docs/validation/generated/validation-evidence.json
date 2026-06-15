@@ -1,0 +1,567 @@
+{
+  "gates": [
+    {
+      "blocking": true,
+      "category": "Contract",
+      "command": "task docs:api",
+      "coverage": [
+        "FastAPI route contract",
+        "Redocly API lint",
+        "frontend/backend integration evidence"
+      ],
+      "evidence": [
+        "contracts/generated/openapi.json",
+        "contracts/openapi.json"
+      ],
+      "evidence_state": "repository-artifact",
+      "exit_code": null,
+      "finished_at": null,
+      "id": "docs-api",
+      "owner": "Backend",
+      "release_requirement": "Required",
+      "remediation": "Run the gate and record evidence with `python3 scripts/docs/record_validation_result.py <gate-id> -- <command>`.",
+      "source": "artifact-scan",
+      "started_at": null,
+      "status": "WARNING",
+      "summary": "Repository artifact exists, but no recorded command outcome was found. Use the validation recorder for release-grade evidence.",
+      "title": "OpenAPI backend contract"
+    },
+    {
+      "blocking": true,
+      "category": "Contract",
+      "command": "task docs:events",
+      "coverage": [
+        "NATS subjects",
+        "JetStream streams",
+        "audit and DLQ events"
+      ],
+      "evidence": [
+        "contracts/asyncapi/pocketlab-nats-jetstream.yaml",
+        "docs/runtime/generated/nats-jetstream-asyncapi/index.html"
+      ],
+      "evidence_state": "repository-artifact",
+      "exit_code": null,
+      "finished_at": null,
+      "id": "docs-events",
+      "owner": "Runtime",
+      "release_requirement": "Required",
+      "remediation": "Run the gate and record evidence with `python3 scripts/docs/record_validation_result.py <gate-id> -- <command>`.",
+      "source": "artifact-scan",
+      "started_at": null,
+      "status": "WARNING",
+      "summary": "Repository artifact exists, but no recorded command outcome was found. Use the validation recorder for release-grade evidence.",
+      "title": "NATS / JetStream AsyncAPI contract"
+    },
+    {
+      "blocking": true,
+      "category": "Contract",
+      "command": "task docs:operations",
+      "coverage": [
+        "typed operation registry",
+        "UI entrypoints",
+        "NATS subjects",
+        "operation safety metadata"
+      ],
+      "evidence": [
+        "contracts/operations/pocketlab-typed-operations.json",
+        "docs/runtime/generated/typed-operations-catalog/index.html"
+      ],
+      "evidence_state": "repository-artifact",
+      "exit_code": null,
+      "finished_at": null,
+      "id": "docs-operations",
+      "owner": "Runtime",
+      "release_requirement": "Required",
+      "remediation": "Run the gate and record evidence with `python3 scripts/docs/record_validation_result.py <gate-id> -- <command>`.",
+      "source": "artifact-scan",
+      "started_at": null,
+      "status": "WARNING",
+      "summary": "Repository artifact exists, but no recorded command outcome was found. Use the validation recorder for release-grade evidence.",
+      "title": "Typed Operations catalog"
+    },
+    {
+      "blocking": true,
+      "category": "Architecture",
+      "command": "task docs:architecture",
+      "coverage": [
+        "C4 workspace",
+        "security-review views",
+        "runtime flow diagrams"
+      ],
+      "evidence": [
+        "architecture/structurizr/workspace.dsl",
+        "docs/architecture/structurizr-architecture.md"
+      ],
+      "evidence_state": "repository-artifact",
+      "exit_code": null,
+      "finished_at": null,
+      "id": "docs-architecture",
+      "owner": "Architecture",
+      "release_requirement": "Required",
+      "remediation": "Run the gate and record evidence with `python3 scripts/docs/record_validation_result.py <gate-id> -- <command>`.",
+      "source": "artifact-scan",
+      "started_at": null,
+      "status": "WARNING",
+      "summary": "Repository artifact exists, but no recorded command outcome was found. Use the validation recorder for release-grade evidence.",
+      "title": "Structurizr architecture-as-code"
+    },
+    {
+      "blocking": true,
+      "category": "Security",
+      "command": "task docs:threat-model:check",
+      "coverage": [
+        "threat metadata",
+        "drift evidence",
+        "source synchronization evidence"
+      ],
+      "evidence": [
+        "threat-model/pocketlab-threat-model.yaml",
+        "threat-model/pocketlab-threat-model-drift-manifest.json",
+        "threat-model/pocketlab-threat-model-sync-manifest.json",
+        "docs/security/security-architecture-threat-model.md"
+      ],
+      "evidence_state": "repository-artifact",
+      "exit_code": null,
+      "finished_at": null,
+      "id": "docs-threat-model",
+      "owner": "Security",
+      "release_requirement": "Required",
+      "remediation": "Run the gate and record evidence with `python3 scripts/docs/record_validation_result.py <gate-id> -- <command>`.",
+      "source": "artifact-scan",
+      "started_at": null,
+      "status": "WARNING",
+      "summary": "Repository artifact exists, but no recorded command outcome was found. Use the validation recorder for release-grade evidence.",
+      "title": "Threat model validation"
+    },
+    {
+      "blocking": true,
+      "category": "Operations",
+      "command": "task docs:runbooks:full-check",
+      "coverage": [
+        "native runbooks",
+        "approval metadata",
+        "evidence matrix",
+        "typed operation mapping"
+      ],
+      "evidence": [
+        "docs/operations/generated/runbooks/runbook-catalog.json",
+        "docs/operations/generated/runbooks/runbook-validation-gates.json",
+        "docs/operations/generated/runbooks/validation-gates.md"
+      ],
+      "evidence_state": "repository-artifact",
+      "exit_code": null,
+      "finished_at": null,
+      "id": "docs-runbooks",
+      "owner": "Operations",
+      "release_requirement": "Required",
+      "remediation": "Run the gate and record evidence with `python3 scripts/docs/record_validation_result.py <gate-id> -- <command>`.",
+      "source": "artifact-scan",
+      "started_at": null,
+      "status": "WARNING",
+      "summary": "Repository artifact exists, but no recorded command outcome was found. Use the validation recorder for release-grade evidence.",
+      "title": "Runbook catalog, docs, and validation gates"
+    },
+    {
+      "blocking": true,
+      "category": "Documentation",
+      "command": "mkdocs build --strict",
+      "coverage": [
+        "documentation navigation",
+        "generated pages",
+        "strict link validation"
+      ],
+      "evidence": [
+        "site/index.html"
+      ],
+      "evidence_state": "repository-artifact",
+      "exit_code": null,
+      "finished_at": null,
+      "id": "mkdocs-build",
+      "owner": "Docs",
+      "release_requirement": "Required",
+      "remediation": "Run the gate and record evidence with `python3 scripts/docs/record_validation_result.py <gate-id> -- <command>`.",
+      "source": "artifact-scan",
+      "started_at": null,
+      "status": "WARNING",
+      "summary": "Repository artifact exists, but no recorded command outcome was found. Use the validation recorder for release-grade evidence.",
+      "title": "MkDocs strict documentation build"
+    },
+    {
+      "blocking": true,
+      "category": "Test",
+      "command": "task test:backend",
+      "coverage": [
+        "FastAPI routes",
+        "runtime services",
+        "runbook engine",
+        "state and reliability tests"
+      ],
+      "evidence": [
+        ".pocketlab-dev/validation/command-results/pytest-backend.json",
+        ".pocketlab-dev/validation/logs/pytest-backend.stdout.log",
+        ".pocketlab-dev/validation/logs/pytest-backend.stderr.log"
+      ],
+      "evidence_state": "executed-command",
+      "exit_code": 0,
+      "finished_at": "2026-06-12T13:50:02Z",
+      "id": "pytest-backend",
+      "owner": "Backend",
+      "release_requirement": "Required",
+      "remediation": "",
+      "source": "command-result",
+      "started_at": "2026-06-12T13:50:00Z",
+      "status": "PASS",
+      "summary": "Recorded command completed successfully.",
+      "title": "Backend pytest evidence"
+    },
+    {
+      "blocking": true,
+      "category": "Performance",
+      "command": "task test:performance",
+      "coverage": [
+        "edge performance smoke budgets",
+        "lightweight runtime assumptions"
+      ],
+      "evidence": [
+        ".pocketlab-dev/validation/command-results/pytest-performance.json",
+        ".pocketlab-dev/validation/logs/pytest-performance.stdout.log",
+        ".pocketlab-dev/validation/logs/pytest-performance.stderr.log"
+      ],
+      "evidence_state": "executed-command",
+      "exit_code": 0,
+      "finished_at": "2026-06-12T13:50:03Z",
+      "id": "pytest-performance",
+      "owner": "Platform",
+      "release_requirement": "Required",
+      "remediation": "",
+      "source": "command-result",
+      "started_at": "2026-06-12T13:50:02Z",
+      "status": "PASS",
+      "summary": "Recorded command completed successfully.",
+      "title": "Performance smoke pytest evidence"
+    },
+    {
+      "blocking": true,
+      "category": "Test",
+      "command": "task test:e2e",
+      "coverage": [
+        "PWA operator journeys",
+        "Simple/Professional mode",
+        "backend sync behavior"
+      ],
+      "evidence": [
+        ".pocketlab-dev/validation/command-results/playwright-e2e.json",
+        ".pocketlab-dev/validation/logs/playwright-e2e.stdout.log",
+        ".pocketlab-dev/validation/logs/playwright-e2e.stderr.log"
+      ],
+      "evidence_state": "executed-command",
+      "exit_code": 0,
+      "finished_at": "2026-06-12T13:42:32Z",
+      "id": "playwright-e2e",
+      "owner": "Frontend",
+      "release_requirement": "Required",
+      "remediation": "",
+      "source": "command-result",
+      "started_at": "2026-06-12T13:42:07Z",
+      "status": "PASS",
+      "summary": "Recorded command completed successfully.",
+      "title": "Playwright browser E2E evidence"
+    },
+    {
+      "blocking": true,
+      "category": "UI",
+      "command": "task test:visual",
+      "coverage": [
+        "visual baseline",
+        "app shell rendering"
+      ],
+      "evidence": [
+        ".pocketlab-dev/validation/command-results/playwright-visual.json",
+        ".pocketlab-dev/validation/logs/playwright-visual.stdout.log",
+        ".pocketlab-dev/validation/logs/playwright-visual.stderr.log"
+      ],
+      "evidence_state": "executed-command",
+      "exit_code": 0,
+      "finished_at": "2026-06-12T13:42:40Z",
+      "id": "playwright-visual",
+      "owner": "Frontend",
+      "release_requirement": "Required",
+      "remediation": "",
+      "source": "command-result",
+      "started_at": "2026-06-12T13:42:32Z",
+      "status": "PASS",
+      "summary": "Recorded command completed successfully.",
+      "title": "Playwright visual regression evidence"
+    },
+    {
+      "blocking": true,
+      "category": "Accessibility",
+      "command": "task test:a11y",
+      "coverage": [
+        "critical accessibility journeys",
+        "keyboard/screen-reader regressions"
+      ],
+      "evidence": [
+        ".pocketlab-dev/validation/command-results/playwright-a11y.json",
+        ".pocketlab-dev/validation/logs/playwright-a11y.stdout.log",
+        ".pocketlab-dev/validation/logs/playwright-a11y.stderr.log"
+      ],
+      "evidence_state": "executed-command",
+      "exit_code": 0,
+      "finished_at": "2026-06-12T13:42:47Z",
+      "id": "playwright-a11y",
+      "owner": "Frontend",
+      "release_requirement": "Required",
+      "remediation": "",
+      "source": "command-result",
+      "started_at": "2026-06-12T13:42:40Z",
+      "status": "PASS",
+      "summary": "Recorded command completed successfully.",
+      "title": "Accessibility evidence"
+    },
+    {
+      "blocking": true,
+      "category": "Contract",
+      "command": "task test:network",
+      "coverage": [
+        "typed frontend write payloads",
+        "no direct NATS",
+        "no direct shell execution"
+      ],
+      "evidence": [
+        ".pocketlab-dev/validation/command-results/playwright-network.json",
+        ".pocketlab-dev/validation/logs/playwright-network.stdout.log",
+        ".pocketlab-dev/validation/logs/playwright-network.stderr.log"
+      ],
+      "evidence_state": "executed-command",
+      "exit_code": 0,
+      "finished_at": "2026-06-12T13:42:52Z",
+      "id": "playwright-network",
+      "owner": "Frontend",
+      "release_requirement": "Required",
+      "remediation": "",
+      "source": "command-result",
+      "started_at": "2026-06-12T13:42:47Z",
+      "status": "PASS",
+      "summary": "Recorded command completed successfully.",
+      "title": "Frontend network contract evidence"
+    },
+    {
+      "blocking": true,
+      "category": "Performance",
+      "command": "task test:lighthouse",
+      "coverage": [
+        "PWA quality",
+        "performance",
+        "accessibility",
+        "best practices",
+        "SEO"
+      ],
+      "evidence": [
+        ".pocketlab-dev/validation/command-results/lighthouse.json",
+        ".pocketlab-dev/validation/logs/lighthouse.stdout.log",
+        ".pocketlab-dev/validation/logs/lighthouse.stderr.log"
+      ],
+      "evidence_state": "executed-command",
+      "exit_code": 0,
+      "finished_at": "2026-06-12T13:43:14Z",
+      "id": "lighthouse",
+      "owner": "Frontend",
+      "release_requirement": "Required",
+      "remediation": "",
+      "source": "command-result",
+      "started_at": "2026-06-12T13:42:53Z",
+      "status": "PASS",
+      "summary": "Recorded command completed successfully.",
+      "title": "Lighthouse PWA quality evidence"
+    },
+    {
+      "blocking": true,
+      "category": "Runtime",
+      "command": "timeout --kill-after=15s 180s task test:nats",
+      "coverage": [
+        "FastAPI \u2192 NATS \u2192 Worker",
+        "typed operation events",
+        "journal evidence"
+      ],
+      "evidence": [
+        ".pocketlab-dev/validation/command-results/nats-runtime.json",
+        ".pocketlab-dev/validation/logs/nats-runtime.stdout.log",
+        ".pocketlab-dev/validation/logs/nats-runtime.stderr.log"
+      ],
+      "evidence_state": "executed-command",
+      "exit_code": 0,
+      "finished_at": "2026-06-12T13:50:15Z",
+      "id": "nats-runtime",
+      "owner": "Runtime",
+      "release_requirement": "Required",
+      "remediation": "",
+      "source": "command-result",
+      "started_at": "2026-06-12T13:50:03Z",
+      "status": "PASS",
+      "summary": "Recorded command completed successfully.",
+      "title": "NATS / JetStream runtime stack evidence"
+    },
+    {
+      "blocking": true,
+      "category": "Security",
+      "command": "timeout --kill-after=15s 180s task test:nats-permissions",
+      "coverage": [
+        "API subject permissions",
+        "worker subject permissions",
+        "fleet subject boundaries"
+      ],
+      "evidence": [
+        ".pocketlab-dev/validation/command-results/nats-permissions.json",
+        ".pocketlab-dev/validation/logs/nats-permissions.stdout.log",
+        ".pocketlab-dev/validation/logs/nats-permissions.stderr.log"
+      ],
+      "evidence_state": "executed-command",
+      "exit_code": 0,
+      "finished_at": "2026-06-12T13:50:16Z",
+      "id": "nats-permissions",
+      "owner": "Runtime",
+      "release_requirement": "Required",
+      "remediation": "",
+      "source": "command-result",
+      "started_at": "2026-06-12T13:50:15Z",
+      "status": "PASS",
+      "summary": "Recorded command completed successfully.",
+      "title": "NATS subject permission evidence"
+    },
+    {
+      "blocking": true,
+      "category": "Security",
+      "command": "timeout --kill-after=15s 180s task test:redaction",
+      "coverage": [
+        "event journal redaction",
+        "audit evidence redaction",
+        "UI-visible log safety"
+      ],
+      "evidence": [
+        ".pocketlab-dev/validation/command-results/redaction.json",
+        ".pocketlab-dev/validation/logs/redaction.stdout.log",
+        ".pocketlab-dev/validation/logs/redaction.stderr.log"
+      ],
+      "evidence_state": "executed-command",
+      "exit_code": 0,
+      "finished_at": "2026-06-12T13:50:17Z",
+      "id": "redaction",
+      "owner": "Security",
+      "release_requirement": "Required",
+      "remediation": "",
+      "source": "command-result",
+      "started_at": "2026-06-12T13:50:16Z",
+      "status": "PASS",
+      "summary": "Recorded command completed successfully.",
+      "title": "Secret redaction evidence"
+    },
+    {
+      "blocking": true,
+      "category": "Reliability",
+      "command": "bash scripts/dev/run-validation-gate.sh 300 env POCKETLAB_FAULTS_WORKERS=1 task test:faults",
+      "coverage": [
+        "NATS down",
+        "worker degraded",
+        "health failure",
+        "fail-closed behavior"
+      ],
+      "evidence": [
+        ".pocketlab-dev/validation/command-results/faults.json",
+        ".pocketlab-dev/validation/logs/faults.stdout.log",
+        ".pocketlab-dev/validation/logs/faults.stderr.log"
+      ],
+      "evidence_state": "executed-command",
+      "exit_code": 0,
+      "finished_at": "2026-06-12T13:29:59Z",
+      "id": "faults",
+      "owner": "Platform",
+      "release_requirement": "Required",
+      "remediation": "",
+      "source": "command-result",
+      "started_at": "2026-06-12T13:29:38Z",
+      "status": "PASS",
+      "summary": "Recorded command completed successfully.",
+      "title": "Fault and degraded-mode evidence"
+    },
+    {
+      "blocking": true,
+      "category": "Reliability",
+      "command": "bash scripts/dev/run-validation-gate.sh 300 env POCKETLAB_FLAKES_WORKERS=1 POCKETLAB_FLAKES_REPEAT=1 task test:flakes",
+      "coverage": [
+        "no focused tests",
+        "no hidden skip/fixme",
+        "repeated high-signal Playwright stability"
+      ],
+      "evidence": [
+        ".pocketlab-dev/validation/command-results/flakes.json",
+        ".pocketlab-dev/validation/logs/flakes.stdout.log",
+        ".pocketlab-dev/validation/logs/flakes.stderr.log"
+      ],
+      "evidence_state": "executed-command",
+      "exit_code": 0,
+      "finished_at": "2026-06-12T13:30:21Z",
+      "id": "flakes",
+      "owner": "QA",
+      "release_requirement": "Required",
+      "remediation": "",
+      "source": "command-result",
+      "started_at": "2026-06-12T13:29:59Z",
+      "status": "PASS",
+      "summary": "Recorded command completed successfully.",
+      "title": "Flaky-test stability evidence"
+    },
+    {
+      "blocking": false,
+      "category": "Platform",
+      "command": "task android:smoke",
+      "coverage": [
+        "Android/Termux assumptions",
+        "ARM64 edge runtime readiness"
+      ],
+      "evidence": [],
+      "evidence_state": "missing-advisory-evidence",
+      "exit_code": null,
+      "finished_at": null,
+      "id": "android-smoke",
+      "owner": "Platform",
+      "release_requirement": "Required before edge release",
+      "remediation": "Run the gate and record evidence with `python3 scripts/docs/record_validation_result.py <gate-id> -- <command>`.",
+      "source": "artifact-scan",
+      "started_at": null,
+      "status": "WARNING",
+      "summary": "No machine-readable advisory evidence found. This does not block the default release readiness calculation.",
+      "title": "Android / Termux edge smoke evidence"
+    },
+    {
+      "blocking": true,
+      "category": "Release",
+      "command": "timeout --kill-after=30s 900s task release:dry-run",
+      "coverage": [
+        "release artifact workflow",
+        "upgrade readiness",
+        "packaging checks"
+      ],
+      "evidence": [
+        ".pocketlab-dev/validation/command-results/release-dry-run.json",
+        ".pocketlab-dev/validation/logs/release-dry-run.stdout.log",
+        ".pocketlab-dev/validation/logs/release-dry-run.stderr.log"
+      ],
+      "evidence_state": "executed-command",
+      "exit_code": 0,
+      "finished_at": "2026-06-12T14:35:18Z",
+      "id": "release-dry-run",
+      "owner": "Release Engineering",
+      "release_requirement": "Required before tag/release",
+      "remediation": "",
+      "source": "command-result",
+      "started_at": "2026-06-12T14:32:29Z",
+      "status": "PASS",
+      "summary": "Recorded command completed successfully.",
+      "title": "Release dry-run evidence"
+    }
+  ],
+  "generated_at": "2026-06-14T19:32:50Z",
+  "schemaVersion": "pocketlab.validation.evidence.v1",
+  "source_fingerprint": "e0a45b1f1700a8f50f0b896b2bfe521e0d59a44b93c79c5a547a767e1cafa82f"
+}

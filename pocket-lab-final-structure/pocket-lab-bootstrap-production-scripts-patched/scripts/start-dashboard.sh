@@ -1,193 +1,164 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 set -Eeuo pipefail
 IFS=$'\n\t'
-
-SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
 source "$SCRIPT_DIR/lib/common.sh"
-
-# Day-3 Dynamic API Path mapped to project structure
-API_SERVER="${API_SERVER:-$SCRIPT_DIR/../../runtime/api/pocket_lab_api_server.py}"
-PWA_DIR="${PWA_DIR:-$HOME/pwa_dist}"
-CADDYFILE="${CADDYFILE:-$HOME/Caddyfile}"
-HARDWARE_DAEMON="${HARDWARE_DAEMON:-$HOME/hardware_daemon.py}"
-OBS_DIR="$HOME/observability_configs"
-
-DASH_PORT="${DASH_PORT:-8443}"
-API_PORT="${API_PORT:-8080}"
-
-get_ts_fqdn() {
-  if command -v tailscale >/dev/null 2>&1; then
-    # Fetch DNSName from Tailscale, remove the trailing dot
-    local fqdn
-    fqdn=$(tailscale status --json | jq -r '.Self.DNSName' | sed 's/\.$//')
-    if [[ -n "$fqdn" && "$fqdn" != "null" ]]; then
-      echo "$fqdn"
-      return 0
-    fi
-  fi
-  return 1
-}
-
-ensure_assets() {
+FASTAPI_SERVER="$SCRIPT_DIR/../../runtime/api_fastapi/pocket_lab_fastapi_server.py"
+WORKER_SERVER="$SCRIPT_DIR/../../runtime/workers/pocketlab_worker.py"
+AGENT_SERVER="$SCRIPT_DIR/../../runtime/agents/pocketlab_node_agent.py"
+API_SERVER="${API_SERVER:-$FASTAPI_SERVER}"
+PWA_DIR="${PWA_DIR:-$POCKET_LAB_PWA_DIR}"; CADDYFILE="${CADDYFILE:-$POCKET_LAB_CADDYFILE}"; HARDWARE_DAEMON="${HARDWARE_DAEMON:-$POCKET_LAB_HARDWARE_DAEMON}"; OBS_DIR="${OBS_DIR:-$POCKET_LAB_OBSERVABILITY_DIR}"
+DASH_PORT="${DASH_PORT:-8443}"; API_PORT="${API_PORT:-8080}"; GATUS_PORT="${GATUS_PORT:-8081}"
+get_ts_fqdn(){ if have tailscale; then tailscale status --json 2>/dev/null | jq -r '.Self.DNSName // empty' | sed 's/\.$//' | grep -E '.ts.net$' || true; fi; }
+ensure_assets(){
   [[ -f "$API_SERVER" ]] || die "Missing dashboard API server: $API_SERVER"
-  [[ -d "$PWA_DIR" ]] || mkdir -p "$PWA_DIR"
-  mkdir -p "$OBS_DIR/loki_data"
-  mkdir -p "$HOME/api"
-
-  # SELF-HEALING UI CHECK
-  # If the compiled frontend is missing, dynamically call the installer script
-  if [[ ! -f "$PWA_DIR/index.html" ]]; then
-      log INFO "UI assets not found in $PWA_DIR. Triggering auto-recovery..."
-      bash "$SCRIPT_DIR/install-pwa-ui.sh" || die "Failed to auto-recover UI assets."
+  [[ -f "$WORKER_SERVER" ]] || die "Missing worker process required for production NATS execution: $WORKER_SERVER"
+  [[ -f "$AGENT_SERVER" ]] || log WARN "Missing NATS-backed fleet agent; multi-device live fleet status will be unavailable: $AGENT_SERVER"
+  have nats-server || die "nats-server is required; production FastAPI/NATS mode does not allow memory fallback"
+  python3 - <<'PYCHECK' || die "FastAPI runtime missing; run install-binaries.sh to install fastapi, uvicorn, pydantic, and nats-py"
+import importlib.util, sys
+required = ("fastapi", "uvicorn", "pydantic", "nats")
+sys.exit(0 if all(importlib.util.find_spec(m) for m in required) else 1)
+PYCHECK
+  mkdir -p "$PWA_DIR" "$OBS_DIR/loki_data" "$OBS_DIR/gatus" "$POCKET_LAB_API_DIR" "$(dirname "$CADDYFILE")"
+  if [[ ! -f "$PWA_DIR/index.html" ]]; then log INFO "UI assets missing; attempting self-recovery"; bash "$SCRIPT_DIR/install-pwa-ui.sh" || die "Failed to install UI assets"; fi
+}
+random_secret(){
+  if have openssl; then openssl rand -hex 24; else python3 - <<'PYSECRET'
+import secrets
+print(secrets.token_hex(24))
+PYSECRET
   fi
 }
-
-write_caddyfile() {
-  local ts_fqdn
-  ts_fqdn=$(get_ts_fqdn || echo "")
-
-  if [[ ! -f "$CADDYFILE" ]]; then
-    log INFO "Generating Dynamic Caddyfile..."
-    
-    # Check if we have a valid Tailscale FQDN
-    if [[ "$ts_fqdn" == *".ts.net" ]]; then
-      log INFO "Tailscale detected: Enabling HTTPS for $ts_fqdn"
-      cat > "$CADDYFILE" <<EOF
-$ts_fqdn {
-  tls {
-    get_certificate tailscale
-  }
+ensure_nats_credentials(){
+  mkdir -p "$STATE_DIR/nats"
+  local cred_file="$STATE_DIR/nats/pocketlab-nats.env"
+  if [[ ! -f "$cred_file" ]]; then
+    umask 077
+    cat > "$cred_file" <<EOF
+POCKETLAB_NATS_API_USER=pocketlab_api
+POCKETLAB_NATS_API_PASSWORD=$(random_secret)
+POCKETLAB_NATS_WORKER_USER=pocketlab_worker
+POCKETLAB_NATS_WORKER_PASSWORD=$(random_secret)
+POCKETLAB_NATS_AGENT_USER=pocketlab_agent
+POCKETLAB_NATS_AGENT_PASSWORD=$(random_secret)
 EOF
-    else
-      log WARN "Tailscale not detected or MagicDNS disabled. Falling back to HTTP port ${DASH_PORT}."
-      cat > "$CADDYFILE" <<EOF
-:${DASH_PORT} {
+  fi
+  # shellcheck disable=SC1090
+  source "$cred_file"
+  export POCKETLAB_NATS_API_USER POCKETLAB_NATS_API_PASSWORD POCKETLAB_NATS_WORKER_USER POCKETLAB_NATS_WORKER_PASSWORD POCKETLAB_NATS_AGENT_USER POCKETLAB_NATS_AGENT_PASSWORD
+}
+write_nats_config(){
+  ensure_nats_credentials
+  mkdir -p "$STATE_DIR/nats/store"
+  local nats_config="$STATE_DIR/nats/nats-server.conf"
+  log INFO "Writing production NATS/JetStream config with auth, localhost monitoring, and durable storage"
+  cat > "$nats_config" <<EOF
+server_name: pocketlab-nats
+listen: 127.0.0.1:4222
+http: 127.0.0.1:8222
+jetstream {
+  store_dir: "$STATE_DIR/nats/store"
+  max_mem_store: 64MB
+  max_file_store: 1GB
+}
+authorization {
+  users: [
+    { user: "$POCKETLAB_NATS_API_USER", password: "$POCKETLAB_NATS_API_PASSWORD", permissions: { publish: ["\$JS.API.>", "pocketlab.commands.>", "pocketlab.events.>", "pocketlab.audit.>", "pocketlab.dlq.>"], subscribe: ["_INBOX.>", "pocketlab.events.>", "pocketlab.audit.>"] } },
+    { user: "$POCKETLAB_NATS_WORKER_USER", password: "$POCKETLAB_NATS_WORKER_PASSWORD", permissions: { publish: ["\$JS.API.>", "pocketlab.events.>", "pocketlab.audit.>", "pocketlab.dlq.>"], subscribe: ["_INBOX.>", "pocketlab.commands.>"] } },
+    { user: "$POCKETLAB_NATS_AGENT_USER", password: "$POCKETLAB_NATS_AGENT_PASSWORD", permissions: { publish: ["pocketlab.events.fleet.>", "pocketlab.events.telemetry.>", "pocketlab.events.health.>"], subscribe: ["_INBOX.>", "pocketlab.commands.node.>"] } }
+  ]
+}
 EOF
-    fi
+  chmod 600 "$nats_config"
+  export POCKETLAB_NATS_CONFIG="$nats_config"
+}
 
-    # Append the shared handlers (API, Gitea, Loki, PWA)
-    cat >> "$CADDYFILE" <<EOF
+write_caddyfile(){
+  local fqdn; fqdn="$(get_ts_fqdn || true)"
+  log INFO "Writing Caddyfile idempotently"
+  if [[ -n "$fqdn" ]]; then
+    cat <<EOF | atomic_write "$CADDYFILE" 0644
+$fqdn {
+  tls { get_certificate tailscale }
   encode gzip zstd
   header Strict-Transport-Security "max-age=31536000; includeSubDomains"
   header X-Content-Type-Options "nosniff"
   header X-Frame-Options "DENY"
   header Referrer-Policy "no-referrer"
-
+  handle /health { reverse_proxy 127.0.0.1:${API_PORT} }
+  handle /ready { reverse_proxy 127.0.0.1:${API_PORT} }
+  handle /healthz { reverse_proxy 127.0.0.1:${API_PORT} }
   handle /api/* { reverse_proxy 127.0.0.1:${API_PORT} }
+  handle /ws/* { reverse_proxy 127.0.0.1:${API_PORT} }
   handle /gitea/* { reverse_proxy 127.0.0.1:3030 }
-  handle /loki/* { reverse_proxy 127.0.0.1:3100 }
-  
-  handle /* {
-    root * ${PWA_DIR}
-    try_files {path} /index.html
-    file_server
-  }
+  handle /loki/* { reverse_proxy 127.0.0.1:${API_PORT} }
+  handle /* { root * ${PWA_DIR}; try_files {path} /index.html; file_server }
+}
+EOF
+  else
+    cat <<EOF | atomic_write "$CADDYFILE" 0644
+:${DASH_PORT} {
+  encode gzip zstd
+  header X-Content-Type-Options "nosniff"
+  header X-Frame-Options "DENY"
+  header Referrer-Policy "no-referrer"
+  handle /health { reverse_proxy 127.0.0.1:${API_PORT} }
+  handle /ready { reverse_proxy 127.0.0.1:${API_PORT} }
+  handle /healthz { reverse_proxy 127.0.0.1:${API_PORT} }
+  handle /api/* { reverse_proxy 127.0.0.1:${API_PORT} }
+  handle /ws/* { reverse_proxy 127.0.0.1:${API_PORT} }
+  handle /gitea/* { reverse_proxy 127.0.0.1:3030 }
+  handle /loki/* { reverse_proxy 127.0.0.1:${API_PORT} }
+  handle /* { root * ${PWA_DIR}; try_files {path} /index.html; file_server }
 }
 EOF
   fi
 }
-
-write_hardware_daemon() {
-  if [[ ! -f "$HARDWARE_DAEMON" ]]; then
-    log INFO "Generating native Android hardware telemetry daemon..."
-    cat > "$HARDWARE_DAEMON" << 'EOF'
+write_hardware_daemon(){
+  log INFO "Writing Android-compatible telemetry daemon"
+  cat > "$HARDWARE_DAEMON" <<'PYD'
 #!/usr/bin/env python3
 import json, time, os
-
-API_DIR = os.path.expanduser("~/api")
-TELEMETRY_FILE = os.path.join(API_DIR, "telemetry.json")
-
-def get_thermal():
+API_DIR=os.environ.get('POCKET_LAB_API_DIR', os.path.expanduser('~/pocket-lab/api'))
+TELEMETRY_FILE=os.path.join(API_DIR,'telemetry.json')
+def thermal():
+    for z in range(30):
+        p=f'/sys/class/thermal/thermal_zone{z}/temp'
+        try:
+            if os.path.exists(p):
+                v=int(open(p).read().strip()); return v/1000.0 if v>1000 else float(v)
+        except Exception: pass
+    return 42.0
+def storage():
     try:
-        # Search common Android thermal zones
-        for zone in range(15):
-            path = f"/sys/class/thermal/thermal_zone{zone}/temp"
-            if os.path.exists(path):
-                with open(path, 'r') as f:
-                    temp = int(f.read().strip())
-                    if temp > 1000: return temp / 1000.0
-                    if temp > 0: return float(temp)
-    except Exception:
-        pass
-    return 42.0  # Fallback
-
-def get_storage():
+        st=os.statvfs(os.path.expanduser('~')); return (st.f_bavail*st.f_frsize)//(1024*1024)
+    except Exception: return 256000
+def memory():
     try:
-        st = os.statvfs(os.path.expanduser("~"))
-        return (st.f_bavail * st.f_frsize) // (1024 * 1024)
-    except:
-        return 256000
-
-def get_memory():
+        vals={}
+        for line in open('/proc/meminfo'):
+            k=line.split(':',1)[0]; vals[k]=int(line.split()[1])
+        total=vals.get('MemTotal',0); avail=vals.get('MemAvailable',vals.get('MemFree',0)); return max(0,(total-avail)//1024)
+    except Exception: return 2048
+def cpu():
     try:
-        with open('/proc/meminfo', 'r') as f:
-            mem_total = 0
-            mem_free = 0
-            for line in f:
-                if line.startswith('MemTotal:'):
-                    mem_total = int(line.split()[1])
-                elif line.startswith('MemAvailable:') or line.startswith('MemFree:'):
-                    mem_free = int(line.split()[1])
-            if mem_total > 0:
-                return (mem_total - mem_free) // 1024
-    except:
-        pass
-    return 2048
-
-def get_cpu():
-    try:
-        with open('/proc/stat', 'r') as f:
-            cpu_lines = [l for l in f if l.startswith('cpu ')]
-            if cpu_lines:
-                parts = list(map(int, cpu_lines[0].split()[1:]))
-                idle = parts[3]
-                total = sum(parts)
-                return total, idle
-    except:
-        pass
-    return 0, 0
-
-if __name__ == "__main__":
-    os.makedirs(API_DIR, exist_ok=True)
-    prev_total, prev_idle = get_cpu()
-    
-    while True:
-        time.sleep(2)
-        curr_total, curr_idle = get_cpu()
-        
-        cpu_usage = 12.0
-        if curr_total > prev_total:
-            total_diff = curr_total - prev_total
-            idle_diff = curr_idle - prev_idle
-            cpu_usage = round(100.0 * (1.0 - (idle_diff / total_diff)), 1)
-        
-        prev_total, prev_idle = curr_total, curr_idle
-        
-        data = {
-            "cpu_temp_c": round(get_thermal(), 1),
-            "free_space_mb": get_storage(),
-            "cpu_usage_percent": cpu_usage,
-            "memory_usage_mb": get_memory(),
-            "error": False
-        }
-        
-        # Atomic write to prevent UI parsing errors
-        tmp_file = TELEMETRY_FILE + ".tmp"
-        with open(tmp_file, "w") as f:
-            json.dump(data, f)
-        os.replace(tmp_file, TELEMETRY_FILE)
-        
-        time.sleep(8)
-EOF
-    chmod +x "$HARDWARE_DAEMON"
-  fi
+        parts=list(map(int,open('/proc/stat').readline().split()[1:])); return sum(parts), parts[3]
+    except Exception: return 0,0
+os.makedirs(API_DIR, exist_ok=True); pt,pi=cpu()
+while True:
+    time.sleep(2); ct,ci=cpu(); usage=12.0
+    if ct>pt: usage=round(100.0*(1.0-((ci-pi)/(ct-pt))),1)
+    pt,pi=ct,ci
+    data={'cpu_temp_c':round(thermal(),1),'free_space_mb':storage(),'cpu_usage_percent':usage,'memory_usage_mb':memory(),'error':False}
+    tmp=TELEMETRY_FILE+'.tmp'; open(tmp,'w').write(json.dumps(data)); os.replace(tmp,TELEMETRY_FILE); time.sleep(8)
+PYD
+  chmod +x "$HARDWARE_DAEMON"
 }
-
-write_observability_configs() {
-  log INFO "Generating Observability configurations (No AppRoles)..."
-  
-  # LOKI CONFIG (Includes Android network interface bypass)
-  cat > "$OBS_DIR/loki-config.yaml" <<EOF
+write_observability_configs(){
+  log INFO "Writing observability configs idempotently"
+  cat <<EOF | atomic_write "$OBS_DIR/loki-config.yaml" 0644
 auth_enabled: false
 server:
   http_listen_port: 3100
@@ -203,59 +174,53 @@ common:
   replication_factor: 1
   ring:
     instance_addr: 127.0.0.1
-    kvstore:
-      store: inmemory
+    kvstore: { store: inmemory }
 schema_config:
   configs:
     - from: 2020-10-24
       store: boltdb-shipper
       object_store: filesystem
       schema: v11
-      index:
-        prefix: index_
-        period: 24h
+      index: { prefix: index_, period: 24h }
 frontend:
   instance_interface_names: [lo]
 EOF
-
-  # PROMTAIL CONFIG (Standard PM2 log scraping, no Vault token)
-  cat > "$OBS_DIR/promtail-config.yaml" <<EOF
-server:
-  http_listen_port: 9080
-  grpc_listen_port: 0
-positions:
-  filename: $OBS_DIR/positions.yaml
+  cat <<EOF | atomic_write "$OBS_DIR/promtail-config.yaml" 0644
+server: { http_listen_port: 9080, grpc_listen_port: 0 }
+positions: { filename: $OBS_DIR/positions.yaml }
 clients:
   - url: http://127.0.0.1:3100/loki/api/v1/push
 scrape_configs:
 - job_name: system_logs
   static_configs:
-  - targets:
-      - localhost
-    labels:
-      job: pm2_logs
-      __path__: /data/data/com.termux/files/home/.pm2/logs/*.log
+  - targets: [localhost]
+    labels: { job: pm2_logs, __path__: /data/data/com.termux/files/home/.pm2/logs/*.log }
 EOF
-
-  # PROMETHEUS CONFIG (Vault target without bearer_token)
-  cat > "$OBS_DIR/prometheus.yml" <<EOF
-global:
-  scrape_interval: 15s
-  evaluation_interval: 15s
+  cat <<EOF | atomic_write "$OBS_DIR/prometheus.yml" 0644
+global: { scrape_interval: 15s, evaluation_interval: 15s }
 scrape_configs:
-  - job_name: "prometheus"
-    static_configs:
-      - targets: ["127.0.0.1:9090"]
-  - job_name: "vault"
-    metrics_path: "/v1/sys/metrics"
-    params:
-      format: ["prometheus"]
-    static_configs:
-      - targets: ["127.0.0.1:8200"]
+  - job_name: prometheus
+    static_configs: [{ targets: ["127.0.0.1:9090"] }]
+  - job_name: vault
+    metrics_path: /v1/sys/metrics
+    params: { format: [prometheus] }
+    static_configs: [{ targets: ["127.0.0.1:8200"] }]
 EOF
-
-  # GRAFANA CUSTOM.INI
-  cat > "$OBS_DIR/custom.ini" <<EOF
+  cat <<EOF | atomic_write "$OBS_DIR/gatus-config.yaml" 0644
+web: { port: ${GATUS_PORT} }
+ui:
+  title: Pocket Lab Health Engine
+  description: Dependency-aware health dashboard for Pocket Lab.
+endpoints:
+  - { name: pocket-lab-api, group: core, url: http://127.0.0.1:${API_PORT}/health, interval: 30s, conditions: ["[STATUS] == 200", "[BODY].status == ok"] }
+  - { name: pocket-lab-ready, group: core, url: http://127.0.0.1:${API_PORT}/ready, interval: 30s, conditions: ["[STATUS] == 200"] }
+  - { name: gitea, group: platform, url: http://127.0.0.1:3030/api/healthz, interval: 30s, conditions: ["[STATUS] == 200"] }
+  - { name: vault, group: platform, url: http://127.0.0.1:8200/v1/sys/health?standbyok=true, interval: 30s, conditions: ["[STATUS] == any(200, 429)"] }
+  - { name: loki, group: observability, url: http://127.0.0.1:3100/ready, interval: 30s, conditions: ["[STATUS] == 200"] }
+  - { name: prometheus, group: observability, url: http://127.0.0.1:9090/-/ready, interval: 30s, conditions: ["[STATUS] == 200"] }
+  - { name: grafana, group: observability, url: http://127.0.0.1:3050/api/health, interval: 30s, conditions: ["[STATUS] == 200"] }
+EOF
+  cat <<EOF | atomic_write "$OBS_DIR/custom.ini" 0644
 [server]
 http_port = 3050
 http_addr = 0.0.0.0
@@ -265,59 +230,41 @@ logs = data/log
 plugins = data/plugins
 provisioning = conf/provisioning
 EOF
-
-  # Create Grafana prerequisite directories inside PRoot using the bash wrapper
-  proot-distro login ubuntu -- bash -c "mkdir -p /opt/grafana/data/log /opt/grafana/data/plugins /opt/grafana/conf/provisioning && chmod -R 755 /opt/grafana/data /opt/grafana/conf"
+  if have proot-distro && proot-distro list 2>/dev/null | awk '{print $1}' | grep -Fxq ubuntu; then proot-distro login ubuntu -- bash -c "mkdir -p /opt/grafana/data/log /opt/grafana/data/plugins /opt/grafana/conf/provisioning && chmod -R 755 /opt/grafana/data /opt/grafana/conf" || true; fi
 }
-
-start_pm2_daemons() {
-  log INFO "Starting Core Components & Observability Mesh via PM2..."
-
-  # 1. Core Daemons (Native)
-  if ! pm2 describe pocket-telemetry >/dev/null 2>&1; then
-    pm2 start "$HARDWARE_DAEMON" --name "pocket-telemetry" --interpreter python3 --exp-backoff-restart-delay 100 --update-env
+start_pm2_daemons(){
+  log INFO "Starting/restarting dashboard services with PM2"
+  pm2_start_or_restart pocket-telemetry "$HARDWARE_DAEMON" --interpreter python3 --exp-backoff-restart-delay 100
+  write_nats_config
+  pm2_start_or_restart pocket-nats nats-server -- -c "$POCKETLAB_NATS_CONFIG"
+  if [[ "${POCKETLAB_DISABLE_WORKER:-0}" != "1" ]]; then
+    POCKETLAB_NATS_REQUIRED=1 POCKETLAB_NATS_REQUIRE_JETSTREAM=1 POCKETLAB_NATS_JETSTREAM=1 POCKETLAB_WORKER_EXECUTION=worker POCKETLAB_NATS_USER="$POCKETLAB_NATS_WORKER_USER" POCKETLAB_NATS_PASSWORD="$POCKETLAB_NATS_WORKER_PASSWORD" POCKETLAB_NATS_NAME=pocketlab-worker POCKETLAB_COMMAND_MAX_DELIVER="${POCKETLAB_COMMAND_MAX_DELIVER:-5}" POCKETLAB_COMMAND_ACK_WAIT_SECONDS="${POCKETLAB_COMMAND_ACK_WAIT_SECONDS:-60}" pm2_start_or_restart pocket-worker "$WORKER_SERVER" --interpreter python3 --update-env
+  else
+    die "POCKETLAB_DISABLE_WORKER=1 is not allowed in production NATS mode"
   fi
-
-  if ! pm2 describe pocket-api >/dev/null 2>&1; then
-    pm2 start "$API_SERVER" --name "pocket-api" --interpreter python3 --update-env
+  if [[ -f "$AGENT_SERVER" && "${POCKETLAB_DISABLE_FLEET_AGENT:-0}" != "1" ]]; then
+    POCKETLAB_NATS_USER="$POCKETLAB_NATS_AGENT_USER" POCKETLAB_NATS_PASSWORD="$POCKETLAB_NATS_AGENT_PASSWORD" POCKETLAB_NATS_NAME=pocketlab-node-agent pm2_start_or_restart pocket-node-agent "$AGENT_SERVER" --interpreter python3 --update-env
+  else
+    log WARN "Pocket Lab node agent not started; this control plane will not publish NATS fleet heartbeats"
   fi
-
-  if ! pm2 describe caddy-proxy >/dev/null 2>&1; then
-    pm2 start caddy --name "caddy-proxy" -- run --config "$CADDYFILE" --update-env
+  POCKETLAB_NATS_REQUIRED=1 POCKETLAB_NATS_REQUIRE_JETSTREAM=1 POCKETLAB_NATS_JETSTREAM=1 POCKETLAB_WORKER_EXECUTION=worker POCKETLAB_NATS_USER="$POCKETLAB_NATS_API_USER" POCKETLAB_NATS_PASSWORD="$POCKETLAB_NATS_API_PASSWORD" POCKETLAB_AGENT_NATS_USER="$POCKETLAB_NATS_AGENT_USER" POCKETLAB_AGENT_NATS_PASSWORD="$POCKETLAB_NATS_AGENT_PASSWORD" POCKETLAB_NATS_NAME=pocketlab-fastapi POCKETLAB_COMMAND_MAX_DELIVER="${POCKETLAB_COMMAND_MAX_DELIVER:-5}" POCKETLAB_COMMAND_ACK_WAIT_SECONDS="${POCKETLAB_COMMAND_ACK_WAIT_SECONDS:-60}" pm2_start_or_restart pocket-api "$API_SERVER" --interpreter python3 --update-env
+  pm2_start_or_restart caddy-proxy caddy -- run --config "$CADDYFILE"
+  if have gatus; then
+    pm2_start_or_restart pocket-gatus bash -- -c "GATUS_CONFIG_PATH=$OBS_DIR/gatus-config.yaml gatus"
+  else
+    log WARN "gatus missing; health UI will use API fallback"
   fi
-
-  # 2. Observability Stack (PRoot Bridge execution)
-  
-  if ! pm2 describe loki-kms >/dev/null 2>&1; then
-    pm2 start bash --name "loki-kms" --update-env -- -c "proot-distro login ubuntu -- /usr/local/bin/loki -config.file=$OBS_DIR/loki-config.yaml"
-  fi
-
-  if ! pm2 describe promtail-agent >/dev/null 2>&1; then
-    pm2 start bash --name "promtail-agent" --update-env -- -c "proot-distro login ubuntu -- /usr/local/bin/promtail -config.file=$OBS_DIR/promtail-config.yaml"
-  fi
-
-  if ! pm2 describe prometheus-db >/dev/null 2>&1; then
-    pm2 start bash --name "prometheus-db" --update-env -- -c "proot-distro login ubuntu -- /usr/local/bin/prometheus --config.file=$OBS_DIR/prometheus.yml --storage.tsdb.path=$OBS_DIR/prom_data --web.listen-address=127.0.0.1:9090"
-  fi
-
-  if ! pm2 describe grafana-ui >/dev/null 2>&1; then
-    pm2 start bash --name "grafana-ui" --update-env -- -c "proot-distro login ubuntu -- bash -c 'cd /opt/grafana && ./bin/grafana-server --homepath=/opt/grafana --config=$OBS_DIR/custom.ini'"
-  fi
-
-  pm2 save
+  if have proot-distro && proot-distro list 2>/dev/null | awk '{print $1}' | grep -Fxq ubuntu; then
+    pm2_start_or_restart loki-kms bash -- -c "proot-distro login ubuntu -- /usr/local/bin/loki -config.file=$OBS_DIR/loki-config.yaml" || true
+    pm2_start_or_restart promtail-agent bash -- -c "proot-distro login ubuntu -- /usr/local/bin/promtail -config.file=$OBS_DIR/promtail-config.yaml" || true
+    pm2_start_or_restart prometheus-db bash -- -c "proot-distro login ubuntu -- /usr/local/bin/prometheus --config.file=$OBS_DIR/prometheus.yml --storage.tsdb.path=$OBS_DIR/prom_data --web.listen-address=127.0.0.1:9090" || true
+    pm2_start_or_restart grafana-ui bash -- -c "proot-distro login ubuntu -- bash -c 'cd /opt/grafana && ./bin/grafana-server --homepath=/opt/grafana --config=$OBS_DIR/custom.ini'" || true
+  else log WARN "PRoot Ubuntu unavailable; skipping Loki/Promtail/Prometheus/Grafana PM2 processes"; fi
+  pm2 save >/dev/null || true
 }
-
-main() {
-  ensure_root_dirs
-  # Added jq for Tailscale MagicDNS parsing
-  require_cmd python3 caddy curl pm2 proot-distro jq
-  ensure_assets
-  write_hardware_daemon
-  write_caddyfile
-  write_observability_configs
-  start_pm2_daemons
-  
-  log INFO "Infrastructure and Observability Mesh successfully delegated to PM2."
+main(){
+  SCRIPT_NAME="start-dashboard.sh"; acquire_lock "$SCRIPT_NAME"; ensure_root_dirs; require_termux; require_cmd python3 caddy curl pm2 jq nats-server
+  ensure_assets; write_hardware_daemon; write_caddyfile; write_observability_configs; start_pm2_daemons; mark_done dashboard_ready
+  log INFO "Dashboard/control-plane services are ready and safe to rerun"
 }
-
 main "$@"

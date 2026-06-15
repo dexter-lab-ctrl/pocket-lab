@@ -1,0 +1,52 @@
+{
+  "description": "Recorded command completed successfully.",
+  "fullName": "Pocket Lab Validation::Contract::playwright-network",
+  "historyId": "43ebc3a2a09f9ec05af107d0e25d2eaf",
+  "labels": [
+    {
+      "name": "epic",
+      "value": "Tier 8 Validation Documentation"
+    },
+    {
+      "name": "feature",
+      "value": "Contract"
+    },
+    {
+      "name": "story",
+      "value": "playwright-network"
+    },
+    {
+      "name": "owner",
+      "value": "Frontend"
+    },
+    {
+      "name": "severity",
+      "value": "blocker"
+    },
+    {
+      "name": "tag",
+      "value": "PASS"
+    }
+  ],
+  "name": "Frontend network contract evidence",
+  "parameters": [
+    {
+      "name": "command",
+      "value": "task test:network"
+    },
+    {
+      "name": "evidence_state",
+      "value": "executed-command"
+    },
+    {
+      "name": "generated_at",
+      "value": "2026-06-14T19:32:50Z"
+    }
+  ],
+  "stage": "finished",
+  "start": 1781465570478,
+  "status": "passed",
+  "stop": 1781465570478,
+  "testCaseId": "playwright-network",
+  "uuid": "2482a082-593f-55e2-98c9-f2ac2c85dba6"
+}

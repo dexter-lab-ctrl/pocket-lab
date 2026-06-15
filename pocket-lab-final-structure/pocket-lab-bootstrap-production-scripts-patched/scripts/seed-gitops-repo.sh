@@ -1,99 +1,45 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 set -Eeuo pipefail
 IFS=$'\n\t'
-
-SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
 source "$SCRIPT_DIR/lib/common.sh"
-
-GITEA_URL="${GITEA_URL:-http://127.0.0.1:3030}"
-GITEA_ORG="${GITEA_ORG:-pocket_admin}"
-REPO_NAME="${REPO_NAME:-pocket-lab-iac}"
-SOURCE_DIR="${SOURCE_DIR:-$HOME/pocket-lab-iac}"
-# Calculate path to the actual IaC template provided in the architecture
-TEMPLATE_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")/pocket-lab-iac-api-compatible"
-SERVICE_SECRETS_FILE="${SERVICE_SECRETS_FILE:-$STATE_DIR/service-secrets.env}"
-VAULT_ADDR="${VAULT_ADDR:-http://127.0.0.1:8200}"
-
+GITEA_URL="${GITEA_URL:-http://127.0.0.1:3030}"; GITEA_ORG="${GITEA_ORG:-pocket_admin}"; REPO_NAME="${REPO_NAME:-pocket_lab_iac}"; SOURCE_DIR="${SOURCE_DIR:-$POCKET_LAB_IAC_DIR}"
+TEMPLATE_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")/pocket-lab-iac-api-compatible"; SERVICE_SECRETS_FILE="${SERVICE_SECRETS_FILE:-$STATE_DIR/service-secrets.env}"; VAULT_ADDR="${VAULT_ADDR:-http://127.0.0.1:8200}"
 get_creds() {
   local user="" pass=""
-  
-  # Attempt to fetch from Vault first (Zero-Trust pattern)
-  if command -v vault >/dev/null 2>&1 && vault status >/dev/null 2>&1; then
-    export VAULT_ADDR
-    if [[ -n "${VAULT_TOKEN:-}" ]]; then
-      vault login "$VAULT_TOKEN" >/dev/null 2>&1 || true
-    fi
-    user="$(vault kv get -field=username secret/gitea 2>/dev/null || true)"
-    pass="$(vault kv get -field=password secret/gitea 2>/dev/null || true)"
-  fi
-  
-  # Fallback to local secrets file
-  if [[ -z "$user" || -z "$pass" ]]; then
-    if [[ -f "$SERVICE_SECRETS_FILE" ]]; then
-      source "$SERVICE_SECRETS_FILE"
-      user="pocket_admin"
-      pass="${GITEA_UI_PASS:-}"
-    fi
-  fi
-  
-  echo "${user}:${pass}"
+  if have vault && vault status >/dev/null 2>&1; then export VAULT_ADDR; user="$(vault kv get -field=username secret/gitea 2>/dev/null || true)"; pass="$(vault kv get -field=password secret/gitea 2>/dev/null || true)"; fi
+  if [[ -z "$user" || -z "$pass" ]] && [[ -f "$SERVICE_SECRETS_FILE" ]]; then # shellcheck disable=SC1090
+  source "$SERVICE_SECRETS_FILE"; user="pocket_admin"; pass="${GITEA_UI_PASS:-}"; fi
+  printf '%s:%s' "$user" "$pass"
 }
-
-wait_for_gitea() {
-  log INFO "Waiting for Gitea API to become responsive..."
-  local max_attempts=30
-  local attempt=1
-  while [ $attempt -le $max_attempts ]; do
-    if curl -s -o /dev/null -w "%{http_code}" "$GITEA_URL/api/swagger" | grep -q "200"; then
-      log INFO "Gitea is up and responsive."
-      return 0
-    fi
-    sleep 2
-    attempt=$((attempt+1))
-  done
-  die "Gitea did not become ready in time."
-}
-
+wait_for_gitea() { log INFO "Waiting for Gitea API"; wait_for_http "$GITEA_URL/api/swagger" 60 || die "Gitea did not become ready"; }
 create_repo() {
-  local user="$1" pass="$2"
-  log INFO "Ensuring repository '$REPO_NAME' exists in Gitea via REST API..."
-  
-  local endpoint="$GITEA_URL/api/v1/user/repos"
-  local payload="{\"name\":\"$REPO_NAME\", \"private\":true}"
-
-  local status
-  status=$(curl -s -o /dev/null -w "%{http_code}" -u "$user:$pass" -X POST -H "Content-Type: application/json" -d "$payload" "$endpoint")
-
-  if [[ "$status" == "201" ]]; then
-    log INFO "Repository '$REPO_NAME' created successfully."
-  elif [[ "$status" == "409" ]]; then
-    log INFO "Repository '$REPO_NAME' already exists."
+  local user="$1" pass="$2" status
+  status="$(curl -s -o /dev/null -w '%{http_code}' -u "$user:$pass" -H 'Content-Type: application/json' -d "{\"name\":\"$REPO_NAME\",\"private\":true}" "$GITEA_URL/api/v1/user/repos" || true)"
+  if [[ "$status" == "201" || "$status" == "409" ]]; then
+    log INFO "Repository ready: $REPO_NAME"
   else
-    die "Failed to create repository. HTTP Status: $status"
+    die "Failed to ensure repo; HTTP $status"
   fi
 }
-
 prepare_source_dir() {
-  log INFO "Preparing GitOps source directory at $SOURCE_DIR..."
   mkdir -p "$SOURCE_DIR"
-  
   if [[ -d "$TEMPLATE_DIR" ]]; then
-    log INFO "Copying robust IaC template from $TEMPLATE_DIR"
-    cp -a "$TEMPLATE_DIR/"* "$SOURCE_DIR/"
-    cp -a "$TEMPLATE_DIR/."* "$SOURCE_DIR/" 2>/dev/null || true # catch hidden files like .github
+    log INFO "Syncing IaC template to $SOURCE_DIR"
+    rsync -a --delete --exclude .git "$TEMPLATE_DIR/" "$SOURCE_DIR/" 2>/dev/null || cp -a "$TEMPLATE_DIR/." "$SOURCE_DIR/"
   else
-    log WARN "IaC template not found at $TEMPLATE_DIR!"
-    log WARN "Falling back to basic dummy structure."
-    cat > "$SOURCE_DIR/ansible.cfg" <<EOF
+    log WARN "IaC template not found; creating minimal inventory"
+    mkdir -p "$SOURCE_DIR/inventory/dev"
+    cat <<EOF > "$SOURCE_DIR/ansible.cfg"
 [defaults]
-inventory = inventories/dev/hosts.yml
+inventory = inventory/dev/hosts.yml
 roles_path = roles
 stdout_callback = yaml
 host_key_checking = False
 retry_files_enabled = False
 EOF
-    mkdir -p "$SOURCE_DIR/inventories/dev"
-    cat > "$SOURCE_DIR/inventories/dev/hosts.yml" <<EOF
+    cat <<EOF > "$SOURCE_DIR/inventory/dev/hosts.yml"
 all:
   children:
     local:
@@ -103,58 +49,18 @@ all:
 EOF
   fi
 }
-
-git_remote_url() {
-  local user="$1" pass="$2"
-  # URL encode the password to handle special characters generated by urandom
-  local encoded_pass
-  encoded_pass=$(echo -n "$pass" | jq -sRr @uri)
-  printf 'http://%s:%s@127.0.0.1:3030/%s/%s.git' "$user" "$encoded_pass" "$GITEA_ORG" "$REPO_NAME"
-}
-
+git_remote_url() { local user="$1" pass="$2" epass; epass="$(printf '%s' "$pass" | jq -sRr @uri)"; printf 'http://%s:%s@127.0.0.1:3030/%s/%s.git' "$user" "$epass" "$GITEA_ORG" "$REPO_NAME"; }
 seed_repo() {
-  local user="$1" pass="$2"
-  local remote
-  remote="$(git_remote_url "$user" "$pass")"
-
-  if [[ ! -d "$SOURCE_DIR/.git" ]]; then
-    git -C "$SOURCE_DIR" init
-    git -C "$SOURCE_DIR" config user.name "Pocket Lab Automation"
-    git -C "$SOURCE_DIR" config user.email "gitops@pocketlab.local"
-    git -C "$SOURCE_DIR" branch -M main
-    git -C "$SOURCE_DIR" remote add origin "$remote" 2>/dev/null || true
-  else
-    git -C "$SOURCE_DIR" remote set-url origin "$remote" 2>/dev/null || git -C "$SOURCE_DIR" remote add origin "$remote"
-  fi
-
-  # Safe idempotent commits
-  if [[ -n "$(git -C "$SOURCE_DIR" status --porcelain)" ]]; then
-    log INFO "Pushing changes to GitOps repository..."
-    git -C "$SOURCE_DIR" add .
-    git -C "$SOURCE_DIR" commit -m "Initial Pocket Lab IaC Seed"
-    git -C "$SOURCE_DIR" push -u origin main
-    log INFO "GitOps repository seeded successfully."
-  else
-    log INFO "No new changes to commit. Repository is up to date."
-  fi
+  local user="$1" pass="$2" remote; remote="$(git_remote_url "$user" "$pass")"
+  if [[ ! -d "$SOURCE_DIR/.git" ]]; then git -C "$SOURCE_DIR" init; git -C "$SOURCE_DIR" branch -M main || true; fi
+  git -C "$SOURCE_DIR" config user.name "Pocket Lab Automation"; git -C "$SOURCE_DIR" config user.email "gitops@pocketlab.local"
+  git -C "$SOURCE_DIR" remote set-url origin "$remote" 2>/dev/null || git -C "$SOURCE_DIR" remote add origin "$remote"
+  if [[ -n "$(git -C "$SOURCE_DIR" status --porcelain)" ]]; then git -C "$SOURCE_DIR" add .; git -C "$SOURCE_DIR" commit -m "Seed or refresh Pocket Lab IaC"; else log INFO "No local GitOps changes to commit"; fi
+  git -C "$SOURCE_DIR" push -u origin main || log WARN "Git push failed; local repo still prepared at $SOURCE_DIR"
 }
-
 main() {
-  ensure_root_dirs
-  
-  local creds user pass
-  creds="$(get_creds)"
-  user="${creds%%:*}"
-  pass="${creds#*:}"
-
-  if [[ -z "$user" || -z "$pass" ]]; then
-    die "Could not obtain Gitea credentials."
-  fi
-
-  wait_for_gitea
-  create_repo "$user" "$pass"
-  prepare_source_dir
-  seed_repo "$user" "$pass"
+  SCRIPT_NAME="seed-gitops-repo.sh"; acquire_lock "$SCRIPT_NAME"; ensure_root_dirs; require_cmd curl jq git
+  local creds user pass; creds="$(get_creds)"; user="${creds%%:*}"; pass="${creds#*:}"; [[ -n "$user" && -n "$pass" ]] || die "Could not obtain Gitea credentials"
+  wait_for_gitea; create_repo "$user" "$pass"; prepare_source_dir; seed_repo "$user" "$pass"; mark_done gitops_seeded; log INFO "GitOps repository is seeded/refreshed safely"
 }
-
 main "$@"

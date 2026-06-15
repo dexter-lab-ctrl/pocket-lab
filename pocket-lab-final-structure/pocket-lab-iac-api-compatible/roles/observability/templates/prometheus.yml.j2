@@ -9,7 +9,7 @@ scrape_configs:
 
   - job_name: "pm2_bridge_services"
     static_configs:
-      - targets: 
+      - targets:
         - "localhost:{{ observability_grafana_port }}"
         - "localhost:{{ observability_loki_port }}"
 
@@ -19,5 +19,5 @@ scrape_configs:
       format: ['prometheus']
     static_configs:
       - targets: ["127.0.0.1:8200"]
-    # [THE FIX]: Relies on the unauthenticated_metrics_access = true 
+    # [THE FIX]: Relies on the unauthenticated_metrics_access = true
     # flag we injected in Day-0 Vault setup to scrape Vault metrics without hitting 403s!

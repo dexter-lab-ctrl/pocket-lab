@@ -1,0 +1,38 @@
+export const PRODUCT_AREAS = {
+  operate: {
+    label: 'Operate',
+    simpleLabel: 'Run',
+    description: 'Apps, updates, and releases',
+    tabs: ['appstore', 'gitops', 'release'],
+  },
+  protect: {
+    label: 'Protect',
+    simpleLabel: 'Protect',
+    description: 'Safety, access, policy, and recovery',
+    tabs: ['security', 'opa', 'vault', 'recovery'],
+  },
+  observe: {
+    label: 'Observe',
+    simpleLabel: 'Check',
+    description: 'Status, logs, drift, and system map',
+    tabs: ['telemetry', 'logs', 'drift', 'blueprint'],
+  },
+  scale: {
+    label: 'Scale',
+    simpleLabel: 'Devices',
+    description: 'Devices and fleet growth',
+    tabs: ['fleet'],
+  },
+};
+
+export function productAreaForTab(tabId) {
+  return Object.entries(PRODUCT_AREAS).find(([, area]) => area.tabs.includes(tabId))?.[0] || 'operate';
+}
+
+export function groupedNavItems(items) {
+  return Object.entries(PRODUCT_AREAS).map(([key, area]) => ({
+    key,
+    ...area,
+    items: items.filter((item) => area.tabs.includes(item.id)),
+  })).filter((area) => area.items.length > 0);
+}
