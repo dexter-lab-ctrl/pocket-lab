@@ -9,6 +9,10 @@ export const TAB_LABELS = {
   telemetry: 'System Status',
   release: 'Updates',
   recovery: 'Backups',
+  logs: 'Activity',
+  opa: 'Safety Center',
+  settings: 'Settings',
+  registry: 'Apps & Services',
 };
 
 export const ACTION_LABELS = {
@@ -101,6 +105,27 @@ export const OPERATION_COPY = {
     success: 'Temporary access created.',
   },
 };
+
+export const SIMPLE_PRIMARY_BANNED_TERMS = [
+  'GitOps',
+  'Blueprint',
+  'Drift',
+  'NOC',
+  'Vault',
+  'Runbook',
+  'NATS',
+  'JetStream',
+  'Worker',
+  'Typed Operation',
+  'Desired State',
+  'Reconcile',
+  'Policy Guardrails',
+];
+
+export function containsSimpleModeJargon(value) {
+  if (!value) return false;
+  return SIMPLE_PRIMARY_BANNED_TERMS.some((term) => new RegExp(`\\b${term.replace(/\\s+/g, '\\s+')}\\b`, 'i').test(String(value)));
+}
 
 export function simpleTabLabel(id, fallback) {
   return TAB_LABELS[id] || fallback;
