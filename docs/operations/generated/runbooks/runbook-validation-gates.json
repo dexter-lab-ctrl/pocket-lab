@@ -5,7 +5,7 @@
     "name": "pocketlab-runbook-validation-gates",
     "title": "Pocket Lab Runbook Validation Gates",
     "tier": "7C",
-    "generatedAt": "2026-06-15T16:49:53.756115+00:00",
+    "generatedAt": "2026-06-16T08:39:27.547886+00:00",
     "sourceOfTruth": "runbooks/*.yaml and operations/*.yaml"
   },
   "summary": {

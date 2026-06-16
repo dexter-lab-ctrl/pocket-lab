@@ -12,9 +12,13 @@ This generated page links the platform-specific deployment and development evide
 | Windows VS Code Development Configuration | docs/platform/windows-vscode-development.md | fbe30eee295a |
 | Windows WSL2 Host Preflight | docs/platform/windows-wsl2-host-preflight.md | 9068cc29fd6f |
 | Windows WSL2 Ubuntu Bootstrap | docs/platform/windows-wsl2-ubuntu-bootstrap.md | 9eadda51cd9c |
+| Approvals Architecture | docs/architecture/approvals.md | 000e60ac3563 |
 | Deployment / Runtime Blueprint | docs/architecture/deployment-runtime-blueprint.md | 7aae65ac91e4 |
 | Production Architecture | docs/architecture/enterprise-architecture-blueprint.md | 2e1f885e4e0c |
+| Architecture Overview | docs/architecture/index.md | 5365224a7492 |
+| Runtime Flow | docs/architecture/runtime-flow.md | c2bc9f759bb6 |
 | Structurizr Architecture | docs/architecture/structurizr-architecture.md | 94075480daea |
+| Typed Operations Architecture | docs/architecture/typed-operations.md | 257bc3476883 |
 
 
 ## Android / Termux / ARM64 evidence

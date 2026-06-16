@@ -196,6 +196,11 @@ tasks:
     cmds:
       - python3 scripts/docs/generate_operations_docs.py
 
+  docs:workflows:
+    desc: Generate GitHub Actions workflow documentation
+    cmds:
+      - python3 scripts/docs/generate_github_workflow_docs.py
+
   docs:build:
     desc: Build Pocket Lab MkDocs documentation site
     cmds:
@@ -213,6 +218,7 @@ tasks:
       - task docs:events
       - task docs:operations
       - task docs:architecture
+      - task docs:workflows
       - task docs:threat-model
       - task docs:threat-model:sync
       - task docs:security:full-check
@@ -422,6 +428,7 @@ tasks:
       - python3 scripts/docs/record_validation_result.py docs-events -- task docs:events
       - python3 scripts/docs/record_validation_result.py docs-operations -- task docs:operations
       - python3 scripts/docs/record_validation_result.py docs-architecture -- task docs:architecture
+      - python3 scripts/docs/record_validation_result.py docs-workflows -- task docs:workflows
       - python3 scripts/docs/record_validation_result.py docs-threat-model -- task docs:threat-model:check
       - python3 scripts/docs/record_validation_result.py docs-runbooks -- task docs:runbooks:full-check
       - python3 scripts/docs/record_validation_result.py docs-ui -- task docs:ui:check

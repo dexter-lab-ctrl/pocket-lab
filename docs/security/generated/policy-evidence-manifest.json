@@ -826,7 +826,7 @@
     },
     {
       "path": "docs/security/generated/threat-model/drift-detection.md",
-      "sha256": "7ac8d07179986a9f9c33ffd77a300308cfa40c07095fbf4d1d267eb037d00b52"
+      "sha256": "3869abe74d758bdf5baaafa85de928e8e41b4e6565b96ffa3b9c1ccfecabc1c3"
     },
     {
       "path": "docs/security/generated/threat-model/index.md",
@@ -838,7 +838,7 @@
     },
     {
       "path": "docs/security/security-architecture-threat-model.md",
-      "sha256": "d5f342ba0a99686d233d9e50ad78da29986b943143e16b3d4521af579df38455"
+      "sha256": "5bcfd22dd88344c0a0e56905300163fa6495d0eef10bd6865b0931b94afc0833"
     },
     {
       "path": "operations/backup_now.yaml",
@@ -950,7 +950,7 @@
     },
     {
       "path": "src/tabs/PolicyGuardrailsTab.jsx",
-      "sha256": "638f51060d57a4e164287299c26b99e04b20102c4fe09f6ac7e1a96c7010c6e3"
+      "sha256": "eaa964d2b25edc5287decc85e489cb583e1888f4fd4e550df5aa4466c044a480"
     }
   ],
   "summary": {

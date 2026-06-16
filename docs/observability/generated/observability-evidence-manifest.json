@@ -604,7 +604,7 @@
       "url": "http://127.0.0.1:8080/api/git_history.json"
     }
   ],
-  "generated_at": "2026-06-15T16:39:22.280162Z",
+  "generated_at": "2026-06-16T08:39:38.350767Z",
   "generated_by": "scripts/docs/generate_observability_evidence.py",
   "grafana_config": {
     "dashboard_json_files": [],
@@ -1282,8 +1282,8 @@
     {
       "kind": "frontend_observability_consumers",
       "path": "src/components/RuntimeObservabilityStatusPanel.jsx",
-      "sha256": "9288fb99b33b21c038f6786eedb4d5d5c78e6353ac18a518137becd86be15277",
-      "size_bytes": 11029
+      "sha256": "11a4e78f79d860cbb25936ab989b774576bf13a17eb2d1f7c162c3cd66cb42d0",
+      "size_bytes": 11037
     },
     {
       "kind": "frontend_observability_consumers",
@@ -1312,20 +1312,20 @@
     {
       "kind": "frontend_observability_consumers",
       "path": "src/tabs/LogExplorerTab.jsx",
-      "sha256": "047037c852ff2961bfe3f1e3ec979550f4cc1fa509602cdb6fcddccac56c51fd",
-      "size_bytes": 14103
+      "sha256": "e742bddab401892102a51e8c747b30d848235939e0d8880d2e7d56b7c0082850",
+      "size_bytes": 14109
     },
     {
       "kind": "frontend_observability_consumers",
       "path": "src/tabs/NocTelemetryTab.jsx",
-      "sha256": "b0b3037f6c18a153c8885d305d8a6a9be0323d6ba3f546711d00bcef547963e8",
-      "size_bytes": 13582
+      "sha256": "e028215edd87bd7cda3bcc641caf8e4cf4558a903540bbeea34d8f0611f5de6d",
+      "size_bytes": 13597
     },
     {
       "kind": "frontend_observability_consumers",
       "path": "src/tabs/SecurityPostureTab.jsx",
-      "sha256": "ef06c120d2d8d695cff460725183850d79e2fe31e85a189fabcf43087b732477",
-      "size_bytes": 14978
+      "sha256": "7a64a0fb0b208e95f130cc2ab0ca7359ee687e7d49824068436238951989ea9e",
+      "size_bytes": 14979
     }
   ],
   "source_groups": {

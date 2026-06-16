@@ -49,7 +49,8 @@ plugins:
   - search
   - awesome-pages
   - include-markdown
-  - mermaid2
+  - mermaid2:
+      javascript: assets/mermaid.esm.min.mjs
   - git-revision-date-localized:
       fallback_to_build_date: true
       enable_creation_date: true
@@ -83,75 +84,60 @@ markdown_extensions:
 nav:
   - Home: index.md
 
+  - Product:
+      - Overview: product/overview.md
+      - Simple Mode: product/simple-mode.md
+      - Professional Mode: product/professional-mode.md
+      - Enterprise Mode: product/enterprise-mode.md
+      - Operator Guide: product/operator-guide.md
+      - UI Screen Reference: product/ui-screen-reference.md
+      - App Catalog / Blueprint Authoring Guide: blueprints/blueprint-authoring-guide.md
+      - Fleet Agent / Mesh Fleet Guide: fleet/mesh-fleet-guide.md
+
+  - Getting Started:
+      - Quick Start: getting-started/quick-start.md
+      - Day 0 Bootstrap: getting-started/day-0-bootstrap.md
+      - PWA UI Installer: getting-started/install-pwa-ui.md
+
   - Architecture:
+      - Overview: architecture/index.md
+      - Runtime Flow: architecture/runtime-flow.md
+      - Structurizr Architecture: architecture/structurizr-architecture.md
       - Enterprise Architecture Blueprint: architecture/enterprise-architecture-blueprint.md
       - Runtime Blueprint: architecture/runtime-blueprint.md
-      - Structurizr Architecture: architecture/structurizr-architecture.md
-
-  - Product:
-      - Operator Guide: product/operator-guide.md
-      - Screen-by-Screen UI/UX Manual: product/ui-screen-reference.md
-
-  - API:
-      - Backend API Contract Reference: api/backend-api-contract.md
-
-  - Runtime:
-      - NATS / JetStream Event Contract: runtime/nats-jetstream-event-contract.md
-      - Typed Operations Catalog: runtime/typed-operations-catalog.md
-      - Adaptive Approval Policies and Enterprise Mode: runtime/adaptive-approval-enterprise-mode.md
-      - Runbook Approval and Resume Lifecycle: runtime/runbook-approval-lifecycle.md
-
-  - Security:
-      - Security Architecture & Threat Model: security/security-architecture-threat-model.md
-      - Policy Guardrails Guide: security/policy-guardrails-guide.md
-      - OPA Policy Reference: security/generated/policy-reference.md
-      - Operation-to-policy Mapping: security/generated/policy-operation-map.md
-      - Compliance Controls Reference: security/generated/compliance-controls-reference.md
+      - Typed Operations: architecture/typed-operations.md
+      - Workers: architecture/workers.md
+      - Runbooks: architecture/runbooks.md
+      - Approvals: architecture/approvals.md
 
   - Operations:
       - Runbook Automation: operations/runbook-automation.md
-      - Simple Mode Runbook Guide: operations/generated/runbooks/simple-mode.md
-      - Runbook Evidence Matrix: operations/generated/runbooks/evidence-matrix.md
-      - Runbook Approval Matrix: operations/generated/runbooks/approval-matrix.md
-      - Runbook Operation Map: operations/generated/runbooks/operation-map.md
-      - Runbook Catalog: operations/generated/runbooks/index.md
       - Generated Runbook Catalog: operations/generated/runbooks/index.md
+      - Approval Matrix: operations/generated/runbooks/approval-matrix.md
+      - Evidence Matrix: operations/generated/runbooks/evidence-matrix.md
+      - Runbook Operation Map: operations/generated/runbooks/operation-map.md
+      - Simple Mode Runbook Guide: operations/generated/runbooks/simple-mode.md
       - Reliability / Degraded Mode Runbook: operations/degraded-mode-runbook.md
       - Backup, Restore & Disaster Recovery Guide: operations/backup-restore-disaster-recovery.md
 
-  - Release:
-      - Release Workflow & Upgrade Guide: release/release-workflow-upgrade-guide.md
+  - API & Events:
+      - Backend API Contract: api/backend-api-contract.md
+      - NATS / JetStream Event Contract: runtime/nats-jetstream-event-contract.md
+      - Typed Operations Catalog: runtime/typed-operations-catalog.md
 
-  - Validation:
-      - Validation / Release Gate Matrix: validation/readiness-matrix.md
-      - Test Strategy & Quality Gates Guide: validation/test-strategy-quality-gates.md
-      - Generated Validation Evidence: validation/generated/index.md
-
-  - Performance:
-      - Edge Performance Guide: performance/edge-performance-guide.md
-
-  - Platform:
-      - Deployment Guide: platform/deployment-guide.md
-      - Platform Guide: platform/platform-guide.md
-      - Ansible Playbooks Reference: platform/generated/ansible-playbooks-reference.md
-      - Ansible Roles / Tasks Reference: platform/generated/ansible-roles-reference.md
-      - Bootstrap Scripts Reference: platform/generated/bootstrap-scripts-reference.md
-      - Environment Variables Reference: platform/generated/environment-reference.md
-      - Android / Termux Operations Guide: platform/android-termux-operations-guide.md
-      - Windows WSL2 Host Preflight: platform/windows-wsl2-host-preflight.md
-      - Windows VS Code Development: platform/windows-vscode-development.md
-      - Windows WSL2 Ubuntu Bootstrap: platform/windows-wsl2-ubuntu-bootstrap.md
-
-  - Blueprints:
-      - App Catalog / Blueprint Authoring Guide: blueprints/blueprint-authoring-guide.md
-
-  - Fleet:
-      - Fleet Agent / Mesh Fleet Guide: fleet/mesh-fleet-guide.md
-
-
+  - Security:
+      - Overview: security/index.md
+      - Adaptive Approval: security/adaptive-approval.md
+      - Audit Evidence: security/audit-evidence.md
+      - Policy Guardrails: security/policy-guardrails-guide.md
+      - OPA Policy Reference: security/generated/policy-reference.md
+      - Operation-to-policy Mapping: security/generated/policy-operation-map.md
+      - Compliance Controls Reference: security/generated/compliance-controls-reference.md
+      - Threat Model: security/security-architecture-threat-model.md
 
   - Observability:
-      - Observability & Logging Guide: observability/observability-logging-guide.md
+      - Overview: observability/observability-logging-guide.md
+      - Runtime Health: observability/runtime-health.md
       - Prometheus Scrape Reference: observability/generated/prometheus-scrape-reference.md
       - Loki Log Pipeline Reference: observability/generated/loki-log-pipeline-reference.md
       - Grafana Dashboards / Provisioning Reference: observability/generated/grafana-dashboards-reference.md
@@ -159,3 +145,36 @@ nav:
       - Telemetry Contract Reference: observability/generated/telemetry-contract-reference.md
       - Alerting / SLO Reference: observability/generated/alerting-slo-reference.md
       - Observability Runtime Map: observability/generated/observability-runtime-map.md
+
+  - Deployment:
+      - Overview: platform/deployment-guide.md
+      - Platform Guide: platform/platform-guide.md
+      - Ansible Reference: platform/generated/ansible-playbooks-reference.md
+      - Ansible Roles / Tasks Reference: platform/generated/ansible-roles-reference.md
+      - Bootstrap Scripts: platform/generated/bootstrap-scripts-reference.md
+      - Environment Reference: platform/generated/environment-reference.md
+      - Android / Termux Operations Guide: platform/android-termux-operations-guide.md
+      - Windows WSL2 Host Preflight: platform/windows-wsl2-host-preflight.md
+      - Windows VS Code Development: platform/windows-vscode-development.md
+      - Windows WSL2 Ubuntu Bootstrap: platform/windows-wsl2-ubuntu-bootstrap.md
+
+  - Releases:
+      - Overview: releases/index.md
+      - PWA Release Artifacts: releases/pwa-release-artifacts.md
+      - Release Tags: releases/release-tags.md
+      - Day 0 Consumption: releases/day-0-release-consumption.md
+      - Release Workflow & Upgrade Guide: release/release-workflow-upgrade-guide.md
+
+  - Development:
+      - Local Development: development/local-dev.md
+      - Testing: development/testing.md
+      - Debugging: development/debugging.md
+      - CI/CD: development/ci-cd.md
+      - Generated GitHub Actions Workflows: development/generated/github-actions-workflows.md
+      - Edge Performance Guide: performance/edge-performance-guide.md
+
+  - Validation:
+      - Release Readiness: validation/readiness-matrix.md
+      - Validation Evidence: validation/generated/index.md
+      - UI Evidence: product/ui-screen-reference.md
+      - Test Strategy & Quality Gates: validation/test-strategy-quality-gates.md

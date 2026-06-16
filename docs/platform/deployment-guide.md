@@ -30,7 +30,7 @@ The deployment automation inspected by deployment evidence is source evidence fo
 | Inventory / group vars files | 35 |
 | IaC catalog entries | 0 |
 | Bootstrap / platform scripts | 49 |
-| Platform source docs | 7 |
+| Platform source docs | 11 |
 | Environment/runtime files | 4 |
 
 

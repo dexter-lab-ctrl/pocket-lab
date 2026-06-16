@@ -4,7 +4,7 @@
   "metadata": {
     "name": "pocketlab-runbook-docs-manifest",
     "tier": "7B",
-    "generatedAt": "2026-06-15T16:49:53.518998+00:00",
+    "generatedAt": "2026-06-16T08:39:27.342627+00:00",
     "sourceOfTruth": "runbooks/*.yaml"
   },
   "summary": {
