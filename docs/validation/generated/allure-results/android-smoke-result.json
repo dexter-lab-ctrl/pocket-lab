@@ -40,13 +40,13 @@
     },
     {
       "name": "generated_at",
-      "value": "2026-06-15T17:02:58Z"
+      "value": "2026-06-16T11:07:50Z"
     }
   ],
   "stage": "finished",
-  "start": 1781542978819,
+  "start": 1781608070552,
   "status": "skipped",
-  "stop": 1781542978819,
+  "stop": 1781608070552,
   "testCaseId": "android-smoke",
   "uuid": "25ec18ed-46c3-5363-a3ce-29a705e92ac1"
 }

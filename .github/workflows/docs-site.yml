@@ -72,7 +72,7 @@ jobs:
 
       - name: Generate and validate documentation
         run: |
-          task docs:check
+          mkdocs build --strict
           git diff --exit-code -- docs/development/generated/github-actions-workflows.md
 
       - name: Upload GitHub Pages artifact
