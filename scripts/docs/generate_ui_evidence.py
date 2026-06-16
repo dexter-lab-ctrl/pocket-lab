@@ -69,7 +69,7 @@ def build_manifest() -> dict[str, Any]:
     screenshot_manifest = read_json(SCREENSHOT_MANIFEST)
     generated_doc = GENERATED_UI_DOC.read_text(encoding="utf-8")
     screenshots = screenshot_manifest.get("screenshots", [])
-    image_links = generated_doc.count("/product/generated/ui-screenshots/")
+    image_links = generated_doc.count("../generated/ui-screenshots/")
 
     return {
         "tier": "UI evidence freshness — UI Evidence Freshness, Visual, Accessibility, and Release Evidence",

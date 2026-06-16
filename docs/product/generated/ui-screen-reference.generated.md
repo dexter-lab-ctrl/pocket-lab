@@ -98,29 +98,29 @@ These images are captured automatically from `storybook-static` with determinist
 
 The following screenshots are generated from `storybook-static` iframe stories with deterministic FastAPI mock data. They are visual release evidence for this screen.
 
-![App Store / Blueprint Catalog — AppStoreDegradedWriteBlocked](/product/generated/ui-screenshots/app-store__app-store-degraded-write-blocked.png)
+<img src="../generated/ui-screenshots/app-store__app-store-degraded-write-blocked.png" alt="App Store / Blueprint Catalog — AppStoreDegradedWriteBlocked" loading="lazy" />
 
 - Story: `AppStoreDegradedWriteBlocked`
 - Storybook ID: `pocket-lab-ui-evidence-screens--app-store-degraded-write-blocked`
-- Evidence SHA-256: `bbbfee482e7e`
+- Evidence SHA-256: `ebf4fb68851a`
 
-![App Store / Blueprint Catalog — AppStoreEmptyState](/product/generated/ui-screenshots/app-store__app-store-empty-state.png)
+<img src="../generated/ui-screenshots/app-store__app-store-empty-state.png" alt="App Store / Blueprint Catalog — AppStoreEmptyState" loading="lazy" />
 
 - Story: `AppStoreEmptyState`
 - Storybook ID: `pocket-lab-ui-evidence-screens--app-store-empty-state`
-- Evidence SHA-256: `323ab8ddbeda`
+- Evidence SHA-256: `626c69e7eb77`
 
-![App Store / Blueprint Catalog — AppStoreNormal](/product/generated/ui-screenshots/app-store__app-store-normal.png)
+<img src="../generated/ui-screenshots/app-store__app-store-normal.png" alt="App Store / Blueprint Catalog — AppStoreNormal" loading="lazy" />
 
 - Story: `AppStoreNormal`
 - Storybook ID: `pocket-lab-ui-evidence-screens--app-store-normal`
-- Evidence SHA-256: `40a11e675d4d`
+- Evidence SHA-256: `6652cae79706`
 
-![App Store / Blueprint Catalog — AppStoreSimpleMode](/product/generated/ui-screenshots/app-store__app-store-simple-mode.png)
+<img src="../generated/ui-screenshots/app-store__app-store-simple-mode.png" alt="App Store / Blueprint Catalog — AppStoreSimpleMode" loading="lazy" />
 
 - Story: `AppStoreSimpleMode`
 - Storybook ID: `pocket-lab-ui-evidence-screens--app-store-simple-mode`
-- Evidence SHA-256: `64d2d51d3f61`
+- Evidence SHA-256: `80ad05ad2c88`
 
 <!-- tier9a-screenshot-evidence:end -->
 
@@ -169,29 +169,29 @@ These images are captured automatically from `storybook-static` with determinist
 
 The following screenshots are generated from `storybook-static` iframe stories with deterministic FastAPI mock data. They are visual release evidence for this screen.
 
-![GitOps — GitOpsApprovalRequired](/product/generated/ui-screenshots/gitops__git-ops-approval-required.png)
+<img src="../generated/ui-screenshots/gitops__git-ops-approval-required.png" alt="GitOps — GitOpsApprovalRequired" loading="lazy" />
 
 - Story: `GitOpsApprovalRequired`
 - Storybook ID: `pocket-lab-ui-evidence-screens--git-ops-approval-required`
-- Evidence SHA-256: `545611fe610a`
+- Evidence SHA-256: `4816d00ba006`
 
-![GitOps — GitOpsFailedOperation](/product/generated/ui-screenshots/gitops__git-ops-failed-operation.png)
+<img src="../generated/ui-screenshots/gitops__git-ops-failed-operation.png" alt="GitOps — GitOpsFailedOperation" loading="lazy" />
 
 - Story: `GitOpsFailedOperation`
 - Storybook ID: `pocket-lab-ui-evidence-screens--git-ops-failed-operation`
-- Evidence SHA-256: `5b47e58e4369`
+- Evidence SHA-256: `d36af859e095`
 
-![GitOps — GitOpsProfessional](/product/generated/ui-screenshots/gitops__git-ops-professional.png)
+<img src="../generated/ui-screenshots/gitops__git-ops-professional.png" alt="GitOps — GitOpsProfessional" loading="lazy" />
 
 - Story: `GitOpsProfessional`
 - Storybook ID: `pocket-lab-ui-evidence-screens--git-ops-professional`
-- Evidence SHA-256: `fb52354c12b6`
+- Evidence SHA-256: `aff8ddf17123`
 
-![GitOps — GitOpsSimpleMode](/product/generated/ui-screenshots/gitops__git-ops-simple-mode.png)
+<img src="../generated/ui-screenshots/gitops__git-ops-simple-mode.png" alt="GitOps — GitOpsSimpleMode" loading="lazy" />
 
 - Story: `GitOpsSimpleMode`
 - Storybook ID: `pocket-lab-ui-evidence-screens--git-ops-simple-mode`
-- Evidence SHA-256: `0732c05934d1`
+- Evidence SHA-256: `99d6b4906a7d`
 
 <!-- tier9a-screenshot-evidence:end -->
 
@@ -240,29 +240,29 @@ These images are captured automatically from `storybook-static` with determinist
 
 The following screenshots are generated from `storybook-static` iframe stories with deterministic FastAPI mock data. They are visual release evidence for this screen.
 
-![Fleet Scaling — FleetDegraded](/product/generated/ui-screenshots/fleet-scaling__fleet-degraded.png)
+<img src="../generated/ui-screenshots/fleet-scaling__fleet-degraded.png" alt="Fleet Scaling — FleetDegraded" loading="lazy" />
 
 - Story: `FleetDegraded`
 - Storybook ID: `pocket-lab-ui-evidence-screens--fleet-degraded`
-- Evidence SHA-256: `b846e1cb0ab1`
+- Evidence SHA-256: `c9462bbe81d2`
 
-![Fleet Scaling — FleetEmptyAgents](/product/generated/ui-screenshots/fleet-scaling__fleet-empty-agents.png)
+<img src="../generated/ui-screenshots/fleet-scaling__fleet-empty-agents.png" alt="Fleet Scaling — FleetEmptyAgents" loading="lazy" />
 
 - Story: `FleetEmptyAgents`
 - Storybook ID: `pocket-lab-ui-evidence-screens--fleet-empty-agents`
-- Evidence SHA-256: `ef327d4be29c`
+- Evidence SHA-256: `0540676b581a`
 
-![Fleet Scaling — FleetNormal](/product/generated/ui-screenshots/fleet-scaling__fleet-normal.png)
+<img src="../generated/ui-screenshots/fleet-scaling__fleet-normal.png" alt="Fleet Scaling — FleetNormal" loading="lazy" />
 
 - Story: `FleetNormal`
 - Storybook ID: `pocket-lab-ui-evidence-screens--fleet-normal`
-- Evidence SHA-256: `c9c4267286fb`
+- Evidence SHA-256: `b1ab32407f9d`
 
-![Fleet Scaling — FleetSimpleMode](/product/generated/ui-screenshots/fleet-scaling__fleet-simple-mode.png)
+<img src="../generated/ui-screenshots/fleet-scaling__fleet-simple-mode.png" alt="Fleet Scaling — FleetSimpleMode" loading="lazy" />
 
 - Story: `FleetSimpleMode`
 - Storybook ID: `pocket-lab-ui-evidence-screens--fleet-simple-mode`
-- Evidence SHA-256: `218912f58f67`
+- Evidence SHA-256: `6211a0d53470`
 
 <!-- tier9a-screenshot-evidence:end -->
 
@@ -311,29 +311,29 @@ These images are captured automatically from `storybook-static` with determinist
 
 The following screenshots are generated from `storybook-static` iframe stories with deterministic FastAPI mock data. They are visual release evidence for this screen.
 
-![Identity & Vault — IdentityVaultFailedOperation](/product/generated/ui-screenshots/identity-vault__identity-vault-failed-operation.png)
+<img src="../generated/ui-screenshots/identity-vault__identity-vault-failed-operation.png" alt="Identity &amp; Vault — IdentityVaultFailedOperation" loading="lazy" />
 
 - Story: `IdentityVaultFailedOperation`
 - Storybook ID: `pocket-lab-ui-evidence-screens--identity-vault-failed-operation`
-- Evidence SHA-256: `6afd44292ae1`
+- Evidence SHA-256: `5a2ba2b88afd`
 
-![Identity & Vault — IdentityVaultNormal](/product/generated/ui-screenshots/identity-vault__identity-vault-normal.png)
+<img src="../generated/ui-screenshots/identity-vault__identity-vault-normal.png" alt="Identity &amp; Vault — IdentityVaultNormal" loading="lazy" />
 
 - Story: `IdentityVaultNormal`
 - Storybook ID: `pocket-lab-ui-evidence-screens--identity-vault-normal`
-- Evidence SHA-256: `d557ce974607`
+- Evidence SHA-256: `ef260110c41e`
 
-![Identity & Vault — IdentityVaultSimpleMode](/product/generated/ui-screenshots/identity-vault__identity-vault-simple-mode.png)
+<img src="../generated/ui-screenshots/identity-vault__identity-vault-simple-mode.png" alt="Identity &amp; Vault — IdentityVaultSimpleMode" loading="lazy" />
 
 - Story: `IdentityVaultSimpleMode`
 - Storybook ID: `pocket-lab-ui-evidence-screens--identity-vault-simple-mode`
-- Evidence SHA-256: `06284a561c0d`
+- Evidence SHA-256: `f91fa959fd6a`
 
-![Identity & Vault — IdentityVaultSuccess](/product/generated/ui-screenshots/identity-vault__identity-vault-success.png)
+<img src="../generated/ui-screenshots/identity-vault__identity-vault-success.png" alt="Identity &amp; Vault — IdentityVaultSuccess" loading="lazy" />
 
 - Story: `IdentityVaultSuccess`
 - Storybook ID: `pocket-lab-ui-evidence-screens--identity-vault-success`
-- Evidence SHA-256: `0747cacf9e7f`
+- Evidence SHA-256: `c06d5e798f54`
 
 <!-- tier9a-screenshot-evidence:end -->
 
@@ -382,29 +382,29 @@ These images are captured automatically from `storybook-static` with determinist
 
 The following screenshots are generated from `storybook-static` iframe stories with deterministic FastAPI mock data. They are visual release evidence for this screen.
 
-![Release Workflow / Release — ReleaseWorkflowError](/product/generated/ui-screenshots/release-workflow__release-workflow-error.png)
+<img src="../generated/ui-screenshots/release-workflow__release-workflow-error.png" alt="Release Workflow / Release — ReleaseWorkflowError" loading="lazy" />
 
 - Story: `ReleaseWorkflowError`
 - Storybook ID: `pocket-lab-ui-evidence-screens--release-workflow-error`
-- Evidence SHA-256: `9b04c11d9857`
+- Evidence SHA-256: `98bcf3043f52`
 
-![Release Workflow / Release — ReleaseWorkflowLoading](/product/generated/ui-screenshots/release-workflow__release-workflow-loading.png)
+<img src="../generated/ui-screenshots/release-workflow__release-workflow-loading.png" alt="Release Workflow / Release — ReleaseWorkflowLoading" loading="lazy" />
 
 - Story: `ReleaseWorkflowLoading`
 - Storybook ID: `pocket-lab-ui-evidence-screens--release-workflow-loading`
-- Evidence SHA-256: `5172bd4f5039`
+- Evidence SHA-256: `f80f689837a0`
 
-![Release Workflow / Release — ReleaseWorkflowNormal](/product/generated/ui-screenshots/release-workflow__release-workflow-normal.png)
+<img src="../generated/ui-screenshots/release-workflow__release-workflow-normal.png" alt="Release Workflow / Release — ReleaseWorkflowNormal" loading="lazy" />
 
 - Story: `ReleaseWorkflowNormal`
 - Storybook ID: `pocket-lab-ui-evidence-screens--release-workflow-normal`
-- Evidence SHA-256: `ef61195bd4a7`
+- Evidence SHA-256: `878483ea3215`
 
-![Release Workflow / Release — ReleaseWorkflowSimpleMode](/product/generated/ui-screenshots/release-workflow__release-workflow-simple-mode.png)
+<img src="../generated/ui-screenshots/release-workflow__release-workflow-simple-mode.png" alt="Release Workflow / Release — ReleaseWorkflowSimpleMode" loading="lazy" />
 
 - Story: `ReleaseWorkflowSimpleMode`
 - Storybook ID: `pocket-lab-ui-evidence-screens--release-workflow-simple-mode`
-- Evidence SHA-256: `343017b652d8`
+- Evidence SHA-256: `5c46e23f5485`
 
 <!-- tier9a-screenshot-evidence:end -->
 
@@ -453,29 +453,29 @@ These images are captured automatically from `storybook-static` with determinist
 
 The following screenshots are generated from `storybook-static` iframe stories with deterministic FastAPI mock data. They are visual release evidence for this screen.
 
-![Drift Center — DriftCenterFailedOperation](/product/generated/ui-screenshots/drift-center__drift-center-failed-operation.png)
+<img src="../generated/ui-screenshots/drift-center__drift-center-failed-operation.png" alt="Drift Center — DriftCenterFailedOperation" loading="lazy" />
 
 - Story: `DriftCenterFailedOperation`
 - Storybook ID: `pocket-lab-ui-evidence-screens--drift-center-failed-operation`
-- Evidence SHA-256: `f88c1ed13c26`
+- Evidence SHA-256: `8d79a5e167ab`
 
-![Drift Center — DriftCenterNormal](/product/generated/ui-screenshots/drift-center__drift-center-normal.png)
+<img src="../generated/ui-screenshots/drift-center__drift-center-normal.png" alt="Drift Center — DriftCenterNormal" loading="lazy" />
 
 - Story: `DriftCenterNormal`
 - Storybook ID: `pocket-lab-ui-evidence-screens--drift-center-normal`
-- Evidence SHA-256: `6205e58f8c99`
+- Evidence SHA-256: `9e11690a36cb`
 
-![Drift Center — DriftCenterPermissionRequired](/product/generated/ui-screenshots/drift-center__drift-center-permission-required.png)
+<img src="../generated/ui-screenshots/drift-center__drift-center-permission-required.png" alt="Drift Center — DriftCenterPermissionRequired" loading="lazy" />
 
 - Story: `DriftCenterPermissionRequired`
 - Storybook ID: `pocket-lab-ui-evidence-screens--drift-center-permission-required`
-- Evidence SHA-256: `8ffdeca0b3f6`
+- Evidence SHA-256: `11076430bba1`
 
-![Drift Center — DriftCenterSimpleMode](/product/generated/ui-screenshots/drift-center__drift-center-simple-mode.png)
+<img src="../generated/ui-screenshots/drift-center__drift-center-simple-mode.png" alt="Drift Center — DriftCenterSimpleMode" loading="lazy" />
 
 - Story: `DriftCenterSimpleMode`
 - Storybook ID: `pocket-lab-ui-evidence-screens--drift-center-simple-mode`
-- Evidence SHA-256: `f9258dd0e74b`
+- Evidence SHA-256: `220b15c93c84`
 
 <!-- tier9a-screenshot-evidence:end -->
 
@@ -521,11 +521,11 @@ These images are captured automatically from `storybook-static` with determinist
 
 The following screenshots are generated from `storybook-static` iframe stories with deterministic FastAPI mock data. They are visual release evidence for this screen.
 
-![Security Posture — SecurityPostureSimple](/product/generated/ui-screenshots/security-posture__security-posture-simple.png)
+<img src="../generated/ui-screenshots/security-posture__security-posture-simple.png" alt="Security Posture — SecurityPostureSimple" loading="lazy" />
 
 - Story: `SecurityPostureSimple`
 - Storybook ID: `pocket-lab-ui-evidence-screens--security-posture-simple`
-- Evidence SHA-256: `307b312fecb6`
+- Evidence SHA-256: `0511b9a9e287`
 
 <!-- tier9a-screenshot-evidence:end -->
 
@@ -564,11 +564,11 @@ These images are captured automatically from `storybook-static` with determinist
 
 The following screenshots are generated from `storybook-static` iframe stories with deterministic FastAPI mock data. They are visual release evidence for this screen.
 
-![NOC Telemetry — NocTelemetryDegraded](/product/generated/ui-screenshots/noc-telemetry__noc-telemetry-degraded.png)
+<img src="../generated/ui-screenshots/noc-telemetry__noc-telemetry-degraded.png" alt="NOC Telemetry — NocTelemetryDegraded" loading="lazy" />
 
 - Story: `NocTelemetryDegraded`
 - Storybook ID: `pocket-lab-ui-evidence-screens--noc-telemetry-degraded`
-- Evidence SHA-256: `1a89d73e21cd`
+- Evidence SHA-256: `02f48115342d`
 
 <!-- tier9a-screenshot-evidence:end -->
 
@@ -607,11 +607,11 @@ These images are captured automatically from `storybook-static` with determinist
 
 The following screenshots are generated from `storybook-static` iframe stories with deterministic FastAPI mock data. They are visual release evidence for this screen.
 
-![Disaster Recovery — DisasterRecoveryNormal](/product/generated/ui-screenshots/disaster-recovery__disaster-recovery-normal.png)
+<img src="../generated/ui-screenshots/disaster-recovery__disaster-recovery-normal.png" alt="Disaster Recovery — DisasterRecoveryNormal" loading="lazy" />
 
 - Story: `DisasterRecoveryNormal`
 - Storybook ID: `pocket-lab-ui-evidence-screens--disaster-recovery-normal`
-- Evidence SHA-256: `e3f2edd760a6`
+- Evidence SHA-256: `c9883d8af37a`
 
 <!-- tier9a-screenshot-evidence:end -->
 
@@ -650,11 +650,11 @@ These images are captured automatically from `storybook-static` with determinist
 
 The following screenshots are generated from `storybook-static` iframe stories with deterministic FastAPI mock data. They are visual release evidence for this screen.
 
-![Policy Guardrails — PolicyGuardrailsNormal](/product/generated/ui-screenshots/policy-guardrails__policy-guardrails-normal.png)
+<img src="../generated/ui-screenshots/policy-guardrails__policy-guardrails-normal.png" alt="Policy Guardrails — PolicyGuardrailsNormal" loading="lazy" />
 
 - Story: `PolicyGuardrailsNormal`
 - Storybook ID: `pocket-lab-ui-evidence-screens--policy-guardrails-normal`
-- Evidence SHA-256: `9af076288253`
+- Evidence SHA-256: `53d57e3852a6`
 
 <!-- tier9a-screenshot-evidence:end -->
 
@@ -693,7 +693,7 @@ These images are captured automatically from `storybook-static` with determinist
 
 The following screenshots are generated from `storybook-static` iframe stories with deterministic FastAPI mock data. They are visual release evidence for this screen.
 
-![Settings / Enterprise Governance — SettingsEnterpriseGovernance](/product/generated/ui-screenshots/settings-governance__settings-enterprise-governance.png)
+<img src="../generated/ui-screenshots/settings-governance__settings-enterprise-governance.png" alt="Settings / Enterprise Governance — SettingsEnterpriseGovernance" loading="lazy" />
 
 - Story: `SettingsEnterpriseGovernance`
 - Storybook ID: `pocket-lab-ui-evidence-screens--settings-enterprise-governance`

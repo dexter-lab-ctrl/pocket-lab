@@ -82,7 +82,7 @@ def main() -> None:
     if len(screenshots) != expected_stories:
         errors.append(f"screenshot count mismatch: expected {expected_stories}, found {len(screenshots)}")
 
-    image_links = generated_doc.count("/product/generated/ui-screenshots/")
+    image_links = generated_doc.count("../generated/ui-screenshots/")
     if image_links != len(screenshots):
         errors.append(f"generated UI docs image link mismatch: expected {len(screenshots)}, found {image_links}")
 
