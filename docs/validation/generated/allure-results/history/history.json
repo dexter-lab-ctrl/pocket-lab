@@ -1,17 +1,6 @@
 {
   "history": [
     {
-      "generated_at": "2026-06-10T18:33:42Z",
-      "source_fingerprint": "087358dd09993367923d7d59c37e38a58952e87090839fe5af776e8b277f1045",
-      "state": "BLOCKED",
-      "status_counts": {
-        "BLOCKED": 6,
-        "FAIL": 0,
-        "PASS": 9,
-        "WARNING": 6
-      }
-    },
-    {
       "generated_at": "2026-06-10T18:39:31Z",
       "source_fingerprint": "087358dd09993367923d7d59c37e38a58952e87090839fe5af776e8b277f1045",
       "state": "BLOCKED",
@@ -212,6 +201,17 @@
     {
       "generated_at": "2026-06-15T17:02:58Z",
       "source_fingerprint": "077d27a15fbd95f49411c131347d47f4a1136675e13ea7d448335c4b67e6c7b2",
+      "state": "WARNING",
+      "status_counts": {
+        "BLOCKED": 0,
+        "FAIL": 0,
+        "PASS": 20,
+        "WARNING": 1
+      }
+    },
+    {
+      "generated_at": "2026-06-16T11:07:50Z",
+      "source_fingerprint": "ec7fdbd5681e3b0341e05973a5b221a60ecfa9d1337a2ef3e33aae706d170d2e",
       "state": "WARNING",
       "status_counts": {
         "BLOCKED": 0,

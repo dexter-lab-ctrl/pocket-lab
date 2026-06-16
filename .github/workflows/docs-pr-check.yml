@@ -66,7 +66,7 @@ jobs:
         run: npm ci
 
       - name: Generate and validate documentation
-        run: task docs:check
+        run: mkdocs build --strict
 
       - name: Check generated documentation freshness
         run: git diff --exit-code -- docs/development/generated/github-actions-workflows.md

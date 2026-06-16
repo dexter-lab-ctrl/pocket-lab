@@ -1,7 +1,7 @@
 {
   "manifest": {
     "gate_count": 21,
-    "generated_at": "2026-06-15T17:02:58Z",
+    "generated_at": "2026-06-16T11:07:50Z",
     "generated_files": [
       "docs/validation/generated/validation-manifest.json",
       "docs/validation/generated/validation-evidence.json",
@@ -56,6 +56,7 @@
       "scripts/docs/generate_deployment_docs.py",
       "scripts/docs/generate_deployment_evidence.py",
       "scripts/docs/generate_event_docs.py",
+      "scripts/docs/generate_github_workflow_docs.py",
       "scripts/docs/generate_observability_docs.py",
       "scripts/docs/generate_observability_evidence.py",
       "scripts/docs/generate_operations_contract.py",
@@ -153,7 +154,7 @@
       "runbooks/release_rollback.yaml",
       "runbooks/rotate_secret_with_audit.yaml"
     ],
-    "source_fingerprint": "077d27a15fbd95f49411c131347d47f4a1136675e13ea7d448335c4b67e6c7b2",
+    "source_fingerprint": "ec7fdbd5681e3b0341e05973a5b221a60ecfa9d1337a2ef3e33aae706d170d2e",
     "status_counts": {
       "BLOCKED": 0,
       "FAIL": 0,
@@ -169,7 +170,7 @@
       "PASS": "All blocking gates have recorded pass evidence and there are no advisory warnings.",
       "WARNING": "No blocking failures exist, but advisory warnings or missing advisory evidence remain."
     },
-    "generated_at": "2026-06-15T17:02:58Z",
+    "generated_at": "2026-06-16T11:07:50Z",
     "release_blockers": [],
     "schemaVersion": "pocketlab.release-readiness.v1",
     "state": "WARNING",
@@ -772,8 +773,8 @@
         "title": "Release dry-run evidence"
       }
     ],
-    "generated_at": "2026-06-15T17:02:58Z",
+    "generated_at": "2026-06-16T11:07:50Z",
     "schemaVersion": "pocketlab.validation.evidence.v1",
-    "source_fingerprint": "077d27a15fbd95f49411c131347d47f4a1136675e13ea7d448335c4b67e6c7b2"
+    "source_fingerprint": "ec7fdbd5681e3b0341e05973a5b221a60ecfa9d1337a2ef3e33aae706d170d2e"
   }
 }
