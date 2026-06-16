@@ -14,7 +14,7 @@ Pocket Lab includes a GitHub-hostable MkDocs documentation site covering:
 Published documentation URL:
 
 ```text
-TODO: Replace this with the GitHub Pages URL shown after the first successful "Publish MkDocs documentation site" workflow run.
+https://dexter-lab-ctrl.github.io/pocket-lab/
 ```
 
 Local documentation commands:
