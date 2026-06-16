@@ -44,7 +44,23 @@ ensure_initialized() {
   jq -r '.root_token' "$ROOT_ARTIFACTS" | atomic_write "$VAULT_TOKEN_FILE" 0600
 }
 ensure_unsealed() {
-  local sealed; sealed="$(vault status -format=json | jq -r '.sealed')"
+  local sealed vault_status_tmp vault_status_rc
+
+  vault_status_tmp="$(mktemp "${TMPDIR:-$HOME}/pocketlab-vault-status.XXXXXX")"
+  vault_status_rc=0
+  vault status -format=json > "$vault_status_tmp" || vault_status_rc=$?
+
+  # Vault returns rc=2 when initialized but sealed. That is expected during
+  # first bootstrap and must not prevent the script from unsealing Vault.
+  if [[ "$vault_status_rc" -ne 0 && "$vault_status_rc" -ne 2 ]]; then
+    cat "$vault_status_tmp" >&2 || true
+    rm -f "$vault_status_tmp"
+    die "Vault status check failed with rc=$vault_status_rc"
+  fi
+
+  sealed="$(jq -r '.sealed' "$vault_status_tmp")"
+  rm -f "$vault_status_tmp"
+
   [[ "$sealed" == "false" ]] && { log INFO "Vault already unsealed"; return 0; }
   [[ -s "$UNSEAL_KEY_FILE" ]] || die "Missing unseal key: $UNSEAL_KEY_FILE"
   log INFO "Unsealing Vault"; vault operator unseal "$(cat "$UNSEAL_KEY_FILE")" >/dev/null
@@ -58,7 +74,22 @@ bootstrap_service_secret() {
   if [[ -s "$SERVICE_SECRETS_FILE" ]]; then log INFO "Service secrets file already exists"; chmod 600 "$SERVICE_SECRETS_FILE" || true; return 0; fi
   log INFO "Generating service secrets once"
   local gsp gup vap
-  gsp="$(tr -dc 'a-f0-9' </dev/urandom | head -c 32)"; gup="$(tr -dc 'A-Za-z0-9_@#%+=.-' </dev/urandom | head -c 24)"; vap="$(tr -dc 'a-f0-9' </dev/urandom | head -c 32)"
+  gsp="$(python3 - <<'PYGEN'
+import secrets
+print(secrets.token_hex(16))
+PYGEN
+)"
+  gup="$(python3 - <<'PYGEN'
+import secrets
+alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_@#%+=.-"
+print("".join(secrets.choice(alphabet) for _ in range(24)))
+PYGEN
+)"
+  vap="$(python3 - <<'PYGEN'
+import secrets
+print(secrets.token_hex(16))
+PYGEN
+)"
   write_secret_file "$SERVICE_SECRETS_FILE" "GITEA_SERVICE_PASS=$gsp" "GITEA_UI_PASS=$gup" "VAULT_ADMIN_PASS=$vap"
 }
 write_vault_service_secrets() {
@@ -73,7 +104,7 @@ main() {
   ensure_dir_perm "$VAULT_STATE_DIR" 700; ensure_dir_perm "$VAULT_DATA_DIR" 700
   write_vault_config; start_vault
   wait_for_http "$VAULT_ADDR/v1/sys/health?standbyok=true&sealedcode=200&uninitcode=200" 60 || die "Vault failed to start"
-  export VAULT_ADDR; ensure_initialized; VAULT_TOKEN="$(cat "$VAULT_TOKEN_FILE")"; export VAULT_TOKEN; ensure_unsealed; vault login "$VAULT_TOKEN" >/dev/null
+  export VAULT_ADDR; ensure_initialized; ensure_unsealed; VAULT_TOKEN="$(cat "$VAULT_TOKEN_FILE")"; export VAULT_TOKEN; vault login "$VAULT_TOKEN" >/dev/null
   enable_engines; bootstrap_service_secret; write_vault_service_secrets
   mark_done vault_ready
   log INFO "Vault is initialized, unsealed, and safe to rerun"

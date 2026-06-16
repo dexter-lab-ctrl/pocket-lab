@@ -11,6 +11,7 @@ API_SERVER="${API_SERVER:-$FASTAPI_SERVER}"
 PWA_DIR="${PWA_DIR:-$POCKET_LAB_PWA_DIR}"; CADDYFILE="${CADDYFILE:-$POCKET_LAB_CADDYFILE}"; HARDWARE_DAEMON="${HARDWARE_DAEMON:-$POCKET_LAB_HARDWARE_DAEMON}"; OBS_DIR="${OBS_DIR:-$POCKET_LAB_OBSERVABILITY_DIR}"
 DASH_PORT="${DASH_PORT:-8443}"; API_PORT="${API_PORT:-8080}"; GATUS_PORT="${GATUS_PORT:-8081}"
 get_ts_fqdn(){ if have tailscale; then tailscale status --json 2>/dev/null | jq -r '.Self.DNSName // empty' | sed 's/\.$//' | grep -E '.ts.net$' || true; fi; }
+proot_ubuntu_ready(){ have proot-distro && proot-distro login ubuntu -- true >/dev/null 2>&1; }
 ensure_assets(){
   [[ -f "$API_SERVER" ]] || die "Missing dashboard API server: $API_SERVER"
   [[ -f "$WORKER_SERVER" ]] || die "Missing worker process required for production NATS execution: $WORKER_SERVER"
@@ -230,7 +231,7 @@ logs = data/log
 plugins = data/plugins
 provisioning = conf/provisioning
 EOF
-  if have proot-distro && proot-distro list 2>/dev/null | awk '{print $1}' | grep -Fxq ubuntu; then proot-distro login ubuntu -- bash -c "mkdir -p /opt/grafana/data/log /opt/grafana/data/plugins /opt/grafana/conf/provisioning && chmod -R 755 /opt/grafana/data /opt/grafana/conf" || true; fi
+  if proot_ubuntu_ready; then proot-distro login ubuntu -- bash -c "mkdir -p /opt/grafana/data/log /opt/grafana/data/plugins /opt/grafana/conf/provisioning && chmod -R 755 /opt/grafana/data /opt/grafana/conf" || true; fi
 }
 start_pm2_daemons(){
   log INFO "Starting/restarting dashboard services with PM2"
@@ -254,11 +255,11 @@ start_pm2_daemons(){
   else
     log WARN "gatus missing; health UI will use API fallback"
   fi
-  if have proot-distro && proot-distro list 2>/dev/null | awk '{print $1}' | grep -Fxq ubuntu; then
+  if proot_ubuntu_ready; then
     pm2_start_or_restart loki-kms bash -- -c "proot-distro login ubuntu -- /usr/local/bin/loki -config.file=$OBS_DIR/loki-config.yaml" || true
     pm2_start_or_restart promtail-agent bash -- -c "proot-distro login ubuntu -- /usr/local/bin/promtail -config.file=$OBS_DIR/promtail-config.yaml" || true
     pm2_start_or_restart prometheus-db bash -- -c "proot-distro login ubuntu -- /usr/local/bin/prometheus --config.file=$OBS_DIR/prometheus.yml --storage.tsdb.path=$OBS_DIR/prom_data --web.listen-address=127.0.0.1:9090" || true
-    pm2_start_or_restart grafana-ui bash -- -c "proot-distro login ubuntu -- bash -c 'cd /opt/grafana && ./bin/grafana-server --homepath=/opt/grafana --config=$OBS_DIR/custom.ini'" || true
+    pm2_start_or_restart grafana-ui bash -- -c "proot-distro login ubuntu -- bash -c 'cd /opt/grafana && if [ -x ./bin/grafana-server ]; then ./bin/grafana-server --homepath=/opt/grafana --config=$OBS_DIR/custom.ini; elif [ -x ./bin/grafana ]; then ./bin/grafana server --homepath=/opt/grafana --config=$OBS_DIR/custom.ini; else echo Grafana binary not found >&2; exit 1; fi'" || true
   else log WARN "PRoot Ubuntu unavailable; skipping Loki/Promtail/Prometheus/Grafana PM2 processes"; fi
   pm2 save >/dev/null || true
 }
