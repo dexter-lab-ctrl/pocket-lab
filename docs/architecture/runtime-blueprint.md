@@ -24,7 +24,7 @@ React / Vite PWA
 | Playbooks | 25 |
 | Roles | 14 |
 | Bootstrap scripts | 49 |
-| Platform docs | 7 |
+| Platform docs | 11 |
 | Environment/runtime files | 4 |
 
 

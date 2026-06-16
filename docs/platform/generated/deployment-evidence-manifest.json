@@ -4626,6 +4626,13 @@
     },
     {
       "kind": "platform_or_architecture_doc",
+      "path": "docs/architecture/approvals.md",
+      "sha256": "000e60ac3563671ecd521718306d3d540e42feb198b3ebc2a6fe87851d5d668b",
+      "size_bytes": 1177,
+      "title": "Approvals Architecture"
+    },
+    {
+      "kind": "platform_or_architecture_doc",
       "path": "docs/architecture/deployment-runtime-blueprint.md",
       "sha256": "7aae65ac91e4400966ba6b3dbec60e976ff0caa9ebdfc1766ac2bbac083af496",
       "size_bytes": 4607,
@@ -4640,10 +4647,31 @@
     },
     {
       "kind": "platform_or_architecture_doc",
+      "path": "docs/architecture/index.md",
+      "sha256": "5365224a7492a817bff07feb7daff17b4fa3a397fcb69d0e807bd9b1b79829d6",
+      "size_bytes": 1270,
+      "title": "Architecture Overview"
+    },
+    {
+      "kind": "platform_or_architecture_doc",
+      "path": "docs/architecture/runtime-flow.md",
+      "sha256": "c2bc9f759bb62d9f3b49ff7c96ca9e603ffb6c882a6f1c3f27b96db4849b232b",
+      "size_bytes": 1833,
+      "title": "Runtime Flow"
+    },
+    {
+      "kind": "platform_or_architecture_doc",
       "path": "docs/architecture/structurizr-architecture.md",
       "sha256": "94075480daeafa0cb19db95a7e2bed3618e2aab89788b35c699e9cd2f9fa560b",
       "size_bytes": 2996,
       "title": "Structurizr Architecture"
+    },
+    {
+      "kind": "platform_or_architecture_doc",
+      "path": "docs/architecture/typed-operations.md",
+      "sha256": "257bc34768835293df8be5f56cc2183e77d2118cce89ec70f30accf39c28d708",
+      "size_bytes": 984,
+      "title": "Typed Operations Architecture"
     }
   ],
   "repo_root_name": "pocket-lab",
@@ -4659,7 +4687,7 @@
     "environment_file_count": 4,
     "iac_catalog_count": 0,
     "inventory_or_vars_count": 35,
-    "platform_doc_count": 7,
+    "platform_doc_count": 11,
     "playbook_count": 25,
     "role_count": 14
   },
