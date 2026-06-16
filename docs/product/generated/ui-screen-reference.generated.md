@@ -102,25 +102,25 @@ The following screenshots are generated from `storybook-static` iframe stories w
 
 - Story: `AppStoreDegradedWriteBlocked`
 - Storybook ID: `pocket-lab-ui-evidence-screens--app-store-degraded-write-blocked`
-- Evidence SHA-256: `ebf4fb68851a`
+- Evidence SHA-256: `bbbfee482e7e`
 
 <img src="../generated/ui-screenshots/app-store__app-store-empty-state.png" alt="App Store / Blueprint Catalog — AppStoreEmptyState" loading="lazy" />
 
 - Story: `AppStoreEmptyState`
 - Storybook ID: `pocket-lab-ui-evidence-screens--app-store-empty-state`
-- Evidence SHA-256: `626c69e7eb77`
+- Evidence SHA-256: `323ab8ddbeda`
 
 <img src="../generated/ui-screenshots/app-store__app-store-normal.png" alt="App Store / Blueprint Catalog — AppStoreNormal" loading="lazy" />
 
 - Story: `AppStoreNormal`
 - Storybook ID: `pocket-lab-ui-evidence-screens--app-store-normal`
-- Evidence SHA-256: `6652cae79706`
+- Evidence SHA-256: `40a11e675d4d`
 
 <img src="../generated/ui-screenshots/app-store__app-store-simple-mode.png" alt="App Store / Blueprint Catalog — AppStoreSimpleMode" loading="lazy" />
 
 - Story: `AppStoreSimpleMode`
 - Storybook ID: `pocket-lab-ui-evidence-screens--app-store-simple-mode`
-- Evidence SHA-256: `80ad05ad2c88`
+- Evidence SHA-256: `64d2d51d3f61`
 
 <!-- tier9a-screenshot-evidence:end -->
 
@@ -173,25 +173,25 @@ The following screenshots are generated from `storybook-static` iframe stories w
 
 - Story: `GitOpsApprovalRequired`
 - Storybook ID: `pocket-lab-ui-evidence-screens--git-ops-approval-required`
-- Evidence SHA-256: `4816d00ba006`
+- Evidence SHA-256: `545611fe610a`
 
 <img src="../generated/ui-screenshots/gitops__git-ops-failed-operation.png" alt="GitOps — GitOpsFailedOperation" loading="lazy" />
 
 - Story: `GitOpsFailedOperation`
 - Storybook ID: `pocket-lab-ui-evidence-screens--git-ops-failed-operation`
-- Evidence SHA-256: `d36af859e095`
+- Evidence SHA-256: `5b47e58e4369`
 
 <img src="../generated/ui-screenshots/gitops__git-ops-professional.png" alt="GitOps — GitOpsProfessional" loading="lazy" />
 
 - Story: `GitOpsProfessional`
 - Storybook ID: `pocket-lab-ui-evidence-screens--git-ops-professional`
-- Evidence SHA-256: `aff8ddf17123`
+- Evidence SHA-256: `fb52354c12b6`
 
 <img src="../generated/ui-screenshots/gitops__git-ops-simple-mode.png" alt="GitOps — GitOpsSimpleMode" loading="lazy" />
 
 - Story: `GitOpsSimpleMode`
 - Storybook ID: `pocket-lab-ui-evidence-screens--git-ops-simple-mode`
-- Evidence SHA-256: `99d6b4906a7d`
+- Evidence SHA-256: `0732c05934d1`
 
 <!-- tier9a-screenshot-evidence:end -->
 
@@ -244,25 +244,25 @@ The following screenshots are generated from `storybook-static` iframe stories w
 
 - Story: `FleetDegraded`
 - Storybook ID: `pocket-lab-ui-evidence-screens--fleet-degraded`
-- Evidence SHA-256: `c9462bbe81d2`
+- Evidence SHA-256: `b846e1cb0ab1`
 
 <img src="../generated/ui-screenshots/fleet-scaling__fleet-empty-agents.png" alt="Fleet Scaling — FleetEmptyAgents" loading="lazy" />
 
 - Story: `FleetEmptyAgents`
 - Storybook ID: `pocket-lab-ui-evidence-screens--fleet-empty-agents`
-- Evidence SHA-256: `0540676b581a`
+- Evidence SHA-256: `ef327d4be29c`
 
 <img src="../generated/ui-screenshots/fleet-scaling__fleet-normal.png" alt="Fleet Scaling — FleetNormal" loading="lazy" />
 
 - Story: `FleetNormal`
 - Storybook ID: `pocket-lab-ui-evidence-screens--fleet-normal`
-- Evidence SHA-256: `b1ab32407f9d`
+- Evidence SHA-256: `c9c4267286fb`
 
 <img src="../generated/ui-screenshots/fleet-scaling__fleet-simple-mode.png" alt="Fleet Scaling — FleetSimpleMode" loading="lazy" />
 
 - Story: `FleetSimpleMode`
 - Storybook ID: `pocket-lab-ui-evidence-screens--fleet-simple-mode`
-- Evidence SHA-256: `6211a0d53470`
+- Evidence SHA-256: `218912f58f67`
 
 <!-- tier9a-screenshot-evidence:end -->
 
@@ -315,25 +315,25 @@ The following screenshots are generated from `storybook-static` iframe stories w
 
 - Story: `IdentityVaultFailedOperation`
 - Storybook ID: `pocket-lab-ui-evidence-screens--identity-vault-failed-operation`
-- Evidence SHA-256: `5a2ba2b88afd`
+- Evidence SHA-256: `6afd44292ae1`
 
 <img src="../generated/ui-screenshots/identity-vault__identity-vault-normal.png" alt="Identity &amp; Vault — IdentityVaultNormal" loading="lazy" />
 
 - Story: `IdentityVaultNormal`
 - Storybook ID: `pocket-lab-ui-evidence-screens--identity-vault-normal`
-- Evidence SHA-256: `ef260110c41e`
+- Evidence SHA-256: `d557ce974607`
 
 <img src="../generated/ui-screenshots/identity-vault__identity-vault-simple-mode.png" alt="Identity &amp; Vault — IdentityVaultSimpleMode" loading="lazy" />
 
 - Story: `IdentityVaultSimpleMode`
 - Storybook ID: `pocket-lab-ui-evidence-screens--identity-vault-simple-mode`
-- Evidence SHA-256: `f91fa959fd6a`
+- Evidence SHA-256: `06284a561c0d`
 
 <img src="../generated/ui-screenshots/identity-vault__identity-vault-success.png" alt="Identity &amp; Vault — IdentityVaultSuccess" loading="lazy" />
 
 - Story: `IdentityVaultSuccess`
 - Storybook ID: `pocket-lab-ui-evidence-screens--identity-vault-success`
-- Evidence SHA-256: `c06d5e798f54`
+- Evidence SHA-256: `0747cacf9e7f`
 
 <!-- tier9a-screenshot-evidence:end -->
 
@@ -386,25 +386,25 @@ The following screenshots are generated from `storybook-static` iframe stories w
 
 - Story: `ReleaseWorkflowError`
 - Storybook ID: `pocket-lab-ui-evidence-screens--release-workflow-error`
-- Evidence SHA-256: `98bcf3043f52`
+- Evidence SHA-256: `9b04c11d9857`
 
 <img src="../generated/ui-screenshots/release-workflow__release-workflow-loading.png" alt="Release Workflow / Release — ReleaseWorkflowLoading" loading="lazy" />
 
 - Story: `ReleaseWorkflowLoading`
 - Storybook ID: `pocket-lab-ui-evidence-screens--release-workflow-loading`
-- Evidence SHA-256: `f80f689837a0`
+- Evidence SHA-256: `5172bd4f5039`
 
 <img src="../generated/ui-screenshots/release-workflow__release-workflow-normal.png" alt="Release Workflow / Release — ReleaseWorkflowNormal" loading="lazy" />
 
 - Story: `ReleaseWorkflowNormal`
 - Storybook ID: `pocket-lab-ui-evidence-screens--release-workflow-normal`
-- Evidence SHA-256: `878483ea3215`
+- Evidence SHA-256: `ef61195bd4a7`
 
 <img src="../generated/ui-screenshots/release-workflow__release-workflow-simple-mode.png" alt="Release Workflow / Release — ReleaseWorkflowSimpleMode" loading="lazy" />
 
 - Story: `ReleaseWorkflowSimpleMode`
 - Storybook ID: `pocket-lab-ui-evidence-screens--release-workflow-simple-mode`
-- Evidence SHA-256: `5c46e23f5485`
+- Evidence SHA-256: `343017b652d8`
 
 <!-- tier9a-screenshot-evidence:end -->
 
@@ -457,25 +457,25 @@ The following screenshots are generated from `storybook-static` iframe stories w
 
 - Story: `DriftCenterFailedOperation`
 - Storybook ID: `pocket-lab-ui-evidence-screens--drift-center-failed-operation`
-- Evidence SHA-256: `8d79a5e167ab`
+- Evidence SHA-256: `f88c1ed13c26`
 
 <img src="../generated/ui-screenshots/drift-center__drift-center-normal.png" alt="Drift Center — DriftCenterNormal" loading="lazy" />
 
 - Story: `DriftCenterNormal`
 - Storybook ID: `pocket-lab-ui-evidence-screens--drift-center-normal`
-- Evidence SHA-256: `9e11690a36cb`
+- Evidence SHA-256: `6205e58f8c99`
 
 <img src="../generated/ui-screenshots/drift-center__drift-center-permission-required.png" alt="Drift Center — DriftCenterPermissionRequired" loading="lazy" />
 
 - Story: `DriftCenterPermissionRequired`
 - Storybook ID: `pocket-lab-ui-evidence-screens--drift-center-permission-required`
-- Evidence SHA-256: `11076430bba1`
+- Evidence SHA-256: `8ffdeca0b3f6`
 
 <img src="../generated/ui-screenshots/drift-center__drift-center-simple-mode.png" alt="Drift Center — DriftCenterSimpleMode" loading="lazy" />
 
 - Story: `DriftCenterSimpleMode`
 - Storybook ID: `pocket-lab-ui-evidence-screens--drift-center-simple-mode`
-- Evidence SHA-256: `220b15c93c84`
+- Evidence SHA-256: `f9258dd0e74b`
 
 <!-- tier9a-screenshot-evidence:end -->
 
@@ -525,7 +525,7 @@ The following screenshots are generated from `storybook-static` iframe stories w
 
 - Story: `SecurityPostureSimple`
 - Storybook ID: `pocket-lab-ui-evidence-screens--security-posture-simple`
-- Evidence SHA-256: `0511b9a9e287`
+- Evidence SHA-256: `307b312fecb6`
 
 <!-- tier9a-screenshot-evidence:end -->
 
@@ -568,7 +568,7 @@ The following screenshots are generated from `storybook-static` iframe stories w
 
 - Story: `NocTelemetryDegraded`
 - Storybook ID: `pocket-lab-ui-evidence-screens--noc-telemetry-degraded`
-- Evidence SHA-256: `02f48115342d`
+- Evidence SHA-256: `1a89d73e21cd`
 
 <!-- tier9a-screenshot-evidence:end -->
 
@@ -611,7 +611,7 @@ The following screenshots are generated from `storybook-static` iframe stories w
 
 - Story: `DisasterRecoveryNormal`
 - Storybook ID: `pocket-lab-ui-evidence-screens--disaster-recovery-normal`
-- Evidence SHA-256: `c9883d8af37a`
+- Evidence SHA-256: `e3f2edd760a6`
 
 <!-- tier9a-screenshot-evidence:end -->
 
@@ -654,7 +654,7 @@ The following screenshots are generated from `storybook-static` iframe stories w
 
 - Story: `PolicyGuardrailsNormal`
 - Storybook ID: `pocket-lab-ui-evidence-screens--policy-guardrails-normal`
-- Evidence SHA-256: `53d57e3852a6`
+- Evidence SHA-256: `9af076288253`
 
 <!-- tier9a-screenshot-evidence:end -->
 
