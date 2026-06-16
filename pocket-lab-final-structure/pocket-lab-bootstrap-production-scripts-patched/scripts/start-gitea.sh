@@ -12,7 +12,14 @@ ensure_config() {
   mkdir -p "$GITEA_CONF_DIR" "$GITEA_HOME/data" "$GITEA_HOME/log"
   if [[ ! -f "$GITEA_BASE_CONF" ]]; then
     log INFO "Creating base Gitea config"
-    local secret; secret="$(tr -dc A-Za-z0-9 </dev/urandom | head -c 64)"
+    local secret
+    secret="$(python3 - <<'PYSECRET'
+import secrets
+import string
+alphabet = string.ascii_letters + string.digits
+print("".join(secrets.choice(alphabet) for _ in range(64)))
+PYSECRET
+)"
     cat <<EOF | atomic_write "$GITEA_BASE_CONF" 0600
 APP_NAME = Pocket Lab GitOps Repository
 RUN_MODE = prod
@@ -44,12 +51,47 @@ get_secret() {
 build_runtime_config() {
   local pass="$1"; cp -f "$GITEA_BASE_CONF" "$GITEA_RUNTIME_CONF"
   python3 - "$GITEA_RUNTIME_CONF" "$pass" <<'PYCFG'
-import configparser, sys
-path, password = sys.argv[1], sys.argv[2]
-cfg = configparser.RawConfigParser(); cfg.optionxform=str; cfg.read(path)
-if 'database' not in cfg: cfg['database']={}
-cfg['database']['PASSWD'] = password
-with open(path, 'w') as f: cfg.write(f)
+from pathlib import Path
+import sys
+
+path = Path(sys.argv[1])
+password = sys.argv[2]
+
+lines = path.read_text().splitlines()
+out = []
+in_database = False
+saw_database = False
+wrote_password = False
+
+for line in lines:
+    stripped = line.strip()
+
+    if stripped.startswith("[") and stripped.endswith("]"):
+        if in_database and not wrote_password:
+            out.append(f"PASSWD = {password}")
+            wrote_password = True
+        section = stripped[1:-1].strip().lower()
+        in_database = section == "database"
+        saw_database = saw_database or in_database
+        out.append(line)
+        continue
+
+    if in_database and stripped.upper().startswith("PASSWD"):
+        out.append(f"PASSWD = {password}")
+        wrote_password = True
+    else:
+        out.append(line)
+
+if in_database and not wrote_password:
+    out.append(f"PASSWD = {password}")
+    wrote_password = True
+
+if not saw_database:
+    out.extend(["", "[database]", f"PASSWD = {password}"])
+
+path.write_text("
+".join(out) + "
+")
 PYCFG
   chmod 600 "$GITEA_RUNTIME_CONF"
 }
@@ -71,9 +113,45 @@ bootstrap_repos() {
 }
 configure_act_runner() {
   mkdir -p "$ACT_RUNNER_HOME"; cd "$ACT_RUNNER_HOME"
-  if [[ ! -s "$ACT_RUNNER_CONFIG" ]]; then act_runner generate-config > "$ACT_RUNNER_CONFIG"; sed -i 's/network: ""/network: "host"/g' "$ACT_RUNNER_CONFIG" || true; else log INFO "act_runner config already exists"; fi
+  if [[ ! -s "$ACT_RUNNER_CONFIG" ]]; then
+    act_runner generate-config > "$ACT_RUNNER_CONFIG"
+  else
+    log INFO "act_runner config already exists"
+  fi
+
+  # Termux/Android does not provide Docker by default. Use host labels so
+  # Gitea Actions jobs are scheduled against the local Android/ARM64 host.
+  python3 - "$ACT_RUNNER_CONFIG" <<'PYCFG'
+from pathlib import Path
+import sys
+
+p = Path(sys.argv[1])
+text = p.read_text()
+old = '  labels:
+    - "ubuntu-latest:docker://gitea/runner-images:ubuntu-latest"
+    - "ubuntu-22.04:docker://gitea/runner-images:ubuntu-22.04"
+    - "ubuntu-20.04:docker://gitea/runner-images:ubuntu-20.04"'
+new = '  labels:
+    - "ubuntu-latest:host"
+    - "linux-arm64:host"'
+if old in text:
+    p.write_text(text.replace(old, new))
+PYCFG
+
+  if [[ -s "$ACT_RUNNER_HOME/.runner" ]]; then
+    log INFO "act_runner is already registered"
+    return 0
+  fi
+
+  log INFO "Registering act_runner with local Gitea"
+  local runner_token runner_name runner_labels
+  runner_name="${GITEA_RUNNER_NAME:-pocket-lab-android}"
+  runner_labels="${GITEA_RUNNER_LABELS:-ubuntu-latest:host,linux-arm64:host}"
+  runner_token="$(gitea --config "$GITEA_RUNTIME_CONF" actions generate-runner-token)"
+  act_runner register     --no-interactive     --instance "http://127.0.0.1:${GITEA_HTTP_PORT}"     --token "$runner_token"     --name "$runner_name"     --labels "$runner_labels"     --config "$ACT_RUNNER_CONFIG"
+  unset runner_token
 }
-start_act_runner_pm2() { pm2_start_or_restart gitea-runner act_runner -- daemon -c "$ACT_RUNNER_CONFIG"; }
+start_act_runner_pm2() { cd "$ACT_RUNNER_HOME"; pm2_start_or_restart gitea-runner act_runner -- daemon -c "$ACT_RUNNER_CONFIG"; }
 main() {
   SCRIPT_NAME="start-gitea.sh"; acquire_lock "$SCRIPT_NAME"; ensure_root_dirs; require_termux; require_cmd gitea curl jq pm2 python3 act_runner
   ensure_config

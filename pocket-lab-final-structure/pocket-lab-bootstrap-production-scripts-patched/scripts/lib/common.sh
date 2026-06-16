@@ -171,11 +171,34 @@ pm2_has() { have pm2 && pm2 describe "$1" >/dev/null 2>&1; }
 pm2_start_or_restart() {
   local name="$1"; shift
   require_cmd pm2
+
+  # Recreate instead of plain restart so bootstrap script changes refresh the
+  # PM2 command, arguments, interpreter, working directory, and environment.
   if pm2_has "$name"; then
-    log INFO "Restarting PM2 process: $name"
-    pm2 restart "$name" --update-env >/dev/null
+    log INFO "Deleting existing PM2 process before restart: $name"
+    pm2 delete "$name" >/dev/null || true
+  fi
+
+  local before_sep=() after_sep=() seen_sep=0 arg
+  for arg in "$@"; do
+    if [[ "$arg" == "--" && "$seen_sep" -eq 0 ]]; then
+      seen_sep=1
+      continue
+    fi
+    if [[ "$seen_sep" -eq 0 ]]; then
+      before_sep+=("$arg")
+    else
+      after_sep+=("$arg")
+    fi
+  done
+
+  log INFO "Starting PM2 process: $name"
+  if [[ "${#after_sep[@]}" -gt 0 ]]; then
+    [[ "${#before_sep[@]}" -gt 0 ]] || die "pm2_start_or_restart requires a command before -- for process: $name"
+    local script="${before_sep[0]}"
+    local pm2_opts=("${before_sep[@]:1}")
+    pm2 start "$script" --name "$name" --update-env "${pm2_opts[@]}" -- "${after_sep[@]}"
   else
-    log INFO "Starting PM2 process: $name"
     pm2 start "$@" --name "$name" --update-env
   fi
 }
