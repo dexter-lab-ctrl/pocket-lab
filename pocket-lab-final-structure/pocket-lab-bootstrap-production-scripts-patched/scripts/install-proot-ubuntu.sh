@@ -8,8 +8,8 @@ UBUNTU_NAME="${UBUNTU_NAME:-ubuntu}"
 
 main() {
   SCRIPT_NAME="install-proot-ubuntu.sh"; acquire_lock "$SCRIPT_NAME"; ensure_root_dirs; require_termux; require_cmd proot-distro
-  if proot-distro list 2>/dev/null | awk '{print $1}' | grep -Fxq "$UBUNTU_NAME"; then
-    log INFO "PRoot distro already installed: $UBUNTU_NAME"
+  if proot-distro login "$UBUNTU_NAME" -- true >/dev/null 2>&1; then
+    log INFO "PRoot distro already installed and login-ready: $UBUNTU_NAME"
   else
     log INFO "Installing PRoot distro: $UBUNTU_NAME"
     proot-distro install "$UBUNTU_NAME"
@@ -24,6 +24,8 @@ main() {
     python3 -m pip install --break-system-packages --no-cache-dir --upgrade pip >/dev/null 2>&1 || python3 -m pip install --no-cache-dir --upgrade pip >/dev/null 2>&1 || true
     python3 -m pip install --break-system-packages --no-cache-dir jmespath netaddr >/dev/null 2>&1 || python3 -m pip install --no-cache-dir jmespath netaddr >/dev/null 2>&1 || true
   '
+
+  proot-distro login "$UBUNTU_NAME" -- true >/dev/null 2>&1 || die "PRoot Ubuntu login validation failed: $UBUNTU_NAME"
 
   ensure_dir_perm "$PREFIX/bin" 755
   cat > "$PREFIX/bin/ansible" <<EOF

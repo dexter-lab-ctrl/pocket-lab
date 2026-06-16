@@ -26,7 +26,7 @@ main() {
     log INFO "Skipping package upgrade; already done or disabled"
   fi
 
-  local packages=(python nodejs wget unzip jq curl proot-distro caddy git mariadb openssl ncurses-utils util-linux ncurses coreutils moreutils termux-api ca-certificates gnupg tar gzip xz-utils procps gitea golang)
+  local packages=(python nodejs wget unzip jq curl proot-distro caddy git mariadb openssl ncurses-utils util-linux ncurses coreutils moreutils termux-api ca-certificates gnupg tar gzip xz-utils procps gitea golang python-cryptography)
   local p
   for p in "${packages[@]}"; do ensure_pkg_installed "$p"; done
   if ! have nc; then ensure_pkg_installed netcat-openbsd || log WARN "netcat-openbsd unavailable; Python TCP fallback will be used"; fi

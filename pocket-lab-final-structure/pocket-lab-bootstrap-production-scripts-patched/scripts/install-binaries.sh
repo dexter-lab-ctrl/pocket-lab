@@ -22,8 +22,9 @@ install_vault() {
 }
 install_act_runner() {
   if have act_runner; then log INFO "act_runner already installed"; return 0; fi
-  local bin="$STATE_DIR/act_runner_${ACT_RUNNER_VERSION}_${ARCH}"
-  download_if_missing "https://gitea.com/gitea/act_runner/releases/download/v${ACT_RUNNER_VERSION}/act_runner-${ACT_RUNNER_VERSION}-${ARCH}" "$bin"
+  local runner_arch="${ACT_RUNNER_ARCH:-${ARCH/_/-}}"
+  local bin="$STATE_DIR/act_runner_${ACT_RUNNER_VERSION}_${runner_arch}"
+  download_if_missing "https://gitea.com/gitea/act_runner/releases/download/v${ACT_RUNNER_VERSION}/act_runner-${ACT_RUNNER_VERSION}-${runner_arch}" "$bin"
   install -m 0755 "$bin" "$PREFIX/bin/act_runner"; rm -f "$bin"
 }
 install_go_binary() {
@@ -36,33 +37,134 @@ install_go_binary() {
 ensure_python_runtime() {
   require_cmd python3
   log INFO "Ensuring Python runtime packages"
-  python3 - <<'PYCHK' || python3 -m pip install --user --upgrade --no-cache-dir dulwich ansible-runner ansible-core fastapi "uvicorn[standard]" pydantic nats-py
+
+  # Termux/Android should avoid forcing Rust-heavy Python source builds.
+  # PRoot Ubuntu provides Ansible tooling, so native ansible-runner is useful
+  # but not bootstrap-critical on Android.
+  if have pkg; then
+    ensure_pkg_installed python-cryptography || log WARN "Termux python-cryptography package unavailable; avoiding cryptography source build where possible"
+  fi
+
+  python3 - <<'PYCHK' && return 0 || true
 import importlib.util, sys
-required = ("dulwich", "ansible_runner", "fastapi", "uvicorn", "pydantic", "nats")
+required = ("dulwich", "fastapi", "uvicorn", "pydantic", "nats")
 sys.exit(0 if all(importlib.util.find_spec(m) for m in required) else 1)
 PYCHK
+
+  python3 -m pip install --user --no-cache-dir \
+    dulwich \
+    "fastapi<0.116" \
+    "pydantic<2" \
+    uvicorn \
+    nats-py
+
+  python3 -m pip install --user --no-cache-dir ansible-runner ansible-core || \
+    log WARN "Optional native ansible-runner install failed on Termux; PRoot Ubuntu Ansible wrappers remain available"
+
+  python3 - <<'PYVERIFY'
+import importlib.util, sys
+required = ("dulwich", "fastapi", "uvicorn", "pydantic", "nats")
+missing = [m for m in required if not importlib.util.find_spec(m)]
+if missing:
+    print("Missing required Python runtime modules:", ", ".join(missing))
+    sys.exit(1)
+print("Required Python runtime modules are available")
+PYVERIFY
+}
+proot_ubuntu_ready() {
+  have proot-distro || return 1
+  proot-distro login ubuntu -- true >/dev/null 2>&1
 }
 install_proot_stack() {
-  if ! have proot-distro || ! proot-distro list 2>/dev/null | awk '{print $1}' | grep -Fxq ubuntu; then
+  if ! proot_ubuntu_ready; then
+    if [[ "${POCKETLAB_REQUIRE_PROOT_OBSERVABILITY:-0}" == "1" ]]; then
+      die "PRoot Ubuntu is not ready; cannot install required observability/security guest binaries"
+    fi
     log WARN "PRoot Ubuntu is not ready; skipping observability/security guest binaries"
     return 0
   fi
+
   log INFO "Ensuring observability/security binaries inside PRoot Ubuntu"
-  proot-distro login ubuntu -- bash -lc "
-    set -Eeuo pipefail
-    export DEBIAN_FRONTEND=noninteractive
-    apt-get update -qq >/dev/null 2>&1 || true
-    apt-get install -y -qq curl unzip tar ca-certificates >/dev/null 2>&1 || true
-    mkdir -p /tmp/pocketlab-downloads /usr/local/bin /opt
-    cd /tmp/pocketlab-downloads
-    if ! command -v prometheus >/dev/null 2>&1; then curl -fsSLO https://github.com/prometheus/prometheus/releases/download/v${PROM_VERSION}/prometheus-${PROM_VERSION}.linux-arm64.tar.gz && tar -xzf prometheus-${PROM_VERSION}.linux-arm64.tar.gz && install -m 0755 prometheus-${PROM_VERSION}.linux-arm64/prometheus /usr/local/bin/prometheus && install -m 0755 prometheus-${PROM_VERSION}.linux-arm64/promtool /usr/local/bin/promtool; fi
-    if ! command -v grafana-server >/dev/null 2>&1; then curl -fsSLO https://dl.grafana.com/oss/release/grafana-${GRAFANA_VERSION}.linux-arm64.tar.gz && tar -xzf grafana-${GRAFANA_VERSION}.linux-arm64.tar.gz && rm -rf /opt/grafana && mv grafana-${GRAFANA_VERSION} /opt/grafana && ln -sf /opt/grafana/bin/grafana-server /usr/local/bin/grafana-server; fi
-    if ! command -v loki >/dev/null 2>&1; then curl -fsSLO https://github.com/grafana/loki/releases/download/v${LOKI_VERSION}/loki-linux-arm64.zip && unzip -qo loki-linux-arm64.zip && install -m 0755 loki-linux-arm64 /usr/local/bin/loki; fi
-    if ! command -v promtail >/dev/null 2>&1; then curl -fsSLO https://github.com/grafana/loki/releases/download/v${PROMTAIL_VERSION}/promtail-linux-arm64.zip && unzip -qo promtail-linux-arm64.zip && install -m 0755 promtail-linux-arm64 /usr/local/bin/promtail; fi
-    if ! command -v trivy >/dev/null 2>&1; then curl -fsSLO https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-ARM64.tar.gz && tar -xzf trivy_${TRIVY_VERSION}_Linux-ARM64.tar.gz && install -m 0755 trivy /usr/local/bin/trivy; fi
-    if [ ! -d /opt/lynis ]; then curl -fsSLO https://github.com/CISOfy/lynis/archive/refs/tags/${LYNIS_VERSION}.tar.gz && tar -xzf ${LYNIS_VERSION}.tar.gz && rm -rf /opt/lynis && mv lynis-${LYNIS_VERSION} /opt/lynis && ln -sf /opt/lynis/lynis /usr/local/bin/lynis; fi
-    rm -rf /tmp/pocketlab-downloads
-  "
+  proot-distro login ubuntu -- env \
+    PROM_VERSION="$PROM_VERSION" \
+    GRAFANA_VERSION="$GRAFANA_VERSION" \
+    LOKI_VERSION="$LOKI_VERSION" \
+    PROMTAIL_VERSION="$PROMTAIL_VERSION" \
+    TRIVY_VERSION="$TRIVY_VERSION" \
+    LYNIS_VERSION="$LYNIS_VERSION" \
+    bash -s <<'PROOT'
+set -Eeuo pipefail
+export DEBIAN_FRONTEND=noninteractive
+apt-get update -qq >/dev/null 2>&1 || true
+apt-get install -y -qq curl unzip tar ca-certificates >/dev/null 2>&1 || true
+mkdir -p /tmp/pocketlab-downloads /usr/local/bin /opt
+cd /tmp/pocketlab-downloads
+
+if ! command -v prometheus >/dev/null 2>&1; then
+  curl -fsSLO "https://github.com/prometheus/prometheus/releases/download/v${PROM_VERSION}/prometheus-${PROM_VERSION}.linux-arm64.tar.gz"
+  tar -xzf "prometheus-${PROM_VERSION}.linux-arm64.tar.gz"
+  install -m 0755 "prometheus-${PROM_VERSION}.linux-arm64/prometheus" /usr/local/bin/prometheus
+  install -m 0755 "prometheus-${PROM_VERSION}.linux-arm64/promtool" /usr/local/bin/promtool
+fi
+
+if ! command -v grafana-server >/dev/null 2>&1; then
+  curl -fsSLO "https://dl.grafana.com/oss/release/grafana-${GRAFANA_VERSION}.linux-arm64.tar.gz"
+  tar -xzf "grafana-${GRAFANA_VERSION}.linux-arm64.tar.gz"
+  grafana_src=""
+  for candidate in "grafana-${GRAFANA_VERSION}" "grafana-v${GRAFANA_VERSION}" grafana-*; do
+    if [ -d "$candidate" ]; then grafana_src="$candidate"; break; fi
+  done
+  if [ -z "$grafana_src" ]; then
+    printf '%s\\n' 'Grafana archive extracted, but no Grafana directory was found' >&2
+    find . -maxdepth 1 -type d -name 'grafana*' -print >&2 || true
+    exit 1
+  fi
+  rm -rf /opt/grafana
+  mv "$grafana_src" /opt/grafana
+  if [ -x /opt/grafana/bin/grafana-server ]; then
+    :
+  elif [ -x /opt/grafana/bin/grafana ]; then
+    cat > /opt/grafana/bin/grafana-server <<'SH'
+#!/usr/bin/env bash
+exec /opt/grafana/bin/grafana server "$@"
+SH
+    chmod +x /opt/grafana/bin/grafana-server
+  else
+    printf '%s\\n' 'Grafana install did not contain bin/grafana-server or bin/grafana' >&2
+    find /opt/grafana -maxdepth 3 -type f -name 'grafana*' -print >&2 || true
+    exit 1
+  fi
+  ln -sf /opt/grafana/bin/grafana-server /usr/local/bin/grafana-server
+fi
+
+if ! command -v loki >/dev/null 2>&1; then
+  curl -fsSLO "https://github.com/grafana/loki/releases/download/v${LOKI_VERSION}/loki-linux-arm64.zip"
+  unzip -qo loki-linux-arm64.zip
+  install -m 0755 loki-linux-arm64 /usr/local/bin/loki
+fi
+
+if ! command -v promtail >/dev/null 2>&1; then
+  curl -fsSLO "https://github.com/grafana/loki/releases/download/v${PROMTAIL_VERSION}/promtail-linux-arm64.zip"
+  unzip -qo promtail-linux-arm64.zip
+  install -m 0755 promtail-linux-arm64 /usr/local/bin/promtail
+fi
+
+if ! command -v trivy >/dev/null 2>&1; then
+  curl -fsSLO "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-ARM64.tar.gz"
+  tar -xzf "trivy_${TRIVY_VERSION}_Linux-ARM64.tar.gz"
+  install -m 0755 trivy /usr/local/bin/trivy
+fi
+
+if [ ! -d /opt/lynis ]; then
+  curl -fsSLO "https://github.com/CISOfy/lynis/archive/refs/tags/${LYNIS_VERSION}.tar.gz"
+  tar -xzf "${LYNIS_VERSION}.tar.gz"
+  rm -rf /opt/lynis
+  mv "lynis-${LYNIS_VERSION}" /opt/lynis
+  ln -sf /opt/lynis/lynis /usr/local/bin/lynis
+fi
+
+rm -rf /tmp/pocketlab-downloads
+PROOT
 }
 main() {
   SCRIPT_NAME="install-binaries.sh"; acquire_lock "$SCRIPT_NAME"; ensure_root_dirs; require_termux
