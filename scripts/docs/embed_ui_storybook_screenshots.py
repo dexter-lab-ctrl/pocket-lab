@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import html
 import json
 import re
 from pathlib import Path
@@ -63,21 +64,25 @@ def filesystem_image_path(value: str) -> Path:
 
 
 def mkdocs_image_path(value: str) -> str:
-    """Return the Markdown image path to use in MkDocs output."""
-    normalized = normalize_manifest_path(value)
+    """Return a GitHub Pages-safe image URL for UI screenshot markdown."""
+    normalized = str(value).replace("\\", "/").lstrip("/")
 
-    if normalized.startswith("generated/ui-screenshots/"):
-        return "/product/" + normalized
+    repo_prefix = "docs/product/generated/ui-screenshots/"
+    generated_prefix = "generated/ui-screenshots/"
+    screenshot_prefix = "ui-screenshots/"
 
-    if normalized.startswith("ui-screenshots/"):
-        return "/product/generated/" + normalized
+    if normalized.startswith(repo_prefix):
+        filename = normalized[len(repo_prefix):]
+        return "../generated/ui-screenshots/" + filename
 
-    if normalized.startswith("docs/product/generated/ui-screenshots/"):
-        return "/" + normalized.removeprefix("docs/")
+    if normalized.startswith(generated_prefix):
+        filename = normalized[len(generated_prefix):]
+        return "../generated/ui-screenshots/" + filename
+
+    if normalized.startswith(screenshot_prefix):
+        return "../generated/" + normalized
 
     return normalized
-
-
 def screenshot_path_value(shot: dict[str, Any]) -> str:
     return str(
         shot.get("screenshot")
@@ -173,6 +178,25 @@ def image_block(screen_heading: str, shots: list[dict[str, Any]]) -> list[str]:
     return lines
 
 
+
+def html_screenshot_line(line: str) -> str:
+    """Convert generated screenshot Markdown image links into raw HTML.
+
+    MkDocs strict mode validates Markdown image links as documentation targets.
+    The UI screenshot files are static assets copied into site/product/generated,
+    so raw HTML avoids false broken-link warnings while preserving the browser path.
+    """
+    match = re.match(
+        r'^!\[(?P<alt>[^\]]*)\]\((?P<src>\.\./generated/ui-screenshots/[^)]+)\)$',
+        line,
+    )
+    if not match:
+        return line
+
+    alt = html.escape(match.group("alt"), quote=True)
+    src = html.escape(match.group("src"), quote=True)
+    return f'<img src="{src}" alt="{alt}" loading="lazy" />'
+
 def inject(markdown: str, by_screen: dict[str, list[dict[str, Any]]]) -> tuple[str, int, int]:
     markdown = strip_existing_blocks(markdown)
     lines = markdown.splitlines()
@@ -223,7 +247,9 @@ def inject(markdown: str, by_screen: dict[str, list[dict[str, Any]]]) -> tuple[s
         output.extend(image_block(heading, shots))
         injected_screens.add(screen_id)
 
-    image_links = sum(1 for line in output if "/product/generated/ui-screenshots/" in line)
+    output = [html_screenshot_line(line) for line in output]
+
+    image_links = sum(1 for line in output if "ui-screenshots/" in line and "<img " in line)
     return "\n".join(output).rstrip() + "\n", len(injected_screens), image_links
 
 
