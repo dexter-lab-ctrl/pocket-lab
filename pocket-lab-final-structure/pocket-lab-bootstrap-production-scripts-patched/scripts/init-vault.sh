@@ -44,26 +44,21 @@ ensure_initialized() {
   jq -r '.root_token' "$ROOT_ARTIFACTS" | atomic_write "$VAULT_TOKEN_FILE" 0600
 }
 ensure_unsealed() {
-  local sealed vault_status_tmp vault_status_rc
-
-  vault_status_tmp="$(mktemp "${TMPDIR:-$HOME}/pocketlab-vault-status.XXXXXX")"
-  vault_status_rc=0
-  vault status -format=json > "$vault_status_tmp" || vault_status_rc=$?
-
-  # Vault returns rc=2 when initialized but sealed. That is expected during
-  # first bootstrap and must not prevent the script from unsealing Vault.
-  if [[ "$vault_status_rc" -ne 0 && "$vault_status_rc" -ne 2 ]]; then
-    cat "$vault_status_tmp" >&2 || true
-    rm -f "$vault_status_tmp"
-    die "Vault status check failed with rc=$vault_status_rc"
+  local tmp rc sealed
+  tmp="$(mktemp "${TMPDIR:-$PREFIX/tmp}/pocketlab-vault-status.XXXXXX")"
+  rc=0
+  VAULT_ADDR="$VAULT_ADDR" vault status -format=json >"$tmp" 2>/dev/null || rc=$?
+  if [[ "$rc" != "0" && "$rc" != "2" ]]; then
+    cat "$tmp" 2>/dev/null || true
+    rm -f "$tmp"
+    die "Unable to read Vault status, rc=$rc"
   fi
-
-  sealed="$(jq -r '.sealed' "$vault_status_tmp")"
-  rm -f "$vault_status_tmp"
-
+  sealed="$(jq -r '.sealed' "$tmp")"
+  rm -f "$tmp"
   [[ "$sealed" == "false" ]] && { log INFO "Vault already unsealed"; return 0; }
   [[ -s "$UNSEAL_KEY_FILE" ]] || die "Missing unseal key: $UNSEAL_KEY_FILE"
-  log INFO "Unsealing Vault"; vault operator unseal "$(cat "$UNSEAL_KEY_FILE")" >/dev/null
+  log INFO "Unsealing Vault"
+  VAULT_ADDR="$VAULT_ADDR" vault operator unseal "$(cat "$UNSEAL_KEY_FILE")" >/dev/null
 }
 enable_engines() {
   log INFO "Ensuring Vault secret engines"
@@ -71,24 +66,28 @@ enable_engines() {
   vault secrets list -format=json | jq -e 'has("database/")' >/dev/null 2>&1 || vault secrets enable database >/dev/null
 }
 bootstrap_service_secret() {
-  if [[ -s "$SERVICE_SECRETS_FILE" ]]; then log INFO "Service secrets file already exists"; chmod 600 "$SERVICE_SECRETS_FILE" || true; return 0; fi
+  if [[ -s "$SERVICE_SECRETS_FILE" ]]; then
+    log INFO "Service secrets file already exists"
+    chmod 600 "$SERVICE_SECRETS_FILE" || true
+    return 0
+  fi
   log INFO "Generating service secrets once"
   local gsp gup vap
-  gsp="$(python3 - <<'PYGEN'
+  gsp="$(python3 - <<'PYSECRET'
 import secrets
 print(secrets.token_hex(16))
-PYGEN
+PYSECRET
 )"
-  gup="$(python3 - <<'PYGEN'
-import secrets
-alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_@#%+=.-"
-print("".join(secrets.choice(alphabet) for _ in range(24)))
-PYGEN
+  gup="$(python3 - <<'PYSECRET'
+import secrets, string
+alphabet = string.ascii_letters + string.digits + '_@#%+=.-'
+print(''.join(secrets.choice(alphabet) for _ in range(24)))
+PYSECRET
 )"
-  vap="$(python3 - <<'PYGEN'
+  vap="$(python3 - <<'PYSECRET'
 import secrets
 print(secrets.token_hex(16))
-PYGEN
+PYSECRET
 )"
   write_secret_file "$SERVICE_SECRETS_FILE" "GITEA_SERVICE_PASS=$gsp" "GITEA_UI_PASS=$gup" "VAULT_ADMIN_PASS=$vap"
 }
@@ -100,7 +99,7 @@ write_vault_service_secrets() {
   vault kv put secret/platform vault_admin_pass="$VAULT_ADMIN_PASS" >/dev/null
 }
 main() {
-  SCRIPT_NAME="init-vault.sh"; acquire_lock "$SCRIPT_NAME"; ensure_root_dirs; require_termux; require_cmd vault jq curl pgrep
+  SCRIPT_NAME="init-vault.sh"; acquire_lock "$SCRIPT_NAME"; ensure_root_dirs; require_termux; require_cmd vault jq curl pgrep python3
   ensure_dir_perm "$VAULT_STATE_DIR" 700; ensure_dir_perm "$VAULT_DATA_DIR" 700
   write_vault_config; start_vault
   wait_for_http "$VAULT_ADDR/v1/sys/health?standbyok=true&sealedcode=200&uninitcode=200" 60 || die "Vault failed to start"
