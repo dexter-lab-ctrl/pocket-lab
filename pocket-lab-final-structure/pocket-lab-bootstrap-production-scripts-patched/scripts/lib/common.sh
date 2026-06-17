@@ -172,34 +172,42 @@ pm2_start_or_restart() {
   local name="$1"; shift
   require_cmd pm2
 
-  # Recreate instead of plain restart so bootstrap script changes refresh the
-  # PM2 command, arguments, interpreter, working directory, and environment.
+  # Recreate instead of plain restart so changed args, cwd, and env are applied
+  # deterministically. This also prevents stale PM2 definitions from replaying
+  # broken command lines after pm2 resurrect.
   if pm2_has "$name"; then
     log INFO "Deleting existing PM2 process before restart: $name"
     pm2 delete "$name" >/dev/null || true
   fi
 
+  log INFO "Starting PM2 process: $name"
+
   local before_sep=() after_sep=() seen_sep=0 arg
   for arg in "$@"; do
-    if [[ "$arg" == "--" && "$seen_sep" -eq 0 ]]; then
+    if [[ "$arg" == "--" && "$seen_sep" == "0" ]]; then
       seen_sep=1
       continue
     fi
-    if [[ "$seen_sep" -eq 0 ]]; then
-      before_sep+=("$arg")
-    else
+    if [[ "$seen_sep" == "1" ]]; then
       after_sep+=("$arg")
+    else
+      before_sep+=("$arg")
     fi
   done
 
-  log INFO "Starting PM2 process: $name"
+  if [[ "${#before_sep[@]}" -eq 0 ]]; then
+    die "pm2_start_or_restart requires a command for $name"
+  fi
+
+  local script="${before_sep[0]}"
+  local pm2_opts=("${before_sep[@]:1}")
+
   if [[ "${#after_sep[@]}" -gt 0 ]]; then
-    [[ "${#before_sep[@]}" -gt 0 ]] || die "pm2_start_or_restart requires a command before -- for process: $name"
-    local script="${before_sep[0]}"
-    local pm2_opts=("${before_sep[@]:1}")
+    # PM2 options must appear before --. Application args must appear after --.
+    # Otherwise flags like --name and --update-env can be passed to the app.
     pm2 start "$script" --name "$name" --update-env "${pm2_opts[@]}" -- "${after_sep[@]}"
   else
-    pm2 start "$@" --name "$name" --update-env
+    pm2 start "${before_sep[@]}" --name "$name" --update-env
   fi
 }
 

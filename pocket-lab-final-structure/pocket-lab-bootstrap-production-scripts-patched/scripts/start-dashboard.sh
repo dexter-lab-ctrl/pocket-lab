@@ -11,7 +11,6 @@ API_SERVER="${API_SERVER:-$FASTAPI_SERVER}"
 PWA_DIR="${PWA_DIR:-$POCKET_LAB_PWA_DIR}"; CADDYFILE="${CADDYFILE:-$POCKET_LAB_CADDYFILE}"; HARDWARE_DAEMON="${HARDWARE_DAEMON:-$POCKET_LAB_HARDWARE_DAEMON}"; OBS_DIR="${OBS_DIR:-$POCKET_LAB_OBSERVABILITY_DIR}"
 DASH_PORT="${DASH_PORT:-8443}"; API_PORT="${API_PORT:-8080}"; GATUS_PORT="${GATUS_PORT:-8081}"
 get_ts_fqdn(){ if have tailscale; then tailscale status --json 2>/dev/null | jq -r '.Self.DNSName // empty' | sed 's/\.$//' | grep -E '.ts.net$' || true; fi; }
-proot_ubuntu_ready(){ have proot-distro && proot-distro login ubuntu -- true >/dev/null 2>&1; }
 ensure_assets(){
   [[ -f "$API_SERVER" ]] || die "Missing dashboard API server: $API_SERVER"
   [[ -f "$WORKER_SERVER" ]] || die "Missing worker process required for production NATS execution: $WORKER_SERVER"
@@ -82,20 +81,49 @@ write_caddyfile(){
   if [[ -n "$fqdn" ]]; then
     cat <<EOF | atomic_write "$CADDYFILE" 0644
 $fqdn {
-  tls { get_certificate tailscale }
+  tls {
+    get_certificate tailscale
+  }
+
   encode gzip zstd
   header Strict-Transport-Security "max-age=31536000; includeSubDomains"
   header X-Content-Type-Options "nosniff"
   header X-Frame-Options "DENY"
   header Referrer-Policy "no-referrer"
-  handle /health { reverse_proxy 127.0.0.1:${API_PORT} }
-  handle /ready { reverse_proxy 127.0.0.1:${API_PORT} }
-  handle /healthz { reverse_proxy 127.0.0.1:${API_PORT} }
-  handle /api/* { reverse_proxy 127.0.0.1:${API_PORT} }
-  handle /ws/* { reverse_proxy 127.0.0.1:${API_PORT} }
-  handle /gitea/* { reverse_proxy 127.0.0.1:3030 }
-  handle /loki/* { reverse_proxy 127.0.0.1:${API_PORT} }
-  handle /* { root * ${PWA_DIR}; try_files {path} /index.html; file_server }
+
+  handle /health {
+    reverse_proxy 127.0.0.1:${API_PORT}
+  }
+
+  handle /ready {
+    reverse_proxy 127.0.0.1:${API_PORT}
+  }
+
+  handle /healthz {
+    reverse_proxy 127.0.0.1:${API_PORT}
+  }
+
+  handle /api/* {
+    reverse_proxy 127.0.0.1:${API_PORT}
+  }
+
+  handle /ws/* {
+    reverse_proxy 127.0.0.1:${API_PORT}
+  }
+
+  handle /gitea/* {
+    reverse_proxy 127.0.0.1:3030
+  }
+
+  handle /loki/* {
+    reverse_proxy 127.0.0.1:${API_PORT}
+  }
+
+  handle /* {
+    root * ${PWA_DIR}
+    try_files {path} /index.html
+    file_server
+  }
 }
 EOF
   else
@@ -105,14 +133,40 @@ EOF
   header X-Content-Type-Options "nosniff"
   header X-Frame-Options "DENY"
   header Referrer-Policy "no-referrer"
-  handle /health { reverse_proxy 127.0.0.1:${API_PORT} }
-  handle /ready { reverse_proxy 127.0.0.1:${API_PORT} }
-  handle /healthz { reverse_proxy 127.0.0.1:${API_PORT} }
-  handle /api/* { reverse_proxy 127.0.0.1:${API_PORT} }
-  handle /ws/* { reverse_proxy 127.0.0.1:${API_PORT} }
-  handle /gitea/* { reverse_proxy 127.0.0.1:3030 }
-  handle /loki/* { reverse_proxy 127.0.0.1:${API_PORT} }
-  handle /* { root * ${PWA_DIR}; try_files {path} /index.html; file_server }
+
+  handle /health {
+    reverse_proxy 127.0.0.1:${API_PORT}
+  }
+
+  handle /ready {
+    reverse_proxy 127.0.0.1:${API_PORT}
+  }
+
+  handle /healthz {
+    reverse_proxy 127.0.0.1:${API_PORT}
+  }
+
+  handle /api/* {
+    reverse_proxy 127.0.0.1:${API_PORT}
+  }
+
+  handle /ws/* {
+    reverse_proxy 127.0.0.1:${API_PORT}
+  }
+
+  handle /gitea/* {
+    reverse_proxy 127.0.0.1:3030
+  }
+
+  handle /loki/* {
+    reverse_proxy 127.0.0.1:${API_PORT}
+  }
+
+  handle /* {
+    root * ${PWA_DIR}
+    try_files {path} /index.html
+    file_server
+  }
 }
 EOF
   fi
@@ -175,51 +229,113 @@ common:
   replication_factor: 1
   ring:
     instance_addr: 127.0.0.1
-    kvstore: { store: inmemory }
+    kvstore:
+      store: inmemory
 schema_config:
   configs:
     - from: 2020-10-24
       store: boltdb-shipper
       object_store: filesystem
       schema: v11
-      index: { prefix: index_, period: 24h }
+      index:
+        prefix: index_
+        period: 24h
 frontend:
-  instance_interface_names: [lo]
+  instance_interface_names:
+    - lo
 EOF
   cat <<EOF | atomic_write "$OBS_DIR/promtail-config.yaml" 0644
-server: { http_listen_port: 9080, grpc_listen_port: 0 }
-positions: { filename: $OBS_DIR/positions.yaml }
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+positions:
+  filename: $OBS_DIR/positions.yaml
 clients:
   - url: http://127.0.0.1:3100/loki/api/v1/push
 scrape_configs:
-- job_name: system_logs
-  static_configs:
-  - targets: [localhost]
-    labels: { job: pm2_logs, __path__: /data/data/com.termux/files/home/.pm2/logs/*.log }
+  - job_name: system_logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: pm2_logs
+          __path__: /data/data/com.termux/files/home/.pm2/logs/*.log
 EOF
   cat <<EOF | atomic_write "$OBS_DIR/prometheus.yml" 0644
-global: { scrape_interval: 15s, evaluation_interval: 15s }
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
 scrape_configs:
   - job_name: prometheus
-    static_configs: [{ targets: ["127.0.0.1:9090"] }]
+    static_configs:
+      - targets:
+          - "127.0.0.1:9090"
   - job_name: vault
     metrics_path: /v1/sys/metrics
-    params: { format: [prometheus] }
-    static_configs: [{ targets: ["127.0.0.1:8200"] }]
+    params:
+      format:
+        - prometheus
+    static_configs:
+      - targets:
+          - "127.0.0.1:8200"
 EOF
   cat <<EOF | atomic_write "$OBS_DIR/gatus-config.yaml" 0644
-web: { port: ${GATUS_PORT} }
+web:
+  port: ${GATUS_PORT}
+
 ui:
   title: Pocket Lab Health Engine
   description: Dependency-aware health dashboard for Pocket Lab.
+
 endpoints:
-  - { name: pocket-lab-api, group: core, url: http://127.0.0.1:${API_PORT}/health, interval: 30s, conditions: ["[STATUS] == 200", "[BODY].status == ok"] }
-  - { name: pocket-lab-ready, group: core, url: http://127.0.0.1:${API_PORT}/ready, interval: 30s, conditions: ["[STATUS] == 200"] }
-  - { name: gitea, group: platform, url: http://127.0.0.1:3030/api/healthz, interval: 30s, conditions: ["[STATUS] == 200"] }
-  - { name: vault, group: platform, url: http://127.0.0.1:8200/v1/sys/health?standbyok=true, interval: 30s, conditions: ["[STATUS] == any(200, 429)"] }
-  - { name: loki, group: observability, url: http://127.0.0.1:3100/ready, interval: 30s, conditions: ["[STATUS] == 200"] }
-  - { name: prometheus, group: observability, url: http://127.0.0.1:9090/-/ready, interval: 30s, conditions: ["[STATUS] == 200"] }
-  - { name: grafana, group: observability, url: http://127.0.0.1:3050/api/health, interval: 30s, conditions: ["[STATUS] == 200"] }
+  - name: pocket-lab-api
+    group: core
+    url: "http://127.0.0.1:${API_PORT}/health"
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+
+  - name: pocket-lab-ready
+    group: core
+    url: "http://127.0.0.1:${API_PORT}/ready"
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+
+  - name: gitea
+    group: platform
+    url: "http://127.0.0.1:3030/api/healthz"
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+
+  - name: vault
+    group: platform
+    url: "http://127.0.0.1:8200/v1/sys/health?standbyok=true"
+    interval: 30s
+    conditions:
+      - "[STATUS] == any(200, 429)"
+
+  - name: loki
+    group: observability
+    url: "http://127.0.0.1:3100/ready"
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+
+  - name: prometheus
+    group: observability
+    url: "http://127.0.0.1:9090/-/ready"
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
+
+  - name: grafana
+    group: observability
+    url: "http://127.0.0.1:3050/api/health"
+    interval: 30s
+    conditions:
+      - "[STATUS] == 200"
 EOF
   cat <<EOF | atomic_write "$OBS_DIR/custom.ini" 0644
 [server]
@@ -231,7 +347,9 @@ logs = data/log
 plugins = data/plugins
 provisioning = conf/provisioning
 EOF
-  if proot_ubuntu_ready; then proot-distro login ubuntu -- bash -c "mkdir -p /opt/grafana/data/log /opt/grafana/data/plugins /opt/grafana/conf/provisioning && chmod -R 755 /opt/grafana/data /opt/grafana/conf" || true; fi
+  if have proot-distro && proot-distro list 2>/dev/null | awk '{print $1}' | grep -Fxq ubuntu; then
+    proot-distro login ubuntu -- bash -c "mkdir -p /opt/grafana/data/log /opt/grafana/data/plugins /opt/grafana/conf/provisioning && chmod -R 755 /opt/grafana/data /opt/grafana/conf" || true
+  fi
 }
 start_pm2_daemons(){
   log INFO "Starting/restarting dashboard services with PM2"
@@ -249,17 +367,19 @@ start_pm2_daemons(){
     log WARN "Pocket Lab node agent not started; this control plane will not publish NATS fleet heartbeats"
   fi
   POCKETLAB_NATS_REQUIRED=1 POCKETLAB_NATS_REQUIRE_JETSTREAM=1 POCKETLAB_NATS_JETSTREAM=1 POCKETLAB_WORKER_EXECUTION=worker POCKETLAB_NATS_USER="$POCKETLAB_NATS_API_USER" POCKETLAB_NATS_PASSWORD="$POCKETLAB_NATS_API_PASSWORD" POCKETLAB_AGENT_NATS_USER="$POCKETLAB_NATS_AGENT_USER" POCKETLAB_AGENT_NATS_PASSWORD="$POCKETLAB_NATS_AGENT_PASSWORD" POCKETLAB_NATS_NAME=pocketlab-fastapi POCKETLAB_COMMAND_MAX_DELIVER="${POCKETLAB_COMMAND_MAX_DELIVER:-5}" POCKETLAB_COMMAND_ACK_WAIT_SECONDS="${POCKETLAB_COMMAND_ACK_WAIT_SECONDS:-60}" pm2_start_or_restart pocket-api "$API_SERVER" --interpreter python3 --update-env
+  wait_for_http "http://127.0.0.1:${API_PORT}/health" 90 || die "FastAPI failed to become healthy before starting Caddy/Gatus"
+  caddy validate --config "$CADDYFILE" --adapter caddyfile >/dev/null
   pm2_start_or_restart caddy-proxy caddy -- run --config "$CADDYFILE"
   if have gatus; then
     pm2_start_or_restart pocket-gatus bash -- -c "GATUS_CONFIG_PATH=$OBS_DIR/gatus-config.yaml gatus"
   else
     log WARN "gatus missing; health UI will use API fallback"
   fi
-  if proot_ubuntu_ready; then
+  if have proot-distro && proot-distro list 2>/dev/null | awk '{print $1}' | grep -Fxq ubuntu; then
     pm2_start_or_restart loki-kms bash -- -c "proot-distro login ubuntu -- /usr/local/bin/loki -config.file=$OBS_DIR/loki-config.yaml" || true
     pm2_start_or_restart promtail-agent bash -- -c "proot-distro login ubuntu -- /usr/local/bin/promtail -config.file=$OBS_DIR/promtail-config.yaml" || true
     pm2_start_or_restart prometheus-db bash -- -c "proot-distro login ubuntu -- /usr/local/bin/prometheus --config.file=$OBS_DIR/prometheus.yml --storage.tsdb.path=$OBS_DIR/prom_data --web.listen-address=127.0.0.1:9090" || true
-    pm2_start_or_restart grafana-ui bash -- -c "proot-distro login ubuntu -- bash -c 'cd /opt/grafana && if [ -x ./bin/grafana-server ]; then ./bin/grafana-server --homepath=/opt/grafana --config=$OBS_DIR/custom.ini; elif [ -x ./bin/grafana ]; then ./bin/grafana server --homepath=/opt/grafana --config=$OBS_DIR/custom.ini; else echo Grafana binary not found >&2; exit 1; fi'" || true
+    pm2_start_or_restart grafana-ui bash -- -c "proot-distro login ubuntu -- bash -c 'cd /opt/grafana && ./bin/grafana-server --homepath=/opt/grafana --config=$OBS_DIR/custom.ini'" || true
   else log WARN "PRoot Ubuntu unavailable; skipping Loki/Promtail/Prometheus/Grafana PM2 processes"; fi
   pm2 save >/dev/null || true
 }

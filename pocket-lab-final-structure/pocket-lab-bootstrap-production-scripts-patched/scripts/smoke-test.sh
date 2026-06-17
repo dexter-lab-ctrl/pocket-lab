@@ -4,7 +4,7 @@ IFS=$'\n\t'
 SCRIPT_DIR="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1091
 source "$SCRIPT_DIR/lib/common.sh"
-VAULT_ADDR="${VAULT_ADDR:-http://127.0.0.1:8200}"; GITEA_URL="${GITEA_URL:-http://127.0.0.1:3030}"; DASHBOARD_URL="${DASHBOARD_URL:-http://127.0.0.1:8443}"; API_URL="${API_URL:-http://127.0.0.1:8080}"; GATUS_URL="${GATUS_URL:-http://127.0.0.1:8081}"
+VAULT_ADDR="${VAULT_ADDR:-http://127.0.0.1:8200}"; export VAULT_ADDR; GITEA_URL="${GITEA_URL:-http://127.0.0.1:3030}"; DASHBOARD_URL="${DASHBOARD_URL:-http://127.0.0.1:8443}"; API_URL="${API_URL:-http://127.0.0.1:8080}"; GATUS_URL="${GATUS_URL:-http://127.0.0.1:8081}"
 main(){
   export SCRIPT_NAME="smoke-test.sh"; ensure_root_dirs; require_cmd curl; local failures=0
   check(){ local name="$1"; shift; if "$@"; then log INFO "PASS: $name"; else log ERROR "FAIL: $name"; failures=$((failures+1)); fi; }

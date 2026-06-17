@@ -33,14 +33,46 @@ configure_schema_and_users() {
   db_exec -e "CREATE USER IF NOT EXISTS 'gitea'@'127.0.0.1' IDENTIFIED BY '${gp}'; ALTER USER 'gitea'@'127.0.0.1' IDENTIFIED BY '${gp}'; GRANT ALL PRIVILEGES ON gitea.* TO 'gitea'@'127.0.0.1';"
   db_exec -e "CREATE USER IF NOT EXISTS 'vault_admin'@'127.0.0.1' IDENTIFIED BY '${vp}'; ALTER USER 'vault_admin'@'127.0.0.1' IDENTIFIED BY '${vp}'; GRANT ALL PRIVILEGES ON *.* TO 'vault_admin'@'127.0.0.1' WITH GRANT OPTION; FLUSH PRIVILEGES;"
 }
+resolve_vault_token_file() {
+  local candidate
+  for candidate in \
+    "${VAULT_TOKEN_FILE:-}" \
+    "$STATE_DIR/vault/root.token" \
+    "$POCKET_LAB_BASE_DIR/state/vault/root.token" \
+    "$POCKET_LAB_VAULT_DIR/root.token"; do
+    [[ -n "$candidate" && -s "$candidate" ]] && { printf '%s
+' "$candidate"; return 0; }
+  done
+  find "$HOME" -path '*/vault/root.token' -type f -print 2>/dev/null | head -n 1
+}
+
 register_vault_database_engine() {
-  command -v vault >/dev/null 2>&1 || return 0; [[ -n "${VAULT_TOKEN:-}" ]] || [[ -s "$STATE_DIR/vault/root.token" ]] || return 0
-  export VAULT_ADDR="${VAULT_ADDR:-http://127.0.0.1:8200}"; export VAULT_TOKEN="${VAULT_TOKEN:-$(cat "$STATE_DIR/vault/root.token" 2>/dev/null || true)}"
-  vault status >/dev/null 2>&1 || { log WARN "Vault unavailable; skipping DB engine registration"; return 0; }
+  command -v vault >/dev/null 2>&1 || return 0
+  export VAULT_ADDR="${VAULT_ADDR:-http://127.0.0.1:8200}"
+
+  local token_file="${VAULT_TOKEN_FILE:-}"
+  if [[ -z "${VAULT_TOKEN:-}" ]]; then
+    token_file="$(resolve_vault_token_file || true)"
+    if [[ -n "$token_file" && -s "$token_file" ]]; then
+      export VAULT_TOKEN="$(cat "$token_file")"
+    fi
+  fi
+
+  if [[ -z "${VAULT_TOKEN:-}" ]]; then
+    log WARN "Vault token unavailable; skipping DB engine registration"
+    return 0
+  fi
+
+  if ! vault status >/dev/null 2>&1; then
+    log WARN "Vault unavailable; skipping DB engine registration"
+    return 0
+  fi
+
   vault login "$VAULT_TOKEN" >/dev/null 2>&1 || true
   log INFO "Ensuring Vault MariaDB database engine config"
-  vault write database/config/mariadb plugin_name="mysql-database-plugin" allowed_roles="mariadb-role" connection_url="{{username}}:{{password}}@tcp(127.0.0.1:3306)/" username="vault_admin" password="$VAULT_ADMIN_PASS" >/dev/null 2>&1 || true
-  vault write database/roles/mariadb-role db_name="mariadb" creation_statements="CREATE USER '{{name}}'@'127.0.0.1' IDENTIFIED BY '{{password}}'; GRANT ALL PRIVILEGES ON *.* TO '{{name}}'@'127.0.0.1';" revocation_statements="DROP USER '{{name}}'@'127.0.0.1';" default_ttl="1h" max_ttl="24h" >/dev/null 2>&1 || true
+  vault secrets list -format=json | jq -e 'has("database/")' >/dev/null 2>&1 || vault secrets enable database >/dev/null
+  vault write database/config/mariadb plugin_name="mysql-database-plugin" allowed_roles="mariadb-role" connection_url="{{username}}:{{password}}@tcp(127.0.0.1:3306)/" username="vault_admin" password="$VAULT_ADMIN_PASS" >/dev/null
+  vault write database/roles/mariadb-role db_name="mariadb" creation_statements="CREATE USER '{{name}}'@'127.0.0.1' IDENTIFIED BY '{{password}}'; GRANT ALL PRIVILEGES ON *.* TO '{{name}}'@'127.0.0.1';" revocation_statements="DROP USER '{{name}}'@'127.0.0.1';" default_ttl="1h" max_ttl="24h" >/dev/null
 }
 main() {
   SCRIPT_NAME="init-mariadb.sh"; acquire_lock "$SCRIPT_NAME"; ensure_root_dirs; require_termux; require_cmd mariadb curl jq

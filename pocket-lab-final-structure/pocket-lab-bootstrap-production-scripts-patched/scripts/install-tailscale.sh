@@ -31,10 +31,8 @@ show_tailscale_status() {
     log WARN "tailscale-cli is not available"
     return 0
   fi
-
   log INFO "Tailscale status:"
   tailscale-cli status || true
-
   log INFO "Tailscale IPs:"
   tailscale-cli ip || true
 }
@@ -52,13 +50,11 @@ run_tailscale_enrollment() {
   fi
 
   log INFO "Starting Tailscale enrollment"
-
   if [[ -n "$TAILSCALE_AUTHKEY" ]]; then
     tailscale-cli up --hostname="$TAILSCALE_HOSTNAME" --authkey="$TAILSCALE_AUTHKEY" || true
   else
     log INFO "No TAILSCALE_AUTHKEY provided; interactive browser authentication may be required"
     log INFO "If a login URL appears, approve the device, then rerun this stage"
-
     if have timeout; then
       timeout "$TAILSCALE_LOGIN_TIMEOUT_SECONDS" tailscale-cli up --hostname="$TAILSCALE_HOSTNAME" || true
     else
@@ -77,7 +73,11 @@ run_tailscale_enrollment() {
 }
 
 main() {
-  SCRIPT_NAME="install-tailscale.sh"; acquire_lock "$SCRIPT_NAME"; ensure_root_dirs; require_termux; require_cmd curl
+  SCRIPT_NAME="install-tailscale.sh"
+  acquire_lock "$SCRIPT_NAME"
+  ensure_root_dirs
+  require_termux
+  require_cmd curl
   ensure_dir_perm "$TAILSCALE_DIR" 700
 
   ensure_tailscale_dependencies
@@ -108,11 +108,8 @@ ENVEOF
   fi
 
   sleep 2
-
   run_tailscale_enrollment
-
   mark_done tailscale_installed
   log INFO "Tailscale script completed safely"
 }
-
 main "$@"
