@@ -72,22 +72,79 @@ require_termux() {
 require_cmd() { for c in "$@"; do have "$c" || die "Required command missing: $c"; done; }
 require_any_cmd() { for c in "$@"; do have "$c" && return 0; done; die "Required one of these commands: $*"; }
 
+lock_owner_pid() {
+  local path="$1" pid=""
+  [[ -e "$path" ]] || return 0
+  if [[ -f "$path" ]]; then
+    pid="$(awk -F= '/^pid=/{print $2; exit}' "$path" 2>/dev/null || true)"
+    [[ -n "$pid" ]] || pid="$(head -n 1 "$path" 2>/dev/null | tr -dc '0-9' || true)"
+  elif [[ -f "$path/metadata" ]]; then
+    pid="$(awk -F= '/^pid=/{print $2; exit}' "$path/metadata" 2>/dev/null || true)"
+  fi
+  printf '%s' "$pid"
+}
+
+pid_is_running() {
+  local pid="$1"
+  [[ "$pid" =~ ^[0-9]+$ ]] || return 1
+  kill -0 "$pid" >/dev/null 2>&1
+}
+
+write_lock_metadata() {
+  local path="$1" name="$2"
+  {
+    printf 'pid=%s\n' "$$"
+    printf 'script=%s\n' "$name"
+    printf 'started_at=%s\n' "$(timestamp)"
+    printf 'command=%s\n' "${0:-unknown}"
+  } > "$path"
+}
+
+release_lock() {
+  [[ -n "${ACTIVE_LOCK_DIR:-}" ]] && rm -rf "$ACTIVE_LOCK_DIR" 2>/dev/null || true
+  [[ -n "${ACTIVE_LOCK_FILE:-}" ]] && rm -f "$ACTIVE_LOCK_FILE" 2>/dev/null || true
+}
+
 acquire_lock() {
   local name="${1:-$SCRIPT_NAME}"
   ensure_root_dirs
-  local lockfile="$LOCK_DIR/${name//[^A-Za-z0-9_.-]/_}.lock"
+  local sanitized="${name//[^A-Za-z0-9_.-]/_}"
+  local lockfile="$LOCK_DIR/${sanitized}.lock"
+  local pid=""
+
   if have flock; then
     eval "exec ${LOCK_FD}>\"$lockfile\""
-    flock -n "$LOCK_FD" || die "Another $name run is already active: $lockfile"
-    printf '%s\n' "$$" 1>&$LOCK_FD || true
-  else
-    if ! mkdir "$lockfile.d" 2>/dev/null; then
-      die "Another $name run may be active: $lockfile.d"
+    if ! flock -n "$LOCK_FD"; then
+      pid="$(lock_owner_pid "$lockfile")"
+      if [[ -n "$pid" ]] && ! pid_is_running "$pid"; then
+        log WARN "Removing stale lock for $name held by dead PID $pid: $lockfile"
+        rm -f "$lockfile" 2>/dev/null || true
+        eval "exec ${LOCK_FD}>\"$lockfile\""
+        flock -n "$LOCK_FD" || die "Another $name run is already active: $lockfile"
+      else
+        die "Another $name run is already active: $lockfile${pid:+ pid=$pid}"
+      fi
     fi
-    trap 'rm -rf "$lockfile.d"' EXIT
+    write_lock_metadata "$lockfile" "$name"
+    ACTIVE_LOCK_FILE="$lockfile"
+    trap release_lock EXIT
+  else
+    local lockdir="$lockfile.d"
+    if ! mkdir "$lockdir" 2>/dev/null; then
+      pid="$(lock_owner_pid "$lockdir")"
+      if [[ -n "$pid" ]] && ! pid_is_running "$pid"; then
+        log WARN "Removing stale lock directory for $name held by dead PID $pid: $lockdir"
+        rm -rf "$lockdir" 2>/dev/null || true
+        mkdir "$lockdir" 2>/dev/null || die "Another $name run may be active: $lockdir"
+      else
+        die "Another $name run may be active: $lockdir${pid:+ pid=$pid}"
+      fi
+    fi
+    write_lock_metadata "$lockdir/metadata" "$name"
+    ACTIVE_LOCK_DIR="$lockdir"
+    trap release_lock EXIT
   fi
 }
-
 marker_path() { printf '%s/%s.done' "$MARKER_DIR" "${1//[^A-Za-z0-9_.-]/_}"; }
 is_done() { [[ -f "$(marker_path "$1")" ]]; }
 mark_done() { mkdir -p "$MARKER_DIR"; printf '%s\n' "$(timestamp)" > "$(marker_path "$1")"; }
@@ -171,43 +228,12 @@ pm2_has() { have pm2 && pm2 describe "$1" >/dev/null 2>&1; }
 pm2_start_or_restart() {
   local name="$1"; shift
   require_cmd pm2
-
-  # Recreate instead of plain restart so changed args, cwd, and env are applied
-  # deterministically. This also prevents stale PM2 definitions from replaying
-  # broken command lines after pm2 resurrect.
   if pm2_has "$name"; then
-    log INFO "Deleting existing PM2 process before restart: $name"
-    pm2 delete "$name" >/dev/null || true
-  fi
-
-  log INFO "Starting PM2 process: $name"
-
-  local before_sep=() after_sep=() seen_sep=0 arg
-  for arg in "$@"; do
-    if [[ "$arg" == "--" && "$seen_sep" == "0" ]]; then
-      seen_sep=1
-      continue
-    fi
-    if [[ "$seen_sep" == "1" ]]; then
-      after_sep+=("$arg")
-    else
-      before_sep+=("$arg")
-    fi
-  done
-
-  if [[ "${#before_sep[@]}" -eq 0 ]]; then
-    die "pm2_start_or_restart requires a command for $name"
-  fi
-
-  local script="${before_sep[0]}"
-  local pm2_opts=("${before_sep[@]:1}")
-
-  if [[ "${#after_sep[@]}" -gt 0 ]]; then
-    # PM2 options must appear before --. Application args must appear after --.
-    # Otherwise flags like --name and --update-env can be passed to the app.
-    pm2 start "$script" --name "$name" --update-env "${pm2_opts[@]}" -- "${after_sep[@]}"
+    log INFO "Restarting PM2 process: $name"
+    pm2 restart "$name" --update-env >/dev/null
   else
-    pm2 start "${before_sep[@]}" --name "$name" --update-env
+    log INFO "Starting PM2 process: $name"
+    pm2 start "$@" --name "$name" --update-env
   fi
 }
 
